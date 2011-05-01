@@ -1,0 +1,12 @@
+all: $(addsuffix .make, $(DIRS))
+clean: $(addsuffix .clean, $(DIRS))
+install: $(addsuffix .install, $(DIRS))
+
+%.make:
+	@make -C $*
+
+%.clean:
+	@make -C $* clean
+
+%.install:
+	@make -C $* install

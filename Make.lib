@@ -1,0 +1,12 @@
+all: $(LIB)
+
+$(LIB): $(OFILES)
+	$(AR) rsc $(LIB) $(OFILES)
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $<
+
+$(OFILES): $(HFILES)
+
+.PHONY: clean
+	rm -f *.o $(LIB)
