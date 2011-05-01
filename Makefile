@@ -1,2 +1,9 @@
+CC=clang
+
+all: mid
+
 mid: main.c
-	clang -lSDL -lSDLmain -Wall -Werror -o $@ $<
+	$(CC) -L/usr/local/lib -lSDL -lSDLmain -Wall -Werror -o $@ $<
+
+clean:
+	rm -f mid
