@@ -9,4 +9,6 @@ $(LIB): $(OFILES)
 $(OFILES): $(HFILES)
 
 .PHONY: clean
+
+clean:
 	rm -f *.o $(LIB)

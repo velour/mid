@@ -1,5 +1,5 @@
 DIRS :=\
-	cmd\
 	lib\
+	cmd\
 
 include Make.dir
