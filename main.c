@@ -34,13 +34,13 @@ int main(int argc, char *argv[]){
 		}
 
 	        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-	
+
 	        SDL_RenderClear(renderer);
-	
+
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 		SDL_Rect r = {x, y, 10, 10};
 		SDL_RenderDrawRect(renderer, &r);
-	
+
 	        SDL_RenderPresent(renderer);
 
         	SDL_Delay(50);
