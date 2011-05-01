@@ -1,7 +1,7 @@
 CC=clang
 LD=clang
 LDFLAGS=-lSDL -lSDLmain -L/usr/local/lib
-CFLAGS=-Wall -Werror -std=c99 $(INCLUDE)
+CFLAGS=-Wall -Werror -std=c99
 
 all: mid
 
