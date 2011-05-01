@@ -1,5 +1,8 @@
 #include <SDL/SDL.h>
 
+const int w = 512;
+const int h = 512;
+
 int main(int argc, char *argv[]){
 	SDL_Window* window;
         SDL_Renderer* renderer;
@@ -8,9 +11,10 @@ int main(int argc, char *argv[]){
                 return 1;
 
         window = SDL_CreateWindow("SDL_RenderClear",
-                        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                        512, 512,
-                        SDL_WINDOW_SHOWN);
+				  SDL_WINDOWPOS_CENTERED,
+				  SDL_WINDOWPOS_CENTERED,
+				  w, h,
+				  SDL_WINDOW_SHOWN);
 
         renderer = SDL_CreateRenderer(window, -1, 0);
 
