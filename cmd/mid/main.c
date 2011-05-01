@@ -6,17 +6,17 @@ float dx = 0, dy = 0;
 
 int main(int argc, char *argv[]){
 	SDL_Window* window;
-        SDL_Renderer* renderer;
+	SDL_Renderer* renderer;
 
-        if (SDL_Init(SDL_INIT_VIDEO) < 0)
-                return 1;
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		return 1;
 
-        window = SDL_CreateWindow("SDL_RenderClear",
-                        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                        512, 512,
-                        SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("SDL_RenderClear",
+			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+			512, 512,
+			SDL_WINDOW_SHOWN);
 
-        renderer = SDL_CreateRenderer(window, -1, 0);
+	renderer = SDL_CreateRenderer(window, -1, 0);
 
 	for(;;){
 		SDL_Event event;
@@ -46,18 +46,18 @@ int main(int argc, char *argv[]){
 
 		rectmv(&rect, dx, dy);
 
-	        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
-	        SDL_RenderClear(renderer);
+		SDL_RenderClear(renderer);
 
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 		SDL_Rect r = { rect.a.x, rect.a.y, 10, 10 };
 		SDL_RenderDrawRect(renderer, &r);
 
-	        SDL_RenderPresent(renderer);
+		SDL_RenderPresent(renderer);
 
-        	SDL_Delay(50);
+		SDL_Delay(50);
 	}
-        SDL_Quit();
+	SDL_Quit();
 	return 0;
 }
