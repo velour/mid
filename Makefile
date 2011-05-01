@@ -1,9 +1,12 @@
 CC=clang
+INCLUDE=-L/usr/local/lib
+LDFLAGS=-lSDL -lSDLmain
+CFLAGS=-Wall -Werror -std=c99 $(INCLUDE)
 
 all: mid
 
 mid: main.c
-	$(CC) -L/usr/local/lib -lSDL -lSDLmain -Wall -Werror -o $@ $<
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $<
 
 clean:
 	rm -f mid
