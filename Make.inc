@@ -1,25 +1,25 @@
-ifndef $(CC)
+ifndef CC
 CC := clang
 endif
 
-ifndef $(LD)
+ifndef LD
 LD := clang
 endif
 
-ifndef $(AR)
+ifndef AR
 AR := ar
 endif
 
 MANDCFLAGS := -Wall -Werror -std=c99
 MANDLDFLAGS :=
 
-ifdef $(CFLAGS)
+ifdef CFLAGS
 CFLAGS += $(MANDCFLAGS)
 else
 CFLAGS := $(MANDCFLAGS)
 endif
 
-ifdef $(LDFLAGS)
+ifdef LDFLAGS
 LDFLAGS += $(MANDLDFLAGS)
 else
 LDFLAGS := $(MANDLDFLAGS)
