@@ -1,10 +1,10 @@
 all: $(LIB)
 
 $(LIB): $(OFILES)
-	$(AR) rsc $(LIB) $(OFILES)
+	ar rsc $(LIB) $(OFILES)
 
 %.o: %.c
-	$(CC) -c $(CFLAGS) $<
+	quietc -c $(CFLAGS) $<
 
 $(OFILES): $(HFILES)
 

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -z "$CC" ]; then
+	export CC=clang
+fi
+
+FLAGS="-Wall -Werror -std=c99 $CFLAGS"
+
+exec $CC $FLAGS $@

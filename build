@@ -1,3 +1,5 @@
 #!/bin/sh
 
+export PATH=`pwd`:$PATH
+
 exec gmake -rR $@

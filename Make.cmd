@@ -1,10 +1,10 @@
 $(TARG): $(OFILES)
-	$(LD) $(LDFLAGS) -o $@ $^ $(LIB)
+	quietld $(LDFLAGS) -o $@ $^ $(LIB)
 
 $(OFILES): $(HFILES) $(LIB)
 
 %.o: %.c
-	$(CC) -c $(CFLAGS) -o $@ $<
+	quietc -c $(CFLAGS) -o $@ $<
 
 .PHONY: clean install
 
