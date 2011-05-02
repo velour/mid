@@ -1,14 +1,13 @@
 #include "mid.h"
 #include <SDL/SDL.h>
 
-Rect rect = { (Point){ 0, 0 }, (Point){ 10, 10 } };
-float dx = 0, dy = 0;
-
 int main(int argc, char *argv[]){
 	Gfx *gfx = gfxinit(512, 512);
 	if(!gfx)
 		return 1;
 
+	Rect rect = (Rect){ (Point){ 0, 0 }, (Point){ 10, 10 } };
+	float dx = 0, dy = 0;
 	Color red = { 255, 0, 0, 255 };
 
 	Img *glenda = imgnew(gfx, "resrc/img/9logo.png");
