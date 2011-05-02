@@ -3,10 +3,10 @@ clean: $(addsuffix .clean, $(DIRS))
 install: $(addsuffix .install, $(DIRS))
 
 %.make:
-	@make -C $*
+	@$(MAKE) -C $*
 
 %.clean:
-	@make -C $* clean
+	@$(MAKE) -C $* clean
 
 %.install:
-	@make -C $* install
+	@$(MAKE) -C $* install
