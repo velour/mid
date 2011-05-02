@@ -4,7 +4,7 @@ $(LIB): $(OFILES)
 	ar rsc $(LIB) $(OFILES)
 
 %.o: %.c
-	quietc -c $(CFLAGS) $<
+	quietc $(CFLAGS) $<
 
 $(OFILES): $(HFILES)
 

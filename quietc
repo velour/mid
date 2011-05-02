@@ -6,4 +6,4 @@ fi
 
 FLAGS="-Wall -Werror -std=c99 $CFLAGS"
 
-exec $CC $FLAGS $@
+exec $CC -c $FLAGS $@

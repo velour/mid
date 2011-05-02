@@ -4,7 +4,7 @@ $(TARG): $(OFILES)
 $(OFILES): $(HFILES) $(LIB)
 
 %.o: %.c
-	quietc -c $(CFLAGS) -o $@ $<
+	quietc $(CFLAGS) $<
 
 .PHONY: clean install
 
