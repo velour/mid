@@ -164,7 +164,7 @@ void rcache_init(struct rcache *c)
 	c->nxtseq = 1;
 }
 
-int nextseq(struct rcache *c)
+static int nextseq(struct rcache *c)
 {
 	int prev = c->nxtseq;
 	c->nxtseq += 1;
@@ -186,7 +186,8 @@ out:
 	return c->nxtseq - 1;
 }
 
-void *load(struct rcache *c, void*(*ld)(const char *path), const char *file)
+static void *load(struct rcache *c, void*(*ld)(const char *path),
+		  const char *file)
 {
 	char path[PATH_MAX + 1];
 	if (c->fill == CACHE_SIZE) {
