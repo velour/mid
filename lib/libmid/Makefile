@@ -3,6 +3,8 @@ include ../../Make.inc
 LIB := libmid.a
 OFILES :=\
 	geom.o\
+	gfx.o\
+	fs.o\
 
 CFLAGS += -I../../include
 
