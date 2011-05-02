@@ -9,7 +9,7 @@ $(OFILES): $(HFILES)
 .PHONY: clean install
 
 clean:
-	rm -f $(OFILES) $(TARG)
+	rm -f *.o $(TARG)
 
 install: $(TARG)
 	cp $(TARG) /usr/local/bin
