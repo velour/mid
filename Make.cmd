@@ -1,5 +1,5 @@
 $(TARG): $(OFILES)
-	quietld $(LDFLAGS) -o $@ $^ $(LIB)
+	quietld -o $@ $(LDFLAGS) $^ $(LIB)
 
 $(OFILES): $(HFILES) $(LIB)
 
