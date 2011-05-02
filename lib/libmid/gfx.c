@@ -1,6 +1,8 @@
 #include "mid.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
+#include <assert.h>
 #include <stdlib.h>
 
 struct Gfx{
@@ -11,6 +13,9 @@ struct Gfx{
 static Gfx gfx;
 
 Gfx *gfxinit(int w, int h){
+	if(TTF_Init() < 0)
+		return 0;
+
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 		return 0; //TODO: error messages
 
@@ -28,6 +33,7 @@ Gfx *gfxinit(int w, int h){
 void gfxfree(Gfx *g){
 	SDL_DestroyRenderer(g->rend);
 	SDL_DestroyWindow(g->win);
+	TTF_Quit();
 	SDL_Quit();
 }
 
@@ -89,4 +95,49 @@ void imgdraw(Gfx *g, Img *img, Point p){
 	Point wh = imgdims(img);
 	SDL_Rect r = { p.x, p.y, wh.x, wh.y };
 	SDL_RenderCopy(g->rend, img->tex, 0, &r);
+}
+
+struct Txt{
+	TTF_Font *font;
+	Color color;
+};
+
+Txt *txtnew(const char *font, int sz, Color c){
+	TTF_Font *f = TTF_OpenFont(font, sz);
+	if(!f)
+		return 0;
+	Txt *t = malloc(sizeof(*t));
+	t->font = f;
+	t->color = c;
+	return t;
+}
+
+void txtfree(Txt *t){
+	TTF_CloseFont(t->font);
+	free(t);
+}
+
+Point txtdims(const Txt *t, const char *s){
+	int w, h;
+	(void)TTF_SizeUTF8(t->font, s, &w, &h);
+	return (Point){ w, h };
+}
+
+static SDL_Color c2s(Color c){
+	return (SDL_Color){ c.r, c.g, c.b };
+}
+
+//TODO: this is sub-optimal
+Point txtdraw(Gfx *g, Txt *t, const char *s, Point p){
+	SDL_Surface *srf = TTF_RenderUTF8_Blended(t->font, s, c2s(t->color));
+	assert(srf != 0);
+
+	SDL_Texture *tex = SDL_CreateTextureFromSurface(g->rend, srf);
+	SDL_FreeSurface(srf);
+	assert(tex != 0);
+
+	Img i = { tex };
+	imgdraw(g, &i, p);
+
+	return (Point){ p.x + txtdims(t,s).x, p.y };
 }

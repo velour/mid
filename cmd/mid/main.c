@@ -9,8 +9,11 @@ int main(int argc, char *argv[]){
 	Rect rect = (Rect){ (Point){ 0, 0 }, (Point){ 10, 10 } };
 	float dx = 0, dy = 0;
 	Color red = { 255, 0, 0, 255 };
+	Color white = { 255, 255, 255, 255 };
 
 	Img *glenda = imgnew(gfx, "resrc/img/9logo.png");
+
+	Txt *hi = txtnew("resrc/FreeSans.ttf", 32, white);
 
 	for(;;){
 		SDL_Event event;
@@ -42,11 +45,15 @@ int main(int argc, char *argv[]){
 
 		gfxclear(gfx, red);
 		imgdraw(gfx, glenda, rect.a);
+		txtdraw(gfx, hi, "hi", (Point){ 100, 100 });
 
 		gfxflip(gfx);
 
 		SDL_Delay(50);
 	}
-	SDL_Quit();
+
+	txtfree(hi);
+	imgfree(glenda);
+	gfxfree(gfx);
 	return 0;
 }
