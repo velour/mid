@@ -51,14 +51,20 @@ bool is_dir(const char *p)
 	return S_ISDIR(s.st_mode);
 }
 
+struct dirent *alloc_dent(const char *root)
+{
+	unsigned int len = offsetof(struct dirent, d_name)
+		+ pathconf(root, _PC_NAME_MAX) + 1;
+	return malloc(len);
+}
+
 /* Recursively find the given file beneath the given root.  out must
  * be of size PATH_MAX + 1. */
 bool find(const char *root, const char *fname, char out[])
 {
 	assert(is_dir(root));
 	DIR *dir = opendir(root);
-	char dent_loc[sizeof(struct dirent) + PATH_MAX];
-	struct dirent *dent = (void*) &dent_loc;
+	struct dirent *dent = alloc_dent(root);
 	struct dirent *res;
 	int err;
 	do {
@@ -77,12 +83,16 @@ bool find(const char *root, const char *fname, char out[])
 		concat(root, dent->d_name, ent);
 		if (strcmp(fname, dent->d_name) == 0) {
 			strncpy(out, ent, PATH_MAX + 1);
+			free(dent);
 			return true;
 		} else if (is_dir(ent)) {
-			if (find(ent, fname, out))
+			if (find(ent, fname, out)) {
+				free(dent);
 				return true;
+			}
 		}
 	} while (res);
 
+	free(dent);
 	return false;
 }
