@@ -26,6 +26,8 @@ struct rcache {
 	struct resrc *heap[CACHE_SIZE];
 	int fill;
 	int nxtseq;
+	void*(*load)(const char *path);
+	void(*free)(void*);
 };
 
 static void swap(struct resrc *heap[], int i, int j)
@@ -176,12 +178,12 @@ out:
 	return c->nxtseq - 1;
 }
 
-static void *load(struct rcache *c, void*(*ld)(const char *path),
-		  const char *file)
+static void *load(struct rcache *c, const char *file)
 {
 	char path[PATH_MAX + 1];
 	if (c->fill == CACHE_SIZE) {
 		struct resrc *bump = heappop(c->heap, c->fill);
+		c->free(bump->data);
 		bump->del = true;
 		c->fill -= 1;
 	}
@@ -191,7 +193,7 @@ static void *load(struct rcache *c, void*(*ld)(const char *path),
 			r->del = false;
 			strncpy(r->file, path, PATH_MAX + 1);
 			r->file[PATH_MAX] = '\0';
-			r->data = ld(path);
+			r->data = c->load(path);
 			r->seq = nextseq(c);
 			heappush(c->heap, c->fill, r);
 			return r->data;
@@ -200,12 +202,12 @@ static void *load(struct rcache *c, void*(*ld)(const char *path),
 	return NULL;
 }
 
-void *resrc(struct rcache *c, void*(*ld)(const char *path), const char *file)
+void *resrc(struct rcache *c, const char *file)
 {
 	struct resrc *r = tblfind(c->tbl, file);
 	assert(!r->del);
 	if (!r) {
-		return load(c, ld, file);
+		return load(c, file);
 	} else {
 		r->seq = nextseq(c);
 		heapupdate(c->heap, c->fill, r->ind);
@@ -213,7 +215,8 @@ void *resrc(struct rcache *c, void*(*ld)(const char *path), const char *file)
 	}
 }
 
-void rcache(struct rcache *c)
+void rcache(struct rcache *c, void*(*load)(const char *path),
+	    void(*free)(void*))
 {
 	for (int i = 0; i < TBL_SIZE; i += 1) {
 		c->tbl[i].del = false;
@@ -221,5 +224,8 @@ void rcache(struct rcache *c)
 	}
 	c->fill = 0;
 	c->nxtseq = 1;
+	c->load = load;
+	c->free = free;
 }
+
 
