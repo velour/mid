@@ -93,9 +93,8 @@ struct Scrn{
 	void *data;
 };
 
-void scrnrun(Scrnstk *, Gfx *);
-
 union SDL_Event;
+enum { Ticktm = 20 /* ms */ };
 
 struct Scrnmt{
 	void (*update)(Scrn *, Scrnstk *);
@@ -106,7 +105,9 @@ struct Scrnmt{
 
 Scrnstk *scrnstknew(void);
 void scrnstkfree(Scrnstk *);
-/* Stack now owns Scrn, will call scrn->free(scrn) when popped. */
+/* Stack now owns Scrn, will call scrn->mt->free(scrn) when popped. */
 void scrnstkpush(Scrnstk *, Scrn *);
 Scrn *scrnstktop(Scrnstk *);
-void scrnstkpop(void);
+void scrnstkpop(Scrnstk *);
+
+void scrnrun(Scrnstk *, Gfx *);

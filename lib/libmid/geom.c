@@ -1,4 +1,4 @@
-#include "mid.h"
+#include "../../include/mid.h"
 
 static int between(float min, float max, float n){
 	return n >= min && n <= max;

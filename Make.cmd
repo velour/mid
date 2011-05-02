@@ -1,7 +1,7 @@
 $(TARG): $(OFILES)
 	$(LD) $(LDFLAGS) -o $@ $^ $(LIB)
 
-$(OFILES): $(HFILES)
+$(OFILES): $(HFILES) $(LIB)
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) -o $@ $<
