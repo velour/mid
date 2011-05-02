@@ -4,6 +4,7 @@
 #include <SDL/SDL_ttf.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 struct Gfx{
 	SDL_Window *win;
@@ -26,6 +27,8 @@ Gfx *gfxinit(int w, int h){
 		SDL_WINDOW_SHOWN);
 
 	gfx.rend = SDL_CreateRenderer(gfx.win, -1, 0);
+	if (!gfx.rend)
+		return 0;
 
 	return &gfx;
 }
@@ -75,6 +78,8 @@ Img *imgnew(Gfx *g, const char *path){
 	if(!t) return 0;
 
 	Img *i = malloc(sizeof(*i));
+	if (!i)
+		return NULL;
 	i->tex = t;
 	return i;
 }
@@ -87,7 +92,10 @@ void imgfree(Img *img){
 Point imgdims(const Img *img){
 	Uint32 fmt;
 	int access, w, h;
-	SDL_QueryTexture(img->tex, &fmt, &access, &w, &h);
+	if (SDL_QueryTexture(img->tex, &fmt, &access, &w, &h) < 0) {
+		fprintf(stderr, "SDL_QueryTexturer: query failed\n");
+		abort();
+	}
 	return (Point){ w, h };
 }
 

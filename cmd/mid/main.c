@@ -41,6 +41,10 @@ int main(int argc, char *argv[]){
 	tmpdata.white = (Color){ 255, 255, 255, 255 };
 
 	tmpdata.glenda = imgnew(gfx, "resrc/img/9logo.png");
+	if (!tmpdata.glenda) {
+		fprintf(stderr, "Failed to load 9logo.png\n");
+		abort();
+	}
 
 	tmpdata.hi = txtnew("resrc/FreeSans.ttf", 32, tmpdata.white);
 
@@ -87,7 +91,7 @@ static void tmphandle(Scrn *s, Scrnstk *stk, union SDL_Event *e){
 		case SDLK_RIGHT: md->dx = 0; break;
 		case SDLK_UP: md->dy = 0; break;
 		case SDLK_DOWN: md->dy = 0; break;
-		} 
+		}
 		break;
 	}
 }
