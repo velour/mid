@@ -47,6 +47,8 @@ int main(int argc, char *argv[]){
 
 		SDL_Delay(50);
 	}
-	SDL_Quit();
+
+	imgfree(glenda);
+	gfxfree(gfx);
 	return 0;
 }
