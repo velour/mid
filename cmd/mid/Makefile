@@ -5,6 +5,6 @@ LIB := ../../lib/libmid/libmid.a
 OFILES := main.o
 
 CFLAGS += -I../../include
-LDFLAGS += -lSDL -lSDLmain -lSDL_image
+LDFLAGS += -lSDL-1.3 -lSDLmain -lSDL_image
 
 include ../../Make.cmd
