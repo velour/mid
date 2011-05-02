@@ -17,7 +17,7 @@ const char DIRSEP = '/';
 extern int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result);
 
 /* cat must be of size PATH_MAX + 1. */
-void concat(const char *d, const char *f, char cat[])
+void fs_cat(const char *d, const char *f, char cat[])
 {
 	unsigned int dl = strlen(d);
 	while (dl > 0 && d[dl - 1] == DIRSEP)
@@ -28,7 +28,7 @@ void concat(const char *d, const char *f, char cat[])
 		fl -= 1;
 	}
 	if (dl + fl >= PATH_MAX) {
-		fprintf(stderr, "Paths too long to concat\n");
+		fprintf(stderr, "Paths too long to fs_cat\n");
 		abort();
 	}
 	strncpy(cat, d, dl);
@@ -61,7 +61,7 @@ struct dirent *alloc_dent(const char *root)
 
 /* Recursively find the given file beneath the given root.  out must
  * be of size PATH_MAX + 1. */
-bool find(const char *root, const char *fname, char out[])
+bool fs_find(const char *root, const char *fname, char out[])
 {
 	assert(is_dir(root));
 	DIR *dir = opendir(root);
@@ -81,13 +81,13 @@ bool find(const char *root, const char *fname, char out[])
 			continue;
 
 		char ent[PATH_MAX + 1];
-		concat(root, dent->d_name, ent);
+		fs_cat(root, dent->d_name, ent);
 		if (strcmp(fname, dent->d_name) == 0) {
 			strncpy(out, ent, PATH_MAX + 1);
 			free(dent);
 			return true;
 		} else if (is_dir(ent)) {
-			if (find(ent, fname, out)) {
+			if (fs_find(ent, fname, out)) {
 				free(dent);
 				return true;
 			}
