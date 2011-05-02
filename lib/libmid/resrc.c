@@ -154,16 +154,6 @@ static struct resrc *tblalloc(struct resrc tbl[], const char *file)
 	return &tbl[i];
 }
 
-void rcache_init(struct rcache *c)
-{
-	for (int i = 0; i < TBL_SIZE; i += 1) {
-		c->tbl[i].del = false;
-		c->tbl[i].file[0] = '\0';
-	}
-	c->fill = 0;
-	c->nxtseq = 1;
-}
-
 static int nextseq(struct rcache *c)
 {
 	int prev = c->nxtseq;
@@ -222,3 +212,14 @@ void *resrc(struct rcache *c, void*(*ld)(const char *path), const char *file)
 		return r->data;
 	}
 }
+
+void rcache(struct rcache *c)
+{
+	for (int i = 0; i < TBL_SIZE; i += 1) {
+		c->tbl[i].del = false;
+		c->tbl[i].file[0] = '\0';
+	}
+	c->fill = 0;
+	c->nxtseq = 1;
+}
+
