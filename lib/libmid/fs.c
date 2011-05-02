@@ -9,7 +9,7 @@
 #include <dirent.h>
 #include <unistd.h>
 
-#include "fs.h"
+#include "../../include/mid.h"
 
 const char DIRSEP = '/';
 

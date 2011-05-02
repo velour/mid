@@ -3,15 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "fs.h"
-#include "resrc.h" /* just for now */
+#include "../../include/mid.h"
 
 static const char *roots[] = { ".", "resrc" };
-static const int nroots = sizeof(roots) / sizeof(roots[0]);
+enum { NROOTS = sizeof(roots) / sizeof(roots[0]) };
 
-static void swap(struct resrc *heap[], int i, int j)
+static void swap(Resrc *heap[], int i, int j)
 {
-	struct resrc *t = heap[i];
+	Resrc *t = heap[i];
 	heap[j] = heap[i];
 	heap[i] = t;
 	heap[j]->ind = j;
@@ -33,7 +32,7 @@ static int parent(int i)
 	return (i - 1) / 2;
 }
 
-static int pullup(struct resrc *heap[], int i)
+static int pullup(Resrc *heap[], int i)
 {
 	if (i > 0) {
 		int p = parent(i);
@@ -45,7 +44,7 @@ static int pullup(struct resrc *heap[], int i)
 	return i;
 }
 
-static int pushdown(struct resrc *heap[], int fill, int i)
+static int pushdown(Resrc *heap[], int fill, int i)
 {
 	int l = left(i), r = right(i);
 	int small = i;
@@ -60,7 +59,7 @@ static int pushdown(struct resrc *heap[], int fill, int i)
 	return i;
 }
 
-static void heappush(struct resrc *heap[], int fill, struct resrc *r)
+static void heappush(Resrc *heap[], int fill, Resrc *r)
 {
 	if (fill >= RCACHE_SIZE) {
 		fprintf(stderr, "%s: Heap is full", __func__);
@@ -71,20 +70,20 @@ static void heappush(struct resrc *heap[], int fill, struct resrc *r)
 	pullup(heap, fill);
 }
 
-static struct resrc *heappop(struct resrc *heap[], int fill)
+static Resrc *heappop(Resrc *heap[], int fill)
 {
 	if (fill <= 0) {
 		fprintf(stderr, "%s: Heap is empty\n", __func__);
 		abort();
 	}
-	struct resrc *e = heap[0];
+	Resrc *e = heap[0];
 	e->ind = -1;
 	heap[0] = heap[fill - 1];
 	pushdown(heap, fill - 1, 0);
 	return e;
 }
 
-static void heapupdate(struct resrc *heap[], int fill, int i)
+static void heapupdate(Resrc *heap[], int fill, int i)
 {
 	i = pullup(heap, i);
 	pushdown(heap, fill, i);
@@ -104,12 +103,12 @@ unsigned int hash(const char *str)
 	return h;
 }
 
-static bool used(struct resrc *r)
+static bool used(Resrc *r)
 {
 	return r->file[0] != '\0';
 }
 
-static struct resrc *tblfind(struct resrc tbl[], const char *file)
+static Resrc *tblfind(Resrc tbl[], const char *file)
 {
 	unsigned int init = hash(file) % RESRC_TBL_SIZE;
 	unsigned int i = init;
@@ -125,7 +124,7 @@ static struct resrc *tblfind(struct resrc tbl[], const char *file)
 	return NULL;
 }
 
-static struct resrc *tblalloc(struct resrc tbl[], const char *file)
+static Resrc *tblalloc(Resrc tbl[], const char *file)
 {
 	unsigned int i;
 	for (i = hash(file) % RESRC_TBL_SIZE; used(&tbl[i]); i  = (i + 1) % RESRC_TBL_SIZE)
@@ -135,7 +134,7 @@ static struct resrc *tblalloc(struct resrc tbl[], const char *file)
 	return &tbl[i];
 }
 
-static int nextseq(struct rcache *c)
+static int nextseq(Rcache *c)
 {
 	int prev = c->nxtseq;
 	c->nxtseq += 1;
@@ -157,18 +156,18 @@ out:
 	return c->nxtseq - 1;
 }
 
-static void *load(struct rcache *c, const char *file)
+static void *load(Rcache *c, const char *file)
 {
 	char path[PATH_MAX + 1];
 	if (c->fill == RCACHE_SIZE) {
-		struct resrc *bump = heappop(c->heap, c->fill);
+		Resrc *bump = heappop(c->heap, c->fill);
 		c->free(bump->data);
 		bump->del = true;
 		c->fill -= 1;
 	}
-	for (int i = 0; i < nroots; i += 1) {
+	for (int i = 0; i < NROOTS; i += 1) {
 		if (fsfind(roots[i], file, path)) {
-			struct resrc *r = tblalloc(c->tbl, file);
+			Resrc *r = tblalloc(c->tbl, file);
 			r->del = false;
 			strncpy(r->file, file, PATH_MAX + 1);
 			r->file[PATH_MAX] = '\0';
@@ -182,9 +181,9 @@ static void *load(struct rcache *c, const char *file)
 	return NULL;
 }
 
-void *resrc(struct rcache *c, const char *file)
+void *resrc(Rcache *c, const char *file)
 {
-	struct resrc *r = tblfind(c->tbl, file);
+	Resrc *r = tblfind(c->tbl, file);
 	if (!r) {
 		return load(c, file);
 	} else {
@@ -195,7 +194,7 @@ void *resrc(struct rcache *c, const char *file)
 	}
 }
 
-void rcache(struct rcache *c, void*(*load)(const char *path),
+void rcache(Rcache *c, void*(*load)(const char *path),
 	    void(*free)(void*))
 {
 	for (int i = 0; i < RESRC_TBL_SIZE; i += 1) {

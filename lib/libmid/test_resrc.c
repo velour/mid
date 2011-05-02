@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "resrc.h"
+#include "../../include/mid.h"
 
 /* To deal with communication between test/load/free functions. */
 char *loaded;
