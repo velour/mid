@@ -5,18 +5,12 @@ Rect rect = { (Point){ 0, 0 }, (Point){ 10, 10 } };
 float dx = 0, dy = 0;
 
 int main(int argc, char *argv[]){
-	SDL_Window* window;
-	SDL_Renderer* renderer;
-
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	Gfx *gfx = gfxinit(512, 512);
+	if(!gfx)
 		return 1;
 
-	window = SDL_CreateWindow("SDL_RenderClear",
-			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			512, 512,
-			SDL_WINDOW_SHOWN);
-
-	renderer = SDL_CreateRenderer(window, -1, 0);
+	Color red = { 255, 0, 0, 255 };
+	Color white = { 255, 255, 255, 255 };
 
 	for(;;){
 		SDL_Event event;
@@ -46,15 +40,10 @@ int main(int argc, char *argv[]){
 
 		rectmv(&rect, dx, dy);
 
-		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+		gfxclear(gfx, red);
+		gfxfillrect(gfx, rect, white);
 
-		SDL_RenderClear(renderer);
-
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-		SDL_Rect r = { rect.a.x, rect.a.y, 10, 10 };
-		SDL_RenderDrawRect(renderer, &r);
-
-		SDL_RenderPresent(renderer);
+		gfxflip(gfx);
 
 		SDL_Delay(50);
 	}
