@@ -65,7 +65,7 @@ typedef struct Txt Txt;
 Txt *txtnew(const char *font, int sz, Color);
 void txtfree(Txt *);
 Point txtdims(const Txt *, const char *);
-Point txtdraw(Gfx *, Txt *, Point);
+Point txtdraw(Gfx *, Txt *, const char *, Point);
 
 void sndinit(void);
 
