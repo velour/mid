@@ -54,7 +54,7 @@ void gfxfillrect(Gfx *, Rect, Color);
 
 typedef struct Img Img;
 
-Img *imgnew(const char *path);
+Img *imgnew(Gfx *, const char *path);
 Point imgdims(const Img *);
 void imgdraw(Gfx *, Img *, Point);
 

@@ -1,5 +1,7 @@
 #include "mid.h"
 #include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
+#include <stdlib.h>
 
 struct Gfx{
 	SDL_Window *win;
@@ -46,4 +48,33 @@ void gfxfillrect(Gfx *g, Rect r, Color c){
 	SDL_Rect sr = { r.a.x, r.a.y, r.b.x - r.a.x, r.b.y - r.a.y };
 	rendcolor(g, c);
 	SDL_RenderFillRect(g->rend, &sr);
+}
+
+struct Img{
+	SDL_Texture *tex;
+};
+
+Img *imgnew(Gfx *g, const char *path){
+	SDL_Surface *s = IMG_Load(path);
+	if(!s) return 0;
+
+	SDL_Texture *t = SDL_CreateTextureFromSurface(g->rend, s);
+	if(!t) return 0;
+
+	Img *i = malloc(sizeof(*i));
+	i->tex = t;
+	return i;
+}
+
+Point imgdims(const Img *img){
+	Uint32 fmt;
+	int access, w, h;
+	SDL_QueryTexture(img->tex, &fmt, &access, &w, &h);
+	return (Point){ w, h };
+}
+
+void imgdraw(Gfx *g, Img *img, Point p){
+	Point wh = imgdims(img);
+	SDL_Rect r = { p.x, p.y, wh.x, wh.y };
+	SDL_RenderCopy(g->rend, img->tex, 0, &r);
 }

@@ -10,7 +10,8 @@ int main(int argc, char *argv[]){
 		return 1;
 
 	Color red = { 255, 0, 0, 255 };
-	Color white = { 255, 255, 255, 255 };
+
+	Img *glenda = imgnew(gfx, "resrc/img/9logo.png");
 
 	for(;;){
 		SDL_Event event;
@@ -41,7 +42,7 @@ int main(int argc, char *argv[]){
 		rectmv(&rect, dx, dy);
 
 		gfxclear(gfx, red);
-		gfxfillrect(gfx, rect, white);
+		imgdraw(gfx, glenda, rect.a);
 
 		gfxflip(gfx);
 
