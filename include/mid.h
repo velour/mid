@@ -90,12 +90,12 @@ struct Scrn{
 
 void scrnrun(Scrnstk *, Gfx *);
 
-typedef union SDL_Event SDL_Event;
+union SDL_Event;
 
 struct Scrnmt{
 	void (*update)(Scrn *, Scrnstk *);
 	void (*draw)(Scrn *, Gfx *);
-	void (*handle)(Scrn *, Scrnstk *, SDL_Event *);
+	void (*handle)(Scrn *, Scrnstk *, union SDL_Event *);
 	void (*free)(Scrn *);
 };
 
