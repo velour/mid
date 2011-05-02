@@ -5,6 +5,7 @@ OFILES :=\
 	geom.o\
 	gfx.o\
 	fs.o\
+	resrc.o\
 
 CFLAGS += -I../../include
 
