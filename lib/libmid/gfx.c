@@ -25,6 +25,12 @@ Gfx *gfxinit(int w, int h){
 	return &gfx;
 }
 
+void gfxfree(Gfx *g){
+	SDL_DestroyRenderer(g->rend);
+	SDL_DestroyWindow(g->win);
+	SDL_Quit();
+}
+
 Point gfxdims(const Gfx *g){
 	int w, h;
 	SDL_GetWindowSize(g->win, &w, &h);
@@ -59,11 +65,17 @@ Img *imgnew(Gfx *g, const char *path){
 	if(!s) return 0;
 
 	SDL_Texture *t = SDL_CreateTextureFromSurface(g->rend, s);
+	SDL_FreeSurface(s);
 	if(!t) return 0;
 
 	Img *i = malloc(sizeof(*i));
 	i->tex = t;
 	return i;
+}
+
+void imgfree(Img *img){
+	SDL_DestroyTexture(img->tex);
+	free(img);
 }
 
 Point imgdims(const Img *img){

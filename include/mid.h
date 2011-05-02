@@ -47,6 +47,7 @@ struct Color{
 typedef struct Gfx Gfx;
 
 Gfx *gfxinit(int w, int h);
+void gfxfree(Gfx *);
 Point gfxdims(const Gfx *);
 void gfxflip(Gfx *);
 void gfxclear(Gfx *, Color);
@@ -55,12 +56,14 @@ void gfxfillrect(Gfx *, Rect, Color);
 typedef struct Img Img;
 
 Img *imgnew(Gfx *, const char *path);
+void imgfree(Img *);
 Point imgdims(const Img *);
 void imgdraw(Gfx *, Img *, Point);
 
 typedef struct Txt Txt;
 
 Txt *txtnew(const char *font, int sz, Color);
+void txtfree(Txt *);
 Point txtdims(const Txt *, const char *);
 Point txtdraw(Gfx *, Txt *, Point);
 
@@ -69,6 +72,7 @@ void sndinit(void);
 typedef struct Music Music;
 
 Music *musicnew(const char *);
+void musicfree(Music *);
 void musicstart(Music *, int fadein);
 void musicstop(int fadeout);
 void musicpause(void);
@@ -77,6 +81,7 @@ void musicresume(void);
 typedef struct Sfx Sfx;
 
 Sfx *sfxnew(const char *);
+void sfxfree(Sfx *);
 void sfxplay(Sfx *);
 
 typedef struct Scrn Scrn;
@@ -100,6 +105,7 @@ struct Scrnmt{
 };
 
 Scrnstk *scrnstknew(void);
+void scrnstkfree(Scrnstk *);
 /* Stack now owns Scrn, will call scrn->free(scrn) when popped. */
 void scrnstkpush(Scrnstk *, Scrn *);
 Scrn *scrnstktop(Scrnstk *);
