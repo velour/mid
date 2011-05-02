@@ -12,6 +12,9 @@
 
 const char DIRSEP = '/';
 
+/* clang can't seem to find this on Ubuntu 10.10. */
+extern int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result);
+
 /* cat must be of size PATH_MAX + 1. */
 void concat(const char *d, const char *f, char cat[])
 {
