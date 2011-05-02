@@ -4,31 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "fs.h"
-
-/* Number of items to allow in the cache. */
-#define CACHE_SIZE 100
-/* Must be larger than CACHE_SIZE and should be prime. */
-#define TBL_SIZE 257
+#include "resrc.h" /* just for now */
 
 static const char *roots[] = { ".", "resrc" };
 static const int nroots = sizeof(roots) / sizeof(roots[0]);
-
-struct resrc {
-	void *data;
-	char file[PATH_MAX + 1];
-	bool del;
-	int seq;
-	int ind;
-};
-
-struct rcache {
-	struct resrc tbl[TBL_SIZE];
-	struct resrc *heap[CACHE_SIZE];
-	int fill;
-	int nxtseq;
-	void*(*load)(const char *path);
-	void(*free)(void*);
-};
 
 static void swap(struct resrc *heap[], int i, int j)
 {
@@ -83,7 +62,7 @@ static int pushdown(struct resrc *heap[], int fill, int i)
 
 static void heappush(struct resrc *heap[], int fill, struct resrc *r)
 {
-	if (fill >= CACHE_SIZE) {
+	if (fill >= RCACHE_SIZE) {
 		fprintf(stderr, "%s: Heap is full", __func__);
 		abort();
 	}
@@ -132,7 +111,7 @@ static bool used(struct resrc *r)
 
 static struct resrc *tblfind(struct resrc tbl[], const char *file)
 {
-	unsigned int init = hash(file) % TBL_SIZE;
+	unsigned int init = hash(file) % RESRC_TBL_SIZE;
 	unsigned int i = init;
 
 	do {
@@ -140,7 +119,7 @@ static struct resrc *tblfind(struct resrc tbl[], const char *file)
 			break;
 		else if (!tbl[i].del && strcmp(tbl[i].file, file) == 0)
 			return &tbl[i];
-		i = (i + 1) % TBL_SIZE;
+		i = (i + 1) % RESRC_TBL_SIZE;
 	} while (i != init);
 
 	return NULL;
@@ -149,7 +128,7 @@ static struct resrc *tblfind(struct resrc tbl[], const char *file)
 static struct resrc *tblalloc(struct resrc tbl[], const char *file)
 {
 	unsigned int i;
-	for (i = hash(file) % TBL_SIZE; used(&tbl[i]); i  = (i + 1) % TBL_SIZE)
+	for (i = hash(file) % RESRC_TBL_SIZE; used(&tbl[i]); i  = (i + 1) % RESRC_TBL_SIZE)
 		;
 	assert(!used(&tbl[i]) || tbl[i].del);
 
@@ -181,7 +160,7 @@ out:
 static void *load(struct rcache *c, const char *file)
 {
 	char path[PATH_MAX + 1];
-	if (c->fill == CACHE_SIZE) {
+	if (c->fill == RCACHE_SIZE) {
 		struct resrc *bump = heappop(c->heap, c->fill);
 		c->free(bump->data);
 		bump->del = true;
@@ -191,11 +170,12 @@ static void *load(struct rcache *c, const char *file)
 		if (fsfind(roots[i], file, path)) {
 			struct resrc *r = tblalloc(c->tbl, file);
 			r->del = false;
-			strncpy(r->file, path, PATH_MAX + 1);
+			strncpy(r->file, file, PATH_MAX + 1);
 			r->file[PATH_MAX] = '\0';
 			r->data = c->load(path);
 			r->seq = nextseq(c);
 			heappush(c->heap, c->fill, r);
+			c->fill += 1;
 			return r->data;
 		}
 	}
@@ -205,10 +185,10 @@ static void *load(struct rcache *c, const char *file)
 void *resrc(struct rcache *c, const char *file)
 {
 	struct resrc *r = tblfind(c->tbl, file);
-	assert(!r->del);
 	if (!r) {
 		return load(c, file);
 	} else {
+		assert(!r->del);
 		r->seq = nextseq(c);
 		heapupdate(c->heap, c->fill, r->ind);
 		return r->data;
@@ -218,7 +198,7 @@ void *resrc(struct rcache *c, const char *file)
 void rcache(struct rcache *c, void*(*load)(const char *path),
 	    void(*free)(void*))
 {
-	for (int i = 0; i < TBL_SIZE; i += 1) {
+	for (int i = 0; i < RESRC_TBL_SIZE; i += 1) {
 		c->tbl[i].del = false;
 		c->tbl[i].file[0] = '\0';
 	}
