@@ -6,62 +6,62 @@
 #include <unistd.h>
 #include "fs.h"
 
-void test_fs_cat()
+void test_fscat()
 {
 	char c[PATH_MAX + 1];
 	char *d, *f, *res = "directory/file";
 
 	d = "directory";
 	f = "file";
-	fs_cat(d, f, c);
+	fscat(d, f, c);
 	if (strcmp(res, c) != 0) {
 		fprintf(stderr, "%s + %s = %s\n", d, f, c);
-		fprintf(stderr, "Invalid fs_catination\n");
+		fprintf(stderr, "Invalid fscatination\n");
 		abort();
 	}
 
 	d = "directory/";
 	f = "file";
-	fs_cat(d, f, c);
+	fscat(d, f, c);
 	if (strcmp(res, c) != 0) {
 		fprintf(stderr, "%s + %s = %s\n", d, f, c);
-		fprintf(stderr, "Invalid fs_catination\n");
+		fprintf(stderr, "Invalid fscatination\n");
 		abort();
 	}
 
 	d = "directory";
 	f = "/file";
-	fs_cat(d, f, c);
+	fscat(d, f, c);
 	if (strcmp(res, c) != 0) {
 		fprintf(stderr, "%s + %s = %s\n", d, f, c);
-		fprintf(stderr, "Invalid fs_catination\n");
+		fprintf(stderr, "Invalid fscatination\n");
 		abort();
 	}
 
 	d = "directory///";
 	f = "file";
-	fs_cat(d, f, c);
+	fscat(d, f, c);
 	if (strcmp(res, c) != 0) {
 		fprintf(stderr, "%s + %s = %s\n", d, f, c);
-		fprintf(stderr, "Invalid fs_catination\n");
+		fprintf(stderr, "Invalid fscatination\n");
 		abort();
 	}
 
 	d = "directory";
 	f = "///file";
-	fs_cat(d, f, c);
+	fscat(d, f, c);
 	if (strcmp(res, c) != 0) {
 		fprintf(stderr, "%s + %s = %s\n", d, f, c);
-		fprintf(stderr, "Invalid fs_catination\n");
+		fprintf(stderr, "Invalid fscatination\n");
 		abort();
 	}
 
 	d = "directory///";
 	f = "///file";
-	fs_cat(d, f, c);
+	fscat(d, f, c);
 	if (strcmp(res, c) != 0) {
 		fprintf(stderr, "%s + %s = %s\n", d, f, c);
-		fprintf(stderr, "Invalid fs_catination\n");
+		fprintf(stderr, "Invalid fscatination\n");
 		abort();
 	}
 }
@@ -72,7 +72,7 @@ void touch(const char *p)
 	fclose(f);
 }
 
-void test_fs_find()
+void test_fsfind()
 {
 	mkdir("a", 0777);
 	mkdir("a/b", 0777);
@@ -82,7 +82,7 @@ void test_fs_find()
 	touch("a/b/c/cfile");
 
 	char buf[PATH_MAX + 1];
-	if (!fs_find("a", "afile", buf)) {
+	if (!fsfind("a", "afile", buf)) {
 		fprintf(stderr, "afile not found\n");
 		abort();
 	}
@@ -90,7 +90,7 @@ void test_fs_find()
 		fprintf(stderr, "afile found at %s\n", buf);
 		abort();
 	}
-	if (!fs_find("a", "bfile", buf)) {
+	if (!fsfind("a", "bfile", buf)) {
 		fprintf(stderr, "bfile not found\n");
 		abort();
 	}
@@ -98,7 +98,7 @@ void test_fs_find()
 		fprintf(stderr, "bfile found at %s\n", buf);
 		abort();
 	}
-	if (!fs_find("a", "cfile", buf)) {
+	if (!fsfind("a", "cfile", buf)) {
 		fprintf(stderr, "cfile not found\n");
 		abort();
 	}
@@ -106,7 +106,7 @@ void test_fs_find()
 		fprintf(stderr, "cfile found at %s\n", buf);
 		abort();
 	}
-	if (fs_find("a", "dfile", buf)) {
+	if (fsfind("a", "dfile", buf)) {
 		fprintf(stderr, "dfile was found\n");
 		abort();
 	}
@@ -121,7 +121,7 @@ void test_fs_find()
 
 int main()
 {
-	test_fs_cat();
-	test_fs_find();
+	test_fscat();
+	test_fsfind();
 	return EXIT_SUCCESS;
 }

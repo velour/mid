@@ -17,7 +17,7 @@ const char DIRSEP = '/';
 extern int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result);
 
 /* cat must be of size PATH_MAX + 1. */
-void fs_cat(const char *d, const char *f, char cat[])
+void fscat(const char *d, const char *f, char cat[])
 {
 	unsigned int dl = strlen(d);
 	while (dl > 0 && d[dl - 1] == DIRSEP)
@@ -28,7 +28,7 @@ void fs_cat(const char *d, const char *f, char cat[])
 		fl -= 1;
 	}
 	if (dl + fl >= PATH_MAX) {
-		fprintf(stderr, "Paths too long to fs_cat\n");
+		fprintf(stderr, "Paths too long to fscat\n");
 		abort();
 	}
 	strncpy(cat, d, dl);
@@ -40,13 +40,13 @@ void fs_cat(const char *d, const char *f, char cat[])
 	cat[PATH_MAX] = '\0';
 }
 
-bool is_dir(const char *p)
+bool isdir(const char *p)
 {
 	struct stat s;
 	int err = stat(p, &s);
 	if (err) {
 		perror("stat");
-		fprintf(stderr, "is_dir: stat failed on %s\n", p);
+		fprintf(stderr, "%s: stat failed on %s\n", __func__, p);
 		abort();
 	}
 	return S_ISDIR(s.st_mode);
@@ -61,18 +61,17 @@ struct dirent *alloc_dent(const char *root)
 
 /* Recursively find the given file beneath the given root.  out must
  * be of size PATH_MAX + 1. */
-bool fs_find(const char *root, const char *fname, char out[])
+bool fsfind(const char *root, const char *fname, char out[])
 {
-	assert(is_dir(root));
+	assert(isdir(root));
 	DIR *dir = opendir(root);
-	struct dirent *dent = alloc_dent(root);
-	struct dirent *res;
-	int err;
-	do {
-		err = readdir_r(dir, dent, &res);
+	struct dirent *res, *dent = alloc_dent(root);
+	bool found = false;
+	for (;;) {
+		int err = readdir_r(dir, dent, &res);
 		if (err) {
 			perror("readdir_r");
-			fprintf(stderr, "find: readdir_r failed\n");
+			fprintf(stderr, "%s: readdir_r failed\n", __func__);
 			abort();
 		}
 		if (!res)
@@ -81,19 +80,20 @@ bool fs_find(const char *root, const char *fname, char out[])
 			continue;
 
 		char ent[PATH_MAX + 1];
-		fs_cat(root, dent->d_name, ent);
+		fscat(root, dent->d_name, ent);
 		if (strcmp(fname, dent->d_name) == 0) {
 			strncpy(out, ent, PATH_MAX + 1);
-			free(dent);
-			return true;
-		} else if (is_dir(ent)) {
-			if (fs_find(ent, fname, out)) {
-				free(dent);
-				return true;
+			found = true;
+			break;
+		} else if (isdir(ent)) {
+			if (fsfind(ent, fname, out)) {
+				found = true;
+				break;
 			}
 		}
-	} while (res);
+	}
 
 	free(dent);
-	return false;
+	closedir(dir);
+	return found;
 }
