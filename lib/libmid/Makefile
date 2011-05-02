@@ -2,11 +2,14 @@ include ../../Make.inc
 
 LIB := libmid.a
 OFILES :=\
+	event.o\
 	geom.o\
 	gfx.o\
 	fs.o\
 	resrc.o\
+	scrn.o\
 
-CFLAGS += -I../../include
+HFILES :=\
+	../../include/mid.h\
 
 include ../../Make.lib
