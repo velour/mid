@@ -115,17 +115,12 @@ static void heapupdate(Resrc *heap[], int fill, int i)
 	pushdown(heap, fill, i);
 }
 
-/* Change this to use the K&R string hash. */
-unsigned int hash(const char *str)
+/* From K&R 2nd edition. */
+unsigned int hash(const char *s)
 {
-	unsigned int h = 0;
-	unsigned int base = 1;
-
-	for (const char *p = str; p < str + strlen(str); p += 1) {
-		h += *p * base;
-		base *= base;
-	}
-
+	unsigned int h;
+	for (h = 0; *s != '\0'; s += 1)
+		h = *s + 31 * h;
 	return h;
 }
 
