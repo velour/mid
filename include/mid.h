@@ -1,13 +1,3 @@
-#include <limits.h>
-/* ick. */
-#if !defined(PATH_MAX)
-#if !defined(_POSIX_PATH_MAX)
-#define PATH_MAX 4096
-#else
-#define PATH_MAX _POSIX_PATH_MAX
-#endif
-#endif
-
 typedef struct Point Point;
 struct Point{
 	float x, y;
@@ -122,13 +112,6 @@ void scrnstkpop(Scrnstk *);
 
 void scrnrun(Scrnstk *, Gfx *);
 
-/* Concatinate path names.  'cat' must be of size PATH_MAX + 1. */
-void fscat(const char *d, const char *f, char cat[]);
-_Bool isdir(const char *p);
-/* Find a file in the subtree rooted by 'root'.  'out' is the
- * resulting file, it must be of size PATH_MAX + 1. */
-_Bool fsfind(const char *root, const char *fname, char out[]);
-
 enum {
 /* Number of items to allow in the cache. */
 	RCACHE_SIZE = 100,
@@ -136,22 +119,8 @@ enum {
 	RESRC_TBL_SIZE = 257,
 };
 
-typedef struct {
-	void *data;
-	char file[PATH_MAX + 1];
-	_Bool del;
-	int seq;
-	int ind;
-} Resrc;
+typedef struct Rcache Rcache;
 
-typedef struct {
-	Resrc tbl[RESRC_TBL_SIZE];
-	Resrc *heap[RCACHE_SIZE];
-	int fill;
-	int nxtseq;
-	void*(*load)(const char *path);
-	void(*free)(void*);
-} Rcache;
-
-void *resrc(Rcache *c, const char *file);
-void rcache(Rcache *c, void*(*load)(const char *path), void(*free)(void*));
+void *resrc(Rcache *cache, const char *file);
+Rcache *rcachenew(void*(*load)(const char *path), void(*free)(void*));
+void rcachefree(Rcache *cache);

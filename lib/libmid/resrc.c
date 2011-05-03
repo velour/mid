@@ -3,10 +3,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "fs.h"
 #include "../../include/mid.h"
 
 static const char *roots[] = { ".", "resrc" };
 enum { NROOTS = sizeof(roots) / sizeof(roots[0]) };
+
+typedef struct Resrc Resrc;
+struct Resrc {
+	void *data;
+	char file[PATH_MAX + 1];
+	_Bool del;
+	int seq;
+	int ind;
+};
+
+struct Rcache {
+	Resrc tbl[RESRC_TBL_SIZE];
+	Resrc *heap[RCACHE_SIZE];
+	int fill;
+	int nxtseq;
+	void*(*load)(const char *path);
+	void(*free)(void*);
+};
 
 static void swap(Resrc *heap[], int i, int j)
 {
@@ -194,9 +213,14 @@ void *resrc(Rcache *c, const char *file)
 	}
 }
 
-void rcache(Rcache *c, void*(*load)(const char *path),
-	    void(*free)(void*))
+Rcache *rcachenew(void*(*load)(const char *path), void(*free)(void*))
 {
+	Rcache *c = malloc(sizeof(*c));
+	if (!c) {
+		perror("malloc");
+		fprintf(stderr, "%s: failed to allocate cache\n", __func__);
+		return NULL;
+	}
 	for (int i = 0; i < RESRC_TBL_SIZE; i += 1) {
 		c->tbl[i].del = false;
 		c->tbl[i].file[0] = '\0';
@@ -205,6 +229,13 @@ void rcache(Rcache *c, void*(*load)(const char *path),
 	c->nxtseq = 1;
 	c->load = load;
 	c->free = free;
+
+	return c;
+}
+
+void rcachefree(Rcache *c)
+{
+	free(c);
 }
 
 

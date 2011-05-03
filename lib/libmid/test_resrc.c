@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "fs.h"
 #include "../../include/mid.h"
 
 /* To deal with communication between test/load/free functions. */
@@ -58,20 +59,20 @@ void unlinkn(int n)
 
 int main()
 {
-	struct rcache c;
+	Rcache *c;
 	static const int n = 101;
 
 	mkdir("resrc", 0777);
 	touchn(n);
 
-	rcache(&c, test_load_load, test_load_free);
+	c = rcachenew(test_load_load, test_load_free);
 
 	char buf[PATH_MAX + 1];
 	for (unsigned int i = 0; i < n - 1; i += 1) {
 		snprintf(buf, PATH_MAX+1, "file%d", i);
 		loaded = NULL;
 		freed[0] = '\0';
-		resrc(&c, buf);
+		resrc(c, buf);
 		if (!loaded) {
 			fprintf(stderr, "%d: Didn't load %s\n", i, buf);
 			abort();
@@ -84,5 +85,6 @@ int main()
 	unlinkn(n);
 	rmdir("resrc");
 
+	rcachefree(c);
 	return EXIT_SUCCESS;
 }

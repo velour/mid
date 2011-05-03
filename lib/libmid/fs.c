@@ -8,8 +8,7 @@
 #include <string.h>
 #include <dirent.h>
 #include <unistd.h>
-
-#include "../../include/mid.h"
+#include "fs.h"
 
 const char DIRSEP = '/';
 
