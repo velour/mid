@@ -1,3 +1,5 @@
+include ../../Make.inc
+
 TARG := mid
 LIB := ../../lib/libmid/libmid.a
 OFILES := main.o

@@ -1,9 +1,0 @@
-#!/bin/sh
-
-if [ -z "$LD" ]; then
-	export LD=clang
-fi
-
-FLAGS=" $LDFLAGS"
-
-exec $LD $FLAGS $@

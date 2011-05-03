@@ -1,3 +1,5 @@
+include ../../Make.inc
+
 LIB := libmid.a
 OFILES :=\
 	event.o\

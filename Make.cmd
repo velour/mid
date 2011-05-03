@@ -1,10 +1,12 @@
 $(TARG): $(OFILES)
-	quietld -o $@ $(LDFLAGS) $^ $(LIB)
+	@echo ld -o $@ $^ $(LDFLAGS)
+	@$(LD) -o $@ $(MANDLDFLAGS) $(LDFLAGS) $^ $(LIB)
 
 $(OFILES): $(HFILES) $(LIB)
 
 %.o: %.c
-	quietc $(CFLAGS) $<
+	@echo cc $< $(CFLAGS)
+	@$(CC) -c $(MANDCFLAGS) $(CFLAGS) $<
 
 .PHONY: clean install
 
