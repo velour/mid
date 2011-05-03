@@ -7,8 +7,8 @@ struct Maindata{
 	Rect rect;
 	float dx, dy;
 	Color red, white;
-	Img *glenda;
-	Txt *hi;
+	Img *glenda, *hi;
+	Txt *hitxt;
 };
 
 static Maindata tmpdata;
@@ -47,7 +47,8 @@ int main(int argc, char *argv[]){
 		exit(1);
 	}
 
-	tmpdata.hi = txtnew("resrc/FreeSans.ttf", 32, tmpdata.white);
+	tmpdata.hitxt = txtnew("resrc/FreeSans.ttf", 32, tmpdata.white);
+	tmpdata.hi = txt2img(gfx, tmpdata.hitxt, "hi");
 
 	mainscrn.data = &tmpdata;
 
@@ -69,7 +70,8 @@ static void tmpdraw(Scrn *s, Gfx *gfx){
 	Maindata *md = s->data;
 	gfxclear(gfx, md->red);
 	imgdraw(gfx, md->glenda, md->rect.a);
-	txtdraw(gfx, md->hi, "hi", (Point){ 100, 100 });
+//	txtdraw(gfx, md->hi, "hi", (Point){ 100, 100 });
+	imgdraw(gfx, md->hi, (Point){ 100, 100 });
 	gfxflip(gfx);
 }
 
@@ -94,6 +96,7 @@ static void tmphandle(Scrn *s, Scrnstk *stk, Event *e){
 
 static void tmpfree(Scrn *s){
 	Maindata *md = s->data;
-	txtfree(md->hi);
+	imgfree(md->hi);
+	txtfree(md->hitxt);
 	imgfree(md->glenda);
 }

@@ -135,8 +135,7 @@ static SDL_Color c2s(Color c){
 	return (SDL_Color){ c.r, c.g, c.b };
 }
 
-//TODO: this is sub-optimal
-Point txtdraw(Gfx *g, Txt *t, const char *s, Point p){
+Img *txt2img(Gfx *g, Txt *t, const char *s){
 	SDL_Surface *srf = TTF_RenderUTF8_Blended(t->font, s, c2s(t->color));
 	assert(srf != 0);
 
@@ -144,8 +143,16 @@ Point txtdraw(Gfx *g, Txt *t, const char *s, Point p){
 	SDL_FreeSurface(srf);
 	assert(tex != 0);
 
-	Img i = { tex };
-	imgdraw(g, &i, p);
+	Img *i = malloc(sizeof(*i));
+	i->tex = tex;
+	return i;
+}
+
+//TODO: this is sub-optimal
+Point txtdraw(Gfx *g, Txt *t, const char *s, Point p){
+	Img *i = txt2img(g,t,s) ;
+	imgdraw(g, i, p);
+	imgfree(i);
 
 	return (Point){ p.x + txtdims(t,s).x, p.y };
 }
