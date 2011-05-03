@@ -112,13 +112,6 @@ void scrnstkpop(Scrnstk *);
 
 void scrnrun(Scrnstk *, Gfx *);
 
-enum {
-/* Number of items to allow in the cache. */
-	RCACHE_SIZE = 100,
-/* Must be larger than CACHE_SIZE and should be prime. */
-	RESRC_TBL_SIZE = 257,
-};
-
 typedef struct Rcache Rcache;
 
 void *resrc(Rcache *cache, const char *file);
