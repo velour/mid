@@ -1,0 +1,21 @@
+TARGS := $(TESTS:%=%.test)
+
+all: $(TARGS)
+
+%.test: %.o
+	@echo ld -o $@ $< $(LDFLAGS)
+	@$(LD) -o $@ $(MANDLDFLAGS) $(LDFLAGS) $< $(LIB)
+	@echo running $@
+	@./$@
+	rm $@
+
+$(OFILES): $(HFILES) $(LIB)
+
+%.o: %.c
+	@echo cc $< $(CFLAGS)
+	@$(CC) -c $(MANDCFLAGS) $(CFLAGS) $<
+
+.PHONY: clean install
+
+clean:
+	rm -f *.o test_*
