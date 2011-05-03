@@ -9,5 +9,6 @@ OFILES :=\
 
 HFILES :=\
 	../../include/mid.h\
+	fs.h\
 
 include ../../Make.lib
