@@ -1,5 +1,6 @@
 #include "../../include/mid.h"
-#include <SDL/SDL.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef struct Maindata Maindata;
 struct Maindata{
@@ -14,7 +15,7 @@ static Maindata tmpdata;
 
 static void tmpupdate(Scrn *, Scrnstk *);
 static void tmpdraw(Scrn *, Gfx *);
-static void tmphandle(Scrn *, Scrnstk *, union SDL_Event *);
+static void tmphandle(Scrn *, Scrnstk *, Event *);
 static void tmpfree(Scrn *);
 
 static Scrnmt tmpmt = {
@@ -43,7 +44,7 @@ int main(int argc, char *argv[]){
 	tmpdata.glenda = imgnew(gfx, "resrc/img/9logo.png");
 	if (!tmpdata.glenda) {
 		fprintf(stderr, "Failed to load 9logo.png\n");
-		abort();
+		exit(1);
 	}
 
 	tmpdata.hi = txtnew("resrc/FreeSans.ttf", 32, tmpdata.white);
@@ -72,25 +73,20 @@ static void tmpdraw(Scrn *s, Gfx *gfx){
 	gfxflip(gfx);
 }
 
-static void tmphandle(Scrn *s, Scrnstk *stk, union SDL_Event *e){
+static void tmphandle(Scrn *s, Scrnstk *stk, Event *e){
 	Maindata *md = s->data;
 	switch(e->type){
-	case SDL_KEYDOWN:
-		switch(e->key.keysym.sym){
-		case SDLK_LEFT: md->dx--; break;
-		case SDLK_RIGHT: md->dx++; break;
-		case SDLK_UP: md->dy--; break;
-		case SDLK_DOWN: md->dy++; break;
+	case Quit:
+		scrnstkpop(stk);
+		break;
+	case Keychng:
+		switch(e->key){
+		case 's': md->dx = (e->down? md->dx-1 : 0); break;
+		case 'f': md->dx = (e->down? md->dx+1 : 0); break;
+		case 'e': md->dy = (e->down? md->dy-1 : 0); break;
+		case 'd': md->dy = (e->down? md->dy+1 : 0); break;
 		default:
 			scrnstkpop(stk);
-		}
-		break;
-	case SDL_KEYUP:
-		switch(e->key.keysym.sym){
-		case SDLK_LEFT: md->dx = 0; break;
-		case SDLK_RIGHT: md->dx = 0; break;
-		case SDLK_UP: md->dy = 0; break;
-		case SDLK_DOWN: md->dy = 0; break;
 		}
 		break;
 	}

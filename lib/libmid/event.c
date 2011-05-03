@@ -1,5 +1,9 @@
 #include "../../include/mid.h"
-#include <SDL/SDL.h>
+#include <SDL/SDL_events.h>
+#include <SDL/SDL_timer.h>
+
+// This will probably never change in SDL, but just in case...
+enum { assert_keychar_eq = 1/!!('a' == SDLK_a) };
 
 static int prevtm = 0;
 
@@ -11,4 +15,25 @@ void framefinish(void){
 	int delay = prevtm + Ticktm - SDL_GetTicks();
 	if(delay > 0)
 		SDL_Delay(delay);
+}
+
+_Bool pollevent(Event *event){
+	SDL_Event e;
+	int p = SDL_PollEvent(&e);
+	if(!p)
+		return 0;
+
+	switch(e.type){
+	case SDL_QUIT:
+		event->type = Quit;
+		return 1;
+	case SDL_KEYDOWN:
+	case SDL_KEYUP:
+		event->type = Keychng;
+		event->down = e.type == SDL_KEYDOWN;
+		event->key = e.key.keysym.sym;
+		return 1;
+	default:
+		return 0;
+	}	
 }

@@ -1,5 +1,4 @@
 #include "../../include/mid.h"
-#include <SDL/SDL.h>
 #include <stdlib.h>
 
 void framestart(void);
@@ -52,9 +51,9 @@ void scrnrun(Scrnstk *stk, Gfx *g){
 		s->mt->update(s, stk);
 		s->mt->draw(s, g);
 
-		SDL_Event e;
-		while(SDL_PollEvent(&e)){
-			if(e.type == SDL_QUIT)
+		Event e;
+		while(pollevent(&e)){
+			if(e.type == Quit)
 				break;
 			s->mt->handle(s, stk, &e);
 		}

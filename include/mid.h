@@ -84,6 +84,21 @@ Sfx *sfxnew(const char *);
 void sfxfree(Sfx *);
 void sfxplay(Sfx *);
 
+enum Eventty{
+	Quit,
+	Keychng,
+};
+
+typedef struct Event Event;
+struct Event{
+	enum Eventty type;
+
+	_Bool down;
+	char key;
+};
+
+_Bool pollevent(Event *);
+
 typedef struct Scrn Scrn;
 typedef struct Scrnmt Scrnmt;
 typedef struct Scrnstk Scrnstk;
@@ -93,13 +108,12 @@ struct Scrn{
 	void *data;
 };
 
-union SDL_Event;
 enum { Ticktm = 20 /* ms */ };
 
 struct Scrnmt{
 	void (*update)(Scrn *, Scrnstk *);
 	void (*draw)(Scrn *, Gfx *);
-	void (*handle)(Scrn *, Scrnstk *, union SDL_Event *);
+	void (*handle)(Scrn *, Scrnstk *, Event *);
 	void (*free)(Scrn *);
 };
 
