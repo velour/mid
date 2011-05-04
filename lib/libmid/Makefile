@@ -12,7 +12,6 @@ OFILES :=\
 
 HFILES :=\
 	../../include/mid.h\
-	../../include/log.h\
 	fs.h\
 
 include ../../Make.lib
