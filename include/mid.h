@@ -59,6 +59,7 @@ typedef struct Img Img;
 
 Img *imgnew(Gfx *, const char *path);
 void imgfree(Img *);
+/* Returns negative dimensions on failure. */
 Point imgdims(const Img *);
 void imgdraw(Gfx *, Img *, Point);
 

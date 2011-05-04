@@ -13,6 +13,8 @@ struct Scrnstk{
 
 Scrnstk *scrnstknew(void){
 	Scrnstk *s = calloc(1, sizeof(*s));
+	if (!s)
+		return NULL;
 	s->cur = s->scrns;
 	return s;
 }
