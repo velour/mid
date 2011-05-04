@@ -144,21 +144,13 @@ static SDL_Color c2s(Color c){
 
 Img *txt2img(Gfx *g, Txt *t, const char *s){
 	SDL_Surface *srf = TTF_RenderUTF8_Blended(t->font, s, c2s(t->color));
-<<<<<<< local
-	assert(srf != NULL);
-=======
 	if (!srf)
 		return NULL;
->>>>>>> other
 
 	SDL_Texture *tex = SDL_CreateTextureFromSurface(g->rend, srf);
 	SDL_FreeSurface(srf);
-<<<<<<< local
-	assert(tex != NULL);
-=======
 	if (!tex)
 		return NULL;
->>>>>>> other
 
 	Img *i = malloc(sizeof(*i));
 	if (!i)
