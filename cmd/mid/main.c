@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
 
 	tmpdata.glenda = imgnew(gfx, "resrc/img/9logo.png");
 	if (!tmpdata.glenda) {
-		fprintf(stderr, "Failed to load 9logo.png\n");
+		fprintf(stderr, "Failed to load 9logo.png: %s\n", miderrstr());
 		exit(1);
 	}
 
