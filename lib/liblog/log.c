@@ -7,7 +7,7 @@
 #include <limits.h>
 #include <time.h>
 
-enum { LINE_MAX = 256 };
+enum { Linemax = 256 };
 
 /* stderr is not constant so we can't use a static global here. */
 #define lfile stderr
@@ -15,7 +15,7 @@ enum { LINE_MAX = 256 };
 void prv(bool prtime, const char *fmt, va_list ap)
 {
 	if (prtime) {
-		char str[LINE_MAX + 1];
+		char str[Linemax + 1];
 		struct tm tm;
 		time_t t = time(NULL);
 		if (t == ((time_t) -1)) {
@@ -27,7 +27,7 @@ void prv(bool prtime, const char *fmt, va_list ap)
 			fprintf(stderr, "%s failed: localtime failed\n", __func__);
 			abort();
 		}
-		if (!strftime(str, LINE_MAX + 1, "[%T]", &tm)) {
+		if (!strftime(str, Linemax + 1, "[%T]", &tm)) {
 			fprintf(stderr, "%s failed: strftime failed\n", __func__);
 			abort();
 		}
@@ -59,8 +59,8 @@ void prraw(const char *fmt, ...)
 void prerr(int err, const char *fmt, ...)
 {
 	va_list ap;
-	char str[LINE_MAX + 1];
-	if (strerror_r(err, str, LINE_MAX + 1) == 0) {
+	char str[Linemax + 1];
+	if (strerror_r(err, str, Linemax + 1) == 0) {
 		va_start(ap, fmt);
 		prv(true, fmt, ap);
 		va_end(ap);
