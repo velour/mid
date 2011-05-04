@@ -1,5 +1,3 @@
-#define _POSIX_SOURCE
-#define _POSIX_C_SOURCE 200112L
 #include <errno.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -9,13 +7,7 @@
 #include <limits.h>
 #include <time.h>
 
-#if !defined(LINE_MAX)
-#if !defined(_POSIX_LINE_MAX)
-#define LINE_MAX 4096
-#else
-#define LINE_MAX _POSIX_LINE_MAX
-#endif
-#endif
+enum { LINE_MAX = 256 };
 
 /* stderr is not constant so we can't use a static global here. */
 #define lfile stderr
