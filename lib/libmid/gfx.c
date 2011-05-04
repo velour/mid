@@ -16,10 +16,10 @@ static Gfx gfx;
 
 Gfx *gfxinit(int w, int h){
 	if(TTF_Init() < 0)
-		return 0;
+		return NULL;
 
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
-		return 0; //TODO: error messages
+		return NULL;
 
 	gfx.win = SDL_CreateWindow("TODO: Title...",
 				   SDL_WINDOWPOS_CENTERED,
@@ -28,8 +28,10 @@ Gfx *gfxinit(int w, int h){
 				   SDL_WINDOW_SHOWN);
 
 	gfx.rend = SDL_CreateRenderer(gfx.win, -1, 0);
-	if (!gfx.rend)
-		return 0;
+	if (!gfx.rend){
+		SDL_DestroyWindow(gfx.win);
+		return NULL;
+	}
 
 	return &gfx;
 }
@@ -114,7 +116,7 @@ struct Txt{
 Txt *txtnew(const char *font, int sz, Color c){
 	TTF_Font *f = TTF_OpenFont(font, sz);
 	if(!f)
-		return 0;
+		return NULL;
 	Txt *t = malloc(sizeof(*t));
 	t->font = f;
 	t->color = c;
@@ -138,11 +140,11 @@ static SDL_Color c2s(Color c){
 
 Img *txt2img(Gfx *g, Txt *t, const char *s){
 	SDL_Surface *srf = TTF_RenderUTF8_Blended(t->font, s, c2s(t->color));
-	assert(srf != 0);
+	assert(srf != NULL);
 
 	SDL_Texture *tex = SDL_CreateTextureFromSurface(g->rend, srf);
 	SDL_FreeSurface(srf);
-	assert(tex != 0);
+	assert(tex != NULL);
 
 	Img *i = malloc(sizeof(*i));
 	i->tex = tex;
