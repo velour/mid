@@ -1,3 +1,5 @@
+const char *miderrstr(void);
+
 typedef struct Point Point;
 struct Point{
 	float x, y;

@@ -2,6 +2,7 @@ include ../../Make.inc
 
 LIB := libmid.a
 OFILES :=\
+	errstr.o\
 	event.o\
 	geom.o\
 	gfx.o\
