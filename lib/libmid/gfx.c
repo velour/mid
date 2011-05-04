@@ -71,15 +71,25 @@ struct Img{
 
 Img *imgnew(Gfx *g, const char *path){
 	SDL_Surface *s = IMG_Load(path);
-	if(!s) return 0;
+	if(!s) {
+		fprintf(stderr, "%s: IMG_Load failed: %s\n", __func__,
+			IMG_GetError());
+		return NULL;
+	}
 
 	SDL_Texture *t = SDL_CreateTextureFromSurface(g->rend, s);
 	SDL_FreeSurface(s);
-	if(!t) return 0;
+	if(!t) {
+		fprintf(stderr, "%s: SDL_CreateTextureFromSurface failed\n", __func__);
+		return NULL;
+	}
 
 	Img *i = malloc(sizeof(*i));
-	if (!i)
+	if (!i) {
+		perror("malloc");
+		fprintf(stderr, "%s: malloc failed\n", __func__);
 		return NULL;
+	}
 	i->tex = t;
 	return i;
 }
