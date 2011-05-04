@@ -44,24 +44,35 @@ void prv(bool prtime, const char *fmt, va_list ap)
 	vfprintf(lfile, fmt, ap);
 }
 
-void pr(bool prtime, const char *fmt, ...)
+void pr(const char *fmt, ...)
 {
 	va_list ap;
 
 	va_start(ap, fmt);
-	prv(prtime, fmt, ap);
+	prv(true, fmt, ap);
 	va_end(ap);
+	fprintf(lfile, "\n");
 }
 
-void prerr(bool prtime, int err, const char *fmt, ...)
+void prraw(const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	prv(false, fmt, ap);
+	va_end(ap);
+	fprintf(lfile, "\n");
+}
+
+void prerr(int err, const char *fmt, ...)
 {
 	va_list ap;
 	char str[LINE_MAX + 1];
 	if (strerror_r(err, str, LINE_MAX + 1) == 0) {
 		va_start(ap, fmt);
-		prv(prtime, fmt, ap);
+		prv(true, fmt, ap);
 		va_end(ap);
-		pr(false, "%s" , str);
+		pr(false, "%s\n" , str);
 	} else {
 		perror("strerror_r");
 		fprintf(stderr, "perr failed\n");

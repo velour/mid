@@ -1,24 +1,28 @@
+/* All functions automatically print the newline. */
+#include <errno.h>
+
 /* Print the message, optionally with the time. */
-void pr(_Bool prtime, const char *fmt, ...);
+void pr(const char *fmt, ...);
 
 /* Print the message followed by an with an error string given an
  * errno. */
-void prerr(_Bool prtime, int err, const char *fmt, ...);
+void prerr(int err, const char *fmt, ...);
+
+/* Prints the message without the time. */
+void prraw(const char *fmt, ...);
 
 void abort(void);
 
 #define fail(...)				\
 	do {					\
-		pr(true, "%s: ", __func__);	\
-		pr(false, __VA_ARGS);		\
+		pr("%s: ", __func__);	\
+		prraw(__VA_ARGS__);		\
 		abort();			\
 	} while (0)
 
-extern int errno;
-
 #define failerr(...)					\
 	do {						\
-		prerr(true, errno, "%s: ", __func__);	\
-		pr(false, __VA_ARGS);			\
+		prerr(errno, "%s: ", __func__);	\
+		prraw(__VA_ARGS__);			\
 		abort();				\
 	} while (0)

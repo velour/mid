@@ -1,4 +1,5 @@
 #include "../../include/mid.h"
+#include "../../include/log.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
@@ -72,22 +73,20 @@ struct Img{
 Img *imgnew(Gfx *g, const char *path){
 	SDL_Surface *s = IMG_Load(path);
 	if(!s) {
-		fprintf(stderr, "%s: IMG_Load failed: %s\n", __func__,
-			IMG_GetError());
+		pr("IMG_Load failed: %s\n", IMG_GetError());
 		return NULL;
 	}
 
 	SDL_Texture *t = SDL_CreateTextureFromSurface(g->rend, s);
 	SDL_FreeSurface(s);
 	if(!t) {
-		fprintf(stderr, "%s: SDL_CreateTextureFromSurface failed\n", __func__);
+		pr("SDL_CreateTextureFromSurface failed");
 		return NULL;
 	}
 
 	Img *i = malloc(sizeof(*i));
 	if (!i) {
-		perror("malloc");
-		fprintf(stderr, "%s: malloc failed\n", __func__);
+		prerr(errno, "malloc failed");
 		return NULL;
 	}
 	i->tex = t;
@@ -102,10 +101,8 @@ void imgfree(Img *img){
 Point imgdims(const Img *img){
 	Uint32 fmt;
 	int access, w, h;
-	if (SDL_QueryTexture(img->tex, &fmt, &access, &w, &h) < 0) {
-		fprintf(stderr, "SDL_QueryTexturer: query failed\n");
-		abort();
-	}
+	if (SDL_QueryTexture(img->tex, &fmt, &access, &w, &h) < 0)
+		fail("SDL_QueryTexturer: query failed");
 	return (Point){ w, h };
 }
 
