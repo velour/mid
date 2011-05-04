@@ -22,10 +22,10 @@ Gfx *gfxinit(int w, int h){
 		return 0; //TODO: error messages
 
 	gfx.win = SDL_CreateWindow("TODO: Title...",
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
-		w, h,
-		SDL_WINDOW_SHOWN);
+				   SDL_WINDOWPOS_CENTERED,
+				   SDL_WINDOWPOS_CENTERED,
+				   w, h,
+				   SDL_WINDOW_SHOWN);
 
 	gfx.rend = SDL_CreateRenderer(gfx.win, -1, 0);
 	if (!gfx.rend)
@@ -72,23 +72,17 @@ struct Img{
 
 Img *imgnew(Gfx *g, const char *path){
 	SDL_Surface *s = IMG_Load(path);
-	if(!s) {
-		pr("IMG_Load failed: %s\n", IMG_GetError());
+	if(!s)
 		return NULL;
-	}
 
 	SDL_Texture *t = SDL_CreateTextureFromSurface(g->rend, s);
 	SDL_FreeSurface(s);
-	if(!t) {
-		pr("SDL_CreateTextureFromSurface failed");
+	if(!t)
 		return NULL;
-	}
 
 	Img *i = malloc(sizeof(*i));
-	if (!i) {
-		prerr(errno, "malloc failed");
+	if (!i)
 		return NULL;
-	}
 	i->tex = t;
 	return i;
 }
@@ -102,7 +96,7 @@ Point imgdims(const Img *img){
 	Uint32 fmt;
 	int access, w, h;
 	if (SDL_QueryTexture(img->tex, &fmt, &access, &w, &h) < 0)
-		fail("SDL_QueryTexturer: query failed");
+		abort();
 	return (Point){ w, h };
 }
 
