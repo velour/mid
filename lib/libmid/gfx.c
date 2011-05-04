@@ -16,20 +16,22 @@ static Gfx gfx;
 
 Gfx *gfxinit(int w, int h){
 	if(TTF_Init() < 0)
-		return 0;
+		return NULL;
 
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
-		return 0; //TODO: error messages
+		return NULL;
 
 	gfx.win = SDL_CreateWindow("TODO: Title...",
 				   SDL_WINDOWPOS_CENTERED,
 				   SDL_WINDOWPOS_CENTERED,
 				   w, h,
 				   SDL_WINDOW_SHOWN);
+	if (gfx.win == 0)
+		return NULL;
 
 	gfx.rend = SDL_CreateRenderer(gfx.win, -1, 0);
 	if (!gfx.rend)
-		return 0;
+		return NULL;
 
 	return &gfx;
 }
@@ -96,7 +98,7 @@ Point imgdims(const Img *img){
 	Uint32 fmt;
 	int access, w, h;
 	if (SDL_QueryTexture(img->tex, &fmt, &access, &w, &h) < 0)
-		abort();
+		return (Point) { -1, -1 };
 	return (Point){ w, h };
 }
 
@@ -114,8 +116,10 @@ struct Txt{
 Txt *txtnew(const char *font, int sz, Color c){
 	TTF_Font *f = TTF_OpenFont(font, sz);
 	if(!f)
-		return 0;
+		return NULL;
 	Txt *t = malloc(sizeof(*t));
+	if(!t)
+		return NULL;
 	t->font = f;
 	t->color = c;
 	return t;
@@ -138,13 +142,17 @@ static SDL_Color c2s(Color c){
 
 Img *txt2img(Gfx *g, Txt *t, const char *s){
 	SDL_Surface *srf = TTF_RenderUTF8_Blended(t->font, s, c2s(t->color));
-	assert(srf != 0);
+	if (!srf)
+		return NULL;
 
 	SDL_Texture *tex = SDL_CreateTextureFromSurface(g->rend, srf);
 	SDL_FreeSurface(srf);
-	assert(tex != 0);
+	if (!tex)
+		return NULL;
 
 	Img *i = malloc(sizeof(*i));
+	if (!i)
+		return NULL;
 	i->tex = tex;
 	return i;
 }
@@ -152,6 +160,7 @@ Img *txt2img(Gfx *g, Txt *t, const char *s){
 //TODO: this is sub-optimal
 Point txtdraw(Gfx *g, Txt *t, const char *s, Point p){
 	Img *i = txt2img(g,t,s) ;
+	/* test for !i here. */
 	imgdraw(g, i, p);
 	imgfree(i);
 
