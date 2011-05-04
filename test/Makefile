@@ -1,6 +1,9 @@
-include ../Make.inc
+DIRS :=\
+	libmid\
 
-TESTS :=\
-	ex
+TESTDIRS := $(DIRS:%=%.test)
 
-include ../Make.test
+test: $(TESTDIRS)
+
+%.test:
+	$(MAKE) -C $*

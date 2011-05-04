@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "fs.h"
+#include "../../lib/libmid/fs.h"
 #include "../../include/mid.h"
 
 /* To deal with communication between test/load/free functions. */
