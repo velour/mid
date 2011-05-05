@@ -1,5 +1,3 @@
-#define _POSIX_SOURCE
-#define _POSIX_C_SOURCE 200112L
 #include <errno.h>
 #include <stdarg.h>
 #include <stdbool.h>
