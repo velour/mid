@@ -1,10 +1,9 @@
-#define _POSIX_C_SOURCE 200112L
 #include "../../include/mid.h"
 #include <SDL/SDL_error.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
-#include <stdio.h>
 #include <errno.h>
+#include <string.h>
 
 enum { Bufsz = 256 };
 
@@ -23,12 +22,5 @@ const char *miderrstr(void){
 	if(e[0] != '\0')
 		return e;
 
-	static char str[Bufsz];
-	if (strerror_r(err, str, Bufsz) != 0) {
-		perror("strerror_r");
-		fprintf(stderr, "perr failed\n");
-		abort();
-	}
-
-	return str;
+	return strerror(err);
 }
