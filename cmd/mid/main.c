@@ -1,5 +1,6 @@
 #include "../../include/log.h"
 #include "../../include/mid.h"
+#include <stdlib.h>
 
 typedef struct Maindata Maindata;
 struct Maindata{
@@ -29,14 +30,44 @@ static Scrn mainscrn = {
 	0
 };
 
+static Gfx *gfx = NULL;
+static Rcache *imgs = NULL;
+
+void *imgload(const /* deal with it */ char *path)
+{
+	return imgnew(gfx, path);
+}
+
+void imgunload(void *img)
+{
+	imgfree(img);
+}
+
+static Rcache *txt = NULL;
+void *txtload(const char *path)
+{
+	return txtnew(path, 32, (Color){ 255, 255, 255, 255 });
+}
+
+void txtunload(void *txt)
+{
+	txtfree(txt);
+}
+
 int main(int argc, char *argv[]){
 	loginit(0);
 
 	pr("%s\n", "Let's rock.");
 
-	Gfx *gfx = gfxinit(512, 512);
+	gfx = gfxinit(512, 512);
 	if(!gfx)
-		return 1;
+		return EXIT_FAILURE;
+	imgs = rcachenew(imgload, imgunload);
+	if (!imgs)
+		fatal("Failed to allocate img cache: %s", miderrstr());
+	txt = rcachenew(txtload, txtunload);
+	if (!txt)
+		fatal("Failed to allocate txt cache: %s", miderrstr());
 
 	tmpdata.rect = (Rect){ (Point){ 0, 0 }, (Point){ 10, 10 } };
 	tmpdata.dx = 0;
@@ -46,11 +77,11 @@ int main(int argc, char *argv[]){
 
 	/* 9logo doesn't load with my combo of SDL/SDL_image... seems
 	 * to be an error detecting the pixel format -- EB */
-	tmpdata.glenda = imgnew(gfx, "resrc/img/ship.png");
+	tmpdata.glenda = resrc(imgs, "ship.png");
 	if (!tmpdata.glenda)
 		fatal("Failed to load ship.png: %s\n", miderrstr());
 
-	tmpdata.hitxt = txtnew("resrc/FreeSans.ttf", 32, tmpdata.white);
+	tmpdata.hitxt = resrc(txt, "FreeSans.ttf");
 	tmpdata.hi = txt2img(gfx, tmpdata.hitxt, "hi");
 
 	mainscrn.data = &tmpdata;
@@ -60,6 +91,8 @@ int main(int argc, char *argv[]){
 
 	scrnrun(stk, gfx);
 
+	rcachefree(txt);
+	rcachefree(imgs);
 	gfxfree(gfx);
 	return 0;
 }
