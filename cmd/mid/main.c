@@ -41,9 +41,11 @@ int main(int argc, char *argv[]){
 	tmpdata.red = (Color){ 255, 0, 0, 255 };
 	tmpdata.white = (Color){ 255, 255, 255, 255 };
 
-	tmpdata.glenda = imgnew(gfx, "resrc/img/9logo.png");
+	/* 9logo doesn't load with my combo of SDL/SDL_image... seems
+	 * to be an error detecting the pixel format -- EB */
+	tmpdata.glenda = imgnew(gfx, "resrc/img/ship.png");
 	if (!tmpdata.glenda) {
-		fprintf(stderr, "Failed to load 9logo.png: %s\n", miderrstr());
+		fprintf(stderr, "Failed to load ship.png: %s\n", miderrstr());
 		exit(1);
 	}
 
