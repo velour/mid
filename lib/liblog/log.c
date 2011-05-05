@@ -11,8 +11,24 @@
 
 enum { Bufsz = 256 };
 
-/* stderr is not constant so we can't use a static global here. */
-#define lfile stderr
+static FILE *lfile;
+
+int loginit(const char *fname){
+	if(!fname){
+		lfile = stderr;
+		return 0;
+	}
+
+	lfile = fopen(fname, "w+");
+	if(!lfile)
+		return errno;
+	return 0;
+}
+
+void logclose(void){
+	if(lfile != stderr)
+		fclose(lfile);
+}
 
 void prtime()
 {

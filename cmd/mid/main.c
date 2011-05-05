@@ -1,6 +1,5 @@
+#include "../../include/log.h"
 #include "../../include/mid.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 typedef struct Maindata Maindata;
 struct Maindata{
@@ -31,6 +30,10 @@ static Scrn mainscrn = {
 };
 
 int main(int argc, char *argv[]){
+	loginit(0);
+
+	pr("%s\n", "Let's rock.");
+
 	Gfx *gfx = gfxinit(512, 512);
 	if(!gfx)
 		return 1;
@@ -44,10 +47,8 @@ int main(int argc, char *argv[]){
 	/* 9logo doesn't load with my combo of SDL/SDL_image... seems
 	 * to be an error detecting the pixel format -- EB */
 	tmpdata.glenda = imgnew(gfx, "resrc/img/ship.png");
-	if (!tmpdata.glenda) {
-		fprintf(stderr, "Failed to load ship.png: %s\n", miderrstr());
-		exit(1);
-	}
+	if (!tmpdata.glenda)
+		fatal("Failed to load ship.png: %s\n", miderrstr());
 
 	tmpdata.hitxt = txtnew("resrc/FreeSans.ttf", 32, tmpdata.white);
 	tmpdata.hi = txt2img(gfx, tmpdata.hitxt, "hi");
