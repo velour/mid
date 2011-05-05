@@ -1,6 +1,5 @@
 #include <assert.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "fs.h"
@@ -87,10 +86,8 @@ static int pushdown(Resrc *heap[], int fill, int i)
 
 static void heappush(Resrc *heap[], int fill, Resrc *r)
 {
-	if (fill >= RCACHE_SIZE) {
-		fprintf(stderr, "%s: Heap is full", __func__);
-		abort();
-	}
+	assert(fill < RCACHE_SIZE);
+
 	heap[fill] = r;
 	r->ind = fill;
 	pullup(heap, fill);
@@ -98,10 +95,8 @@ static void heappush(Resrc *heap[], int fill, Resrc *r)
 
 static Resrc *heappop(Resrc *heap[], int fill)
 {
-	if (fill <= 0) {
-		fprintf(stderr, "%s: Heap is empty\n", __func__);
-		abort();
-	}
+	assert(fill > 0);
+
 	Resrc *e = heap[0];
 	e->ind = -1;
 	heap[0] = heap[fill - 1];
@@ -218,11 +213,9 @@ void *resrc(Rcache *c, const char *file)
 Rcache *rcachenew(void*(*load)(const char *path), void(*free)(void*))
 {
 	Rcache *c = malloc(sizeof(*c));
-	if (!c) {
-		perror("malloc");
-		fprintf(stderr, "%s: failed to allocate cache\n", __func__);
+	if (!c)
 		return NULL;
-	}
+
 	for (int i = 0; i < RESRC_TBL_SIZE; i += 1) {
 		c->tbl[i].del = false;
 		c->tbl[i].file[0] = '\0';
