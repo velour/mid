@@ -85,8 +85,10 @@ Img *imgnew(Gfx *g, const char *path){
 		return NULL;
 
 	Img *i = malloc(sizeof(*i));
-	if (!i)
+	if (!i){
+		SDL_DestroyTexture(t);
 		return NULL;
+	}
 	i->tex = t;
 	return i;
 }
@@ -120,8 +122,10 @@ Txt *txtnew(const char *font, int sz, Color c){
 	if(!f)
 		return NULL;
 	Txt *t = malloc(sizeof(*t));
-	if(!t)
+	if(!t){
+		TTF_CloseFont(f);
 		return NULL;
+	}
 	t->font = f;
 	t->color = c;
 	return t;
@@ -153,8 +157,10 @@ Img *txt2img(Gfx *g, Txt *t, const char *s){
 		return NULL;
 
 	Img *i = malloc(sizeof(*i));
-	if (!i)
+	if (!i){
+		SDL_DestroyTexture(tex);
 		return NULL;
+	}
 	i->tex = tex;
 	return i;
 }
