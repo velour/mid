@@ -24,20 +24,19 @@ void touch(const char *p)
 	fclose(f);
 }
 
-void *test_load_load(const char *p)
+void *test_load_load(const char *p, void *ignore)
 {
-	printf("loading %s\n", p);
 	loaded = strdup(p);
 	return loaded;
 }
 
-void test_load_free(void *p)
+void test_load_free(void *p, void *_info)
 {
 	strncpy(freed, p, PATH_MAX + 1);
 	freed[PATH_MAX] = '\0';
-	printf("freeing %s\n", p);
 	free(p);
 }
+
 
 void touchn(int n)
 {
@@ -65,22 +64,36 @@ int main()
 	mkdir("resrc", 0777);
 	touchn(n);
 
-	c = rcachenew(test_load_load, test_load_free);
+	c = rcachenew(test_load_load, test_load_free, NULL, NULL);
 
 	char buf[PATH_MAX + 1];
 	for (unsigned int i = 0; i < n - 1; i += 1) {
 		snprintf(buf, PATH_MAX+1, "file%d", i);
 		loaded = NULL;
 		freed[0] = '\0';
-		resrc(c, buf);
+		char *r = resrc(c, buf, NULL);
 		if (!loaded) {
-			fprintf(stderr, "%d: Didn't load %s\n", i, buf);
+			fprintf(stderr, "%d: Didn't load %s ", i, buf);
+			fprintf(stderr, "got %s instead\n", r);
 			abort();
 		}
 		if (freed[0] != '\0') {
 			fprintf(stderr, "%d: Freed %s\n", i, freed);
 			abort();
 		}
+	}
+	strcpy(buf, "file100");
+	loaded = NULL;
+	freed[0] = '\0';
+	char *r = resrc(c, buf, NULL);
+	if (!loaded) {
+		fprintf(stderr, "Didn't load %s ", buf);
+		fprintf(stderr, "got %s instead\n", r);
+		abort();
+	}
+	if (freed[0] == '\0') {
+		fprintf(stderr, "Didn't free anything\n");
+		abort();
 	}
 	unlinkn(n);
 	rmdir("resrc");

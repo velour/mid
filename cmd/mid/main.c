@@ -1,6 +1,7 @@
 #include "../../include/log.h"
 #include "../../include/mid.h"
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct Maindata Maindata;
 struct Maindata{
@@ -33,26 +34,58 @@ static Scrn mainscrn = {
 static Gfx *gfx = NULL;
 static Rcache *imgs = NULL;
 
-void *imgload(const /* deal with it */ char *path)
+void *imgload(const char *path, void *_ignrd)
 {
 	return imgnew(gfx, path);
 }
 
-void imgunload(void *img)
+void imgunload(void *img, void *_info)
 {
 	imgfree(img);
 }
 
+typedef struct {
+	unsigned int size;
+	Color color;
+} Txtinfo;
+
 static Rcache *txt = NULL;
-void *txtload(const char *path)
+void *txtload(const char *path, void *_info)
 {
-	return txtnew(path, 32, (Color){ 255, 255, 255, 255 });
+	Txtinfo *info = _info;
+	return txtnew(path, info->size, info->color);
 }
 
-void txtunload(void *txt)
+void txtunload(void *txt, void *_info)
 {
 	txtfree(txt);
 }
+
+unsigned int txthash(const char *path, void *_info)
+{
+	Txtinfo *info = _info;
+	return strhash(path) ^ info->size
+		^ (info->color.r << 24)
+		^ (info->color.g << 16)
+		^ (info->color.b << 8)
+		^ info->color.a;
+}
+
+bool txteq(void *_a, void *_b)
+{
+	Txtinfo *a = _a, *b = _b;
+	return a->size == b->size
+		&& a->color.r == b->color.r
+		&& a->color.g == b->color.g
+		&& a->color.b == b->color.b
+		&& a->color.a == b->color.a;
+}
+
+
+static Txtinfo txtmain = {
+	.size = 32,
+	.color = (Color){ 255, 255, 255, 255 }
+};
 
 int main(int argc, char *argv[]){
 	loginit(0);
@@ -62,10 +95,10 @@ int main(int argc, char *argv[]){
 	gfx = gfxinit(512, 512);
 	if(!gfx)
 		return EXIT_FAILURE;
-	imgs = rcachenew(imgload, imgunload);
+	imgs = rcachenew(imgload, imgunload, NULL, NULL);
 	if (!imgs)
 		fatal("Failed to allocate img cache: %s", miderrstr());
-	txt = rcachenew(txtload, txtunload);
+	txt = rcachenew(txtload, txtunload, txthash, txteq);
 	if (!txt)
 		fatal("Failed to allocate txt cache: %s", miderrstr());
 
@@ -77,11 +110,11 @@ int main(int argc, char *argv[]){
 
 	/* 9logo doesn't load with my combo of SDL/SDL_image... seems
 	 * to be an error detecting the pixel format -- EB */
-	tmpdata.glenda = resrc(imgs, "ship.png");
+	tmpdata.glenda = resrc(imgs, "ship.png", NULL);
 	if (!tmpdata.glenda)
 		fatal("Failed to load ship.png: %s\n", miderrstr());
 
-	tmpdata.hitxt = resrc(txt, "FreeSans.ttf");
+	tmpdata.hitxt = resrc(txt, "FreeSans.ttf", &txtmain);
 	tmpdata.hi = txt2img(gfx, tmpdata.hitxt, "hi");
 
 	mainscrn.data = &tmpdata;

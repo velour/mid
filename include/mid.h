@@ -133,6 +133,11 @@ void scrnrun(Scrnstk *, Gfx *);
 
 typedef struct Rcache Rcache;
 
-void *resrc(Rcache *cache, const char *file);
-Rcache *rcachenew(void*(*load)(const char *path), void(*free)(void*));
+unsigned int strhash(const char *);
+
+void *resrc(Rcache *cache, const char *file, void*);
+Rcache *rcachenew(void*(*load)(const char*, void*),
+		  void(*free)(void*, void*),
+		  unsigned int (*hash)(const char*, void*),
+		  _Bool (*eq)(void*, void*));
 void rcachefree(Rcache *cache);

@@ -17,7 +17,10 @@ enum { NROOTS = sizeof(roots) / sizeof(roots[0]) };
 
 typedef struct Resrc Resrc;
 struct Resrc {
-	void *data;
+	/* The loaded resource. */
+	void *resrc;
+	/* Extra info used to key on the resource. */
+	void *info;
 	char file[PATH_MAX + 1];
 	_Bool del;
 	int seq;
@@ -29,8 +32,10 @@ struct Rcache {
 	Resrc *heap[RCACHE_SIZE];
 	int fill;
 	int nxtseq;
-	void*(*load)(const char *path);
-	void(*free)(void*);
+	void*(*load)(const char*, void*);
+	void(*free)(void*, void*);
+	unsigned int (*hash)(const char*, void*);
+	bool (*eq)(void*, void*);
 };
 
 static void swap(Resrc *heap[], int i, int j)
@@ -111,7 +116,7 @@ static void heapupdate(Resrc *heap[], int fill, int i)
 }
 
 /* From K&R 2nd edition. */
-unsigned int hash(const char *s)
+unsigned int strhash(const char *s)
 {
 	unsigned int h;
 	for (h = 0; *s != '\0'; s += 1)
@@ -124,30 +129,46 @@ static bool used(Resrc *r)
 	return r->file[0] != '\0';
 }
 
-static Resrc *tblfind(Resrc tbl[], const char *file)
+unsigned int hash(Rcache *c, const char *file, void *info)
 {
-	unsigned int init = hash(file) % RESRC_TBL_SIZE;
+	if (c->hash)
+		return c->hash(file, info);
+	return strhash(file);
+}
+
+bool eq(Rcache *c, Resrc *r, const char *file, void *info)
+{
+	if (c->eq)
+		return c->eq(r->info, info) && strcmp(r->file, file) == 0;
+	return strcmp(r->file, file) == 0;
+}
+
+static Resrc *tblfind(Rcache *c, const char *file, void *info)
+{
+	unsigned int init = hash(c, file, info) % RESRC_TBL_SIZE;
 	unsigned int i = init;
 
 	do {
-		if (!used(&tbl[i]))
+		if (!used(&c->tbl[i]))
 			break;
-		else if (!tbl[i].del && strcmp(tbl[i].file, file) == 0)
-			return &tbl[i];
+		else if (!c->tbl[i].del && eq(c, &c->tbl[i], file, info))
+			return &c->tbl[i];
 		i = (i + 1) % RESRC_TBL_SIZE;
 	} while (i != init);
 
 	return NULL;
 }
 
-static Resrc *tblalloc(Resrc tbl[], const char *file)
+static Resrc *tblalloc(Rcache *c, const char *file, void *info)
 {
 	unsigned int i;
-	for (i = hash(file) % RESRC_TBL_SIZE; used(&tbl[i]); i  = (i + 1) % RESRC_TBL_SIZE)
+	for (i = hash(c, file, info) % RESRC_TBL_SIZE;
+	     used(&c->tbl[i]);
+	     i  = (i + 1) % RESRC_TBL_SIZE)
 		;
-	assert(!used(&tbl[i]) || tbl[i].del);
+	assert(!used(&c->tbl[i]) || c->tbl[i].del);
 
-	return &tbl[i];
+	return &c->tbl[i];
 }
 
 static int nextseq(Rcache *c)
@@ -172,45 +193,49 @@ out:
 	return c->nxtseq - 1;
 }
 
-static void *load(Rcache *c, const char *file)
+static void *load(Rcache *c, const char *file, void *info)
 {
 	char path[PATH_MAX + 1];
 	if (c->fill == RCACHE_SIZE) {
 		Resrc *bump = heappop(c->heap, c->fill);
-		c->free(bump->data);
+		c->free(bump->resrc, bump->info);
 		bump->del = true;
 		c->fill -= 1;
 	}
 	for (int i = 0; i < NROOTS; i += 1) {
 		if (fsfind(roots[i], file, path)) {
-			Resrc *r = tblalloc(c->tbl, file);
+			Resrc *r = tblalloc(c, file, info);
 			r->del = false;
 			strncpy(r->file, file, PATH_MAX + 1);
 			r->file[PATH_MAX] = '\0';
-			r->data = c->load(path);
+			r->resrc = c->load(path, info);
+			r->info = info;
 			r->seq = nextseq(c);
 			heappush(c->heap, c->fill, r);
 			c->fill += 1;
-			return r->data;
+			return r->resrc;
 		}
 	}
 	return NULL;
 }
 
-void *resrc(Rcache *c, const char *file)
+void *resrc(Rcache *c, const char *file, void *info)
 {
-	Resrc *r = tblfind(c->tbl, file);
+	Resrc *r = tblfind(c, file, info);
 	if (!r) {
-		return load(c, file);
+		return load(c, file, info);
 	} else {
 		assert(!r->del);
 		r->seq = nextseq(c);
 		heapupdate(c->heap, c->fill, r->ind);
-		return r->data;
+		return r->resrc;
 	}
 }
 
-Rcache *rcachenew(void*(*load)(const char *path), void(*free)(void*))
+Rcache *rcachenew(void*(*load)(const char*, void*),
+		  void(*free)(void*, void*),
+		  unsigned int (*hash)(const char*, void*),
+		  _Bool (*eq)(void*, void*))
 {
 	Rcache *c = malloc(sizeof(*c));
 	if (!c)
@@ -224,6 +249,8 @@ Rcache *rcachenew(void*(*load)(const char *path), void(*free)(void*))
 	c->nxtseq = 1;
 	c->load = load;
 	c->free = free;
+	c->hash = hash;
+	c->eq = eq;
 
 	return c;
 }
