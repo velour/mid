@@ -1,0 +1,18 @@
+#!/bin/sh
+
+readflags () {
+	ar -x $1 ldflags
+	cat ldflags
+	rm ldflags
+}
+
+flags=
+
+for f in $@; do
+	case $f in
+	*.a) flags="$flags `readflags $f`";;
+	*) ;;
+	esac
+done
+
+$@ $flags

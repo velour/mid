@@ -1,7 +1,7 @@
 all: $(LIB)
 
-$(LIB): $(OFILES)
-	ar rsc $(LIB) $(OFILES)
+$(LIB): $(OFILES) ldflags
+	ar rsc $(LIB) $(OFILES) ldflags
 
 %.o: %.c
 	@echo cc $< $(CFLAGS)
