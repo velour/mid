@@ -259,5 +259,3 @@ void rcachefree(Rcache *c)
 {
 	free(c);
 }
-
-
