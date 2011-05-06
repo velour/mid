@@ -46,7 +46,7 @@ void prtime()
 		fprintf(stderr, "%s failed: strftime failed\n", __func__);
 		abort();
 	}
-	fprintf(lfile, "%s", str);
+	fprintf(lfile, "%s ", str);
 }
 
 
