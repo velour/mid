@@ -7,17 +7,20 @@ void pr(const char *fmt, ...);
 void prerr(int err, const char *fmt, ...);
 void prfn(const char *func, const char *fmt, ...);
 void prfnerr(const char *func, int err, const char *fmt, ...);
+void flushlog(void);
 
 void abort(void);
 
 #define fatal(...)				\
 	do {					\
 		prfn(__func__, __VA_ARGS__);	\
+		flushlog();			\
 		abort();			\
 	} while (0)
 
 #define fatalerr(err, ...)				\
 	do {						\
 		prfnerr(__func__, err, __VA_ARGS__);	\
+		flushlog();				\
 		abort();				\
 	} while (0)

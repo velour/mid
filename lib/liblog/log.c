@@ -62,16 +62,18 @@ void prraw(const char *func, int err, const char *fmt, va_list ap)
 	vfprintf(lfile, fmt, ap);
 
 	if (err == 0)
-		return;
+		goto done;
 
 	char str[Bufsz];
 	if (strerror_r(err, str, Bufsz) == 0) {
-		fprintf(lfile, "%s\n" , str);
+		fprintf(lfile, "%s" , str);
 	} else {
 		perror("strerror_r");
 		fprintf(stderr, "perr failed\n");
 		abort();
 	}
+done:
+	fprintf(lfile, "\n");
 }
 
 void pr(const char *fmt, ...)
@@ -104,4 +106,9 @@ void prfnerr(const char *func, int err, const char *fmt, ...)
 	va_start(ap, fmt);
 	prraw(func, err, fmt, ap);
 	va_end(ap);
+}
+
+void flushlog()
+{
+	fflush(lfile);
 }
