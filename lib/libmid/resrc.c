@@ -22,6 +22,7 @@ struct Resrc {
 	/* Extra info used to key on the resource. */
 	void *info;
 	char file[PATH_MAX + 1];
+	char path[PATH_MAX + 1];
 	_Bool del;
 	int seq;
 	int ind;
@@ -33,7 +34,7 @@ struct Rcache {
 	int fill;
 	int nxtseq;
 	void*(*load)(const char*, void*);
-	void(*free)(void*, void*);
+	void(*free)(const char*, void*, void*);
 	unsigned int (*hash)(const char*, void*);
 	bool (*eq)(void*, void*);
 };
@@ -198,7 +199,7 @@ static void *load(Rcache *c, const char *file, void *info)
 	char path[PATH_MAX + 1];
 	if (c->fill == RCACHE_SIZE) {
 		Resrc *bump = heappop(c->heap, c->fill);
-		c->free(bump->resrc, bump->info);
+		c->free(bump->path, bump->resrc, bump->info);
 		bump->del = true;
 		c->fill -= 1;
 	}
@@ -208,11 +209,14 @@ static void *load(Rcache *c, const char *file, void *info)
 			r->del = false;
 			strncpy(r->file, file, PATH_MAX + 1);
 			r->file[PATH_MAX] = '\0';
+			strncpy(r->path, path, PATH_MAX + 1);
+			r->path[PATH_MAX] = '\0';
 			r->resrc = c->load(path, info);
 			r->info = info;
 			r->seq = nextseq(c);
 			heappush(c->heap, c->fill, r);
 			c->fill += 1;
+			assert(used(r));
 			return r->resrc;
 		}
 	}
@@ -233,7 +237,7 @@ void *resrc(Rcache *c, const char *file, void *info)
 }
 
 Rcache *rcachenew(void*(*load)(const char*, void*),
-		  void(*free)(void*, void*),
+		  void(*free)(const char*, void*, void*),
 		  unsigned int (*hash)(const char*, void*),
 		  _Bool (*eq)(void*, void*))
 {
@@ -255,11 +259,14 @@ Rcache *rcachenew(void*(*load)(const char*, void*),
 	return c;
 }
 
+#include <stdio.h>
+
 void rcachefree(Rcache *c)
 {
-	for (int i = 0; i < RCACHE_SIZE; i += 1) {
-		if (used(&c->tbl[i]))
-			c->free(c->tbl[i].resrc, c->tbl[i].info);
+	for (int i = 0; i < c->fill; i += 1) {
+		Resrc *r = c->heap[i];
+		if (used(r) && !r->del)
+			c->free(r->path, r->resrc, r->info);
 	}
 	free(c);
 }

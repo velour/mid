@@ -137,7 +137,7 @@ unsigned int strhash(const char *);
 
 void *resrc(Rcache *cache, const char *file, void*);
 Rcache *rcachenew(void*(*load)(const char*, void*),
-		  void(*free)(void*, void*),
+		  void(*free)(const char*, void*, void*),
 		  unsigned int (*hash)(const char*, void*),
 		  _Bool (*eq)(void*, void*));
 void rcachefree(Rcache *cache);

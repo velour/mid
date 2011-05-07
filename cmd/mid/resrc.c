@@ -13,8 +13,9 @@ void *imgload(const char *path, void *_ignrd)
 	return imgnew(gfx, path);
 }
 
-void imgunload(void *img, void *_info)
+void imgunload(const char *path, void *img, void *_info)
 {
+	pr("Unloading img %s", path);
 	imgfree(img);
 }
 
@@ -33,8 +34,10 @@ void *txtload(const char *path, void *_info)
 	return txtnew(path, info->size, info->color);
 }
 
-void txtunload(void *txt, void *_info)
+void txtunload(const char *path, void *txt, void *_info)
 {
+	Txtinfo *info = _info;
+	pr("Unloading txt %s, %dpt", path, info->size);
 	txtfree(txt);
 }
 
@@ -67,8 +70,9 @@ void *musicload(const char *path, void *_ignrd)
 	return musicnew(path);
 }
 
-void musicunload(void *music, void *_info)
+void musicunload(const char *path, void *music, void *_info)
 {
+	pr("Unloading music %s", path);
 	musicfree(music);
 }
 
@@ -80,8 +84,9 @@ void *sfxload(const char *path, void *_ignrd)
 	return sfxnew(path);
 }
 
-void sfxunload(void *s, void *_info)
+void sfxunload(const char *path, void *s, void *_info)
 {
+	pr("Unloading sfx %s", path);
 	sfxnew(s);
 }
 

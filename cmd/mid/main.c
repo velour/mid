@@ -122,8 +122,5 @@ static void tmphandle(Scrn *s, Scrnstk *stk, Event *e){
 }
 
 static void tmpfree(Scrn *s){
-	Maindata *md = s->data;
-	imgfree(md->hi);
-	txtfree(md->hitxt);
-	imgfree(md->glenda);
+	/* everything is freed via the resrc cache. */
 }
