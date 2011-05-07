@@ -9,6 +9,7 @@ OFILES :=\
 	fs.o\
 	resrc.o\
 	scrn.o\
+	snd.o\
 
 HFILES :=\
 	../../include/mid.h\

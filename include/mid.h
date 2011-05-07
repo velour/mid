@@ -72,7 +72,7 @@ Img *txt2img(Gfx *, Txt *, const char *);
 // Prefer txt2img to this!
 Point txtdraw(Gfx *, Txt *, const char *, Point);
 
-void sndinit(void);
+_Bool sndinit(void);
 
 typedef struct Music Music;
 

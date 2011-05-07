@@ -36,6 +36,7 @@ static Rcache *imgs = NULL;
 
 void *imgload(const char *path, void *_ignrd)
 {
+	pr("Loading img %s", path);
 	return imgnew(gfx, path);
 }
 
@@ -53,6 +54,7 @@ static Rcache *txt = NULL;
 void *txtload(const char *path, void *_info)
 {
 	Txtinfo *info = _info;
+	pr("Loading text %s, %dpt", path, info->size);
 	return txtnew(path, info->size, info->color);
 }
 
@@ -87,10 +89,38 @@ static Txtinfo txtmain = {
 	.color = (Color){ 255, 255, 255, 255 }
 };
 
+static Rcache *music = NULL;
+
+void *musicload(const char *path, void *_ignrd)
+{
+	pr("Loading music %s", path);
+	return musicnew(path);
+}
+
+void musicunload(void *music, void *_info)
+{
+	musicfree(music);
+}
+
+static Rcache *sfx = NULL;
+
+void *sfxload(const char *path, void *_ignrd)
+{
+	pr("Loading sfx %s", path);
+	return sfxnew(path);
+}
+
+void sfxunload(void *s, void *_info)
+{
+	sfxnew(s);
+}
+
+Sfx *pew = NULL;
+
 int main(int argc, char *argv[]){
 	loginit(0);
 
-	pr("%s\n", "Let's rock.");
+	pr("%s", "Let's rock.");
 
 	gfx = gfxinit(512, 512);
 	if(!gfx)
@@ -118,6 +148,21 @@ int main(int argc, char *argv[]){
 	tmpdata.hi = txt2img(gfx, tmpdata.hitxt, "hi");
 
 	mainscrn.data = &tmpdata;
+
+	if (!sndinit())
+		fatal("Failed to initialze sound: %s\n", miderrstr());
+	music = rcachenew(musicload, musicunload, NULL, NULL);
+	if (!music)
+		fatal("Failed to allocate music cache: %s", miderrstr());
+	Music *m = resrc(music, "bgm_placeholder.ogg", NULL);
+	musicstart(m, 0);
+
+	sfx = rcachenew(sfxload, sfxunload, NULL, NULL);
+	if (!sfx)
+		fatal("Failed to allocate sfx cache: %s", miderrstr());
+	pew = resrc(sfx, "pew.wav", NULL);
+	if (!pew)
+		fatal("Failed to load pew.wav: %s", miderrstr());
 
 	Scrnstk *stk = scrnstknew();
 	scrnstkpush(stk, &mainscrn);
@@ -156,6 +201,7 @@ static void tmphandle(Scrn *s, Scrnstk *stk, Event *e){
 		case 'f': md->dx = (e->down? md->dx+1 : 0); break;
 		case 'e': md->dy = (e->down? md->dy-1 : 0); break;
 		case 'd': md->dy = (e->down? md->dy+1 : 0); break;
+		case 'p': sfxplay(pew); break;
 		default:
 			scrnstkpop(stk);
 		}

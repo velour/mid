@@ -17,8 +17,13 @@ Gfx *gfxinit(int w, int h){
 	if(TTF_Init() < 0)
 		return NULL;
 
-	if(SDL_Init(SDL_INIT_VIDEO) < 0)
-		return NULL;
+	if (SDL_WasInit(0) == 0) {
+		if(SDL_Init(SDL_INIT_VIDEO) < 0)
+			return NULL;
+	} else {
+		if(SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
+			return NULL;
+	}
 
 	gfx.win = SDL_CreateWindow("TODO: Title...",
 				   SDL_WINDOWPOS_CENTERED,

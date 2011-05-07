@@ -1,1 +1,1 @@
--lSDL -lSDLmain -lSDL_image -lSDL_ttf
+-lSDL -lSDLmain -lSDL_image -lSDL_mixer -lSDL_ttf
