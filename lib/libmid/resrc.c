@@ -12,7 +12,7 @@ enum {
 	RESRC_TBL_SIZE = 257,
 };
 
-static const char *roots[] = { ".", "resrc" };
+static const char *roots[] = { "resrc" };
 enum { NROOTS = sizeof(roots) / sizeof(roots[0]) };
 
 typedef struct Resrc Resrc;
