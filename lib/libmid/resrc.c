@@ -257,5 +257,9 @@ Rcache *rcachenew(void*(*load)(const char*, void*),
 
 void rcachefree(Rcache *c)
 {
+	for (int i = 0; i < RCACHE_SIZE; i += 1) {
+		if (used(&c->tbl[i]))
+			c->free(c->tbl[i].resrc, c->tbl[i].info);
+	}
 	free(c);
 }
