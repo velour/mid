@@ -1,5 +1,6 @@
 #include "../../include/log.h"
 #include "../../include/mid.h"
+#include "resrc.h"
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -31,91 +32,13 @@ static Scrn mainscrn = {
 	0
 };
 
-static Gfx *gfx = NULL;
-static Rcache *imgs = NULL;
+Gfx *gfx = NULL;
+Sfx *pew = NULL;
 
-void *imgload(const char *path, void *_ignrd)
-{
-	pr("Loading img %s", path);
-	return imgnew(gfx, path);
-}
-
-void imgunload(void *img, void *_info)
-{
-	imgfree(img);
-}
-
-typedef struct {
-	unsigned int size;
-	Color color;
-} Txtinfo;
-
-static Rcache *txt = NULL;
-void *txtload(const char *path, void *_info)
-{
-	Txtinfo *info = _info;
-	pr("Loading text %s, %dpt", path, info->size);
-	return txtnew(path, info->size, info->color);
-}
-
-void txtunload(void *txt, void *_info)
-{
-	txtfree(txt);
-}
-
-unsigned int txthash(const char *path, void *_info)
-{
-	Txtinfo *info = _info;
-	return strhash(path) ^ info->size
-		^ (info->color.r << 24)
-		^ (info->color.g << 16)
-		^ (info->color.b << 8)
-		^ info->color.a;
-}
-
-bool txteq(void *_a, void *_b)
-{
-	Txtinfo *a = _a, *b = _b;
-	return a->size == b->size
-		&& a->color.r == b->color.r
-		&& a->color.g == b->color.g
-		&& a->color.b == b->color.b
-		&& a->color.a == b->color.a;
-}
-
-
-static Txtinfo txtmain = {
+Txtinfo txtmain = {
 	.size = 32,
 	.color = (Color){ 255, 255, 255, 255 }
 };
-
-static Rcache *music = NULL;
-
-void *musicload(const char *path, void *_ignrd)
-{
-	pr("Loading music %s", path);
-	return musicnew(path);
-}
-
-void musicunload(void *music, void *_info)
-{
-	musicfree(music);
-}
-
-static Rcache *sfx = NULL;
-
-void *sfxload(const char *path, void *_ignrd)
-{
-	pr("Loading sfx %s", path);
-	return sfxnew(path);
-}
-
-void sfxunload(void *s, void *_info)
-{
-	sfxnew(s);
-}
-
-Sfx *pew = NULL;
 
 int main(int argc, char *argv[]){
 	loginit(0);
@@ -125,12 +48,10 @@ int main(int argc, char *argv[]){
 	gfx = gfxinit(512, 512);
 	if(!gfx)
 		return EXIT_FAILURE;
-	imgs = rcachenew(imgload, imgunload, NULL, NULL);
-	if (!imgs)
-		fatal("Failed to allocate img cache: %s", miderrstr());
-	txt = rcachenew(txtload, txtunload, txthash, txteq);
-	if (!txt)
-		fatal("Failed to allocate txt cache: %s", miderrstr());
+
+	initresrc();
+	if (!sndinit())
+		fatal("Failed to initialze sound: %s\n", miderrstr());
 
 	tmpdata.rect = (Rect){ (Point){ 0, 0 }, (Point){ 10, 10 } };
 	tmpdata.dx = 0;
@@ -149,17 +70,9 @@ int main(int argc, char *argv[]){
 
 	mainscrn.data = &tmpdata;
 
-	if (!sndinit())
-		fatal("Failed to initialze sound: %s\n", miderrstr());
-	music = rcachenew(musicload, musicunload, NULL, NULL);
-	if (!music)
-		fatal("Failed to allocate music cache: %s", miderrstr());
 	Music *m = resrc(music, "bgm_placeholder.ogg", NULL);
 	musicstart(m, 0);
 
-	sfx = rcachenew(sfxload, sfxunload, NULL, NULL);
-	if (!sfx)
-		fatal("Failed to allocate sfx cache: %s", miderrstr());
 	pew = resrc(sfx, "pew.wav", NULL);
 	if (!pew)
 		fatal("Failed to load pew.wav: %s", miderrstr());
@@ -169,8 +82,7 @@ int main(int argc, char *argv[]){
 
 	scrnrun(stk, gfx);
 
-	rcachefree(txt);
-	rcachefree(imgs);
+	freeresrc();
 	gfxfree(gfx);
 	return 0;
 }
