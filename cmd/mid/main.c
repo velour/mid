@@ -33,7 +33,6 @@ static Scrn mainscrn = {
 };
 
 Gfx *gfx = NULL;
-Sfx *pew = NULL;
 
 Txtinfo txtmain = {
 	.size = 32,
@@ -70,12 +69,10 @@ int main(int argc, char *argv[]){
 
 	mainscrn.data = &tmpdata;
 
+/*
 	Music *m = resrc(music, "bgm_placeholder.ogg", NULL);
 	musicstart(m, 0);
-
-	pew = resrc(sfx, "pew.wav", NULL);
-	if (!pew)
-		fatal("Failed to load pew.wav: %s", miderrstr());
+*/
 
 	Scrnstk *stk = scrnstknew();
 	scrnstkpush(stk, &mainscrn);
@@ -103,6 +100,7 @@ static void tmpdraw(Scrn *s, Gfx *gfx){
 
 static void tmphandle(Scrn *s, Scrnstk *stk, Event *e){
 	Maindata *md = s->data;
+	Sfx *pew;
 	switch(e->type){
 	case Quit:
 		scrnstkpop(stk);
@@ -113,7 +111,13 @@ static void tmphandle(Scrn *s, Scrnstk *stk, Event *e){
 		case 'f': md->dx = (e->down? md->dx+1 : 0); break;
 		case 'e': md->dy = (e->down? md->dy-1 : 0); break;
 		case 'd': md->dy = (e->down? md->dy+1 : 0); break;
-		case 'p': sfxplay(pew); break;
+		case 'p':
+			pew = resrc(sfx, "pew.wav", NULL);
+			if (!pew)
+				fatal("Failed to load pew.wav: %s",
+				      miderrstr());
+			sfxplay(pew);
+			break;
 		default:
 			scrnstkpop(stk);
 		}

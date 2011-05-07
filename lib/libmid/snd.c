@@ -2,7 +2,7 @@
 #include <SDL/SDL_mixer.h>
 #include <stdbool.h>
 
-enum { NCHAN = 2 };
+enum { NCHAN = 64 };
 
 bool sndinit(void)
 {
@@ -15,8 +15,9 @@ bool sndinit(void)
 	}
 
 	/* Where do we call Mix_CloseAudio()? */
-	if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, NCHAN, 1024) < 0)
+	if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) < 0)
 		return false;
+	Mix_AllocateChannels(NCHAN);
 
 	return true;
 }
