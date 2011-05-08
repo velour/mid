@@ -69,10 +69,8 @@ int main(int argc, char *argv[]){
 
 	mainscrn.data = &tmpdata;
 
-/*
 	Music *m = resrc(music, "bgm_placeholder.ogg", NULL);
 	musicstart(m, 0);
-*/
 
 	Scrnstk *stk = scrnstknew();
 	scrnstkpush(stk, &mainscrn);
