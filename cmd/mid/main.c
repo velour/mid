@@ -80,6 +80,7 @@ int main(int argc, char *argv[]){
 	scrnrun(stk, gfx);
 
 	freeresrc();
+	sndfree();
 	gfxfree(gfx);
 	return 0;
 }

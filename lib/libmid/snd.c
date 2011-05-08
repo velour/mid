@@ -14,12 +14,16 @@ bool sndinit(void)
 			return false;
 	}
 
-	/* Where do we call Mix_CloseAudio()? */
 	if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) < 0)
 		return false;
 	Mix_AllocateChannels(NCHAN);
 
 	return true;
+}
+
+void sndfree(void)
+{
+	Mix_CloseAudio();
 }
 
 typedef struct Music Music;
