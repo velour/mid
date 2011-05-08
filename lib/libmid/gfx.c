@@ -5,6 +5,7 @@
 #include <SDL/SDL_ttf.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 struct Gfx{
 	SDL_Window *win;
@@ -150,7 +151,16 @@ static SDL_Color c2s(Color c){
 	return (SDL_Color){ c.r, c.g, c.b };
 }
 
-Img *txt2img(Gfx *g, Txt *t, const char *s){
+enum { Bufsize = 256 };
+
+Img *txt2img(Gfx *g, Txt *t, const char *fmt, ...){
+	va_list ap;
+	char s[Bufsize + 1];
+
+	va_start(ap, fmt);
+	vsnprintf(s, Bufsize + 1, fmt, ap);
+	va_end(ap);
+
 	SDL_Surface *srf = TTF_RenderUTF8_Blended(t->font, s, c2s(t->color));
 	if (!srf)
 		return NULL;
