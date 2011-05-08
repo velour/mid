@@ -29,6 +29,8 @@ void scrnstkfree(Scrnstk *stk){
 }
 
 void scrnstkpush(Scrnstk *stk, Scrn *s){
+	if (stk->cur == &stk->scrns[Stkmax - 1])
+		abort();
 	stk->cur++;
 	*(stk->cur) = s;
 }
@@ -38,6 +40,8 @@ Scrn *scrnstktop(Scrnstk *s){
 }
 
 void scrnstkpop(Scrnstk *stk){
+	if (stk->cur < &stk->scrns[0])
+		abort();
 	Scrn *s = *(stk->cur);
 	s->mt->free(s);
 	stk->cur--;
