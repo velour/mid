@@ -5,7 +5,7 @@
 
 extern Gfx *gfx;
 
-Rcache *imgs = NULL;
+Rcache *imgs;
 
 void *imgload(const char *path, void *_ignrd)
 {
@@ -22,8 +22,6 @@ void imgunload(const char *path, void *img, void *_info)
 static Resrcops imgtype = {
 	.load = imgload,
 	.unload = imgunload,
-	.hash = NULL,
-	.eq = NULL,
 };
 
 typedef struct Txtinfo Txtinfo;
@@ -32,7 +30,7 @@ struct Txtinfo {
 	Color color;
 };
 
-Rcache *txt = NULL;
+Rcache *txt;
 
 void *txtload(const char *path, void *_info)
 {
@@ -75,7 +73,7 @@ static Resrcops txttype = {
 	.eq = txteq,
 };
 
-Rcache *music = NULL;
+Rcache *music;
 
 void *musicload(const char *path, void *_ignrd)
 {
@@ -92,11 +90,9 @@ void musicunload(const char *path, void *music, void *_info)
 static Resrcops musictype = {
 	.load = musicload,
 	.unload = musicunload,
-	.hash = NULL,
-	.eq = NULL,
 };
 
-Rcache *sfx = NULL;
+Rcache *sfx;
 
 void *sfxload(const char *path, void *_ignrd)
 {
@@ -113,8 +109,6 @@ void sfxunload(const char *path, void *s, void *_info)
 static Resrcops sfxtype = {
 	.load = sfxload,
 	.unload = sfxunload,
-	.hash = NULL,
-	.eq = NULL,
 };
 void initresrc()
 {

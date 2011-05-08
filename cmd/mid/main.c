@@ -32,7 +32,7 @@ static Scrn mainscrn = {
 	0
 };
 
-Gfx *gfx = NULL;
+Gfx *gfx;
 
 Txtinfo txtmain = {
 	.size = 32,
