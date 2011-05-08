@@ -70,6 +70,8 @@ int main(int argc, char *argv[]){
 	mainscrn.data = &tmpdata;
 
 	Music *m = resrc(music, "bgm_placeholder.ogg", NULL);
+	if (!m)
+		fatal("Failed to load bgm_placeholder.ogg");
 	musicstart(m, 0);
 
 	Scrnstk *stk = scrnstknew();
