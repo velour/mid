@@ -107,6 +107,8 @@ static void tmphandle(Scrn *s, Scrnstk *stk, Event *e){
 		scrnstkpop(stk);
 		break;
 	case Keychng:
+		if (e->repeat)
+			break;
 		switch(e->key){
 		case 's': md->dx = (e->down? md->dx-1 : 0); break;
 		case 'f': md->dx = (e->down? md->dx+1 : 0); break;

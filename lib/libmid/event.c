@@ -31,9 +31,10 @@ _Bool pollevent(Event *event){
 	case SDL_KEYUP:
 		event->type = Keychng;
 		event->down = e.type == SDL_KEYDOWN;
+		event->repeat = e.key.repeat != 0;
 		event->key = e.key.keysym.sym;
 		return 1;
 	default:
 		return 0;
-	}	
+	}
 }

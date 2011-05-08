@@ -100,6 +100,7 @@ struct Event{
 	enum Eventty type;
 
 	_Bool down;
+	_Bool repeat;
 	char key;
 };
 
