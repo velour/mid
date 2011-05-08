@@ -19,7 +19,7 @@ void imgunload(const char *path, void *img, void *_info)
 	imgfree(img);
 }
 
-static Resrctype imgtype = {
+static Resrcops imgtype = {
 	.load = imgload,
 	.unload = imgunload,
 	.hash = NULL,
@@ -68,7 +68,7 @@ bool txteq(void *_a, void *_b)
 		&& a->color.a == b->color.a;
 }
 
-static Resrctype txttype = {
+static Resrcops txttype = {
 	.load = txtload,
 	.unload = txtunload,
 	.hash = txthash,
@@ -89,7 +89,7 @@ void musicunload(const char *path, void *music, void *_info)
 	musicfree(music);
 }
 
-static Resrctype musictype = {
+static Resrcops musictype = {
 	.load = musicload,
 	.unload = musicunload,
 	.hash = NULL,
@@ -110,7 +110,7 @@ void sfxunload(const char *path, void *s, void *_info)
 	sfxnew(s);
 }
 
-static Resrctype sfxtype = {
+static Resrcops sfxtype = {
 	.load = sfxload,
 	.unload = sfxunload,
 	.hash = NULL,

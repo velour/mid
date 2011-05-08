@@ -33,7 +33,7 @@ struct Rcache {
 	Resrc *heap[RCACHE_SIZE];
 	int fill;
 	int nxtseq;
-	Resrctype *type;
+	Resrcops *type;
 };
 
 static void swap(Resrc *heap[], int i, int j)
@@ -233,7 +233,7 @@ void *resrc(Rcache *c, const char *file, void *info)
 	}
 }
 
-Rcache *rcachenew(Resrctype *type)
+Rcache *rcachenew(Resrcops *type)
 {
 	Rcache *c = malloc(sizeof(*c));
 	if (!c)
