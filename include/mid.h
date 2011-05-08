@@ -137,9 +137,14 @@ typedef struct Rcache Rcache;
 
 unsigned int strhash(const char *);
 
+typedef struct Resrctype Resrctype;
+struct Resrctype {
+	void*(*load)(const char*, void*);
+	void(*unload)(const char*, void*, void*);
+	unsigned int (*hash)(const char*, void*);
+	_Bool (*eq)(void*, void*);
+};
+
 void *resrc(Rcache *cache, const char *file, void*);
-Rcache *rcachenew(void*(*load)(const char*, void*),
-		  void(*free)(const char*, void*, void*),
-		  unsigned int (*hash)(const char*, void*),
-		  _Bool (*eq)(void*, void*));
+Rcache *rcachenew(Resrctype *n);
 void rcachefree(Rcache *cache);

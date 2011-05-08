@@ -33,10 +33,7 @@ struct Rcache {
 	Resrc *heap[RCACHE_SIZE];
 	int fill;
 	int nxtseq;
-	void*(*load)(const char*, void*);
-	void(*free)(const char*, void*, void*);
-	unsigned int (*hash)(const char*, void*);
-	bool (*eq)(void*, void*);
+	Resrctype *type;
 };
 
 static void swap(Resrc *heap[], int i, int j)
@@ -132,15 +129,15 @@ static bool used(Resrc *r)
 
 unsigned int hash(Rcache *c, const char *file, void *info)
 {
-	if (c->hash)
-		return c->hash(file, info);
+	if (c->type->hash)
+		return c->type->hash(file, info);
 	return strhash(file);
 }
 
 bool eq(Rcache *c, Resrc *r, const char *file, void *info)
 {
-	if (c->eq)
-		return c->eq(r->info, info) && strcmp(r->file, file) == 0;
+	if (c->type->eq)
+		return c->type->eq(r->info, info) && strcmp(r->file, file) == 0;
 	return strcmp(r->file, file) == 0;
 }
 
@@ -199,7 +196,7 @@ static void *load(Rcache *c, const char *file, void *info)
 	char path[PATH_MAX + 1];
 	if (c->fill == RCACHE_SIZE) {
 		Resrc *bump = heappop(c->heap, c->fill);
-		c->free(bump->path, bump->resrc, bump->info);
+		c->type->unload(bump->path, bump->resrc, bump->info);
 		bump->del = true;
 		c->fill -= 1;
 	}
@@ -211,7 +208,7 @@ static void *load(Rcache *c, const char *file, void *info)
 			r->file[PATH_MAX] = '\0';
 			strncpy(r->path, path, PATH_MAX + 1);
 			r->path[PATH_MAX] = '\0';
-			r->resrc = c->load(path, info);
+			r->resrc = c->type->load(path, info);
 			r->info = info;
 			r->seq = nextseq(c);
 			heappush(c->heap, c->fill, r);
@@ -236,10 +233,7 @@ void *resrc(Rcache *c, const char *file, void *info)
 	}
 }
 
-Rcache *rcachenew(void*(*load)(const char*, void*),
-		  void(*free)(const char*, void*, void*),
-		  unsigned int (*hash)(const char*, void*),
-		  _Bool (*eq)(void*, void*))
+Rcache *rcachenew(Resrctype *type)
 {
 	Rcache *c = malloc(sizeof(*c));
 	if (!c)
@@ -251,10 +245,7 @@ Rcache *rcachenew(void*(*load)(const char*, void*),
 	}
 	c->fill = 0;
 	c->nxtseq = 1;
-	c->load = load;
-	c->free = free;
-	c->hash = hash;
-	c->eq = eq;
+	c->type = type;
 
 	return c;
 }
@@ -266,7 +257,7 @@ void rcachefree(Rcache *c)
 	for (int i = 0; i < c->fill; i += 1) {
 		Resrc *r = c->heap[i];
 		if (used(r) && !r->del)
-			c->free(r->path, r->resrc, r->info);
+			c->type->unload(r->path, r->resrc, r->info);
 	}
 	free(c);
 }

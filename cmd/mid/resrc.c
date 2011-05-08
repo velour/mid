@@ -19,6 +19,13 @@ void imgunload(const char *path, void *img, void *_info)
 	imgfree(img);
 }
 
+static Resrctype imgtype = {
+	.load = imgload,
+	.unload = imgunload,
+	.hash = NULL,
+	.eq = NULL,
+};
+
 typedef struct Txtinfo Txtinfo;
 struct Txtinfo {
 	unsigned int size;
@@ -61,6 +68,12 @@ bool txteq(void *_a, void *_b)
 		&& a->color.a == b->color.a;
 }
 
+static Resrctype txttype = {
+	.load = txtload,
+	.unload = txtunload,
+	.hash = txthash,
+	.eq = txteq,
+};
 
 Rcache *music = NULL;
 
@@ -76,6 +89,13 @@ void musicunload(const char *path, void *music, void *_info)
 	musicfree(music);
 }
 
+static Resrctype musictype = {
+	.load = musicload,
+	.unload = musicunload,
+	.hash = NULL,
+	.eq = NULL,
+};
+
 Rcache *sfx = NULL;
 
 void *sfxload(const char *path, void *_ignrd)
@@ -90,18 +110,24 @@ void sfxunload(const char *path, void *s, void *_info)
 	sfxnew(s);
 }
 
+static Resrctype sfxtype = {
+	.load = sfxload,
+	.unload = sfxunload,
+	.hash = NULL,
+	.eq = NULL,
+};
 void initresrc()
 {
-	imgs = rcachenew(imgload, imgunload, NULL, NULL);
+	imgs = rcachenew(&imgtype);
 	if (!imgs)
 		fatal("Failed to allocate img cache: %s", miderrstr());
-	txt = rcachenew(txtload, txtunload, txthash, txteq);
+	txt = rcachenew(&txttype);
 	if (!txt)
 		fatal("Failed to allocate txt cache: %s", miderrstr());
-	music = rcachenew(musicload, musicunload, NULL, NULL);
+	music = rcachenew(&musictype);
 	if (!music)
 		fatal("Failed to allocate music cache: %s", miderrstr());
-	sfx = rcachenew(sfxload, sfxunload, NULL, NULL);
+	sfx = rcachenew(&sfxtype);
 	if (!sfx)
 		fatal("Failed to allocate sfx cache: %s", miderrstr());
 }
