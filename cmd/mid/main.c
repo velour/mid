@@ -65,7 +65,7 @@ int main(int argc, char *argv[]){
 		fatal("Failed to load ship.png: %s\n", miderrstr());
 
 	tmpdata.hitxt = resrc(txt, "FreeSans.ttf", &txtmain);
-	tmpdata.hi = txt2img(gfx, tmpdata.hitxt, "hi");
+	tmpdata.hi = txt2img(gfx, tmpdata.hitxt, "hi %s", "there");
 
 	mainscrn.data = &tmpdata;
 
