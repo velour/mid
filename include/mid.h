@@ -145,14 +145,14 @@ struct Resrcops {
 	_Bool (*eq)(void *aux0, void *aux1); /* may be NULL */
 };
 
-/* Acquire a resource.  The 3rd param is passed as aux data as the 2nd
- * param of load. */
-void *resrcacq(Rtab *, const char *file, void *aux);
-/* Release. */
-void resrcrel(Rtab *, const char *file, void *aux);
 Rtab *rtabnew(Resrcops *);
-/* unloads all resources and frees the cache. */
+/* unloads all resources and frees the table. */
 void rtabfree(Rtab *);
+/* Acquire a reference to a resource (loading it if necessary).  The
+ * 3rd param is passed as aux data as the 2nd param of load. */
+void *resrcacq(Rtab *, const char *file, void *aux);
+/* Release a reference to a resource. */
+void resrcrel(Rtab *, const char *file, void *aux);
 
 typedef struct Anim Anim;
 Anim *animnew(Rtab *imgs, const char *);
