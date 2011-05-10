@@ -5,6 +5,7 @@ struct Txtinfo {
 };
 
 Rcache *imgs;
+Rcache *anim;
 Rcache *txt;
 Rcache *music;
 Rcache *sfx;

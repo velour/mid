@@ -9,7 +9,8 @@ struct Maindata{
 	Rect rect;
 	float dx, dy;
 	Color red, white;
-	Img *glenda, *hi;
+	Img *hi;
+	Anim *ship;
 	Txt *hitxt;
 };
 
@@ -48,9 +49,10 @@ int main(int argc, char *argv[]){
 	if(!gfx)
 		return EXIT_FAILURE;
 
-	initresrc();
 	if (!sndinit())
 		fatal("Failed to initialze sound: %s\n", miderrstr());
+
+	initresrc();
 
 	tmpdata.rect = (Rect){ .a = (Point){ 0, 0 }, .b = (Point){ 10, 10 } };
 	tmpdata.dx = 0;
@@ -58,11 +60,9 @@ int main(int argc, char *argv[]){
 	tmpdata.red = (Color){ 255, 0, 0, 255 };
 	tmpdata.white = (Color){ 255, 255, 255, 255 };
 
-	/* 9logo doesn't load with my combo of SDL/SDL_image... seems
-	 * to be an error detecting the pixel format -- EB */
-	tmpdata.glenda = resrc(imgs, "ship.png", NULL);
-	if (!tmpdata.glenda)
-		fatal("Failed to load ship.png: %s\n", miderrstr());
+	tmpdata.ship = resrc(anim, "shipcenter.anim", NULL);
+	if (!tmpdata.ship)
+		fatal("Failed to load shipcenter.anim: %s\n", miderrstr());
 
 	tmpdata.hitxt = resrc(txt, "FreeSans.ttf", &txtmain);
 	tmpdata.hi = txt2img(gfx, tmpdata.hitxt, "hi %s", "there");
@@ -87,14 +87,14 @@ int main(int argc, char *argv[]){
 
 static void tmpupdate(Scrn *s, Scrnstk *stk){
 	Maindata *md = s->data;
+	animupdate(md->ship, 1);
 	rectmv(&md->rect, md->dx, md->dy);
 }
 
 static void tmpdraw(Scrn *s, Gfx *gfx){
 	Maindata *md = s->data;
 	gfxclear(gfx, md->red);
-	imgdraw(gfx, md->glenda, md->rect.a);
-//	txtdraw(gfx, md->hi, "hi", (Point){ 100, 100 });
+	animdraw(gfx, md->ship, md->rect.a);
 	imgdraw(gfx, md->hi, (Point){ 100, 100 });
 	gfxflip(gfx);
 }

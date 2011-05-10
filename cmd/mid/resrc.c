@@ -24,6 +24,25 @@ static Resrcops imgtype = {
 	.unload = imgunload,
 };
 
+Rcache *anim;
+
+void *animload(const char *path, void *_ignrd)
+{
+	pr("Loading anim %s", path);
+	return animnew(imgs, path);
+}
+
+void animunload(const char *path, void *anim, void *_info)
+{
+	pr("Unloading anim %s", path);
+	animfree(anim);
+}
+
+static Resrcops animtype = {
+	.load = animload,
+	.unload = animunload,
+};
+
 typedef struct Txtinfo Txtinfo;
 struct Txtinfo {
 	unsigned int size;
@@ -110,11 +129,15 @@ static Resrcops sfxtype = {
 	.load = sfxload,
 	.unload = sfxunload,
 };
+
 void initresrc()
 {
 	imgs = rcachenew(&imgtype);
 	if (!imgs)
 		fatal("Failed to allocate img cache: %s", miderrstr());
+	anim = rcachenew(&animtype);
+	if (!anim)
+		fatal("Failed to allocate anim cache: %s", miderrstr());
 	txt = rcachenew(&txttype);
 	if (!txt)
 		fatal("Failed to allocate txt cache: %s", miderrstr());
@@ -131,5 +154,6 @@ void freeresrc()
 	rcachefree(sfx);
 	rcachefree(music);
 	rcachefree(txt);
+	rcachefree(anim);
 	rcachefree(imgs);
 }

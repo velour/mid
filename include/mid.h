@@ -152,3 +152,7 @@ Rcache *rcachenew(Resrcops *);
 void rcachefree(Rcache *);
 
 typedef struct Anim Anim;
+Anim *animnew(Rcache *imgs, const char *);
+void animfree(Anim *);
+void animupdate(Anim *, int);
+void animdraw(Gfx *, Anim *, Point);
