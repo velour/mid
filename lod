@@ -1,6 +1,7 @@
 #!/bin/sh
 
 readflags () {
+	ar t $1 | grep -q ldflags && \
 	ar -x $1 ldflags && \
 	cat ldflags && \
 	rm ldflags
