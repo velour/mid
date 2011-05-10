@@ -58,14 +58,18 @@ struct dirent *alloc_dent(const char *root)
 	return malloc(len);
 }
 
+enum { Maxdepth = 5 };
+
 /* Recursively find the given file beneath the given root.  out must
  * be of size PATH_MAX + 1. */
-bool fsfind(const char *root, const char *fname, char out[])
+bool _fsfind(const char *root, int depth, const char *fname, char out[])
 {
 	assert(isdir(root));
 	DIR *dir = opendir(root);
 	struct dirent *res, *dent = alloc_dent(root);
 	bool found = false;
+	if (depth > Maxdepth)
+		return false;
 	for (;;) {
 		int err = readdir_r(dir, dent, &res);
 		if (err) {
@@ -85,7 +89,7 @@ bool fsfind(const char *root, const char *fname, char out[])
 			found = true;
 			break;
 		} else if (isdir(ent)) {
-			if (fsfind(ent, fname, out)) {
+			if (_fsfind(ent, depth + 1, fname, out)) {
 				found = true;
 				break;
 			}
@@ -95,4 +99,9 @@ bool fsfind(const char *root, const char *fname, char out[])
 	free(dent);
 	closedir(dir);
 	return found;
+}
+
+bool fsfind(const char *root, const char *fname, char out[])
+{
+	return _fsfind(root, 0, fname, out);
 }
