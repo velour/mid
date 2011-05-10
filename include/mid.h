@@ -150,3 +150,5 @@ void *resrc(Rcache *, const char *file, void *aux);
 Rcache *rcachenew(Resrcops *);
 /* unloads all resources and frees the cache. */
 void rcachefree(Rcache *);
+
+typedef struct Anim Anim;

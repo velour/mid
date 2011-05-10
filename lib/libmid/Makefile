@@ -10,6 +10,7 @@ OFILES :=\
 	resrc.o\
 	scrn.o\
 	snd.o\
+	anim.o\
 
 HFILES :=\
 	../../include/mid.h\
