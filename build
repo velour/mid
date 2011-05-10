@@ -1,4 +1,4 @@
 #!/bin/sh
 export PATH=`pwd`:$PATH
 export CFLAGS=-g
-exec make -rR $@
+exec gmake -rR $@
