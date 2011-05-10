@@ -6,11 +6,11 @@
 
 typedef struct Maindata Maindata;
 struct Maindata{
-	Rect rect;
+	Rect rect0, rect1;
 	float dx, dy;
 	Color red, white;
 	Img *hi;
-	Anim *ship;
+	Anim *ship, *wlk;
 	Txt *hitxt;
 };
 
@@ -54,7 +54,8 @@ int main(int argc, char *argv[]){
 
 	initresrc();
 
-	tmpdata.rect = (Rect){ .a = (Point){ 0, 0 }, .b = (Point){ 10, 10 } };
+	tmpdata.rect0 = (Rect){ .a = (Point){ 0, 0 }, .b = (Point){ 10, 10 } };
+	tmpdata.rect1 = (Rect){ .a = (Point){ 100, 0 }, .b = (Point){ 0, 0 } };
 	tmpdata.dx = 0;
 	tmpdata.dy = 0;
 	tmpdata.red = (Color){ 255, 0, 0, 255 };
@@ -64,15 +65,19 @@ int main(int argc, char *argv[]){
 	if (!tmpdata.ship)
 		fatal("Failed to load shipcenter.anim: %s\n", miderrstr());
 
+	tmpdata.wlk = resrcacq(anim, "wlk.anim", NULL);
+	if (!tmpdata.wlk)
+		fatal("Failed to load wlk.anim: %s\n", miderrstr());
+
 	tmpdata.hitxt = resrcacq(txt, "FreeSans.ttf", &txtmain);
 	tmpdata.hi = txt2img(gfx, tmpdata.hitxt, "hi %s", "there");
 
 	mainscrn.data = &tmpdata;
 
-//	Music *m = resrcacq(music, "bgm_placeholder.ogg", NULL);
-//	if (!m)
-//		fatal("Failed to load bgm_placeholder.ogg");
-//	musicstart(m, 0);
+	Music *m = resrcacq(music, "bgm_placeholder.ogg", NULL);
+	if (!m)
+		fatal("Failed to load bgm_placeholder.ogg");
+	musicstart(m, 0);
 
 	Scrnstk *stk = scrnstknew();
 	scrnstkpush(stk, &mainscrn);
@@ -88,13 +93,16 @@ int main(int argc, char *argv[]){
 static void tmpupdate(Scrn *s, Scrnstk *stk){
 	Maindata *md = s->data;
 	animupdate(md->ship, 1);
-	rectmv(&md->rect, md->dx, md->dy);
+	animupdate(md->wlk, 1);
+	rectmv(&md->rect0, md->dx, md->dy);
+	rectmv(&md->rect1, md->dx, md->dy);
 }
 
 static void tmpdraw(Scrn *s, Gfx *gfx){
 	Maindata *md = s->data;
 	gfxclear(gfx, md->red);
-	animdraw(gfx, md->ship, md->rect.a);
+	animdraw(gfx, md->ship, md->rect0.a);
+	animdraw(gfx, md->wlk, md->rect1.a);
 	imgdraw(gfx, md->hi, (Point){ 100, 100 });
 	gfxflip(gfx);
 }
