@@ -1,8 +1,8 @@
 #!/bin/sh
 
 readflags () {
-	ar -x $1 ldflags
-	cat ldflags
+	ar -x $1 ldflags && \
+	cat ldflags && \
 	rm ldflags
 }
 
