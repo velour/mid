@@ -4,6 +4,7 @@ readflags () {
 	ar -x $1 ldflags && \
 	cat ldflags && \
 	rm ldflags
+	return 0
 }
 
 flags=
