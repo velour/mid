@@ -142,7 +142,7 @@ struct Resrcops {
 	void*(*load)(const char *path, void *aux);
 	void(*unload)(const char *path, void *resrc, void *aux); /* may be NULL */
 	unsigned int (*hash)(const char *path, void *aux); /* may be NULL */
-	_Bool (*eq)(void *aux, void *aux); /* may be NULL */
+	_Bool (*eq)(void *aux0, void *aux1); /* may be NULL */
 };
 
 /* The 3rd param is passed as aux data as the 2nd param of load. */
