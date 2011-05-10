@@ -20,7 +20,7 @@ struct Resrc {
 	/* The loaded resource. */
 	void *resrc;
 	/* Extra info used to key on the resource. */
-	void *info;
+	void *aux;
 	char file[PATH_MAX + 1];
 	char path[PATH_MAX + 1];
 	_Bool del;
@@ -127,29 +127,29 @@ static bool used(Resrc *r)
 	return r->file[0] != '\0';
 }
 
-unsigned int hash(Rcache *c, const char *file, void *info)
+unsigned int hash(Rcache *c, const char *file, void *aux)
 {
 	if (c->type->hash)
-		return c->type->hash(file, info);
+		return c->type->hash(file, aux);
 	return strhash(file);
 }
 
-bool eq(Rcache *c, Resrc *r, const char *file, void *info)
+bool eq(Rcache *c, Resrc *r, const char *file, void *aux)
 {
 	if (c->type->eq)
-		return c->type->eq(r->info, info) && strcmp(r->file, file) == 0;
+		return c->type->eq(r->aux, aux) && strcmp(r->file, file) == 0;
 	return strcmp(r->file, file) == 0;
 }
 
-static Resrc *tblfind(Rcache *c, const char *file, void *info)
+static Resrc *tblfind(Rcache *c, const char *file, void *aux)
 {
-	unsigned int init = hash(c, file, info) % RESRC_TBL_SIZE;
+	unsigned int init = hash(c, file, aux) % RESRC_TBL_SIZE;
 	unsigned int i = init;
 
 	do {
 		if (!used(&c->tbl[i]))
 			break;
-		else if (!c->tbl[i].del && eq(c, &c->tbl[i], file, info))
+		else if (!c->tbl[i].del && eq(c, &c->tbl[i], file, aux))
 			return &c->tbl[i];
 		i = (i + 1) % RESRC_TBL_SIZE;
 	} while (i != init);
@@ -157,10 +157,10 @@ static Resrc *tblfind(Rcache *c, const char *file, void *info)
 	return NULL;
 }
 
-static Resrc *tblalloc(Rcache *c, const char *file, void *info)
+static Resrc *tblalloc(Rcache *c, const char *file, void *aux)
 {
 	unsigned int i;
-	for (i = hash(c, file, info) % RESRC_TBL_SIZE;
+	for (i = hash(c, file, aux) % RESRC_TBL_SIZE;
 	     used(&c->tbl[i]);
 	     i  = (i + 1) % RESRC_TBL_SIZE)
 		;
@@ -191,26 +191,26 @@ out:
 	return c->nxtseq - 1;
 }
 
-static void *load(Rcache *c, const char *file, void *info)
+static void *load(Rcache *c, const char *file, void *aux)
 {
 	char path[PATH_MAX + 1];
 	if (c->fill == RCACHE_SIZE) {
 		Resrc *bump = heappop(c->heap, c->fill);
 		if (c->type->unload)
-			c->type->unload(bump->path, bump->resrc, bump->info);
+			c->type->unload(bump->path, bump->resrc, bump->aux);
 		bump->del = true;
 		c->fill -= 1;
 	}
 	for (int i = 0; i < NROOTS; i += 1) {
 		if (fsfind(roots[i], file, path)) {
-			Resrc *r = tblalloc(c, file, info);
+			Resrc *r = tblalloc(c, file, aux);
 			r->del = false;
 			strncpy(r->file, file, PATH_MAX + 1);
 			r->file[PATH_MAX] = '\0';
 			strncpy(r->path, path, PATH_MAX + 1);
 			r->path[PATH_MAX] = '\0';
-			r->resrc = c->type->load(path, info);
-			r->info = info;
+			r->resrc = c->type->load(path, aux);
+			r->aux = aux;
 			r->seq = nextseq(c);
 			heappush(c->heap, c->fill, r);
 			c->fill += 1;
@@ -221,11 +221,11 @@ static void *load(Rcache *c, const char *file, void *info)
 	return NULL;
 }
 
-void *resrc(Rcache *c, const char *file, void *info)
+void *resrc(Rcache *c, const char *file, void *aux)
 {
-	Resrc *r = tblfind(c, file, info);
+	Resrc *r = tblfind(c, file, aux);
 	if (!r) {
-		return load(c, file, info);
+		return load(c, file, aux);
 	} else {
 		assert(!r->del);
 		r->seq = nextseq(c);
@@ -258,7 +258,7 @@ void rcachefree(Rcache *c)
 	for (int i = 0; i < c->fill; i += 1) {
 		Resrc *r = c->heap[i];
 		if (used(r) && !r->del && c->type->unload)
-			c->type->unload(r->path, r->resrc, r->info);
+			c->type->unload(r->path, r->resrc, r->aux);
 	}
 	free(c);
 }
