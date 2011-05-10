@@ -139,12 +139,17 @@ unsigned int strhash(const char *);
 
 typedef struct Resrcops Resrcops;
 struct Resrcops {
+	/* 1st arg is the path, 2nd is aux data * that was passed to resrc. */
 	void*(*load)(const char*, void*);
+	/* 1st arg is the path, 2nd arg is the resrc, 3rd is aux data
+	 * that was passed to resrc. */
 	void(*unload)(const char*, void*, void*); /* may be NULL */
 	unsigned int (*hash)(const char*, void*); /* may be NULL */
 	_Bool (*eq)(void*, void*); /* may be NULL */
 };
 
+/* The 3rd param is passed as aux data as the 2nd param of load. */
 void *resrc(Rcache *cache, const char *file, void*);
 Rcache *rcachenew(Resrcops *n);
+/* unloads all resources and frees the cache. */
 void rcachefree(Rcache *cache);
