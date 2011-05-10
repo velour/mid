@@ -133,7 +133,7 @@ void scrnstkpop(Scrnstk *);
 
 void scrnrun(Scrnstk *, Gfx *);
 
-typedef struct Rcache Rcache;
+typedef struct Rtab Rtab;
 
 unsigned int strhash(const char *);
 
@@ -145,14 +145,17 @@ struct Resrcops {
 	_Bool (*eq)(void *aux0, void *aux1); /* may be NULL */
 };
 
-/* The 3rd param is passed as aux data as the 2nd param of load. */
-void *resrc(Rcache *, const char *file, void *aux);
-Rcache *rcachenew(Resrcops *);
+/* Acquire a resource.  The 3rd param is passed as aux data as the 2nd
+ * param of load. */
+void *resrcacq(Rtab *, const char *file, void *aux);
+/* Release. */
+void resrcrel(Rtab *, const char *file, void *aux);
+Rtab *rtabnew(Resrcops *);
 /* unloads all resources and frees the cache. */
-void rcachefree(Rcache *);
+void rtabfree(Rtab *);
 
 typedef struct Anim Anim;
-Anim *animnew(Rcache *imgs, const char *);
-void animfree(Anim *);
+Anim *animnew(Rtab *imgs, const char *);
+void animfree(Rtab *imgs, Anim *);
 void animupdate(Anim *, int);
 void animdraw(Gfx *, Anim *, Point);

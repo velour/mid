@@ -60,16 +60,16 @@ int main(int argc, char *argv[]){
 	tmpdata.red = (Color){ 255, 0, 0, 255 };
 	tmpdata.white = (Color){ 255, 255, 255, 255 };
 
-	tmpdata.ship = resrc(anim, "shipcenter.anim", NULL);
+	tmpdata.ship = resrcacq(anim, "shipcenter.anim", NULL);
 	if (!tmpdata.ship)
 		fatal("Failed to load shipcenter.anim: %s\n", miderrstr());
 
-	tmpdata.hitxt = resrc(txt, "FreeSans.ttf", &txtmain);
+	tmpdata.hitxt = resrcacq(txt, "FreeSans.ttf", &txtmain);
 	tmpdata.hi = txt2img(gfx, tmpdata.hitxt, "hi %s", "there");
 
 	mainscrn.data = &tmpdata;
 
-	Music *m = resrc(music, "bgm_placeholder.ogg", NULL);
+	Music *m = resrcacq(music, "bgm_placeholder.ogg", NULL);
 	if (!m)
 		fatal("Failed to load bgm_placeholder.ogg");
 	musicstart(m, 0);
@@ -115,11 +115,12 @@ static void tmphandle(Scrn *s, Scrnstk *stk, Event *e){
 		case 'e': md->dy = (e->down? md->dy-1 : 0); break;
 		case 'd': md->dy = (e->down? md->dy+1 : 0); break;
 		case 'p':
-			pew = resrc(sfx, "pew.wav", NULL);
+			pew = resrcacq(sfx, "pew.wav", NULL);
 			if (!pew)
 				fatal("Failed to load pew.wav: %s",
 				      miderrstr());
 			sfxplay(pew);
+			resrcrel(sfx, "pew.wav", NULL);
 			break;
 		default:
 			scrnstkpop(stk);

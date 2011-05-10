@@ -9,6 +9,7 @@
 
 typedef struct Frame Frame;
 struct Frame {
+	char file[PATH_MAX + 1];
 	Img *img;
 	int tks;
 	int nxt;
@@ -39,17 +40,16 @@ static int readpath(FILE *f, char buf[], int len)
 	return i;
 }
 
-static bool readframes(Rcache *imgs, FILE *f, int n, Anim *a)
+static bool readframes(Rtab *imgs, FILE *f, int n, Anim *a)
 {
 	int i, err, ms, nxt;
-	char fname[PATH_MAX + 1];
 
 	for (i = 0; i < n; i++) {
 		if (fscanf(f, "%d %d\n", &ms, &nxt) != 2)
 			goto err;
-		if (readpath(f, fname, PATH_MAX + 1) > PATH_MAX)
+		if (readpath(f, a->frames[i].file, PATH_MAX + 1) > PATH_MAX)
 			goto err;
-		a->frames[i].img = resrc(imgs, fname, NULL);
+		a->frames[i].img = resrcacq(imgs, a->frames[i].file, NULL);
 		if (!a->frames[i].img)
 			goto err;
 		a->frames[i].tks = ms / Ticktm;
@@ -65,7 +65,7 @@ err:
 	return false;
 }
 
-Anim *animnew(Rcache *imgs, const char *path)
+Anim *animnew(Rtab *imgs, const char *path)
 {
 	assert (imgs);
 	int n;
@@ -91,8 +91,10 @@ err:
 	return NULL;
 }
 
-void animfree(Anim *a)
+void animfree(Rtab *imgs, Anim *a)
 {
+	for (int i = 0; i < a->nframes; i++)
+		resrcrel(imgs, a->frames[i].file, NULL);
 	free(a);
 }
 

@@ -5,7 +5,7 @@
 
 extern Gfx *gfx;
 
-Rcache *imgs;
+Rtab *imgs;
 
 void *imgload(const char *path, void *_ignrd)
 {
@@ -24,7 +24,7 @@ static Resrcops imgtype = {
 	.unload = imgunload,
 };
 
-Rcache *anim;
+Rtab *anim;
 
 void *animload(const char *path, void *_ignrd)
 {
@@ -35,7 +35,7 @@ void *animload(const char *path, void *_ignrd)
 void animunload(const char *path, void *anim, void *_info)
 {
 	pr("Unloading anim %s", path);
-	animfree(anim);
+	animfree(imgs, anim);
 }
 
 static Resrcops animtype = {
@@ -49,7 +49,7 @@ struct Txtinfo {
 	Color color;
 };
 
-Rcache *txt;
+Rtab *txt;
 
 void *txtload(const char *path, void *_info)
 {
@@ -92,7 +92,7 @@ static Resrcops txttype = {
 	.eq = txteq,
 };
 
-Rcache *music;
+Rtab *music;
 
 void *musicload(const char *path, void *_ignrd)
 {
@@ -111,7 +111,7 @@ static Resrcops musictype = {
 	.unload = musicunload,
 };
 
-Rcache *sfx;
+Rtab *sfx;
 
 void *sfxload(const char *path, void *_ignrd)
 {
@@ -132,28 +132,28 @@ static Resrcops sfxtype = {
 
 void initresrc()
 {
-	imgs = rcachenew(&imgtype);
+	imgs = rtabnew(&imgtype);
 	if (!imgs)
 		fatal("Failed to allocate img cache: %s", miderrstr());
-	anim = rcachenew(&animtype);
+	anim = rtabnew(&animtype);
 	if (!anim)
 		fatal("Failed to allocate anim cache: %s", miderrstr());
-	txt = rcachenew(&txttype);
+	txt = rtabnew(&txttype);
 	if (!txt)
 		fatal("Failed to allocate txt cache: %s", miderrstr());
-	music = rcachenew(&musictype);
+	music = rtabnew(&musictype);
 	if (!music)
 		fatal("Failed to allocate music cache: %s", miderrstr());
-	sfx = rcachenew(&sfxtype);
+	sfx = rtabnew(&sfxtype);
 	if (!sfx)
 		fatal("Failed to allocate sfx cache: %s", miderrstr());
 }
 
 void freeresrc()
 {
-	rcachefree(sfx);
-	rcachefree(music);
-	rcachefree(txt);
-	rcachefree(anim);
-	rcachefree(imgs);
+	rtabfree(sfx);
+	rtabfree(music);
+	rtabfree(txt);
+	rtabfree(anim);
+	rtabfree(imgs);
 }

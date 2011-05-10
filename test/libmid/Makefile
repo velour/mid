@@ -2,7 +2,6 @@ include ../../Make.inc
 
 TESTS :=\
 	fs\
-	resrc\
 
 HFILES :=\
 	../../include/mid.h\

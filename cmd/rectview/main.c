@@ -45,12 +45,12 @@ int main(int argc, const char *argv[]){
 	fillcolors();
 
 	Resrcops rop = { imgload, NULL, NULL, NULL };
-	Rcache *rc = rcachenew(&rop);
+	Rtab *rc = rtabnew(&rop);
 	if(!rc){
-		fprintf(stderr, "Failed to create cache: %s\n", miderrstr());
+		fprintf(stderr, "Failed to create rtab: %s\n", miderrstr());
 		return 1;
 	}
-	img = resrc(rc, argv[1], 0);
+	img = resrcacq(rc, argv[1], 0);
 	if(!img){
 		fprintf(stderr, "Failed to load img: %s\n", miderrstr());
 		return 1;
@@ -66,8 +66,9 @@ int main(int argc, const char *argv[]){
 
 	scrnrun(stk, gfx);
 
+	resrcrel(rc, argv[1], 0);
 	scrnstkfree(stk);
-	rcachefree(rc);
+	rtabfree(rc);
 	gfxfree(gfx);
 	printboxes();
 	return 0;

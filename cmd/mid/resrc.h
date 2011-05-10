@@ -4,10 +4,10 @@ struct Txtinfo {
 	Color color;
 };
 
-Rcache *imgs;
-Rcache *anim;
-Rcache *txt;
-Rcache *music;
-Rcache *sfx;
+Rtab *imgs;
+Rtab *anim;
+Rtab *txt;
+Rtab *music;
+Rtab *sfx;
 void initresrc();
 void freeresrc();
