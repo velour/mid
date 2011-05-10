@@ -4,12 +4,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include <errno.h>
 #include <ctype.h>
 
 typedef struct Frame Frame;
 struct Frame {
-	char file[PATH_MAX + 1];
+	char *file;
 	Img *img;
 	int tks;
 	int nxt;
@@ -40,18 +41,37 @@ static int readpath(FILE *f, char buf[], int len)
 	return i;
 }
 
+char *strdup(const char s[])
+{
+	int l = strlen(s);
+	char *dst = malloc(sizeof(*dst) * l);
+	if (!dst)
+		return NULL;
+	int i;
+	for (i = 0; i < l; i++)
+		dst[i] = s[i];
+	dst[i] = '\0';
+	return dst;
+}
+
 static bool readframes(Rtab *imgs, FILE *f, int n, Anim *a)
 {
 	int i, err, ms, nxt;
+	char file[PATH_MAX + 1];
 
 	for (i = 0; i < n; i++) {
 		if (fscanf(f, "%d %d\n", &ms, &nxt) != 2)
 			goto err;
-		if (readpath(f, a->frames[i].file, PATH_MAX + 1) > PATH_MAX)
+		if (readpath(f, file, PATH_MAX + 1) > PATH_MAX)
 			goto err;
-		a->frames[i].img = resrcacq(imgs, a->frames[i].file, NULL);
+		a->frames[i].img = resrcacq(imgs, file, NULL);
 		if (!a->frames[i].img)
 			goto err;
+		a->frames[i].file = strdup(file);
+		if (!a->frames[i].file) {
+			resrcrel(imgs, file, NULL);
+			goto err;
+		}
 		a->frames[i].tks = ms / Ticktm;
 		a->frames[i].nxt = nxt;
 	}
@@ -93,8 +113,10 @@ err:
 
 void animfree(Rtab *imgs, Anim *a)
 {
-	for (int i = 0; i < a->nframes; i++)
+	for (int i = 0; i < a->nframes; i++) {
 		resrcrel(imgs, a->frames[i].file, NULL);
+		free(a->frames[i].file);
+	}
 	free(a);
 }
 
