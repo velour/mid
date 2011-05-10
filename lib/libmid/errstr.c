@@ -6,12 +6,11 @@
 enum { Bufsz = 256 };
 
 const char *miderrstr(void){
-	if (errno != 0)
-		return strerror(errno);
+	int err = errno;
 
 	const char *e = SDL_GetError();
 	if(e[0] != '\0')
 		return e;
 
-	return "unknown";
+	return strerror(err);
 }
