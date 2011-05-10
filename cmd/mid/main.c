@@ -101,7 +101,7 @@ static void tmpdraw(Scrn *s, Gfx *gfx){
 
 static void tmphandle(Scrn *s, Scrnstk *stk, Event *e){
 	Maindata *md = s->data;
-	Sfx *pew;
+	static Sfx *pew;
 	switch(e->type){
 	case Quit:
 		scrnstkpop(stk);
@@ -115,12 +115,13 @@ static void tmphandle(Scrn *s, Scrnstk *stk, Event *e){
 		case 'e': md->dy = (e->down? md->dy-1 : 0); break;
 		case 'd': md->dy = (e->down? md->dy+1 : 0); break;
 		case 'p':
-			pew = resrcacq(sfx, "pew.wav", NULL);
-			if (!pew)
-				fatal("Failed to load pew.wav: %s",
-				      miderrstr());
+			if (!pew) {
+				pew = resrcacq(sfx, "pew.wav", NULL);
+				if (!pew)
+					fatal("Failed to load pew.wav: %s",
+					      miderrstr());
+			}
 			sfxplay(pew);
-			resrcrel(sfx, "pew.wav", NULL);
 			break;
 		default:
 			scrnstkpop(stk);
