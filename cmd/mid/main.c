@@ -36,7 +36,7 @@ Gfx *gfx;
 
 Txtinfo txtmain = {
 	.size = 32,
-	.color = (Color){ 255, 255, 255, 255 }
+	.color = { 255, 255, 255, 255 },
 };
 
 int main(int argc, char *argv[]){
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]){
 	if (!sndinit())
 		fatal("Failed to initialze sound: %s\n", miderrstr());
 
-	tmpdata.rect = (Rect){ (Point){ 0, 0 }, (Point){ 10, 10 } };
+	tmpdata.rect = (Rect){ .a = (Point){ 0, 0 }, .b = (Point){ 10, 10 } };
 	tmpdata.dx = 0;
 	tmpdata.dy = 0;
 	tmpdata.red = (Color){ 255, 0, 0, 255 };
