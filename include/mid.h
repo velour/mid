@@ -146,7 +146,7 @@ struct Resrcops {
 };
 
 /* The 3rd param is passed as aux data as the 2nd param of load. */
-void *resrc(Rcache *cache, const char *file, void *aux);
-Rcache *rcachenew(Resrcops *n);
+void *resrc(Rcache *, const char *file, void *aux);
+Rcache *rcachenew(Resrcops *);
 /* unloads all resources and frees the cache. */
-void rcachefree(Rcache *cache);
+void rcachefree(Rcache *);
