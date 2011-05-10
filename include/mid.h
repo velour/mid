@@ -140,9 +140,9 @@ unsigned int strhash(const char *);
 typedef struct Resrcops Resrcops;
 struct Resrcops {
 	void*(*load)(const char*, void*);
-	void(*unload)(const char*, void*, void*);
-	unsigned int (*hash)(const char*, void*);
-	_Bool (*eq)(void*, void*);
+	void(*unload)(const char*, void*, void*); /* may be NULL */
+	unsigned int (*hash)(const char*, void*); /* may be NULL */
+	_Bool (*eq)(void*, void*); /* may be NULL */
 };
 
 void *resrc(Rcache *cache, const char *file, void*);
