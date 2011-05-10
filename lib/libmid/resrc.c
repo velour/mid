@@ -21,12 +21,14 @@ struct Resrc {
 	char path[PATH_MAX + 1];
 	int refs;
 	Resrc *nxt;
+	Resrc *unxt;
 };
 
 struct Rtab {
 	Resrc **tbl;
 	int sz;
 	int fill;
+	Resrc *unref;
 	Resrcops *ops;
 };
 
@@ -118,6 +120,25 @@ static Resrc *resrcnew(const char *path, const char *file, void *aux)
 	return r;
 }
 
+static void rtabchksz(Rtab *t)
+{
+	if (t->fill * Fillfact < t->sz)
+		return;
+
+	Resrc *p, *q;
+	for (p = q = t->unref; p; p = q) {
+		q = p->nxt;
+		tblrem(t->ops, t->tbl, t->sz, p);
+		t->fill--;
+		t->ops->unload(p->path, p->resrc, p->aux);
+		free(p);
+	}
+	t->unref = NULL;
+
+	if (t->fill * Fillfact > t->sz)
+		rtabgrow(t);
+}
+
 static Resrc *resrcload(Rtab *t, const char *file, void *aux)
 {
 	char path[PATH_MAX + 1];
@@ -134,8 +155,7 @@ static Resrc *resrcload(Rtab *t, const char *file, void *aux)
 		return NULL;
 	r->resrc = t->ops->load(path, aux);
 	t->fill++;
-	if (t->fill * Fillfact > t->sz)
-		rtabgrow(t);
+	rtabchksz(t);
 	tblins(t->ops, t->tbl, t->sz, r);
 
 	return r;
@@ -157,9 +177,8 @@ void resrcrel(Rtab *t, const char *file, void *aux)
 		abort();
 	r->refs--;
 	if (r->refs == 0) {
-		tblrem(t->ops, t->tbl, t->sz, r);
-		t->ops->unload(r->path, r->resrc, r->aux);
-		free(r);
+		r->unxt = t->unref;
+		t->unref = r->unxt;
 	}
 }
 

@@ -69,10 +69,10 @@ int main(int argc, char *argv[]){
 
 	mainscrn.data = &tmpdata;
 
-	Music *m = resrcacq(music, "bgm_placeholder.ogg", NULL);
-	if (!m)
-		fatal("Failed to load bgm_placeholder.ogg");
-	musicstart(m, 0);
+//	Music *m = resrcacq(music, "bgm_placeholder.ogg", NULL);
+//	if (!m)
+//		fatal("Failed to load bgm_placeholder.ogg");
+//	musicstart(m, 0);
 
 	Scrnstk *stk = scrnstknew();
 	scrnstkpush(stk, &mainscrn);
@@ -115,13 +115,14 @@ static void tmphandle(Scrn *s, Scrnstk *stk, Event *e){
 		case 'e': md->dy = (e->down? md->dy-1 : 0); break;
 		case 'd': md->dy = (e->down? md->dy+1 : 0); break;
 		case 'p':
-			if (!pew) {
+//			if (!pew) {
 				pew = resrcacq(sfx, "pew.wav", NULL);
 				if (!pew)
 					fatal("Failed to load pew.wav: %s",
 					      miderrstr());
-			}
+	//		}
 			sfxplay(pew);
+			resrcrel(sfx, "pew.wav", NULL);
 			break;
 		default:
 			scrnstkpop(stk);
