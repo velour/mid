@@ -28,7 +28,7 @@ struct Rtab {
 	Resrc **tbl;
 	int sz;
 	int fill;
-	Resrc *unref;
+	Resrc *urefhd, *ureftl;
 	Resrcops *ops;
 };
 
@@ -120,21 +120,29 @@ static Resrc *resrcnew(const char *path, const char *file, void *aux)
 	return r;
 }
 
+static void junk1(Rtab *t)
+{
+	Resrc *p = t->urefhd;
+	if (!p)
+		return;
+	t->urefhd = p->nxt;
+	if (!t->urefhd)
+		t->ureftl = NULL;
+	if (p->refs > 0)
+		return;
+	tblrem(t->ops, t->tbl, t->sz, p);
+	t->fill--;
+	t->ops->unload(p->path, p->resrc, p->aux);
+	free(p);
+}
+
 static void rtabchksz(Rtab *t)
 {
 	if (t->fill * Fillfact < t->sz)
 		return;
-
-	Resrc *p, *q;
-	for (p = q = t->unref; p; p = q) {
-		q = p->nxt;
-		tblrem(t->ops, t->tbl, t->sz, p);
-		t->fill--;
-		t->ops->unload(p->path, p->resrc, p->aux);
-		free(p);
-	}
-	t->unref = NULL;
-
+	while (t->urefhd)
+		junk1(t);
+	assert(t->urefhd == NULL);
 	if (t->fill * Fillfact > t->sz)
 		rtabgrow(t);
 }
@@ -167,6 +175,7 @@ void *resrcacq(Rtab *t, const char *file, void *aux)
 	if (!r)
 		r = resrcload(t, file, aux);
 	r->refs++;
+	junk1(t);
 	return r->resrc;
 }
 
@@ -177,8 +186,15 @@ void resrcrel(Rtab *t, const char *file, void *aux)
 		abort();
 	r->refs--;
 	if (r->refs == 0) {
-		r->unxt = t->unref;
-		t->unref = r->unxt;
+		if (r->unxt)
+			return;
+		if (!t->urefhd) {
+			t->urefhd = r;
+			t->ureftl = r;
+		} else {
+			t->ureftl->nxt = r;
+			t->ureftl = r;
+		}
 	}
 }
 
