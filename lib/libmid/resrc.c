@@ -19,7 +19,7 @@ typedef struct Resrc Resrc;
 struct Resrc {
 	void *resrc, *aux;
 	char file[PATH_MAX + 1], path[PATH_MAX + 1];
-	int refs, cind;
+	int refs;
 	Resrc *nxt;
 	Resrc *unxt;
 };
@@ -112,7 +112,6 @@ static void rtabgrow(Rtab *t)
 static void cacherm(Rtab *t, int ind)
 {
 	t->cache[ind] = t->cache[t->cfill];
-	t->cache[ind]->cind = ind;
 	t->cfill--;
 }
 
@@ -127,7 +126,6 @@ static void cacheresrc(Rtab *t, Resrc *r)
 	}
 	assert (t->cfill < Cachesize);
 	t->cache[t->fill] = r;
-	r->cind = t->fill;
 	t->fill++;
 }
 
