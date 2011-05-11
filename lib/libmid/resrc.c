@@ -109,17 +109,12 @@ static void rtabgrow(Rtab *t)
 	t->sz = nxtsz;
 }
 
-static void cacherm(Rtab *t, int ind)
-{
-	t->cache[ind] = t->cache[t->cfill];
-	t->cfill--;
-}
-
 static void cacheresrc(Rtab *t, Resrc *r)
 {
 	if (t->cfill == Cachesize) {
 		Resrc *bump = t->cache[0];
-		cacherm(t, 0);
+		t->cache[0] = t->cache[t->cfill];
+		t->cfill--;
 		tblrem(t->ops, t->tbl, t->sz, bump);
 		t->ops->unload(bump->path, bump->resrc, bump->aux);
 		free(bump);
