@@ -1,3 +1,6 @@
+/* A resource table finds and tracks resource usage (reference
+ * counts).  A finite number of unreferenced resources are kept in a
+ * simple cache with a FIFO-ish replacement policy. */
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -7,28 +10,25 @@
 
 enum { Initsize = 257 };
 enum { Fillfact = 3 };
+enum { Cachesize = 100 };
 
 static const char *roots[] = { "resrc" };
 enum { NROOTS = sizeof(roots) / sizeof(roots[0]) };
 
 typedef struct Resrc Resrc;
 struct Resrc {
-	/* The loaded resource. */
-	void *resrc;
-	/* Extra info used to key on the resource. */
-	void *aux;
-	char file[PATH_MAX + 1];
-	char path[PATH_MAX + 1];
-	int refs;
+	void *resrc, *aux;
+	char file[PATH_MAX + 1], path[PATH_MAX + 1];
+	int refs, cind;
 	Resrc *nxt;
 	Resrc *unxt;
 };
 
 struct Rtab {
 	Resrc **tbl;
-	int sz;
-	int fill;
-	Resrc *urefhd, *ureftl;
+	int sz, fill;
+	Resrc *cache[Cachesize]; /* cache of unused nodes. */
+	int cfill;
 	Resrcops *ops;
 };
 
@@ -109,6 +109,28 @@ static void rtabgrow(Rtab *t)
 	t->sz = nxtsz;
 }
 
+static void cacherm(Rtab *t, int ind)
+{
+	t->cache[ind] = t->cache[t->cfill];
+	t->cache[ind]->cind = ind;
+	t->cfill--;
+}
+
+static void cacheresrc(Rtab *t, Resrc *r)
+{
+	if (t->cfill == Cachesize) {
+		Resrc *bump = t->cache[0];
+		cacherm(t, 0);
+		tblrem(t->ops, t->tbl, t->sz, bump);
+		t->ops->unload(bump->path, bump->resrc, bump->aux);
+		free(bump);
+	}
+	assert (t->cfill < Cachesize);
+	t->cache[t->fill] = r;
+	r->cind = t->fill;
+	t->fill++;
+}
+
 static Resrc *resrcnew(const char *path, const char *file, void *aux)
 {
 	Resrc *r = calloc(1, sizeof(*r));
@@ -119,33 +141,6 @@ static Resrc *resrcnew(const char *path, const char *file, void *aux)
 	r->aux = aux;
 
 	return r;
-}
-
-static void junk1(Rtab *t)
-{
-	Resrc *p = t->urefhd;
-	if (!p)
-		return;
-	t->urefhd = p->unxt;
-	if (!t->urefhd)
-		t->ureftl = NULL;
-	if (p->refs > 0)
-		return;
-	tblrem(t->ops, t->tbl, t->sz, p);
-	t->fill--;
-	t->ops->unload(p->path, p->resrc, p->aux);
-	free(p);
-}
-
-static void rtabchksz(Rtab *t)
-{
-	if (t->fill * Fillfact < t->sz)
-		return;
-	while (t->urefhd)
-		junk1(t);
-	assert(t->urefhd == NULL);
-	if (t->fill * Fillfact > t->sz)
-		rtabgrow(t);
 }
 
 static Resrc *resrcload(Rtab *t, const char *file, void *aux)
@@ -164,7 +159,8 @@ static Resrc *resrcload(Rtab *t, const char *file, void *aux)
 		return NULL;
 	r->resrc = t->ops->load(path, aux);
 	t->fill++;
-	rtabchksz(t);
+	if (t->fill * Fillfact >= t->sz)
+		rtabgrow(t);
 	tblins(t->ops, t->tbl, t->sz, r);
 
 	return r;
@@ -176,7 +172,6 @@ void *resrcacq(Rtab *t, const char *file, void *aux)
 	if (!r)
 		r = resrcload(t, file, aux);
 	r->refs++;
-	junk1(t);
 	return r->resrc;
 }
 
@@ -186,17 +181,8 @@ void resrcrel(Rtab *t, const char *file, void *aux)
 	if (!r)
 		abort();
 	r->refs--;
-	if (r->refs == 0) {
-		if (r->unxt)
-			return;
-		if (!t->urefhd) {
-			t->urefhd = r;
-			t->ureftl = r;
-		} else {
-			t->ureftl->unxt = r;
-			t->ureftl = r;
-		}
-	}
+	if (r->refs == 0)
+		cacheresrc(t, r);
 }
 
 Rtab *rtabnew(Resrcops *ops)
