@@ -88,6 +88,7 @@ static void tblrem(Resrcops *ops, Resrc *tbl[], int sz, Resrc *rm)
 static void tblins(Resrcops *ops, Resrc *tbl[], int sz, Resrc *r)
 {
 	unsigned int i = hash(ops, r->file, r->aux) % sz;
+	assert (!r->nxt);
 	r->nxt = tbl[i];
 	tbl[i] = r;
 }
@@ -125,7 +126,7 @@ static void junk1(Rtab *t)
 	Resrc *p = t->urefhd;
 	if (!p)
 		return;
-	t->urefhd = p->nxt;
+	t->urefhd = p->unxt;
 	if (!t->urefhd)
 		t->ureftl = NULL;
 	if (p->refs > 0)
@@ -192,7 +193,7 @@ void resrcrel(Rtab *t, const char *file, void *aux)
 			t->urefhd = r;
 			t->ureftl = r;
 		} else {
-			t->ureftl->nxt = r;
+			t->ureftl->unxt = r;
 			t->ureftl = r;
 		}
 	}
