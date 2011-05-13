@@ -95,6 +95,14 @@ void sfxplay(Sfx *);
 enum Eventty{
 	Quit,
 	Keychng,
+	Mousemv,
+	Mousebt,
+};
+
+enum{
+	Mouse1 = 1,
+	Mouse2 = Mouse1 << 1,
+	Mouse3 = Mouse2 << 1,
 };
 
 typedef struct Event Event;
@@ -104,6 +112,9 @@ struct Event{
 	_Bool down;
 	_Bool repeat;
 	char key;
+
+	float x, y, dx, dy;
+	int butt;
 };
 
 _Bool pollevent(Event *);

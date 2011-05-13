@@ -1,8 +1,8 @@
 #include "../../include/mid.h"
 #include <stdio.h>
 
-Gfx *gfx;
-Img *img;
+static Gfx *gfx;
+static Img *img;
 
 typedef struct Box Box;
 struct Box{
@@ -10,10 +10,11 @@ struct Box{
 	Rect r;
 };
 enum { Nboxes = 6 };
-const Color Trans = { 255, 255, 255, 200 };
-Box boxes[Nboxes];
-Color colors[Nboxes];
-unsigned char curbox = 0;
+static const Color Trans = { 255, 255, 255, 255 };
+static Box boxes[Nboxes];
+static Color colors[Nboxes];
+static unsigned char curbox = 0;
+static _Bool dragging = 0;
 
 static void fillcolors(void);
 static void drawboxes(void);
@@ -104,8 +105,9 @@ static void *imgload(const char *p, void *ignore){
 
 static void update(Scrn *s, Scrnstk *stk){
 }
-
+int frame = 0;
 static void draw(Scrn *s, Gfx *g){
+	fprintf(stderr, "drawing %d\n", frame++);
 	gfxclear(gfx, (Color){0,0,0,255});
 	imgdraw(gfx, img, (Point){0,0});
 	drawboxes();
@@ -118,8 +120,19 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	case Keychng:
 		scrnstkpop(stk);
 		return;
-	/*case Mousemv:*/
-	/*case Mouseclk:*/
+	case Mousemv:
+		if(dragging) boxes[curbox].r.b = (Point){ e->x, e->y };
+		break;
+	case Mousebt:
+		if(e->butt == Mouse1 && e->down){
+			dragging = 1;
+			boxes[curbox].used = 1;
+			boxes[curbox].r.a = (Point){ e->x, e->y };
+		}else if(e->butt == Mouse1 && !e->down){
+			dragging = 0;
+			curbox++;
+		}
+		break;
 	default:
 		break;
 	}

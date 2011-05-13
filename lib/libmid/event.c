@@ -34,6 +34,21 @@ _Bool pollevent(Event *event){
 		event->repeat = e.key.repeat != 0;
 		event->key = e.key.keysym.sym;
 		return 1;
+	case SDL_MOUSEMOTION:
+		event->type = Mousemv;
+		event->x = e.motion.x;
+		event->y = e.motion.y;
+		event->dx = e.motion.xrel;
+		event->dy = e.motion.yrel;
+		return 1;
+	case SDL_MOUSEBUTTONDOWN:
+	case SDL_MOUSEBUTTONUP:
+		event->type = Mousebt;
+		event->down = e.type == SDL_MOUSEBUTTONDOWN;
+		event->x = e.button.x;
+		event->y = e.button.y;
+		event->butt = e.button.button;
+		return 1;
 	default:
 		return 0;
 	}

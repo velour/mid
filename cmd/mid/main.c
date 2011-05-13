@@ -138,6 +138,8 @@ static void tmphandle(Scrn *s, Scrnstk *stk, Event *e){
 			scrnstkpop(stk);
 		}
 		break;
+	default:
+		break;
 	}
 }
 
