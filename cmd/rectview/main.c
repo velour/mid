@@ -107,7 +107,6 @@ static void update(Scrn *s, Scrnstk *stk){
 }
 int frame = 0;
 static void draw(Scrn *s, Gfx *g){
-	fprintf(stderr, "drawing %d\n", frame++);
 	gfxclear(gfx, (Color){0,0,0,255});
 	imgdraw(gfx, img, (Point){0,0});
 	drawboxes();
