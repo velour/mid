@@ -6,6 +6,7 @@ struct Txtinfo {
 
 Rtab *imgs;
 Rtab *anim;
+Rtab *lvls;
 Rtab *txt;
 Rtab *music;
 Rtab *sfx;

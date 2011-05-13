@@ -11,6 +11,7 @@ OFILES :=\
 	scrn.o\
 	snd.o\
 	anim.o\
+	lvl.o\
 
 HFILES :=\
 	../../include/mid.h\

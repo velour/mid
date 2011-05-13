@@ -159,3 +159,8 @@ Anim *animnew(Rtab *imgs, const char *);
 void animfree(Rtab *imgs, Anim *);
 void animupdate(Anim *, int);
 void animdraw(Gfx *, Anim *, Point);
+
+typedef struct Lvl Lvl;
+Lvl *lvlload(const char *path);
+void lvlfree(Lvl *l);
+void lvldraw(Gfx *g, Rtab *imgs, Lvl *l, int z, Point offs);

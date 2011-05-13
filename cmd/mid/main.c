@@ -12,6 +12,7 @@ struct Maindata{
 	Img *hi;
 	Anim *ship, *wlk;
 	Txt *hitxt;
+	Lvl *lvl;
 };
 
 static Maindata tmpdata;
@@ -69,6 +70,10 @@ int main(int argc, char *argv[]){
 	if (!tmpdata.wlk)
 		fatal("Failed to load wlk.anim: %s\n", miderrstr());
 
+	tmpdata.lvl = resrcacq(lvls, "0.lvl", NULL);
+	if (!tmpdata.lvl)
+		fatal("Failed to load 0.lvl: %s\n", miderrstr());
+
 	tmpdata.hitxt = resrcacq(txt, "FreeSans.ttf", &txtmain);
 	tmpdata.hi = txt2img(gfx, tmpdata.hitxt, "hi %s", "there");
 
@@ -101,6 +106,7 @@ static void tmpupdate(Scrn *s, Scrnstk *stk){
 static void tmpdraw(Scrn *s, Gfx *gfx){
 	Maindata *md = s->data;
 	gfxclear(gfx, md->red);
+	lvldraw(gfx, imgs, tmpdata.lvl, 0, (Point){0,0});
 	animdraw(gfx, md->ship, md->rect0.a);
 	animdraw(gfx, md->wlk, md->rect1.a);
 	imgdraw(gfx, md->hi, (Point){ 100, 100 });

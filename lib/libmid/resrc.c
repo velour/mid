@@ -19,7 +19,7 @@ typedef struct Resrc Resrc;
 struct Resrc {
 	void *resrc, *aux;
 	char file[PATH_MAX + 1], path[PATH_MAX + 1];
-	int refs;
+	int refs, cind;
 	Resrc *nxt;
 	Resrc *unxt;
 };
@@ -109,19 +109,28 @@ static void rtabgrow(Rtab *t)
 	t->sz = nxtsz;
 }
 
+static void cacherm(Rtab *t, int i)
+{
+	t->cache[i]->cind = -1;
+	t->cache[i] = t->cache[t->cfill];
+	t->cfill--;
+	if (t->cfill > 0)
+		t->cache[i]->cind = i;
+}
+
 static void cacheresrc(Rtab *t, Resrc *r)
 {
 	if (t->cfill == Cachesize) {
 		Resrc *bump = t->cache[0];
-		t->cache[0] = t->cache[t->cfill];
-		t->cfill--;
+		cacherm(t, 0);
 		tblrem(t->ops, t->tbl, t->sz, bump);
 		t->ops->unload(bump->path, bump->resrc, bump->aux);
 		free(bump);
 	}
 	assert (t->cfill < Cachesize);
-	t->cache[t->fill] = r;
-	t->fill++;
+	t->cache[t->cfill] = r;
+	r->cind = t->cfill;
+	t->cfill++;
 }
 
 static Resrc *resrcnew(const char *path, const char *file, void *aux)
@@ -132,6 +141,7 @@ static Resrc *resrcnew(const char *path, const char *file, void *aux)
 	strncpy(r->file, file, PATH_MAX + 1);
 	strncpy(r->path, path, PATH_MAX + 1);
 	r->aux = aux;
+	r->cind = -1;
 
 	return r;
 }
@@ -164,6 +174,8 @@ void *resrcacq(Rtab *t, const char *file, void *aux)
 	Resrc *r = tblfind(t->ops, t->tbl, t->sz, file, aux);
 	if (!r)
 		r = resrcload(t, file, aux);
+	else if (r->refs == 0)
+		cacherm(t, r->cind);
 	r->refs++;
 	return r->resrc;
 }

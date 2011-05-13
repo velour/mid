@@ -38,6 +38,24 @@ void animunload(const char *path, void *anim, void *_info)
 	animfree(imgs, anim);
 }
 
+Rtab *lvls;
+
+void *_lvlload(const char *path, void *_ignrd)
+{
+	return lvlload(path);
+}
+
+void lvlunload(const char *path, void *lvl, void *_ignrd)
+{
+	pr("Unloading lvl %s", path);
+	lvlfree(lvl);
+}
+
+static Resrcops lvltype = {
+	.load = _lvlload,
+	.unload = lvlunload,
+};
+
 static Resrcops animtype = {
 	.load = animload,
 	.unload = animunload,
@@ -138,6 +156,9 @@ void initresrc()
 	anim = rtabnew(&animtype);
 	if (!anim)
 		fatal("Failed to allocate anim cache: %s", miderrstr());
+	lvls = rtabnew(&lvltype);
+	if (!lvls)
+		fatal("Failed to allocate lvl cache: %s", miderrstr());
 	txt = rtabnew(&txttype);
 	if (!txt)
 		fatal("Failed to allocate txt cache: %s", miderrstr());
@@ -154,6 +175,7 @@ void freeresrc()
 	rtabfree(sfx);
 	rtabfree(music);
 	rtabfree(txt);
+	rtabfree(lvls);
 	rtabfree(anim);
 	rtabfree(imgs);
 }
