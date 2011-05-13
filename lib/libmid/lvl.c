@@ -82,9 +82,9 @@ void tiledraw(Gfx *g, Rtab *imgs, Tile t, Point pt)
 {
 	if (t != Land)
 		return;
-	Img *i = resrcacq(imgs, "land.png", NULL);
+	Img *i = resrcacq(imgs, "img/land.png", NULL);
 	imgdraw(g, i, pt);
-	resrcrel(imgs, "land.png", NULL);
+	resrcrel(imgs, "img/land.png", NULL);
 }
 
 void lvldraw(Gfx *g, Rtab *imgs, Lvl *l, int z, Point offs)

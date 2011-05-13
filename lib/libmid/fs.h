@@ -13,9 +13,7 @@
 
 /* Concatinate path names.  'cat' must be of size PATH_MAX + 1. */
 void fscat(const char *d, const char *f, char cat[]);
-_Bool isdir(const char *p);
-/* Find a file in the subtree rooted by 'root'.  'out' is the
- * resulting file, it must be of size PATH_MAX + 1. */
-_Bool fsfind(const char *root, const char *fname, char out[]);
+
+_Bool fsexists(const char *path);
 
 #endif  // !_FS_H_

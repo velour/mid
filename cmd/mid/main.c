@@ -62,24 +62,24 @@ int main(int argc, char *argv[]){
 	tmpdata.red = (Color){ 255, 0, 0, 255 };
 	tmpdata.white = (Color){ 255, 255, 255, 255 };
 
-	tmpdata.ship = resrcacq(anim, "shipcenter.anim", NULL);
+	tmpdata.ship = resrcacq(anim, "anim/shipcenter/anim", NULL);
 	if (!tmpdata.ship)
 		fatal("Failed to load shipcenter.anim: %s\n", miderrstr());
 
-	tmpdata.wlk = resrcacq(anim, "wlk.anim", NULL);
+	tmpdata.wlk = resrcacq(anim, "anim/wlk/anim", NULL);
 	if (!tmpdata.wlk)
 		fatal("Failed to load wlk.anim: %s\n", miderrstr());
 
-	tmpdata.lvl = resrcacq(lvls, "0.lvl", NULL);
+	tmpdata.lvl = resrcacq(lvls, "lvl/0.lvl", NULL);
 	if (!tmpdata.lvl)
 		fatal("Failed to load 0.lvl: %s\n", miderrstr());
 
-	tmpdata.hitxt = resrcacq(txt, "FreeSans.ttf", &txtmain);
+	tmpdata.hitxt = resrcacq(txt, "txt/FreeSans.ttf", &txtmain);
 	tmpdata.hi = txt2img(gfx, tmpdata.hitxt, "hi %s", "there");
 
 	mainscrn.data = &tmpdata;
 
-	Music *m = resrcacq(music, "bgm_placeholder.ogg", NULL);
+	Music *m = resrcacq(music, "music/bgm_placeholder.ogg", NULL);
 	if (!m)
 		fatal("Failed to load bgm_placeholder.ogg");
 	musicstart(m, 0);
@@ -130,13 +130,13 @@ static void tmphandle(Scrn *s, Scrnstk *stk, Event *e){
 		case 'd': md->dy = (e->down? md->dy+1 : 0); break;
 		case 'p':
 //			if (!pew) {
-				pew = resrcacq(sfx, "pew.wav", NULL);
+				pew = resrcacq(sfx, "sfx/pew.wav", NULL);
 				if (!pew)
 					fatal("Failed to load pew.wav: %s",
 					      miderrstr());
 	//		}
 			sfxplay(pew);
-			resrcrel(sfx, "pew.wav", NULL);
+			resrcrel(sfx, "sfx/pew.wav", NULL);
 			break;
 		default:
 			scrnstkpop(stk);

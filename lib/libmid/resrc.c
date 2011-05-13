@@ -151,8 +151,8 @@ static Resrc *resrcload(Rtab *t, const char *file, void *aux)
 	char path[PATH_MAX + 1];
 	bool found = false;
 	for (int i = 0; !found && i < NROOTS; i += 1) {
-		if (fsfind(roots[i], file, path))
-			found = true;
+		fscat(roots[i], file, path);
+		found = fsexists(path);
 	}
 	if (!found)
 		return NULL;
