@@ -4,10 +4,10 @@
 #include <stdbool.h>
 #include <errno.h>
 
+enum { Theight = 32, Twidth = 32 };
+
 typedef enum Tile Tile;
 enum Tile { Blank = ' ', Land = 'l' };
-
-enum { Theight = 32, Twidth = 32 };
 
 bool istile(int c)
 {
