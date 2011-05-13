@@ -1,4 +1,5 @@
 const char *miderrstr(void);
+void seterrstr(const char *fmt, ...);
 
 typedef struct Point Point;
 struct Point{

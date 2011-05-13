@@ -35,6 +35,24 @@ void lvlfree(Lvl *l)
 	free(l);
 }
 
+int tileread(FILE *f)
+{
+	int c = fgetc(f);
+	if (c == EOF) {
+		seterrstr("Unexpected EOF");
+		goto err;
+	}
+
+	if (!istile(c)) {
+		seterrstr("Invalid tile: %c\n", c);
+		goto err;
+	}
+	return c;
+err:
+	return -1;
+}
+
+
 Lvl *lvlread(FILE *f)
 {
 	int w, h, d;
@@ -42,25 +60,29 @@ Lvl *lvlread(FILE *f)
 	Lvl *l = lvlnew(d, w, h);
 	if (!l)
 		return NULL;
+	int x, y, z;
+	x = y = z = 0;
 	if (fgetc(f) != '\n')
-		goto err;
-	for (int z = 0; z < d; z++) {
+		goto errnl;
+	for (z = 0; z < d; z++) {
 		int base = z * w * h;
-		for (int y = 0; y < h; y++) {
-			for (int x = 0; x < w; x++){
+		for (y = 0; y < h; y++) {
+			for (x = 0; x < w; x++){
 				int ind = base + x * h + y;
-				int c = fgetc(f);
-				if (c == EOF || !istile(c))
+				int c = tileread(f);
+				if (c < 0)
 					goto err;
 				l->tiles[ind] = c;
 			}
 			if (fgetc(f) != '\n')
-				goto err;
+				goto errnl;
 		}
 		if (z < d - 1 && fgetc(f) != '\n')
-			goto err;
+			goto errnl;
 	}
 	return l;
+errnl:
+	seterrstr("Expected newline in level file: z=%d, x=%d, y=%d", z, x, y);
 err:
 	free(l);
 	return NULL;

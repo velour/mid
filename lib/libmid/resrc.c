@@ -174,10 +174,10 @@ void *resrcacq(Rtab *t, const char *file, void *aux)
 	Resrc *r = tblfind(t->ops, t->tbl, t->sz, file, aux);
 	if (!r)
 		r = resrcload(t, file, aux);
-	if (!r)
-		return NULL;
 	else if (r->refs == 0)
 		cacherm(t, r->cind);
+	if (!r)
+		return NULL;
 	r->refs++;
 	return r->resrc;
 }
