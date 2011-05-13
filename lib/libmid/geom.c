@@ -21,9 +21,14 @@ Line1d rectprojy(Rect r){
 	return (Line1d){ .a = r.a.y, .b = r.b.y };
 }
 
+void ptmv(Point *p, float dx, float dy) {
+	p->x += dx;
+	p->y += dy;
+}
+
 void rectmv(Rect *r, float dx, float dy){
-	r->a = (Point){ .x = r->a.x + dx, .y = r->a.y + dy };
-	r->b = (Point){ .x = r->b.x + dx, .y = r->b.y + dy };
+	ptmv(&r->a, dx, dy);
+	ptmv(&r->b, dx, dy);
 }
 
 Isect isection(Rect a, Rect b){

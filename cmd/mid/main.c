@@ -6,13 +6,15 @@
 
 typedef struct Maindata Maindata;
 struct Maindata{
-	Rect rect0, rect1;
 	float dx, dy;
 	Color red, white;
-	Img *hi;
-	Anim *wlk;
-	Txt *hitxt;
+
+	Point offs, loc;
 	Lvl *lvl;
+	Anim *wlk;
+
+	Img *hi;
+	Txt *hitxt;
 };
 
 static Maindata tmpdata;
@@ -55,12 +57,12 @@ int main(int argc, char *argv[]){
 
 	initresrc();
 
-	tmpdata.rect0 = (Rect){ .a = (Point){ 0, 0 }, .b = (Point){ 10, 10 } };
-	tmpdata.rect1 = (Rect){ .a = (Point){ 100, 0 }, .b = (Point){ 0, 0 } };
 	tmpdata.dx = 0;
 	tmpdata.dy = 0;
 	tmpdata.red = (Color){ 255, 0, 0, 255 };
 	tmpdata.white = (Color){ 255, 255, 255, 255 };
+	tmpdata.loc = (Point){ 100, 68 };
+	tmpdata.offs = (Point){ 0, 0 };
 
 	tmpdata.wlk = resrcacq(anim, "anim/wlk/anim", NULL);
 	if (!tmpdata.wlk)
@@ -94,16 +96,15 @@ int main(int argc, char *argv[]){
 static void tmpupdate(Scrn *s, Scrnstk *stk){
 	Maindata *md = s->data;
 	animupdate(md->wlk, 1);
-	rectmv(&md->rect0, md->dx, md->dy);
-	rectmv(&md->rect1, md->dx, md->dy);
+	ptmv(&md->offs, -md->dx, -md->dy);
 }
 
 static void tmpdraw(Scrn *s, Gfx *gfx){
 	Maindata *md = s->data;
 	gfxclear(gfx, md->red);
-	lvldraw(gfx, imgs, tmpdata.lvl, 0, (Point){-md->rect0.a.x, -md->rect0.a.y});
-	animdraw(gfx, md->wlk, md->rect1.a);
-	imgdraw(gfx, md->hi, (Point){ 100, 100 });
+	lvldraw(gfx, imgs, tmpdata.lvl, 0, md->offs);
+	animdraw(gfx, md->wlk, md->loc);
+	imgdraw(gfx, md->hi, (Point){ 100, 360 });
 	gfxflip(gfx);
 }
 

@@ -24,6 +24,7 @@ struct Rect{
 Line1d rectprojx(Rect);
 Line1d rectprojy(Rect);
 void rectmv(Rect *, float dx, float dy);
+void ptmv(Point *, float dx, float dy);
 
 typedef struct Isect Isect;
 struct Isect{
