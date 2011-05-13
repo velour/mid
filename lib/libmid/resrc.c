@@ -124,7 +124,8 @@ static void cacheresrc(Rtab *t, Resrc *r)
 		Resrc *bump = t->cache[0];
 		cacherm(t, 0);
 		tblrem(t->ops, t->tbl, t->sz, bump);
-		t->ops->unload(bump->path, bump->resrc, bump->aux);
+		if (t->ops->unload)
+			t->ops->unload(bump->path, bump->resrc, bump->aux);
 		free(bump);
 	}
 	assert (t->cfill < Cachesize);
@@ -208,7 +209,8 @@ void rtabfree(Rtab *t)
 	for (int i = 0; i < t->sz; i += 1) {
 		Resrc *p, *q;
 		for (p = q = t->tbl[i]; p; p = q) {
-			t->ops->unload(p->path, p->resrc, p->aux);
+			if (t->ops->unload)
+				t->ops->unload(p->path, p->resrc, p->aux);
 			q = p->nxt;
 			free(p);
 		}
