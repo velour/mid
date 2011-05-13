@@ -69,7 +69,9 @@ static bool readframes(Rtab *imgs, FILE *f, int n, Anim *a)
 			goto err;
 		a->frames[i].file = strdup(file);
 		if (!a->frames[i].file) {
+			err = errno;
 			resrcrel(imgs, file, NULL);
+			errno = err;
 			goto err;
 		}
 		a->frames[i].tks = ms / Ticktm;
