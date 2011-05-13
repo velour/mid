@@ -106,7 +106,7 @@ static void tmpupdate(Scrn *s, Scrnstk *stk){
 static void tmpdraw(Scrn *s, Gfx *gfx){
 	Maindata *md = s->data;
 	gfxclear(gfx, md->red);
-	lvldraw(gfx, imgs, tmpdata.lvl, 0, (Point){0,0});
+	lvldraw(gfx, imgs, tmpdata.lvl, 0, md->rect0.a);
 	animdraw(gfx, md->ship, md->rect0.a);
 	animdraw(gfx, md->wlk, md->rect1.a);
 	imgdraw(gfx, md->hi, (Point){ 100, 100 });
