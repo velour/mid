@@ -117,17 +117,22 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	switch(e->type){
 	case Quit:
 	case Keychng:
-		scrnstkpop(stk);
+		if(e->key == 'q')
+			scrnstkpop(stk);
+		else if(e->key == 'u' && curbox != 0){
+			curbox--;
+			boxes[curbox].used = 0;
+		}
 		return;
 	case Mousemv:
 		if(dragging) boxes[curbox].r.b = (Point){ e->x, e->y };
 		break;
 	case Mousebt:
-		if(e->butt == Mouse1 && e->down){
+		if(e->butt == Mouse1 && e->down && curbox != Nboxes){
 			dragging = 1;
 			boxes[curbox].used = 1;
 			boxes[curbox].r.a = (Point){ e->x, e->y };
-		}else if(e->butt == Mouse1 && !e->down){
+		}else if(e->butt == Mouse1 && !e->down && curbox != Nboxes){
 			dragging = 0;
 			curbox++;
 		}
