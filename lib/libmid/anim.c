@@ -123,10 +123,10 @@ void animfree(Rtab *imgs, Anim *a)
 void animupdate(Anim *a, int n)
 {
 	a->rem -= n;
-	if (a->rem > 0 || a->frames[a->cur].nxt < 0)
+	int nxt = a->frames[a->cur].nxt;
+	if (a->rem > 0 || nxt < 0)
 		return;
 
-	int nxt = a->frames[a->cur].nxt;
 	int tks = a->frames[nxt].tks;
 	a->cur = nxt;
 	a->rem = tks + a->rem; /* a->rem may be negative */
