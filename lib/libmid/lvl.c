@@ -7,11 +7,11 @@
 enum { Theight = 32, Twidth = 32 };
 
 typedef enum Tile Tile;
-enum Tile { Blank = ' ', Land = 'l' };
+enum Tile { Blank = ' ', Land = 'l', Water = 'w' };
 
 bool istile(int c)
 {
-	return c == Blank || c == Land;
+	return c == Blank || c == Land || c == Water;
 }
 
 struct Lvl {
@@ -78,15 +78,20 @@ Lvl *lvlload(const char *path)
 	return  l;
 }
 
+static char *pallet[] = {
+	['l'] = "anim/land/anim",
+	['w'] = "anim/water/anim",
+};
+
+static Anim *tanims[sizeof(pallet) / sizeof(pallet[0])];
+
 void tiledraw(Gfx *g, Rtab *anims, Tile t, Point pt)
 {
-	if (t != Land)
+	if (pallet[t] == NULL)
 		return;
-	Anim *a = resrcacq(anims, "anim/land/anim", NULL);
-	if (!a)
-		abort();
-	animdraw(g, a, pt);
-	resrcrel(anims, "anim/land/anim", NULL);
+	if (tanims[t] == NULL)
+		tanims[t] = resrcacq(anims, pallet[t], NULL);
+	animdraw(g, tanims[t], pt);
 }
 
 void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, Point offs)
@@ -106,5 +111,7 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, Point offs)
 
 void lvlupdate(Gfx *g, Rtab *anims, Lvl *l)
 {
-	/* noop */
+	for (int i = 0; i < sizeof(tanims) / sizeof(tanims[0]); i++)
+		if (tanims[i])
+			animupdate(tanims[i], 1);
 }
