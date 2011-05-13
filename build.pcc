@@ -1,0 +1,5 @@
+#!/bin/sh
+export PATH=`pwd`:$PATH
+export CC=pcc
+export LD=pcc
+exec make -rR $@
