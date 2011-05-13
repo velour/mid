@@ -10,7 +10,7 @@ struct Maindata{
 	float dx, dy;
 	Color red, white;
 	Img *hi;
-	Anim *ship, *wlk;
+	Anim *wlk;
 	Txt *hitxt;
 	Lvl *lvl;
 };
@@ -62,10 +62,6 @@ int main(int argc, char *argv[]){
 	tmpdata.red = (Color){ 255, 0, 0, 255 };
 	tmpdata.white = (Color){ 255, 255, 255, 255 };
 
-	tmpdata.ship = resrcacq(anim, "anim/shipcenter/anim", NULL);
-	if (!tmpdata.ship)
-		fatal("Failed to load shipcenter.anim: %s\n", miderrstr());
-
 	tmpdata.wlk = resrcacq(anim, "anim/wlk/anim", NULL);
 	if (!tmpdata.wlk)
 		fatal("Failed to load wlk.anim: %s\n", miderrstr());
@@ -97,7 +93,6 @@ int main(int argc, char *argv[]){
 
 static void tmpupdate(Scrn *s, Scrnstk *stk){
 	Maindata *md = s->data;
-	animupdate(md->ship, 1);
 	animupdate(md->wlk, 1);
 	rectmv(&md->rect0, md->dx, md->dy);
 	rectmv(&md->rect1, md->dx, md->dy);
@@ -106,8 +101,7 @@ static void tmpupdate(Scrn *s, Scrnstk *stk){
 static void tmpdraw(Scrn *s, Gfx *gfx){
 	Maindata *md = s->data;
 	gfxclear(gfx, md->red);
-	lvldraw(gfx, imgs, tmpdata.lvl, 0, md->rect0.a);
-	animdraw(gfx, md->ship, md->rect0.a);
+	lvldraw(gfx, imgs, tmpdata.lvl, 0, (Point){-md->rect0.a.x, -md->rect0.a.y});
 	animdraw(gfx, md->wlk, md->rect1.a);
 	imgdraw(gfx, md->hi, (Point){ 100, 100 });
 	gfxflip(gfx);
