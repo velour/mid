@@ -164,4 +164,5 @@ void animdraw(Gfx *, Anim *, Point);
 typedef struct Lvl Lvl;
 Lvl *lvlload(const char *path);
 void lvlfree(Lvl *l);
-void lvldraw(Gfx *g, Rtab *imgs, Lvl *l, int z, Point offs);
+void lvlupdate(Gfx *g, Rtab *anims, Lvl *l);
+void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, Point offs);

@@ -95,6 +95,7 @@ int main(int argc, char *argv[]){
 
 static void tmpupdate(Scrn *s, Scrnstk *stk){
 	Maindata *md = s->data;
+	lvlupdate(gfx, anim, tmpdata.lvl);
 	animupdate(md->wlk, 1);
 	ptmv(&md->offs, -md->dx, -md->dy);
 }
@@ -102,7 +103,7 @@ static void tmpupdate(Scrn *s, Scrnstk *stk){
 static void tmpdraw(Scrn *s, Gfx *gfx){
 	Maindata *md = s->data;
 	gfxclear(gfx, md->red);
-	lvldraw(gfx, imgs, tmpdata.lvl, 0, md->offs);
+	lvldraw(gfx, anim, tmpdata.lvl, 0, md->offs);
 	animdraw(gfx, md->wlk, md->loc);
 	imgdraw(gfx, md->hi, (Point){ 100, 360 });
 	gfxflip(gfx);

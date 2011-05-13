@@ -1,3 +1,5 @@
+/* TODO: actual handling of animations with only 1 frame. */
+
 #include "../../include/mid.h"
 #include "fs.h"
 #include <assert.h>

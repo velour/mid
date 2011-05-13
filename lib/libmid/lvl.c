@@ -78,16 +78,18 @@ Lvl *lvlload(const char *path)
 	return  l;
 }
 
-void tiledraw(Gfx *g, Rtab *imgs, Tile t, Point pt)
+void tiledraw(Gfx *g, Rtab *anims, Tile t, Point pt)
 {
 	if (t != Land)
 		return;
-	Img *i = resrcacq(imgs, "img/land.png", NULL);
-	imgdraw(g, i, pt);
-	resrcrel(imgs, "img/land.png", NULL);
+	Anim *a = resrcacq(anims, "anim/land/anim", NULL);
+	if (!a)
+		abort();
+	animdraw(g, a, pt);
+	resrcrel(anims, "anim/land/anim", NULL);
 }
 
-void lvldraw(Gfx *g, Rtab *imgs, Lvl *l, int z, Point offs)
+void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, Point offs)
 {
 	int w = l->w, h = l->h;
 	int base = z * w * h;
@@ -97,7 +99,12 @@ void lvldraw(Gfx *g, Rtab *imgs, Lvl *l, int z, Point offs)
 			Tile t = l->tiles[ind];
 			Point pt = (Point){ offs.x + x * Twidth,
 					    offs.y + y * Theight };
-			tiledraw(g, imgs, t, pt);
+			tiledraw(g, anims, t, pt);
 		}
 	}
+}
+
+void lvlupdate(Gfx *g, Rtab *anims, Lvl *l)
+{
+	/* noop */
 }
