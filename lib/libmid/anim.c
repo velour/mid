@@ -66,7 +66,7 @@ static bool readframes(Rtab *imgs, FILE *f, int n, Anim *a)
 			goto err;
 		a->frames[i].img = resrcacq(imgs, file, NULL);
 		if (!a->frames[i].img) {
-			seterrstr("animation %f: Failed to load image %s", f, file);
+			seterrstr("animation %s: Failed to load image %s", f, file);
 			goto err;
 		}
 		a->frames[i].file = strdup(file);
