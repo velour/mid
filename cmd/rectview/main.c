@@ -107,7 +107,6 @@ static void update(Scrn *s, Scrnstk *stk){
 }
 int frame = 0;
 static void draw(Scrn *s, Gfx *g){
-	fprintf(stderr, "drawing %d\n", frame++);
 	gfxclear(gfx, (Color){0,0,0,255});
 	imgdraw(gfx, img, (Point){0,0});
 	drawboxes();
@@ -118,17 +117,22 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	switch(e->type){
 	case Quit:
 	case Keychng:
-		scrnstkpop(stk);
+		if(e->key == 'q')
+			scrnstkpop(stk);
+		else if(e->key == 'u' && curbox != 0){
+			curbox--;
+			boxes[curbox].used = 0;
+		}
 		return;
 	case Mousemv:
 		if(dragging) boxes[curbox].r.b = (Point){ e->x, e->y };
 		break;
 	case Mousebt:
-		if(e->butt == Mouse1 && e->down){
+		if(e->butt == Mouse1 && e->down && curbox != Nboxes){
 			dragging = 1;
 			boxes[curbox].used = 1;
 			boxes[curbox].r.a = (Point){ e->x, e->y };
-		}else if(e->butt == Mouse1 && !e->down){
+		}else if(e->butt == Mouse1 && !e->down && curbox != Nboxes){
 			dragging = 0;
 			curbox++;
 		}
