@@ -60,7 +60,7 @@ void scrnrun(Scrnstk *stk, Gfx *g){
 		Event e;
 		while(pollevent(&e)){
 			if(e.type == Quit)
-				break;
+				return;
 			s->mt->handle(s, stk, &e);
 		}
 
