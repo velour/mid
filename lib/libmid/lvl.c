@@ -6,18 +6,22 @@
 
 enum { Theight = 32, Twidth = 32 };
 
+enum { Collide = 1<<0,
+       Bkgrnd = 1<<1,
+       Water = 1<<2,
+};
+
 typedef struct Tinfo Tinfo;
 struct Tinfo {
 	char *afile;
 	Anim *anim;
-	bool collide;
-	bool bkgrnd;
+	unsigned int flags;
 };
 
 static Tinfo *tiles[] = {
-	[' '] = &(Tinfo){ .afile = "anim/blank/anim", .collide = false, .bkgrnd = true },
-	['l'] = &(Tinfo){ .afile = "anim/land/anim", .collide = true, .bkgrnd = true },
-	['w'] = &(Tinfo){ .afile = "anim/water/anim", .collide = false, .bkgrnd = false },
+	[' '] = &(Tinfo){ .afile = "anim/blank/anim", .flags = Bkgrnd },
+	['l'] = &(Tinfo){ .afile = "anim/land/anim", .flags = Collide|Bkgrnd },
+	['w'] = &(Tinfo){ .afile = "anim/water/anim", .flags = Water },
 };
 
 const int ntiles = sizeof(tiles) / sizeof(tiles[0]);
@@ -113,20 +117,33 @@ Lvl *lvlload(const char *path)
 	return  l;
 }
 
-void tiledraw(Gfx *g, Rtab *anims, int t, bool bkgrnd, Point pt)
+void drawtile(Gfx *g, Rtab *anims, int t, Point pt)
 {
-	if (tiles[t] && bkgrnd && !tiles[t]->bkgrnd) {
-		Rect r = (Rect){{pt.x, pt.y}, {pt.x + Twidth, pt.y + Theight}};
-		gfxfillrect(g, r, (Color){255,255,255,255});
-		return;
-	}
-	if (!tiles[t] || (!bkgrnd && tiles[t]->bkgrnd))
-		return;
 	if (tiles[t]->anim == NULL)
 		tiles[t]->anim = resrcacq(anims, tiles[t]->afile, NULL);
 	if (!tiles[t]->anim)
 		abort();
 	animdraw(g, tiles[t]->anim, pt);
+}
+
+void bkgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
+{
+	if (!tiles[t])
+		return;
+	if (!(tiles[t]->flags & Bkgrnd)) {
+		/* White background behind foreground tiles so
+		 * blending works correctly. */
+		Rect r = (Rect){{pt.x, pt.y}, {pt.x + Twidth, pt.y + Theight}};
+		gfxfillrect(g, r, (Color){255,255,255,255});
+		return;
+	}
+	drawtile(g, anims, t, pt);
+}
+void fgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
+{
+	if (!tiles[t] || tiles[t]->flags & Bkgrnd)
+		return;
+	drawtile(g, anims, t, pt);
 }
 
 void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, bool bkgrnd, Point offs)
@@ -139,7 +156,10 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, bool bkgrnd, Point offs)
 			int ind = base + x * h + y;
 			int t = l->tiles[ind];
 			Point pt = (Point){ pxx, offs.y + y * Theight };
-			tiledraw(g, anims, t, bkgrnd, pt);
+			if (bkgrnd)
+				bkgrnddraw(g, anims, t, pt);
+			else
+				fgrnddraw(g, anims, t, pt);
 		}
 	}
 }
