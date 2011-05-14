@@ -23,6 +23,7 @@ Player *playernew(int x, int y)
 		fatal("Failed to load the player animation: %s", miderrstr());
 	p->bbox = (Rect){ { x, y }, { x + Wide, y - Tall } };
 	p->scrloc = (Point) { x, y - Tall };
+	p->dx = p->dy = 0;
 	return p;
 }
 
