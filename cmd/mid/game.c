@@ -37,7 +37,7 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 {
 	Game *gm = s->data;
 	lvlupdate(anim, gm->lvl);
-	playerupdate(gm->player);
+	playerupdate(gm->player, &gm->transl);
 }
 
 void gamedraw(Scrn *s, Gfx *g)
@@ -52,7 +52,7 @@ void gamedraw(Scrn *s, Gfx *g)
 void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 {
 	Game *gm = s->data;
-	playerhandle(gm->player, &gm->transl, e);
+	playerhandle(gm->player, e);
 }
 
 Scrnmt gamemt = {
