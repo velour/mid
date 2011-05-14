@@ -40,7 +40,7 @@ void playerdraw(Gfx *g, Player *p, Point tr)
 	animdraw(g, p->cur, p->scrloc);
 }
 
-enum { Dx = 2, Dy = 2 };
+enum { Dx = 5, Dy = 5 };
 
 void playermv(Player *p, Point *tr, int dx, int dy)
 {
