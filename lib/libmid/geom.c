@@ -14,11 +14,17 @@ float isection1d(Line1d a, Line1d b){
 }
 
 Line1d rectprojx(Rect r){
-	return (Line1d){ .a = r.a.x, .b = r.b.x };
+	if(r.a.x < r.b.x)
+		return (Line1d){ .a = r.a.x, .b = r.b.x };
+	else
+		return (Line1d){ .a = r.b.x, .b = r.a.x };
 }
 
 Line1d rectprojy(Rect r){
-	return (Line1d){ .a = r.a.y, .b = r.b.y };
+	if(r.a.y < r.b.y)
+		return (Line1d){ .a = r.a.y, .b = r.b.y };
+	else
+		return (Line1d){ .a = r.b.y, .b = r.a.y };
 }
 
 void ptmv(Point *p, float dx, float dy) {
