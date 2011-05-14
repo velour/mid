@@ -101,21 +101,15 @@ Lvl *lvlload(const char *path)
 }
 
 static char *pallet[] = {
+	[' '] = "anim/blank/anim",
 	['l'] = "anim/land/anim",
 	['w'] = "anim/water/anim",
 };
 
 static Anim *tanims[sizeof(pallet) / sizeof(pallet[0])];
 
-static Color bkgrnd = { 96, 96, 96, 255 };
-
 void tiledraw(Gfx *g, Rtab *anims, Tile t, Point pt)
 {
-	if (t == Blank) {
-		Rect r = (Rect){{pt.x, pt.y + Theight}, {pt.x + Twidth, pt.y}};
-		gfxfillrect(g, r, bkgrnd);
-		return;
-	}
 	if (pallet[t] == NULL)
 		return;
 	if (tanims[t] == NULL)

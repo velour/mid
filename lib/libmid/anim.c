@@ -65,7 +65,6 @@ static bool readframes(Rtab *imgs, FILE *f, int n, Anim *a)
 			goto err;
 		if (readpath(f, file, PATH_MAX + 1) > PATH_MAX)
 			goto err;
-		pr("file=[%s]\n", file);
 		a->frames[i].img = resrcacq(imgs, file, NULL);
 		if (!a->frames[i].img) {
 			seterrstr("Failed to load image: %s", file);
