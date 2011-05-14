@@ -12,7 +12,7 @@ void seterrstr(const char *fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
-	snprintf(curerr, Bufsz + 1, fmt, ap);
+	vsnprintf(curerr, Bufsz + 1, fmt, ap);
 	va_end(ap);
 }
 
