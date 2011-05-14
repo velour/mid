@@ -45,7 +45,7 @@ static int readpath(FILE *f, char buf[], int len)
 char *strdup(const char s[])
 {
 	int l = strlen(s);
-	char *dst = malloc(sizeof(*dst) * l);
+	char *dst = malloc(sizeof(*dst) * l + 1);
 	if (!dst)
 		return NULL;
 	int i;
