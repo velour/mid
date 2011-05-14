@@ -8,12 +8,12 @@
 enum { Tall = 32, Wide = 32 };
 
 /* Movement speed. */
-enum { Dx = 3, Dy = 3 };
+enum { Dx = 3, Dy = 3, Maxdy = 12 };
 
 struct Player {
 	Rect bbox;
 	Point scrloc;
-	float dx, dy;
+	float dx, dy, ddy;
 	Anim *walkl, *walkr, *cur;
 };
 
@@ -27,7 +27,7 @@ Player *playernew(int x, int y)
 		fatal("Failed to load the player animation: %s", miderrstr());
 	p->bbox = (Rect){ { x, y }, { x + Wide, y - Tall } };
 	p->scrloc = (Point) { x, y - Tall };
-	p->dx = p->dy = 0.0;
+	p->dx = p->dy = p->ddy =  0.0;
 	return p;
 }
 
@@ -45,6 +45,7 @@ void playermv(Player *p, Lvl *l, int z, Point *tr, float dx, float dy)
 		float ddy = dy < 0 ? is.dy : -is.dy;
 		dx += ddx;
 		dy += ddy;
+		if(ddy) p->ddy = 0;
 		rectmv(&p->bbox, ddx, ddy);
 	}
 	if ((dx < 0 && p->scrloc.x < Scrlbuf) || (dx > 0 && p->scrloc.x > Scrnw - Scrlbuf))
@@ -62,6 +63,7 @@ void playerupdate(Player *p, Lvl *l, int z, Point *tr)
 {
 	animupdate(p->cur, 1);
 	playermv(p, l, z, tr, p->dx, p->dy);
+	p->dy += p->ddy;
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
@@ -82,8 +84,8 @@ void playerhandle(Player *p, Event *e)
 	case 'f':
 		p->dx = (e->down ? Dx : 0.0); break;
 	case 'e':
-		p->dy = (e->down ? -Dy : 0.0); break;
-	case 'd':
-		p->dy = (e->down ? Dy : 0.0); break;
+		p->dy = (e->down ? -Dy : 0.0);
+		p->ddy = 1.0;
+		break;
 	}
 }
