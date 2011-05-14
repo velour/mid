@@ -100,24 +100,37 @@ Lvl *lvlload(const char *path)
 	return  l;
 }
 
-static char *pallet[] = {
-	[' '] = "anim/blank/anim",
-	['l'] = "anim/land/anim",
-	['w'] = "anim/water/anim",
+typedef struct Tinfo Tinfo;
+struct Tinfo {
+	char *afile;
+	Anim *anim;
+	bool collide;
+	bool bkgrnd;
 };
 
-static Anim *tanims[sizeof(pallet) / sizeof(pallet[0])];
+static Tinfo *tiles[] = {
+	[' '] = &(Tinfo){ .afile = "anim/blank/anim", .collide = false, .bkgrnd = true },
+	['l'] = &(Tinfo){ .afile = "anim/land/anim", .collide = true, .bkgrnd = true },
+	['w'] = &(Tinfo){ .afile = "anim/water/anim", .collide = false, .bkgrnd = false },
+};
 
-void tiledraw(Gfx *g, Rtab *anims, Tile t, Point pt)
+void tiledraw(Gfx *g, Rtab *anims, Tile t, bool bkgrnd, Point pt)
 {
-	if (pallet[t] == NULL)
+	if (tiles[t] && bkgrnd && !tiles[t]->bkgrnd) {
+		Rect r = (Rect){{pt.x, pt.y}, {pt.x + Twidth, pt.y + Theight}};
+		gfxfillrect(g, r, (Color){255,255,255,255});
 		return;
-	if (tanims[t] == NULL)
-		tanims[t] = resrcacq(anims, pallet[t], NULL);
-	animdraw(g, tanims[t], pt);
+	}
+	if (!tiles[t] || (!bkgrnd && tiles[t]->bkgrnd))
+		return;
+	if (tiles[t]->anim == NULL)
+		tiles[t]->anim = resrcacq(anims, tiles[t]->afile, NULL);
+	if (!tiles[t]->anim)
+		abort();
+	animdraw(g, tiles[t]->anim, pt);
 }
 
-void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, Point offs)
+void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, bool bkgrnd, Point offs)
 {
 	int w = l->w, h = l->h;
 	int base = z * w * h;
@@ -127,14 +140,14 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, Point offs)
 			int ind = base + x * h + y;
 			Tile t = l->tiles[ind];
 			Point pt = (Point){ pxx, offs.y + y * Theight };
-			tiledraw(g, anims, t, pt);
+			tiledraw(g, anims, t, bkgrnd, pt);
 		}
 	}
 }
 
 void lvlupdate(Rtab *anims, Lvl *l)
 {
-	for (int i = 0; i < sizeof(tanims) / sizeof(tanims[0]); i++)
-		if (tanims[i])
-			animupdate(tanims[i], 1);
+	for (int i = 0; i < sizeof(tiles) / sizeof(tiles[0]); i++)
+		if (tiles[i] && tiles[i]->anim)
+			animupdate(tiles[i]->anim, 1);
 }

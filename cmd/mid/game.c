@@ -1,6 +1,7 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include <stdlib.h>
+#include <stdbool.h>
 #include "game.h"
 #include "resrc.h"
 
@@ -44,8 +45,9 @@ void gamedraw(Scrn *s, Gfx *g)
 {
 	Game *gm = s->data;
 	gfxclear(g, (Color){ 0, 0, 0, 0 });
-	lvldraw(g, anim, gm->lvl, gm->z, gm->transl);
+	lvldraw(g, anim, gm->lvl, gm->z, true, gm->transl);
 	playerdraw(g, gm->player, gm->transl);
+	lvldraw(g, anim, gm->lvl, gm->z, false, gm->transl);
 	gfxflip(g);
 }
 
