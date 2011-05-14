@@ -63,7 +63,8 @@ void playerupdate(Player *p, Lvl *l, int z, Point *tr)
 {
 	animupdate(p->cur, 1);
 	playermv(p, l, z, tr, p->dx, p->dy);
-	p->dy += p->ddy;
+	if(p->dy < Maxdy)
+		p->dy += p->ddy;
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
