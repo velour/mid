@@ -34,12 +34,14 @@ void playerfree(Player *p)
 
 void playermv(Player *p, Point *tr, int dx, int dy)
 {
-	if ((dx < 0 && p->scrloc.x < 112) || (dx > 0 && p->scrloc.x > 412))
+	if ((dx < 0 && p->scrloc.x < Scrlbuf)
+	    || (dx > 0 && p->scrloc.x > Scrnw - Scrlbuf))
 		tr->x = tr->x - dx;
 	else
 		p->scrloc.x += dx;
 
-	if ((dy > 0 && p->scrloc.y > 412) || (dy < 0 && p->scrloc.y < 112))
+	if ((dy > 0 && p->scrloc.y > Scrnh - Scrlbuf)
+	    || (dy < 0 && p->scrloc.y < Scrlbuf))
 		tr->y = tr->y - dy;
 	else
 		p->scrloc.y += dy;

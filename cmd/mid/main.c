@@ -13,7 +13,7 @@ bool init()
 
 	pr("%s", "Let's rock.");
 
-	gfx = gfxinit(512, 512);
+	gfx = gfxinit(Scrnw, Scrnh);
 	if(!gfx)
 		return false;
 

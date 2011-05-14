@@ -1,3 +1,8 @@
+enum { Scrnw = 512, Scrnh = 512 };
+
+/* Buffer from side of screen at which to begin scrolling. */
+enum { Scrlbuf = 100 };
+
 typedef struct Game Game;
 Game *gamenew(void);
 void gamefree(Scrn *);
