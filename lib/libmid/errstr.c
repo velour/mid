@@ -6,13 +6,13 @@
 
 enum { Bufsz = 1024 };
 
-static char curerr[Bufsz + 1];
+static char curerr[Bufsz];
 
 void seterrstr(const char *fmt, ...)
 {
 	va_list ap;
 	va_start(ap, fmt);
-	vsnprintf(curerr, Bufsz + 1, fmt, ap);
+	vsnprintf(curerr, Bufsz, fmt, ap);
 	va_end(ap);
 }
 
@@ -20,9 +20,9 @@ const char *miderrstr(void){
 	int err = errno;
 
 	if (curerr[0] != '\0') {
-		static char retbuf[Bufsz + 1];
-		strncpy(retbuf, curerr, Bufsz);
-		retbuf[Bufsz] = '\0';
+		static char retbuf[Bufsz];
+		strncpy(retbuf, curerr, Bufsz - 1);
+		retbuf[Bufsz - 1] = '\0';
 		curerr[0] = '\0';
 		return retbuf;
 	}
