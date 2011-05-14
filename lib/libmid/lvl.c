@@ -13,15 +13,15 @@ enum { Collide = 1<<0,
 
 typedef struct Tinfo Tinfo;
 struct Tinfo {
-	char *afile;
+	char *file;
 	Anim *anim;
 	unsigned int flags;
 };
 
 static Tinfo *tiles[] = {
-	[' '] = &(Tinfo){ .afile = "anim/blank/anim", .flags = Bkgrnd },
-	['l'] = &(Tinfo){ .afile = "anim/land/anim", .flags = Collide|Bkgrnd },
-	['w'] = &(Tinfo){ .afile = "anim/water/anim", .flags = Water },
+	[' '] = &(Tinfo){ .file = "anim/blank/anim", .flags = Bkgrnd },
+	['l'] = &(Tinfo){ .file = "anim/land/anim", .flags = Collide|Bkgrnd },
+	['w'] = &(Tinfo){ .file = "anim/water/anim", .flags = Water },
 };
 
 const int ntiles = sizeof(tiles) / sizeof(tiles[0]);
