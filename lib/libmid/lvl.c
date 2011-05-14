@@ -192,34 +192,35 @@ Isect tileisect(int t, int x, int y, Rect r)
 	return minisect(tilebbox(x, y), r);
 }
 
-Isect tilesisect(Lvl *l, int z, int xmin, int ymin, int xmax, int ymax, Rect r)
+Rect tilesisect(Lvl *l, int z, int xmin, int ymin, int xmax, int ymax, Rect r, float dx, float dy)
 {
-	bool isect = false;
-	float dx = 0.0, dy = 0.0;
+	float xmul = dx > 0 ? -1 : 1;
+	float ymul = dy > 0 ? -1 : 1;
 	for (int x = xmin; x <= xmax; x++) {
 		for (int y = ymin; y <= ymax; y++) {
 			int i = z * l->h * l->w + x * l->h + y;
 			Isect m = tileisect(l->tiles[i], x, y, r);
 			if (!m.is)
 				continue;
-			isect = true;
-			if (m.dx > 0 && m.dx > dx)
-				dx = m.dx;
-			if (m.dy > 0 && m.dy > dy)
-				dy = m.dy;
+			if (dx != 0.0 && m.dx > 0)
+				rectmv(&r, xmul * m.dx, 0);
+			if (dy != 0.0 && m.dy > 0)
+				rectmv(&r, 0, ymul * m.dy);
 		}
 	}
 
-	return (Isect) { .is = isect, dx = dx, dy = dy };
+	return r;
 }
 
-Isect lvlisect(Lvl *l, int z, Rect r)
+Rect lvltrace(Lvl *l, int z, Rect r0, float dx, float dy)
 {
-	float x0 = r.a.x < r.b.x ? r.a.x : r.b.x;
-	float x1 = r.a.x > r.b.x ? r.a.x : r.b.x;
-	float y0 = r.a.y < r.b.y ? r.a.y : r.b.y;
-	float y1 = r.a.y > r.b.y ? r.a.y : r.b.y;
+	Rect r1 = r0;
+	rectmv(&r1, dx, dy);
+	float x0 = r1.a.x < r1.b.x ? r1.a.x : r1.b.x;
+	float x1 = r1.a.x > r1.b.x ? r1.a.x : r1.b.x;
+	float y0 = r1.a.y < r1.b.y ? r1.a.y : r1.b.y;
+	float y1 = r1.a.y > r1.b.y ? r1.a.y : r1.b.y;
 	int xmin = x0 / Twidth, xmax = (x1 + 1) / Twidth;
 	int ymin = y0 / Theight, ymax = (y1 + 1) / Theight;
-	return tilesisect(l, z, xmin, ymin, xmax, ymax, r);
+	return tilesisect(l, z, xmin, ymin, xmax, ymax, r1, dx, dy);
 }

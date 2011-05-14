@@ -27,7 +27,8 @@ Player *playernew(int x, int y)
 		fatal("Failed to load the player animation: %s", miderrstr());
 	p->bbox = (Rect){ { x, y }, { x + Wide, y - Tall } };
 	p->scrloc = (Point) { x, y - Tall };
-	p->dx = p->dy = p->ddy =  0.0;
+	p->dx = p->dy = 0.0;
+	p->ddy =  1.0;
 	return p;
 }
 
@@ -38,16 +39,13 @@ void playerfree(Player *p)
 
 void playermv(Player *p, Lvl *l, int z, Point *tr, float dx, float dy)
 {
-	rectmv(&p->bbox, dx, dy);
-	Isect is = lvlisect(l, z, p->bbox);
-	if (is.is) {
-		float ddx = dx < 0 ? is.dx : -is.dx;
-		float ddy = dy < 0 ? is.dy : -is.dy;
-		dx += ddx;
-		dy += ddy;
-		if(ddy) p->ddy = 0;
-		rectmv(&p->bbox, ddx, ddy);
-	}
+	Rect b = lvltrace(l, z, p->bbox, 0.0, dy);
+	dy = b.a.y - p->bbox.a.y;
+	p->bbox = b;
+	b = lvltrace(l, z, p->bbox, dx, 0.0);
+	dx = b.a.x - p->bbox.a.x;
+	p->bbox = b;
+
 	if ((dx < 0 && p->scrloc.x < Scrlbuf) || (dx > 0 && p->scrloc.x > Scrnw - Scrlbuf))
 		tr->x = tr->x - dx;
 	else
@@ -64,6 +62,8 @@ void playerupdate(Player *p, Lvl *l, int z, Point *tr)
 	animupdate(p->cur, 1);
 	playermv(p, l, z, tr, p->dx, p->dy);
 	p->dy += p->ddy;
+	if (p->dy > 10)
+		p->dy = 10;
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
@@ -87,7 +87,13 @@ void playerhandle(Player *p, Event *e)
 		p->dx = (e->down ? Dx : 0.0); break;
 	case 'e':
 		p->dy = (e->down ? -Dy : 0.0);
-		p->ddy = 1.0;
+		p->ddy = 5.0;
 		break;
+/*
+	case 'd':
+		p->dy = (e->down ? Dy : 0.0); break;
+	case 'e':
+		p->dy = (e->down ? -Dy : 0.0); break;
+*/
 	}
 }
