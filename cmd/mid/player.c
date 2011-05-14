@@ -4,14 +4,18 @@
 #include "game.h"
 #include <stdlib.h>
 
+/* Size of the bbox */
+enum { Tall = 32, Wide = 32 };
+
+/* Movement speed. */
+enum { Dx = 3, Dy = 3 };
+
 struct Player {
 	Rect bbox;
 	Point scrloc;
 	int dx, dy;
 	Anim *walkl, *walkr, *cur;
 };
-
-enum { Tall = 32, Wide = 32 };
 
 Player *playernew(int x, int y)
 {
@@ -58,8 +62,6 @@ void playerdraw(Gfx *g, Player *p, Point tr)
 {
 	animdraw(g, p->cur, p->scrloc);
 }
-
-enum { Dx = 3, Dy = 3 };
 
 void playerhandle(Player *p, Event *e)
 {
