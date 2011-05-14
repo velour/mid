@@ -56,6 +56,7 @@ Point gfxdims(const Gfx *);
 void gfxflip(Gfx *);
 void gfxclear(Gfx *, Color);
 void gfxfillrect(Gfx *, Rect, Color);
+void gfxdrawrect(Gfx *, Rect, Color);
 
 typedef struct Img Img;
 

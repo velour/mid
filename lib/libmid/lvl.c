@@ -147,6 +147,13 @@ void fgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
 	drawtile(g, anims, t, pt);
 }
 
+Rect tilebbox(int x, int y)
+{
+	Point a = (Point) {x * Twidth, y * Theight};
+	Point b = (Point) {(x + 1) * Twidth, (y + 1) * Theight};
+	return (Rect){ a, b };
+}
+
 void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, bool bkgrnd, Point offs)
 {
 	int w = l->w, h = l->h;
@@ -159,8 +166,13 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, bool bkgrnd, Point offs)
 			Point pt = (Point){ pxx, offs.y + y * Theight };
 			if (bkgrnd)
 				bkgrnddraw(g, anims, t, pt);
-			else
+			else {
 				fgrnddraw(g, anims, t, pt);
+				/* draw a grid */
+				Rect r = tilebbox(x, y);
+				rectmv(&r, offs.x, offs.y);
+				gfxdrawrect(g, r, (Color){0,0,0,255});
+			}
 		}
 	}
 }
@@ -170,13 +182,6 @@ void lvlupdate(Rtab *anims, Lvl *l)
 	for (int i = 0; i < sizeof(tiles) / sizeof(tiles[0]); i++)
 		if (tiles[i] && tiles[i]->anim)
 			animupdate(tiles[i]->anim, 1);
-}
-
-Rect tilebbox(int x, int y)
-{
-	Point a = (Point) {x * Twidth, y * Theight};
-	Point b = (Point) {(x + 1) * Twidth, (y + 1) * Theight};
-	return (Rect){ a, b };
 }
 
 Isect tileisect(int t, int x, int y, Rect r)
