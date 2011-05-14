@@ -8,19 +8,19 @@ enum { Stkmax = 8 };
 
 struct Scrnstk{
 	Scrn *scrns[Stkmax];
-	Scrn **cur;
+	Scrn **nxt;
 };
 
 Scrnstk *scrnstknew(void){
 	Scrnstk *s = calloc(1, sizeof(*s));
 	if (!s)
 		return NULL;
-	s->cur = s->scrns;
+	s->nxt = s->scrns;
 	return s;
 }
 
 void scrnstkfree(Scrnstk *stk){
-	int n = stk->cur - stk->scrns;
+	int n = stk->nxt - stk->scrns;
 	for(int i = 0; i < n; ++i){
 		Scrn *s = stk->scrns[i];
 		s->mt->free(s);
@@ -29,22 +29,22 @@ void scrnstkfree(Scrnstk *stk){
 }
 
 void scrnstkpush(Scrnstk *stk, Scrn *s){
-	if (stk->cur == &stk->scrns[Stkmax - 1])
+	if (stk->nxt == &stk->scrns[Stkmax - 1])
 		abort();
-	stk->cur++;
-	*(stk->cur) = s;
+	*(stk->nxt) = s;
+	stk->nxt++;
 }
 
 Scrn *scrnstktop(Scrnstk *s){
-	return *(s->cur);
+	return s->nxt[-1];
 }
 
 void scrnstkpop(Scrnstk *stk){
-	if (stk->cur < &stk->scrns[0])
+	if (stk->nxt < &stk->scrns[0])
 		abort();
-	Scrn *s = *(stk->cur);
+	Scrn *s = stk->nxt[-1];
 	s->mt->free(s);
-	stk->cur--;
+	stk->nxt--;
 }
 
 void scrnrun(Scrnstk *stk, Gfx *g){
