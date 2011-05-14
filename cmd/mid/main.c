@@ -40,11 +40,6 @@ int main(int argc, char *argv[])
 	Game *gm = gamenew();
 	Scrn mainscrn = { &gamemt, gm };
 
-	Music *m = resrcacq(music, "music/bgm_placeholder.ogg", NULL);
-	if (!m)
-		fatal("Failed to load bgm_placeholder.ogg");
-	musicstart(m, 0);
-
 	Scrnstk *stk = scrnstknew();
 	scrnstkpush(stk, &mainscrn);
 
