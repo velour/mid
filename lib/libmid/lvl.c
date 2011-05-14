@@ -198,8 +198,6 @@ Isect tilesisect(Lvl *l, int z, int xmin, int ymin, int xmax, int ymax, Rect r)
 			if (!m.is)
 				continue;
 			isect = true;
-			printf("m.dx=%g, m.dy=%g, dx=%g, dy=%g\n", m.dx, m.dy,
-			       dx, dy);
 			if (m.dx > 0 && m.dx > dx)
 				dx = m.dx;
 			if (m.dy > 0 && m.dy > dy)
