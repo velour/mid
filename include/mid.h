@@ -178,3 +178,6 @@ Lvl *lvlload(const char *path);
 void lvlfree(Lvl *l);
 void lvlupdate(Rtab *anims, Lvl *l);
 void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, _Bool bkgrnd, Point offs);
+/* Returns the dx/dy collisions with level blocks or .is=false if no
+ * collision. */
+Isect lvlisect(Lvl *l, int z, Rect r);

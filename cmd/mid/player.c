@@ -13,7 +13,7 @@ enum { Dx = 3, Dy = 3 };
 struct Player {
 	Rect bbox;
 	Point scrloc;
-	int dx, dy;
+	float dx, dy;
 	Anim *walkl, *walkr, *cur;
 };
 
@@ -27,7 +27,7 @@ Player *playernew(int x, int y)
 		fatal("Failed to load the player animation: %s", miderrstr());
 	p->bbox = (Rect){ { x, y }, { x + Wide, y - Tall } };
 	p->scrloc = (Point) { x, y - Tall };
-	p->dx = p->dy = 0;
+	p->dx = p->dy = 0.0;
 	return p;
 }
 
@@ -36,8 +36,17 @@ void playerfree(Player *p)
 	free(p);
 }
 
-void playermv(Player *p, Point *tr, int dx, int dy)
+void playermv(Player *p, Lvl *l, int z, Point *tr, float dx, float dy)
 {
+	rectmv(&p->bbox, dx, dy);
+	Isect is = lvlisect(l, z, p->bbox);
+	if (is.is) {
+		float ddx = dx < 0 ? is.dx : -is.dx;
+		float ddy = dy < 0 ? is.dy : -is.dy;
+		dx += ddx;
+		dy += ddy;
+		rectmv(&p->bbox, ddx, ddy);
+	}
 	if ((dx < 0 && p->scrloc.x < Scrlbuf) || (dx > 0 && p->scrloc.x > Scrnw - Scrlbuf))
 		tr->x = tr->x - dx;
 	else
@@ -47,17 +56,19 @@ void playermv(Player *p, Point *tr, int dx, int dy)
 		tr->y = tr->y - dy;
 	else
 		p->scrloc.y += dy;
-	rectmv(&p->bbox, dx, dy);
 }
 
-void playerupdate(Player *p, Point *tr)
+void playerupdate(Player *p, Lvl *l, int z, Point *tr)
 {
 	animupdate(p->cur, 1);
-	playermv(p, tr, p->dx, p->dy);
+	playermv(p, l, z, tr, p->dx, p->dy);
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
 {
+	Rect bbox = p->bbox;
+	rectmv(&bbox, tr.x, tr.y);
+	gfxfillrect(g, bbox, (Color){255,0,0,255});
 	animdraw(g, p->cur, p->scrloc);
 }
 
@@ -67,12 +78,12 @@ void playerhandle(Player *p, Event *e)
 		return;
 	switch(e->key){
 	case 's':
-		p->dx = (e->down ? -Dx : 0); break;
+		p->dx = (e->down ? -Dx : 0.0); break;
 	case 'f':
-		p->dx = (e->down ? Dx : 0); break;
+		p->dx = (e->down ? Dx : 0.0); break;
 	case 'e':
-		p->dy = (e->down ? -Dy : 0); break;
+		p->dy = (e->down ? -Dy : 0.0); break;
 	case 'd':
-		p->dy = (e->down ? Dy : 0); break;
+		p->dy = (e->down ? Dy : 0.0); break;
 	}
 }

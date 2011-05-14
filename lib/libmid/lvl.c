@@ -1,4 +1,5 @@
 #include "../../include/mid.h"
+#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -180,8 +181,9 @@ Rect tilebbox(int x, int y)
 
 Isect tileisect(int t, int x, int y, Rect r)
 {
+	assert(tiles[t]);
 	if (!(tiles[t]->flags & Collide))
-		return (Isect){ .is = 0 };
+		return (Isect){ .is = false };
 	return minisect(tilebbox(x, y), r);
 }
 
@@ -196,9 +198,11 @@ Isect tilesisect(Lvl *l, int z, int xmin, int ymin, int xmax, int ymax, Rect r)
 			if (!m.is)
 				continue;
 			isect = true;
-			if (m.dx > dx)
+			printf("m.dx=%g, m.dy=%g, dx=%g, dy=%g\n", m.dx, m.dy,
+			       dx, dy);
+			if (m.dx > 0 && m.dx > dx)
 				dx = m.dx;
-			if (m.dy > dy)
+			if (m.dy > 0 && m.dy > dy)
 				dy = m.dy;
 		}
 	}
@@ -212,6 +216,7 @@ Isect lvlisect(Lvl *l, int z, Rect r)
 	float x1 = r.a.x > r.b.x ? r.a.x : r.b.x;
 	float y0 = r.a.y < r.b.y ? r.a.y : r.b.y;
 	float y1 = r.a.y > r.b.y ? r.a.y : r.b.y;
-	int xmin = x0, xmax = x1 + 1, ymin = y0, ymax = y1 + 1;
+	int xmin = x0 / Twidth, xmax = (x1 + 1) / Twidth;
+	int ymin = y0 / Theight, ymax = (y1 + 1) / Theight;
 	return tilesisect(l, z, xmin, ymin, xmax, ymax, r);
 }
