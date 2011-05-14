@@ -9,6 +9,6 @@ Scrnmt gamemt;
 typedef struct Player Player;
 Player *playernew(int x, int y);
 void playerfree(Player *);
-void playerupdate(Player *);
+void playerupdate(Player *, Point *tr);
 void playerdraw(Gfx *, Player *, Point tr);
-void playerhandle(Player *, Point *tr, Event *);
+void playerhandle(Player *, Event *);

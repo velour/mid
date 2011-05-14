@@ -7,6 +7,7 @@
 struct Player {
 	Rect bbox;
 	Point scrloc;
+	int dx, dy;
 	Anim *walkl, *walkr, *cur;
 };
 
@@ -30,18 +31,6 @@ void playerfree(Player *p)
 	free(p);
 }
 
-void playerupdate(Player *p)
-{
-	animupdate(p->cur, 1);
-}
-
-void playerdraw(Gfx *g, Player *p, Point tr)
-{
-	animdraw(g, p->cur, p->scrloc);
-}
-
-enum { Dx = 5, Dy = 5 };
-
 void playermv(Player *p, Point *tr, int dx, int dy)
 {
 	if ((dx < 0 && p->scrloc.x < 112) || (dx > 0 && p->scrloc.x > 412))
@@ -56,20 +45,31 @@ void playermv(Player *p, Point *tr, int dx, int dy)
 	rectmv(&p->bbox, dx, dy);
 }
 
-void playerhandle(Player *p, Point *tr, Event *e)
+void playerupdate(Player *p, Point *tr)
 {
-	if (e->type != Keychng)
-		return;
-	if (!e->down)
+	animupdate(p->cur, 1);
+	playermv(p, tr, p->dx, p->dy);
+}
+
+void playerdraw(Gfx *g, Player *p, Point tr)
+{
+	animdraw(g, p->cur, p->scrloc);
+}
+
+enum { Dx = 3, Dy = 3 };
+
+void playerhandle(Player *p, Event *e)
+{
+	if (e->type != Keychng || e->repeat)
 		return;
 	switch(e->key){
 	case 's':
-		playermv(p, tr, -Dx, 0); break;
+		p->dx = (e->down ? -Dx : 0); break;
 	case 'f':
-		playermv(p, tr, Dx, 0); break;
+		p->dx = (e->down ? Dx : 0); break;
 	case 'e':
-		playermv(p, tr, 0, -Dy); break;
+		p->dy = (e->down ? -Dy : 0); break;
 	case 'd':
-		playermv(p, tr, 0, Dy); break;
+		p->dy = (e->down ? Dy : 0); break;
 	}
 }
