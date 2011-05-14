@@ -120,7 +120,7 @@ Lvl *lvlload(const char *path)
 void drawtile(Gfx *g, Rtab *anims, int t, Point pt)
 {
 	if (tiles[t]->anim == NULL)
-		tiles[t]->anim = resrcacq(anims, tiles[t]->afile, NULL);
+		tiles[t]->anim = resrcacq(anims, tiles[t]->file, NULL);
 	if (!tiles[t]->anim)
 		abort();
 	animdraw(g, tiles[t]->anim, pt);
@@ -169,4 +169,49 @@ void lvlupdate(Rtab *anims, Lvl *l)
 	for (int i = 0; i < sizeof(tiles) / sizeof(tiles[0]); i++)
 		if (tiles[i] && tiles[i]->anim)
 			animupdate(tiles[i]->anim, 1);
+}
+
+Rect tilebbox(int x, int y)
+{
+	Point a = (Point) {x * Twidth, y * Theight};
+	Point b = (Point) {(x + 1) * Twidth, (y + 1) * Theight};
+	return (Rect){ a, b };
+}
+
+Isect tileisect(int t, int x, int y, Rect r)
+{
+	if (!(tiles[t]->flags & Collide))
+		return (Isect){ .is = 0 };
+	return minisect(tilebbox(x, y), r);
+}
+
+Isect tilesisect(Lvl *l, int z, int xmin, int ymin, int xmax, int ymax, Rect r)
+{
+	bool isect = false;
+	float dx = 0.0, dy = 0.0;
+	for (int x = xmin; x <= xmax; x++) {
+		for (int y = ymin; y <= ymax; y++) {
+			int i = z * l->h * l->w + x * l->h + y;
+			Isect m = tileisect(l->tiles[i], x, y, r);
+			if (!m.is)
+				continue;
+			isect = true;
+			if (m.dx > dx)
+				dx = m.dx;
+			if (m.dy > dy)
+				dy = m.dy;
+		}
+	}
+
+	return (Isect) { .is = isect, dx = dx, dy = dy };
+}
+
+Isect lvlisect(Lvl *l, int z, Rect r)
+{
+	float x0 = r.a.x < r.b.x ? r.a.x : r.b.x;
+	float x1 = r.a.x > r.b.x ? r.a.x : r.b.x;
+	float y0 = r.a.y < r.b.y ? r.a.y : r.b.y;
+	float y1 = r.a.y > r.b.y ? r.a.y : r.b.y;
+	int xmin = x0, xmax = x1 + 1, ymin = y0, ymax = y1 + 1;
+	return tilesisect(l, z, xmin, ymin, xmax, ymax, r);
 }
