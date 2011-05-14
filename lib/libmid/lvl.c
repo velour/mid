@@ -107,8 +107,15 @@ static char *pallet[] = {
 
 static Anim *tanims[sizeof(pallet) / sizeof(pallet[0])];
 
+static Color bkgrnd = { 96, 96, 96, 255 };
+
 void tiledraw(Gfx *g, Rtab *anims, Tile t, Point pt)
 {
+	if (t == Blank) {
+		Rect r = (Rect){{pt.x, pt.y + Theight}, {pt.x + Twidth, pt.y}};
+		gfxfillrect(g, r, bkgrnd);
+		return;
+	}
 	if (pallet[t] == NULL)
 		return;
 	if (tanims[t] == NULL)
@@ -121,11 +128,11 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, Point offs)
 	int w = l->w, h = l->h;
 	int base = z * w * h;
 	for (int x = 0; x < w; x++){
+		int pxx = offs.x + x * Twidth;
 		for (int y = 0; y < h; y++) {
 			int ind = base + x * h + y;
 			Tile t = l->tiles[ind];
-			Point pt = (Point){ offs.x + x * Twidth,
-					    offs.y + y * Theight };
+			Point pt = (Point){ pxx, offs.y + y * Theight };
 			tiledraw(g, anims, t, pt);
 		}
 	}

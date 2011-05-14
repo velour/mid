@@ -43,7 +43,7 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 void gamedraw(Scrn *s, Gfx *g)
 {
 	Game *gm = s->data;
-	gfxclear(g, (Color){ 96, 96, 96, 0 });
+	gfxclear(g, (Color){ 0, 0, 0, 0 });
 	lvldraw(g, anim, gm->lvl, gm->z, gm->transl);
 	playerdraw(g, gm->player, gm->transl);
 	gfxflip(g);
