@@ -6,22 +6,35 @@
 
 enum { Theight = 32, Twidth = 32 };
 
-typedef enum Tile Tile;
-enum Tile { Blank = ' ', Land = 'l', Water = 'w' };
+typedef struct Tinfo Tinfo;
+struct Tinfo {
+	char *afile;
+	Anim *anim;
+	bool collide;
+	bool bkgrnd;
+};
 
-bool istile(int c)
+static Tinfo *tiles[] = {
+	[' '] = &(Tinfo){ .afile = "anim/blank/anim", .collide = false, .bkgrnd = true },
+	['l'] = &(Tinfo){ .afile = "anim/land/anim", .collide = true, .bkgrnd = true },
+	['w'] = &(Tinfo){ .afile = "anim/water/anim", .collide = false, .bkgrnd = false },
+};
+
+const int ntiles = sizeof(tiles) / sizeof(tiles[0]);
+
+bool istile(int t)
 {
-	return c == Blank || c == Land || c == Water;
+	return t >= 0 && t < ntiles && tiles[t];
 }
 
 struct Lvl {
 	int d, w, h;
-	Tile tiles[];
+	char tiles[];
 };
 
 Lvl *lvlnew(int d, int w, int h)
 {
-	Lvl *l = malloc(sizeof(*l) + sizeof(Tile[d * w * h]));
+	Lvl *l = malloc(sizeof(*l) + sizeof(char[d * w * h]));
 	if (!l)
 		return NULL;
 	l->d = d;
@@ -100,21 +113,7 @@ Lvl *lvlload(const char *path)
 	return  l;
 }
 
-typedef struct Tinfo Tinfo;
-struct Tinfo {
-	char *afile;
-	Anim *anim;
-	bool collide;
-	bool bkgrnd;
-};
-
-static Tinfo *tiles[] = {
-	[' '] = &(Tinfo){ .afile = "anim/blank/anim", .collide = false, .bkgrnd = true },
-	['l'] = &(Tinfo){ .afile = "anim/land/anim", .collide = true, .bkgrnd = true },
-	['w'] = &(Tinfo){ .afile = "anim/water/anim", .collide = false, .bkgrnd = false },
-};
-
-void tiledraw(Gfx *g, Rtab *anims, Tile t, bool bkgrnd, Point pt)
+void tiledraw(Gfx *g, Rtab *anims, int t, bool bkgrnd, Point pt)
 {
 	if (tiles[t] && bkgrnd && !tiles[t]->bkgrnd) {
 		Rect r = (Rect){{pt.x, pt.y}, {pt.x + Twidth, pt.y + Theight}};
@@ -138,7 +137,7 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, bool bkgrnd, Point offs)
 		int pxx = offs.x + x * Twidth;
 		for (int y = 0; y < h; y++) {
 			int ind = base + x * h + y;
-			Tile t = l->tiles[ind];
+			int t = l->tiles[ind];
 			Point pt = (Point){ pxx, offs.y + y * Theight };
 			tiledraw(g, anims, t, bkgrnd, pt);
 		}
