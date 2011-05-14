@@ -131,7 +131,7 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, Point offs)
 	}
 }
 
-void lvlupdate(Gfx *g, Rtab *anims, Lvl *l)
+void lvlupdate(Rtab *anims, Lvl *l)
 {
 	for (int i = 0; i < sizeof(tanims) / sizeof(tanims[0]); i++)
 		if (tanims[i])

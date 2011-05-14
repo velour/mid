@@ -1,81 +1,44 @@
 #include "../../include/log.h"
 #include "../../include/mid.h"
 #include "resrc.h"
+#include "game.h"
 #include <stdlib.h>
 #include <stdbool.h>
 
-typedef struct Maindata Maindata;
-struct Maindata{
-	float dx, dy;
-	Color red, white;
-
-	Point offs, loc;
-	Lvl *lvl;
-	Anim *wlk;
-
-	Img *hi;
-	Txt *hitxt;
-};
-
-static Maindata tmpdata;
-
-static void tmpupdate(Scrn *, Scrnstk *);
-static void tmpdraw(Scrn *, Gfx *);
-static void tmphandle(Scrn *, Scrnstk *, Event *);
-static void tmpfree(Scrn *);
-
-static Scrnmt tmpmt = {
-	tmpupdate,
-	tmpdraw,
-	tmphandle,
-	tmpfree
-};
-
-static Scrn mainscrn = {
-	&tmpmt,
-	0
-};
-
 Gfx *gfx;
 
-Txtinfo txtmain = {
-	.size = 32,
-	.color = { 255, 255, 255, 255 },
-};
-
-int main(int argc, char *argv[]){
+bool init()
+{
 	loginit(0);
 
 	pr("%s", "Let's rock.");
 
 	gfx = gfxinit(512, 512);
 	if(!gfx)
-		return EXIT_FAILURE;
+		return false;
 
 	if (!sndinit())
 		fatal("Failed to initialze sound: %s\n", miderrstr());
 
 	initresrc();
 
-	tmpdata.dx = 0;
-	tmpdata.dy = 0;
-	tmpdata.red = (Color){ 255, 0, 0, 255 };
-	tmpdata.white = (Color){ 255, 255, 255, 255 };
-	tmpdata.loc = (Point){ 100, 68 };
-	tmpdata.offs = (Point){ 0, 0 };
+	return true;
+}
 
-	tmpdata.wlk = resrcacq(anim, "anim/wlk/anim", NULL);
-	if (!tmpdata.wlk)
-		fatal("Failed to load wlk.anim: %s\n", miderrstr());
+void deinit()
+{
+	freeresrc();
+	sndfree();
+	gfxfree(gfx);
+}
 
-	tmpdata.lvl = resrcacq(lvls, "lvl/0.lvl", NULL);
-	if (!tmpdata.lvl)
-		fatal("Failed to load 0.lvl: %s\n", miderrstr());
+int main(int argc, char *argv[])
+{
+	if (!init())
+		fatal("Failed to initialize: %s", miderrstr());
 
-	tmpdata.hitxt = resrcacq(txt, "txt/FreeSans.ttf", &txtmain);
-	tmpdata.hi = txt2img(gfx, tmpdata.hitxt, "hi %s", "there");
-
-	mainscrn.data = &tmpdata;
+	Game *gm = gamenew();
+	Scrn mainscrn = { &gamemt, gm };
 
 	Music *m = resrcacq(music, "music/bgm_placeholder.ogg", NULL);
 	if (!m)
@@ -87,62 +50,6 @@ int main(int argc, char *argv[]){
 
 	scrnrun(stk, gfx);
 
-	freeresrc();
-	sndfree();
-	gfxfree(gfx);
+	deinit();
 	return 0;
-}
-
-static void tmpupdate(Scrn *s, Scrnstk *stk){
-	Maindata *md = s->data;
-	lvlupdate(gfx, anim, tmpdata.lvl);
-	animupdate(md->wlk, 1);
-	ptmv(&md->offs, -md->dx, -md->dy);
-}
-
-static void tmpdraw(Scrn *s, Gfx *gfx){
-	Maindata *md = s->data;
-	gfxclear(gfx, md->red);
-	lvldraw(gfx, anim, tmpdata.lvl, 0, md->offs);
-	animdraw(gfx, md->wlk, md->loc);
-	imgdraw(gfx, md->hi, (Point){ 100, 360 });
-	gfxflip(gfx);
-}
-
-static void tmphandle(Scrn *s, Scrnstk *stk, Event *e){
-	Maindata *md = s->data;
-	static Sfx *pew;
-	switch(e->type){
-	case Quit:
-		scrnstkpop(stk);
-		break;
-	case Keychng:
-		if (e->repeat)
-			break;
-		switch(e->key){
-		case 's': md->dx = (e->down? md->dx-1 : 0); break;
-		case 'f': md->dx = (e->down? md->dx+1 : 0); break;
-		case 'e': md->dy = (e->down? md->dy-1 : 0); break;
-		case 'd': md->dy = (e->down? md->dy+1 : 0); break;
-		case 'p':
-//			if (!pew) {
-				pew = resrcacq(sfx, "sfx/pew.wav", NULL);
-				if (!pew)
-					fatal("Failed to load pew.wav: %s",
-					      miderrstr());
-	//		}
-			sfxplay(pew);
-			resrcrel(sfx, "sfx/pew.wav", NULL);
-			break;
-		default:
-			scrnstkpop(stk);
-		}
-		break;
-	default:
-		break;
-	}
-}
-
-static void tmpfree(Scrn *s){
-	/* everything is freed via the resrc cache. */
 }
