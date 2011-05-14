@@ -21,7 +21,7 @@ Game *gamenew()
 	gm->transl = (Point) { 0, 0 };
 	gm->z = 0;
 	gm->lvl = resrcacq(lvls, "lvl/0.lvl", NULL);
-	gm->player = playernew(256, 256);
+	gm->player = playernew(64, 96);
 
 	return gm;
 }

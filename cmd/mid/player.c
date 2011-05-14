@@ -68,9 +68,11 @@ void playerupdate(Player *p, Lvl *l, int z, Point *tr)
 
 void playerdraw(Gfx *g, Player *p, Point tr)
 {
+	/* draw the player's bbox. */
 	Rect bbox = p->bbox;
 	rectmv(&bbox, tr.x, tr.y);
 	gfxfillrect(g, bbox, (Color){255,0,0,255});
+
 	animdraw(g, p->cur, p->scrloc);
 }
 
