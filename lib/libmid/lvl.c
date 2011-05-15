@@ -202,10 +202,19 @@ Rect tilesisect(Lvl *l, int z, int xmin, int ymin, int xmax, int ymax, Rect r, f
 			Isect m = tileisect(l->tiles[i], x, y, r);
 			if (!m.is)
 				continue;
-			if (m.dx > 0)
-				rectmv(&r, xmul * m.dx, 0);
 			if (m.dy > 0)
 				rectmv(&r, 0, ymul * m.dy);
+		}
+	}
+
+	for (int x = xmin; x <= xmax; x++) {
+		for (int y = ymin; y <= ymax; y++) {
+			int i = z * l->h * l->w + x * l->h + y;
+			Isect m = tileisect(l->tiles[i], x, y, r);
+			if (!m.is)
+				continue;
+			if (m.dx > 0)
+				rectmv(&r, xmul * m.dx, 0);
 		}
 	}
 
