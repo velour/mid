@@ -62,10 +62,76 @@ void test_rectdist()
 		fatal("d.y == %g, expected -32", d.y);
 }
 
+void test_recttrace1()
+{
+	Rect a = (Rect){ {0, 0}, {32, 32} };
+	Rect b = (Rect){ {33, 0}, {65, 32} };
+
+	Point v = (Point) { 1, 0 };
+	v = recttrace1(a, v, b);
+	if (!fleq(v.y, 0))
+		fatal("v.y == %g, expected 0", v.y);
+	if (!fleq(v.x, 1))
+		fatal("v.x == %g, expected 1", v.x);
+
+	v = (Point) { 2, 0 };
+	v = recttrace1(a, v, b);
+	if (!fleq(v.y, 0))
+		fatal("v.y == %g, expected 0", v.y);
+	if (!fleq(v.x, 1))
+		fatal("v.x == %g, expected 1", v.x);
+
+	v = (Point) { -1, 0 };
+	v = recttrace1(a, v, b);
+	if (!fleq(v.y, 0))
+		fatal("v.y == %g, expected 0", v.y);
+	if (!fleq(v.x, -1))
+		fatal("v.x == %g, expected -1", v.x);
+
+	v = (Point) { 5, 2 };
+	v = recttrace1(a, v, b);
+	if (!fleq(v.y, 1))
+		fatal("v.y == %g, expected 1", v.y);
+	if (!fleq(v.x, 1))
+		fatal("v.x == %g, expected 1", v.x);
+
+	a = (Rect){ {0, 0}, {32, 32} };
+	b = (Rect){ {0, 33}, {32, 65} };
+
+	v = (Point) { 0, 1 };
+	v = recttrace1(a, v, b);
+	if (!fleq(v.y, 1))
+		fatal("v.y == %g, expected 1", v.y);
+	if (!fleq(v.x, 0))
+		fatal("v.x == %g, expected 0", v.x);
+
+	v = (Point) { 0, 2 };
+	v = recttrace1(a, v, b);
+	if (!fleq(v.y, 1))
+		fatal("v.y == %g, expected 1", v.y);
+	if (!fleq(v.x, 0))
+		fatal("v.x == %g, expected 0", v.x);
+
+	v = (Point) { 0, -1 };
+	v = recttrace1(a, v, b);
+	if (!fleq(v.y, -1))
+		fatal("v.y == %g, expected -1", v.y);
+	if (!fleq(v.x, 0))
+		fatal("v.x == %g, expected 0", v.x);
+
+	v = (Point) { 2, 5 };
+	v = recttrace1(a, v, b);
+	if (!fleq(v.y, 1))
+		fatal("v.y == %g, expected 1", v.y);
+	if (!fleq(v.x, 1))
+		fatal("v.x == %g, expected 1", v.x);
+}
+
 int main()
 {
 	loginit(NULL);
 	test_rectdist();
+	test_recttrace1();
 	pr("Geom tests passed");
 	logclose();
 	return EXIT_SUCCESS;

@@ -1,4 +1,5 @@
 #include "../../include/mid.h"
+#include <math.h>
 
 static int between(float min, float max, float n){
 	return n >= min && n <= max;
@@ -99,4 +100,40 @@ Point rectdist(Rect a, Rect b)
 		dy = b.a.y - a.b.y;
 	}
 	return (Point){ dx, dy };
+}
+
+/* Trace the movement of a along the vector v (dx, dy).  If a will
+ * intersect with b, then the result is the new vector (dx, dy) that
+ * respects the collision. */
+Point recttrace1(Rect a, Point v, Rect b)
+{
+	Point d = rectdist(a, b);
+	if (d.x * v.x < 0 || d.y * v.y < 0) /* signs differ, no hit. */
+		return v;
+
+	/* OK, we may collide so slide the rect along the path to see
+	 * when it hits (if ever). */
+	d = (Point) { 0, 0 };
+	int max = v.x > v.y ? ceil(v.x) : ceil(v.y);
+	for (int i = 0; i < max; i++) {
+		if (v.x < 0 && d.x > v.x)
+			d.x -= 1.0;
+		else if (v.x > 0 && d.x < v.x)
+			d.x += 1.0;
+		if (v.y < 0 && d.y > v.y)
+			d.y -= 1.0;
+		else if (v.y > 0 && d.x < v.y)
+			d.y += 1.0;
+		Rect nxt = a;
+		rectmv(&nxt, d.x, d.y);
+		if (isect(nxt, b))
+			break;
+		a = nxt;
+	}
+
+	if (fabs(v.x) < fabs(d.x))
+		d.x = v.x;
+	if (fabs(v.y) < fabs(d.y))
+		d.y = v.y;
+	return d;
 }
