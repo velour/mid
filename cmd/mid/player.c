@@ -58,7 +58,9 @@ void playermv(Player *p, Lvl *l, int z, Point *tr, float dx, float dy)
 void playerupdate(Player *p, Lvl *l, int z, Point *tr)
 {
 	animupdate(p->cur, 1);
-	playermv(p, l, z, tr, p->dx, p->dy);
+	for (float i = 1; i < p->dy; i++)
+		playermv(p, l, z, tr, 0.0, 1.0);
+	playermv(p, l, z, tr, p->dx, 0.0);
 	if(p->dy < Maxdy)
 		p->dy += p->ddy;
 }
