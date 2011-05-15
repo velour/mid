@@ -3,6 +3,7 @@
 #include "resrc.h"
 #include "game.h"
 #include <stdlib.h>
+#include <math.h>
 
 /* Size of the bbox */
 enum { Tall = 32, Wide = 32 };
@@ -58,8 +59,13 @@ void playermv(Player *p, Lvl *l, int z, Point *tr, float dx, float dy)
 void playerupdate(Player *p, Lvl *l, int z, Point *tr)
 {
 	animupdate(p->cur, 1);
-	for (float i = 1; i < p->dy; i++)
-		playermv(p, l, z, tr, 0.0, 1.0);
+	float step = p->dy < 0 ? -1.0 : 1.0;
+	for (float i = 1; i < fabs(p->dy); i++) {
+		float y = p->bbox.a.y;
+		playermv(p, l, z, tr, 0.0, step);
+		if (y == p->bbox.a.y) /* done moving */
+			break;
+	}
 	playermv(p, l, z, tr, p->dx, 0.0);
 	if(p->dy < Maxdy)
 		p->dy += p->ddy;
