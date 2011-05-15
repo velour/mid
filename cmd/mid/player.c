@@ -9,13 +9,15 @@
 enum { Tall = 32, Wide = 32 };
 
 /* Movement speed. */
-enum { Dx = 3, Dy = 3, Maxdy = 12 };
+enum { Dx = 3, Dy = 8, Maxdy = 12 };
+const float Grav = 0.5;
 
 struct Player {
 	Rect bbox;
 	Point scrloc;
 	float dx, dy, ddy;
 	Anim *walkl, *walkr, *cur;
+	_Bool jmp;
 };
 
 Player *playernew(int x, int y)
@@ -29,7 +31,7 @@ Player *playernew(int x, int y)
 	p->bbox = (Rect){ { x, y }, { x + Wide, y - Tall } };
 	p->scrloc = (Point) { x, y - Tall };
 	p->dx = p->dy = 0.0;
-	p->ddy =  1.0;
+	p->ddy =  Grav;
 	return p;
 }
 
@@ -44,6 +46,7 @@ void playermv(Player *p, Lvl *l, int z, Point *tr, float dx, float dy)
 	dy = b.a.y - p->bbox.a.y;
 	dx = b.a.x - p->bbox.a.x;
 	p->bbox = b;
+	if(dy) p->jmp = 0;
 
 	if ((dx < 0 && p->scrloc.x < Scrlbuf) || (dx > 0 && p->scrloc.x > Scrnw - Scrlbuf))
 		tr->x = tr->x - dx;
@@ -91,8 +94,11 @@ void playerhandle(Player *p, Event *e)
 	case 'f':
 		p->dx = (e->down ? Dx : 0.0); break;
 	case 'e':
-		p->dy = (e->down ? -Dy : 0.0);
-		p->ddy = 5.0;
+		if(!p->jmp){
+			p->dy = (e->down ? -Dy : 0.0);
+			p->ddy = Grav;
+			p->jmp = 1;
+		}
 		break;
 /*
 	case 'd':
