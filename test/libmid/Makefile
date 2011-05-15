@@ -2,11 +2,13 @@ include ../../Make.inc
 
 TESTS :=\
 	fs\
+	geom\
 
 HFILES :=\
 	../../include/mid.h\
 	../../lib/libmid/fs.h\
 
-LIB := ../../lib/libmid/libmid.a
+LIB := ../../lib/libmid/libmid.a\
+	../../lib/liblog/liblog.a\
 
 include ../../Make.test

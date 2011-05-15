@@ -6,8 +6,7 @@ all: $(TARGS)
 	@echo ld -o $@ $< $(LDFLAGS)
 	@lod $(LD) -o $@ $(MANDLDFLAGS) $(LDFLAGS) $< $(LIB)
 	@echo running $@
-	@./$@
-	rm $@
+	@./$@ && rm $@
 
 $(OFILES): $(HFILES) $(LIB)
 

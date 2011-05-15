@@ -25,6 +25,10 @@ struct Rect{
 Line1d rectprojx(Rect);
 Line1d rectprojy(Rect);
 void rectmv(Rect *, float dx, float dy);
+/* Makes point a the min,min and point b the max,max. */
+Rect rectnorm(Rect r);
+/* Distance a would have to travel to intersect b. */
+Point rectdist(Rect a, Rect b);
 void ptmv(Point *, float dx, float dy);
 
 typedef struct Isect Isect;
