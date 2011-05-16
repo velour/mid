@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <errno.h>
+#include <math.h>
 
 enum { Theight = 32, Twidth = 32 };
 
@@ -192,13 +193,29 @@ Point tileisect(int t, int x, int y, Rect r, Point v)
 	return recttrace1(r, v, tilebbox(x, y));
 }
 
+Rect testtiles(Rect a, Point v)
+{
+	Rect b = a;
+	rectmv(&b, v.x, v.y);
+	a = rectnorm(a);
+	b = rectnorm(b);
+	int xmin = a.a.x < b.a.x ? a.a.x : b.a.x;
+	int ymin = a.a.y < b.b.y ? a.a.y : b.a.y;
+	int xmax = a.b.x > b.b.x ? ceil(a.b.x) : ceil(b.b.x);
+	int ymax = a.b.y > b.b.y ? ceil(a.b.y) : ceil(b.b.y);
+	xmin /= Twidth;
+	xmax /= Twidth;
+	ymin /= Theight;
+	ymax /= Theight;
+	return (Rect) { .a = {xmin, ymin}, .b = {xmax, ymax} };
+}
+
 Rect lvltrace(Lvl *l, int z, Rect r, Point v)
 {
-	int xmin = 0, xmax = l->w - 1;
-	int ymin = 0, ymax = l->h - 1;
+	Rect test = testtiles(r, v);
 
-	for (int x = xmin; x <= xmax; x++) {
-		for (int y = ymin; y <= ymax; y++) {
+	for (int x = test.a.x; x <= test.b.x; x++) {
+		for (int y = test.a.y; y <= test.b.y; y++) {
 			int i = z * l->h * l->w + x * l->h + y;
 			v = tileisect(l->tiles[i], x, y, r, v);
 		}
