@@ -15,7 +15,8 @@ const float Grav = 0.5;
 struct Player {
 	Rect bbox;
 	Point scrloc;
-	float dx, dy, ddy;
+	Point v;		/* velocity */
+	float ddy;
 	Anim *walkl, *walkr, *cur;
 	_Bool jmp;
 };
@@ -30,7 +31,7 @@ Player *playernew(int x, int y)
 		fatal("Failed to load the player animation: %s", miderrstr());
 	p->bbox = (Rect){ { x, y }, { x + Wide, y - Tall } };
 	p->scrloc = (Point) { x, y - Tall };
-	p->dx = p->dy = 0.0;
+	p->v = (Point) { 0, 0 };
 	p->ddy =  Grav;
 	return p;
 }
@@ -40,11 +41,11 @@ void playerfree(Player *p)
 	free(p);
 }
 
-void playermv(Player *p, Lvl *l, int z, Point *tr, float dx, float dy)
+void playermv(Player *p, Lvl *l, int z, Point *tr, Point v)
 {
-	Rect b = lvltrace(l, z, p->bbox, (Point) { dx, dy });
-	dy = b.a.y - p->bbox.a.y;
-	dx = b.a.x - p->bbox.a.x;
+	Rect b = lvltrace(l, z, p->bbox, v);
+	float dy = b.a.y - p->bbox.a.y;
+	float dx = b.a.x - p->bbox.a.x;
 	p->bbox = b;
 	if(dy) p->jmp = 0;
 
@@ -62,16 +63,10 @@ void playermv(Player *p, Lvl *l, int z, Point *tr, float dx, float dy)
 void playerupdate(Player *p, Lvl *l, int z, Point *tr)
 {
 	animupdate(p->cur, 1);
-	float step = p->dy < 0 ? -1.0 : 1.0;
-	for (float i = 1; i < fabs(p->dy); i++) {
-		float y = p->bbox.a.y;
-		playermv(p, l, z, tr, 0.0, step);
-		if (y == p->bbox.a.y) /* done moving */
-			break;
-	}
-	playermv(p, l, z, tr, p->dx, 0.0);
-	if(p->dy < Maxdy)
-		p->dy += p->ddy;
+	playermv(p, l, z, tr, (Point) { 0.0, p->v.y });
+	playermv(p, l, z, tr, (Point) { p->v.x, 0.0 });
+	if(p->v.y < Maxdy)
+		p->v.y += p->ddy;
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
@@ -90,21 +85,15 @@ void playerhandle(Player *p, Event *e)
 		return;
 	switch(e->key){
 	case 's':
-		p->dx = (e->down ? -Dx : 0.0); break;
+		p->v.x = (e->down ? -Dx : 0.0); break;
 	case 'f':
-		p->dx = (e->down ? Dx : 0.0); break;
+		p->v.x = (e->down ? Dx : 0.0); break;
 	case 'e':
 		if(!p->jmp){
-			p->dy = (e->down ? -Dy : 0.0);
+			p->v.y = (e->down ? -Dy : 0.0);
 			p->ddy = Grav;
 			p->jmp = 1;
 		}
 		break;
-/*
-	case 'd':
-		p->dy = (e->down ? Dy : 0.0); break;
-	case 'e':
-		p->dy = (e->down ? -Dy : 0.0); break;
-*/
 	}
 }

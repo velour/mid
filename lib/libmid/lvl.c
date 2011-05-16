@@ -184,53 +184,25 @@ void lvlupdate(Rtab *anims, Lvl *l)
 			animupdate(tiles[i]->anim, 1);
 }
 
-Isect tileisect(int t, int x, int y, Rect r)
+Point tileisect(int t, int x, int y, Rect r, Point v)
 {
 	assert(tiles[t]);
 	if (!(tiles[t]->flags & Collide))
-		return (Isect){ .is = false };
-	return minisect(tilebbox(x, y), r);
+		return v;
+	return recttrace1(r, v, tilebbox(x, y));
 }
 
-Rect tilesisect(Lvl *l, int z, int xmin, int ymin, int xmax, int ymax, Rect r, float dx, float dy)
+Rect lvltrace(Lvl *l, int z, Rect r, Point v)
 {
-	float xmul = dx > 0 ? -1 : 1;
-	float ymul = dy > 0 ? -1 : 1;
-	for (int x = xmin; x <= xmax; x++) {
-		for (int y = ymin; y <= ymax; y++) {
-			int i = z * l->h * l->w + x * l->h + y;
-			Isect m = tileisect(l->tiles[i], x, y, r);
-			if (!m.is)
-				continue;
-			if (m.dy > 0)
-				rectmv(&r, 0, ymul * m.dy);
-		}
-	}
+	int xmin = 0, xmax = l->w - 1;
+	int ymin = 0, ymax = l->h - 1;
 
 	for (int x = xmin; x <= xmax; x++) {
 		for (int y = ymin; y <= ymax; y++) {
 			int i = z * l->h * l->w + x * l->h + y;
-			Isect m = tileisect(l->tiles[i], x, y, r);
-			if (!m.is)
-				continue;
-			if (m.dx > 0)
-				rectmv(&r, xmul * m.dx, 0);
+			v = tileisect(l->tiles[i], x, y, r, v);
 		}
 	}
-
+	rectmv(&r, v.x, v.y);
 	return r;
-}
-
-Rect lvltrace(Lvl *l, int z, Rect r0, Point v)
-{
-	Rect r1 = r0;
-	float dx = v.x, dy = v.y;
-	rectmv(&r1, dx, dy);
-	float x0 = r1.a.x < r1.b.x ? r1.a.x : r1.b.x;
-	float x1 = r1.a.x > r1.b.x ? r1.a.x : r1.b.x;
-	float y0 = r1.a.y < r1.b.y ? r1.a.y : r1.b.y;
-	float y1 = r1.a.y > r1.b.y ? r1.a.y : r1.b.y;
-	int xmin = x0 / Twidth, xmax = (x1 + 1) / Twidth;
-	int ymin = y0 / Theight, ymax = (y1 + 1) / Theight;
-	return tilesisect(l, z, xmin, ymin, xmax, ymax, r1, dx, dy);
 }

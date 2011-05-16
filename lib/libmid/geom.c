@@ -105,12 +105,12 @@ Point rectdist(Rect a, Rect b)
 Point recttrace1(Rect a, Point v, Rect b)
 {
 	int steps = fabs(v.x) > fabs(v.y) ? fabs(v.x) : fabs(v.y);
-	float xstep = v.x / v.x;
-	float ystep = v.y / v.y;
+	float xstep = v.x < 0 ? -1.0 : (v.x > 0 ? 1.0 : 0.0);
+	float ystep = v.y < 0 ? -1.0 : (v.y > 0 ? 1.0 : 0.0);
 	Point r = (Point) { 0, 0 };
 	for (int i = 0; i < steps; i++) {
 		r.x += xstep;
-		r.y += xstep;
+		r.y += ystep;
 		rectmv(&a, xstep, ystep);
 		Isect is = minisect(a, b);
 		if (is.is) {
