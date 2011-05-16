@@ -18,7 +18,7 @@ struct Player {
 	Point v;		/* velocity */
 	float ddy;
 	Anim *walkl, *walkr, *cur;
-	_Bool jmp;
+	_Bool fall;
 };
 
 Player *playernew(int x, int y)
@@ -33,6 +33,7 @@ Player *playernew(int x, int y)
 	p->scrloc = (Point) { x, y - Tall };
 	p->v = (Point) { 0, 0 };
 	p->ddy =  Grav;
+	p->fall = 1;
 	return p;
 }
 
@@ -48,7 +49,13 @@ void playermv(Player *p, Lvl *l, int z, Point *tr, Point v)
 	float ymul = v.y < 0 ? 1.0 : -1.0;
 	float dx = v.x + xmul * is.dx, dy = v.y + ymul * is.dy;
 	rectmv(&p->bbox, dx, dy);
-	if(dy) p->jmp = 0;
+	if(rev.y < 0){
+		p->fall = 0;
+		p->ddy = 0;
+	}else{
+		p->fall = 1;
+		p->ddy = Grav;
+	}
 
 	if ((dx < 0 && p->scrloc.x < Scrlbuf) || (dx > 0 && p->scrloc.x > Scrnw - Scrlbuf))
 		tr->x = tr->x - dx;
@@ -65,13 +72,12 @@ void playerupdate(Player *p, Lvl *l, int z, Point *tr)
 {
 	animupdate(p->cur, 1);
 	playermv(p, l, z, tr, p->v);
-	if(p->v.y < Maxdy)
+	if(p->fall && p->v.y < Maxdy)
 		p->v.y += p->ddy;
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
 {
-	/* draw the player's bbox. */
 	Rect bbox = p->bbox;
 	rectmv(&bbox, tr.x, tr.y);
 	gfxfillrect(g, bbox, (Color){255,0,0,255});
@@ -89,10 +95,10 @@ void playerhandle(Player *p, Event *e)
 	case 'f':
 		p->v.x = (e->down ? Dx : 0.0); break;
 	case 'e':
-		if(!p->jmp){
+		if(!p->fall){
 			p->v.y = (e->down ? -Dy : 0.0);
 			p->ddy = Grav;
-			p->jmp = 1;
+			p->fall = 1;
 		}
 		break;
 	}
