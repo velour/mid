@@ -43,10 +43,9 @@ void playerfree(Player *p)
 
 void playermv(Player *p, Lvl *l, int z, Point *tr, Point v)
 {
-	Rect b = lvltrace(l, z, p->bbox, v);
-	float dy = b.a.y - p->bbox.a.y;
-	float dx = b.a.x - p->bbox.a.x;
-	p->bbox = b;
+	v = lvltrace(l, z, p->bbox, v);
+	float dx = v.x, dy = v.y;
+	rectmv(&p->bbox, dx, dy);
 	if(dy) p->jmp = 0;
 
 	if ((dx < 0 && p->scrloc.x < Scrlbuf) || (dx > 0 && p->scrloc.x > Scrnw - Scrlbuf))

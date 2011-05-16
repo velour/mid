@@ -186,5 +186,6 @@ Lvl *lvlload(const char *path);
 void lvlfree(Lvl *l);
 void lvlupdate(Rtab *anims, Lvl *l);
 void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, _Bool bkgrnd, Point offs);
-/* Returns a rectangle that is moved out of intersection. */
-Rect lvltrace(Lvl *l, int z, Rect r, Point v);
+/* Returns a new vector that can be used for movement respecting
+ * collisions. */
+Point lvltrace(Lvl *l, int z, Rect r, Point v);

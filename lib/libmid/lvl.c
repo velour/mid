@@ -214,7 +214,7 @@ Rect testtiles(Rect a, Point v)
 
 #include <stdio.h>
 
-Rect lvltrace(Lvl *l, int z, Rect r, Point v)
+Point lvltrace(Lvl *l, int z, Rect r, Point v)
 {
 	Rect test = testtiles(r, v);
 
@@ -252,6 +252,5 @@ Rect lvltrace(Lvl *l, int z, Rect r, Point v)
 	else
 		dx -= ix;
 
-	rectmv(&r, dx, dy);
-	return r;
+	return (Point) { dx, dy };
 }
