@@ -49,7 +49,7 @@ void playermv(Player *p, Lvl *l, int z, Point *tr, Point v)
 	float ymul = v.y < 0 ? 1.0 : -1.0;
 	float dx = v.x + xmul * is.dx, dy = v.y + ymul * is.dy;
 	rectmv(&p->bbox, dx, dy);
-	if(rev.y < 0){
+	if(v.y >= 0 && is.dy > 0){
 		p->fall = 0;
 		p->ddy = 0;
 	}else{
