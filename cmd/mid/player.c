@@ -14,7 +14,7 @@ const float Grav = 0.5;
 
 struct Player {
 	Rect bbox;
-	Point scrloc;
+	Point imgloc;
 	Point v;		/* velocity */
 	float ddy;
 	Anim *walkl, *walkr, *cur;
@@ -30,7 +30,7 @@ Player *playernew(int x, int y)
 	if (!p->walkl)
 		fatal("Failed to load the player animation: %s", miderrstr());
 	p->bbox = (Rect){ { x, y }, { x + Wide, y - Tall } };
-	p->scrloc = (Point) { x, y - Tall };
+	p->imgloc = (Point) { x, y - Tall };
 	p->v = (Point) { 0, 0 };
 	p->ddy =  Grav;
 	p->fall = 1;
@@ -42,14 +42,30 @@ void playerfree(Player *p)
 	free(p);
 }
 
-void playermv(Player *p, Lvl *l, int z, Point *tr, Point v)
+/* Move the player's image or scroll the screen by the given
+ * amount. */
+static void imgmvscroll(Player *p, Point *transl, Point v)
 {
-	Isect is = lvlisect(l, z, p->bbox, v);
-	float xmul = v.x < 0 ? 1.0 : -1.0;
-	float ymul = v.y < 0 ? 1.0 : -1.0;
-	float dx = v.x + xmul * is.dx, dy = v.y + ymul * is.dy;
-	rectmv(&p->bbox, dx, dy);
-	if(v.y >= 0 && is.dy > 0){
+	float imgx = p->imgloc.x, imgy = p->imgloc.y;
+	if ((v.x < 0 && imgx < Scrlbuf) || (v.x > 0 && imgx > Scrnw - Scrlbuf))
+		transl->x -= v.x;
+	else
+		p->imgloc.x += v.x;
+
+	if ((v.y > 0 && imgy > Scrnh - Scrlbuf) || (v.y < 0 && imgy < Scrlbuf))
+		transl->y -= v.y;
+	else
+		p->imgloc.y += v.y;
+}
+
+static void playermv(Player *p, Lvl *l, int z, Point *transl)
+{
+	float xmul = p->v.x < 0 ? 1.0 : -1.0;
+	float ymul = p->v.y < 0 ? 1.0 : -1.0;
+	Isect is = lvlisect(l, z, p->bbox, p->v);
+	Point v = (Point) { p->v.x + xmul * is.dx, p->v.y + ymul * is.dy };
+
+	if(p->v.y >= 0 && is.dy > 0){
 		p->fall = 0;
 		p->ddy = 0;
 	}else{
@@ -57,21 +73,14 @@ void playermv(Player *p, Lvl *l, int z, Point *tr, Point v)
 		p->ddy = Grav;
 	}
 
-	if ((dx < 0 && p->scrloc.x < Scrlbuf) || (dx > 0 && p->scrloc.x > Scrnw - Scrlbuf))
-		tr->x = tr->x - dx;
-	else
-		p->scrloc.x += dx;
-
-	if ((dy > 0 && p->scrloc.y > Scrnh - Scrlbuf) || (dy < 0 && p->scrloc.y < Scrlbuf))
-		tr->y = tr->y - dy;
-	else
-		p->scrloc.y += dy;
+	rectmv(&p->bbox, v.x, v.y);
+	imgmvscroll(p, transl, v);
 }
 
 void playerupdate(Player *p, Lvl *l, int z, Point *tr)
 {
 	animupdate(p->cur, 1);
-	playermv(p, l, z, tr, p->v);
+	playermv(p, l, z, tr);
 	if(p->fall && p->v.y < Maxdy)
 		p->v.y += p->ddy;
 }
@@ -82,7 +91,7 @@ void playerdraw(Gfx *g, Player *p, Point tr)
 	rectmv(&bbox, tr.x, tr.y);
 	gfxfillrect(g, bbox, (Color){255,0,0,255});
 
-	animdraw(g, p->cur, p->scrloc);
+	animdraw(g, p->cur, p->imgloc);
 }
 
 void playerhandle(Player *p, Event *e)
