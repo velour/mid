@@ -105,9 +105,17 @@ void playerhandle(Player *p, Event *e)
 		return;
 	switch(e->key){
 	case 's':
-		p->v.x = (e->down ? -Dx : 0.0); break;
+		if (e->down && p->v.x > -Dx)
+			p->v.x -= Dx;
+		else if (!e->down)
+			p->v.x += Dx;
+		break;
 	case 'f':
-		p->v.x = (e->down ? Dx : 0.0); break;
+		if (e->down && p->v.x < Dx)
+			p->v.x += Dx;
+		else if (!e->down)
+			p->v.x -= Dx;
+		break;
 	case 'e':
 		if(!p->fall){
 			p->v.y = (e->down ? -Dy : 0.0);
