@@ -22,7 +22,7 @@ struct Tinfo {
 
 static Tinfo *tiles[] = {
 	[' '] = &(Tinfo){ .file = "anim/blank/anim", .flags = Bkgrnd },
-	['l'] = &(Tinfo){ .file = "anim/land/anim", .flags = Collide|Bkgrnd },
+	['#'] = &(Tinfo){ .file = "anim/land/anim", .flags = Collide|Bkgrnd },
 	['w'] = &(Tinfo){ .file = "anim/water/anim", .flags = Water },
 };
 
