@@ -63,8 +63,11 @@ void playermv(Player *p, Lvl *l, int z, Point *tr, Point v)
 void playerupdate(Player *p, Lvl *l, int z, Point *tr)
 {
 	animupdate(p->cur, 1);
+/*
 	playermv(p, l, z, tr, (Point) { 0.0, p->v.y });
 	playermv(p, l, z, tr, (Point) { p->v.x, 0.0 });
+*/
+	playermv(p, l, z, tr, p->v);
 	if(p->v.y < Maxdy)
 		p->v.y += p->ddy;
 }

@@ -1,4 +1,5 @@
 #include "../../include/mid.h"
+#include <assert.h>
 #include <math.h>
 
 static int between(float min, float max, float n){
@@ -104,22 +105,34 @@ Point rectdist(Rect a, Rect b)
 
 Point recttrace1(Rect a, Point v, Rect b)
 {
-	int steps = fabs(v.x) > fabs(v.y) ? fabs(v.x) : fabs(v.y);
+	float steps = fabs(v.x) > fabs(v.y) ? fabs(v.x) : fabs(v.y);
 	float xstep = v.x < 0 ? -1.0 : (v.x > 0 ? 1.0 : 0.0);
 	float ystep = v.y < 0 ? -1.0 : (v.y > 0 ? 1.0 : 0.0);
 	Point r = (Point) { 0, 0 };
-	for (int i = 0; i < steps; i++) {
-		r.x += xstep;
-		r.y += ystep;
+	for (int i = 0; i < ceil(steps); i++) {
+		if ((v.x > 0 && r.x < v.x) || (v.x < 0 && r.x > v.x))
+			r.x += xstep;
+		if (fabs(r.x) > fabs(v.x))
+			r.x = v.x;
+		if ((v.y > 0 && r.y < v.y) || (v.y < 0 && r.y > v.y))
+			r.y += ystep;
+		if (fabs(r.y) > fabs(v.y))
+			r.y = v.y;
 		rectmv(&a, xstep, ystep);
 		Isect is = minisect(a, b);
 		if (is.is) {
+			if (is.dy > 0 && is.dx > 0)
+				is.dx = 0;
 			if (is.dx > 0) {
-				r.x += xstep > 0 ? -is.dx : is.dx;
+				float fix = xstep > 0 ? -is.dx : is.dx;
+				r.x += fix;
+				rectmv(&a, fix, 0);
 				xstep = 0.0;
 			}
 			if (is.dy > 0) {
-				r.y += ystep > 0 ? -is.dy : is.dy;
+				float fix = ystep > 0 ? -is.dy : is.dy;
+				r.y += fix;
+				rectmv(&a, 0, fix);
 				ystep = 0.0;
 			}
 		}

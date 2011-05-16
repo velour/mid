@@ -207,6 +207,8 @@ Rect testtiles(Rect a, Point v)
 	xmax /= Twidth;
 	ymin /= Theight;
 	ymax /= Theight;
+	if (ymin > 0)
+		ymin--;
 	return (Rect) { .a = {xmin, ymin}, .b = {xmax, ymax} };
 }
 
@@ -217,7 +219,11 @@ Rect lvltrace(Lvl *l, int z, Rect r, Point v)
 	for (int x = test.a.x; x <= test.b.x; x++) {
 		for (int y = test.a.y; y <= test.b.y; y++) {
 			int i = z * l->h * l->w + x * l->h + y;
+			Point old = v;
 			v = tileisect(l->tiles[i], x, y, r, v);
+			if (v.x != old.x) {
+				tileisect(l->tiles[i], x, y, r, old);
+			}
 		}
 	}
 	rectmv(&r, v.x, v.y);
