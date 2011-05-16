@@ -185,12 +185,12 @@ void lvlupdate(Rtab *anims, Lvl *l)
 			animupdate(tiles[i]->anim, 1);
 }
 
-Point tileisect(int t, int x, int y, Rect r, Point v)
+Isect tileisect(int t, int x, int y, Rect r)
 {
 	assert(tiles[t]);
 	if (!(tiles[t]->flags & Collide))
-		return v;
-	return recttrace1(r, v, tilebbox(x, y));
+		return (Isect){ .is = 0 };
+	return isection(r, tilebbox(x, y));
 }
 
 Rect testtiles(Rect a, Point v)
@@ -212,20 +212,46 @@ Rect testtiles(Rect a, Point v)
 	return (Rect) { .a = {xmin, ymin}, .b = {xmax, ymax} };
 }
 
+#include <stdio.h>
+
 Rect lvltrace(Lvl *l, int z, Rect r, Point v)
 {
 	Rect test = testtiles(r, v);
 
+	float dy = v.y, iy = 0.0;
+	Rect mv = r;
+	rectmv(&mv, 0, dy);
 	for (int x = test.a.x; x <= test.b.x; x++) {
 		for (int y = test.a.y; y <= test.b.y; y++) {
 			int i = z * l->h * l->w + x * l->h + y;
-			Point old = v;
-			v = tileisect(l->tiles[i], x, y, r, v);
-			if (v.x != old.x) {
-				tileisect(l->tiles[i], x, y, r, old);
-			}
+			Isect is = tileisect(l->tiles[i], x, y, mv);
+			if (is.is && is.dy > iy)
+				iy = is.dy;
+
 		}
 	}
-	rectmv(&r, v.x, v.y);
+	if (v.y < 0)
+		dy += iy;
+	else
+		dy -= iy;
+
+	float dx = v.x, ix = 0.0;
+	mv = r;
+	rectmv(&mv, dx, dy);
+	for (int x = test.a.x; x <= test.b.x; x++) {
+		for (int y = test.a.y; y <= test.b.y; y++) {
+			int i = z * l->h * l->w + x * l->h + y;
+			Isect is = tileisect(l->tiles[i], x, y, mv);
+			if (is.is && is.dx > ix)
+				ix = is.dx;
+
+		}
+	}
+	if (v.x < 0)
+		dx += ix;
+	else
+		dx -= ix;
+
+	rectmv(&r, dx, dy);
 	return r;
 }

@@ -2,7 +2,6 @@ include ../../Make.inc
 
 TESTS :=\
 	fs\
-	geom\
 
 HFILES :=\
 	../../include/mid.h\

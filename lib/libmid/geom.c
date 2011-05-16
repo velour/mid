@@ -41,9 +41,9 @@ void rectmv(Rect *r, float dx, float dy){
 
 Isect isection(Rect a, Rect b){
 	float ix = isection1d(rectprojx(a), rectprojx(b));
-	if(ix >= 0.0){
+	if(ix > 0.0){
 		float iy = isection1d(rectprojy(a), rectprojy(b));
-		if(iy >= 0.0)
+		if(iy > 0.0)
 			return (Isect){ .is = 1, .dx = ix, .dy = iy };
 		else
 			return (Isect){ .is = 0 };
@@ -80,65 +80,5 @@ Rect rectnorm(Rect r)
 		r.a.y = r.b.y;
 		r.b.y = t;
 	}
-	return r;
-}
-
-/* Distance a would have to travel to intersect b. */
-Point rectdist(Rect a, Rect b)
-{
-	a = rectnorm(a);
-	b = rectnorm(b);
-	float dx = 0.0, dy = 0.0;
-
-	if (a.a.x > b.b.x) {
-		dx = b.b.x - a.a.x;
-	} else if (a.b.x < b.a.x) {
-		dx = b.a.x - a.b.x;
-	}
-	if (a.a.y > b.b.y) {
-		dy = b.b.y - a.a.y;
-	} else if (a.b.y < b.a.y) {
-		dy = b.a.y - a.b.y;
-	}
-	return (Point){ dx, dy };
-}
-
-Point recttrace1(Rect a, Point v, Rect b)
-{
-	float steps = fabs(v.x) > fabs(v.y) ? fabs(v.x) : fabs(v.y);
-	float xstep = v.x < 0 ? -1.0 : (v.x > 0 ? 1.0 : 0.0);
-	float ystep = v.y < 0 ? -1.0 : (v.y > 0 ? 1.0 : 0.0);
-	Point r = (Point) { 0, 0 };
-	for (int i = 0; i < ceil(steps); i++) {
-		if ((v.x > 0 && r.x < v.x) || (v.x < 0 && r.x > v.x))
-			r.x += xstep;
-		if (fabs(r.x) > fabs(v.x))
-			r.x = v.x;
-		if ((v.y > 0 && r.y < v.y) || (v.y < 0 && r.y > v.y))
-			r.y += ystep;
-		if (fabs(r.y) > fabs(v.y))
-			r.y = v.y;
-		rectmv(&a, xstep, ystep);
-		Isect is = minisect(a, b);
-		if (is.is) {
-			if (is.dy > 0 && is.dx > 0)
-				is.dx = 0;
-			if (is.dx > 0) {
-				float fix = xstep > 0 ? -is.dx : is.dx;
-				r.x += fix;
-				rectmv(&a, fix, 0);
-				xstep = 0.0;
-			}
-			if (is.dy > 0) {
-				float fix = ystep > 0 ? -is.dy : is.dy;
-				r.y += fix;
-				rectmv(&a, 0, fix);
-				ystep = 0.0;
-			}
-		}
-		if (ystep == 0 && xstep == 0)
-			break;
-	}
-
 	return r;
 }
