@@ -29,9 +29,9 @@ void rectmv(Rect *, float dx, float dy);
 Rect rectnorm(Rect r);
 /* Distance a would have to travel to intersect b. */
 Point rectdist(Rect a, Rect b);
-/* Trace the movement of a along the vector v (dx, dy).  If a will
- * intersect with b, then the result is the new vector (dx, dy) that
- * respects the collision. */
+/* Trace the movement of 'a' along the vector 'v' resulting in a new
+ * vector 'v' that has magnitude less or equal to 'v' with respect to
+ * a possible collision with 'b'. */
 Point recttrace1(Rect a, Point v, Rect b);
 void ptmv(Point *, float dx, float dy);
 
