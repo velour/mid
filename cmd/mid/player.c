@@ -42,20 +42,32 @@ void playerfree(Player *p)
 	free(p);
 }
 
-/* Move the player's image or scroll the screen by the given
- * amount. */
-static void imgmvscroll(Player *p, Point *transl, Point v)
+/* Move the player's image or scroll the screen. */
+static void imgmvscroll(Player *p, Point *transl, float dx, float dy)
 {
 	float imgx = p->imgloc.x, imgy = p->imgloc.y;
-	if ((v.x < 0 && imgx < Scrlbuf) || (v.x > 0 && imgx > Scrnw - Scrlbuf))
-		transl->x -= v.x;
+	if ((dx < 0 && imgx < Scrlbuf) || (dx > 0 && imgx > Scrnw - Scrlbuf))
+		transl->x -= dx;
 	else
-		p->imgloc.x += v.x;
+		p->imgloc.x += dx;
 
-	if ((v.y > 0 && imgy > Scrnh - Scrlbuf) || (v.y < 0 && imgy < Scrlbuf))
-		transl->y -= v.y;
+	if ((dy > 0 && imgy > Scrnh - Scrlbuf) || (dy < 0 && imgy < Scrlbuf))
+		transl->y -= dy;
 	else
-		p->imgloc.y += v.y;
+		p->imgloc.y += dy;
+}
+
+static void dofall(Player *p, Isect is)
+{
+	if(p->v.y > 0 && is.dy > 0) {
+		p->fall = 0;
+		p->ddy = 0;
+	} else {
+		if (p->v.y < 0 && is.dy > 0) /* hit my head on something */
+			p->v.y = 0;
+		p->fall = 1;
+		p->ddy = Grav;
+	}
 }
 
 static void playermv(Player *p, Lvl *l, int z, Point *transl)
@@ -63,18 +75,11 @@ static void playermv(Player *p, Lvl *l, int z, Point *transl)
 	float xmul = p->v.x < 0 ? 1.0 : -1.0;
 	float ymul = p->v.y < 0 ? 1.0 : -1.0;
 	Isect is = lvlisect(l, z, p->bbox, p->v);
-	Point v = (Point) { p->v.x + xmul * is.dx, p->v.y + ymul * is.dy };
-
-	if(p->v.y >= 0 && is.dy > 0){
-		p->fall = 0;
-		p->ddy = 0;
-	}else{
-		p->fall = 1;
-		p->ddy = Grav;
-	}
-
-	rectmv(&p->bbox, v.x, v.y);
-	imgmvscroll(p, transl, v);
+	float dx = p->v.x + xmul * is.dx;
+	float dy = p->v.y + ymul * is.dy;
+	dofall(p, is);
+	rectmv(&p->bbox, dx, dy);
+	imgmvscroll(p, transl, dx, dy);
 }
 
 void playerupdate(Player *p, Lvl *l, int z, Point *tr)
