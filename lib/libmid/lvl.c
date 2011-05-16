@@ -212,41 +212,38 @@ Rect testtiles(Rect a, Point v)
 	return (Rect) { .a = {xmin, ymin}, .b = {xmax, ymax} };
 }
 
-#include <stdio.h>
-
-Point lvltrace(Lvl *l, int z, Rect r, Point v)
+Isect lvlisect(Lvl *l, int z, Rect r, Point v)
 {
 	Rect test = testtiles(r, v);
 
-	float dy = v.y, iy = 0.0;
+	Isect isect = (Isect) { .is = 0, .dx = 0.0, .dy = 0.0 };
 	Rect mv = r;
-	rectmv(&mv, 0, dy);
+	rectmv(&mv, 0, v.y);
 	for (int x = test.a.x; x <= test.b.x; x++) {
 		for (int y = test.a.y; y <= test.b.y; y++) {
 			int i = z * l->h * l->w + x * l->h + y;
 			Isect is = tileisect(l->tiles[i], x, y, mv);
-			if (is.is && is.dy > iy)
-				iy = is.dy;
+			if (is.is && is.dy > isect.dy) {
+				isect.is = true;
+				isect.dy = is.dy;
+			}
 
 		}
 	}
-	if (v.y > 0)
-		iy = -iy;
 
-	float dx = v.x, ix = 0.0;
 	mv = r;
-	rectmv(&mv, dx, dy + iy);
+	rectmv(&mv, v.x, v.y + (v.y < 0 ? isect.dy : -isect.dy));
 	for (int x = test.a.x; x <= test.b.x; x++) {
 		for (int y = test.a.y; y <= test.b.y; y++) {
 			int i = z * l->h * l->w + x * l->h + y;
 			Isect is = tileisect(l->tiles[i], x, y, mv);
-			if (is.is && is.dx > ix)
-				ix = is.dx;
+			if (is.is && is.dx > isect.dx) {
+				isect.is = true;
+				isect.dx = is.dx;
+			}
 
 		}
 	}
-	if (v.x > 0)
-		ix = -ix;
 
-	return (Point) { ix, iy };
+	return isect;
 }
