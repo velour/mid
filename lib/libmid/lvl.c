@@ -231,6 +231,9 @@ Isect lvlisect(Lvl *l, int z, Rect r, Point v)
 		}
 	}
 
+	if (v.x == 0.0)
+		return isect;
+
 	mv = r;
 	rectmv(&mv, v.x, v.y + (v.y < 0 ? isect.dy : -isect.dy));
 	for (int x = test.a.x; x <= test.b.x; x++) {
