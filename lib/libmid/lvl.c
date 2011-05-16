@@ -221,9 +221,10 @@ Rect tilesisect(Lvl *l, int z, int xmin, int ymin, int xmax, int ymax, Rect r, f
 	return r;
 }
 
-Rect lvltrace(Lvl *l, int z, Rect r0, float dx, float dy)
+Rect lvltrace(Lvl *l, int z, Rect r0, Point v)
 {
 	Rect r1 = r0;
+	float dx = v.x, dy = v.y;
 	rectmv(&r1, dx, dy);
 	float x0 = r1.a.x < r1.b.x ? r1.a.x : r1.b.x;
 	float x1 = r1.a.x > r1.b.x ? r1.a.x : r1.b.x;

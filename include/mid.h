@@ -32,6 +32,7 @@ Point rectdist(Rect a, Rect b);
 /* Trace the movement of a along the vector v (dx, dy).  If a will
  * intersect with b, then the result is the new vector (dx, dy) that
  * respects the collision. */
+Point recttrace1(Rect a, Point v, Rect b);
 void ptmv(Point *, float dx, float dy);
 
 typedef struct Isect Isect;
@@ -187,4 +188,4 @@ void lvlfree(Lvl *l);
 void lvlupdate(Rtab *anims, Lvl *l);
 void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, _Bool bkgrnd, Point offs);
 /* Returns a rectangle that is moved out of intersection. */
-Rect lvltrace(Lvl *l, int z, Rect r, float dx, float dy);
+Rect lvltrace(Lvl *l, int z, Rect r, Point v);
