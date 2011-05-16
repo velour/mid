@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	scrnstkpush(stk, &mainscrn);
 
 	scrnrun(stk, gfx);
-	pr("Mean frame delay: %g ms\n", meandelay);
+	pr("Mean frame delay: %g ms", meandelay);
 
 	deinit();
 	return 0;
