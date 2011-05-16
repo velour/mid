@@ -230,14 +230,12 @@ Point lvltrace(Lvl *l, int z, Rect r, Point v)
 
 		}
 	}
-	if (v.y < 0)
-		dy += iy;
-	else
-		dy -= iy;
+	if (v.y > 0)
+		iy = -iy;
 
 	float dx = v.x, ix = 0.0;
 	mv = r;
-	rectmv(&mv, dx, dy);
+	rectmv(&mv, dx, dy + iy);
 	for (int x = test.a.x; x <= test.b.x; x++) {
 		for (int y = test.a.y; y <= test.b.y; y++) {
 			int i = z * l->h * l->w + x * l->h + y;
@@ -247,10 +245,8 @@ Point lvltrace(Lvl *l, int z, Rect r, Point v)
 
 		}
 	}
-	if (v.x < 0)
-		dx += ix;
-	else
-		dx -= ix;
+	if (v.x > 0)
+		ix = -ix;
 
-	return (Point) { dx, dy };
+	return (Point) { ix, iy };
 }
