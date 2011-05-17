@@ -146,3 +146,9 @@ void animdraw(Gfx *g, Anim *a, Point p)
 {
 	imgdraw(g, a->frames[a->cur].img, p);
 }
+
+void animreset(Anim *a)
+{
+	a->cur = 0;
+	a->rem = a->frames[0].tks;
+}

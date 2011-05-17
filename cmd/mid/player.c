@@ -17,7 +17,7 @@ struct Player {
 	Point imgloc;
 	Point v;		/* velocity */
 	float ddy;
-	Anim *walkl, *walkr, *cur;
+	Anim *stand, *walk, *jump, *cur;
 	_Bool fall;
 };
 
@@ -26,9 +26,15 @@ Player *playernew(int x, int y)
 	Player *p = malloc(sizeof(*p));
 	if (!p)
 		return NULL;
-	p->walkl = p->walkr = p->cur = resrcacq(anim, "anim/walk/anim", NULL);
-	if (!p->walkl)
-		fatal("Failed to load the player animation: %s", miderrstr());
+	p->stand = p->cur = resrcacq(anim, "anim/stand/anim", NULL);
+	if (!p->stand)
+		fatal("Failed to load the player stand anim: %s", miderrstr());
+	p->walk = resrcacq(anim, "anim/walk/anim", NULL);
+	if (!p->jump)
+		fatal("Failed to load the player walk anim: %s", miderrstr());
+	p->jump = resrcacq(anim, "anim/jump/anim", NULL);
+	if (!p->jump)
+		fatal("Failed to load the player jump anim: %s", miderrstr());
 	p->bbox = (Rect){ { x, y }, { x + Wide, y - Tall } };
 	p->imgloc = (Point) { x, y - Tall };
 	p->v = (Point) { 0, 0 };
@@ -77,6 +83,19 @@ static void dofall(Player *p, Isect is)
 	}
 }
 
+static void updateanim(Player *p)
+{
+	Anim *cur = p->cur;
+	if (p->fall)
+		p->cur = p->jump;
+	else if (p->v.x != 0)
+		p->cur = p->walk;
+	else
+		p->cur = p->stand;
+	if (p->cur != cur)
+		animreset(p->cur);
+}
+
 static void playermv(Player *p, Lvl *l, int z, Point *transl)
 {
 	float xmul = p->v.x < 0 ? 1.0 : -1.0;
@@ -93,8 +112,11 @@ void playerupdate(Player *p, Lvl *l, int z, Point *tr)
 {
 	animupdate(p->cur, 1);
 	playermv(p, l, z, tr);
+
 	if(p->fall && p->v.y < Maxdy)
 		p->v.y += p->ddy;
+
+	updateanim(p);
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
