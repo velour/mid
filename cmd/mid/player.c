@@ -30,7 +30,7 @@ Player *playernew(int x, int y)
 	if (!p->stand)
 		fatal("Failed to load the player stand anim: %s", miderrstr());
 	p->walk = resrcacq(anim, "anim/walk/anim", NULL);
-	if (!p->jump)
+	if (!p->walk)
 		fatal("Failed to load the player walk anim: %s", miderrstr());
 	p->jump = resrcacq(anim, "anim/jump/anim", NULL);
 	if (!p->jump)
