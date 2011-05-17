@@ -8,9 +8,10 @@
 
 enum { Theight = 32, Twidth = 32 };
 
-enum { Collide = 1<<0,
-       Bkgrnd = 1<<1,
-       Water = 1<<2,
+enum {
+	Collide = 1<<0,
+	Bkgrnd = 1<<1,
+	Water = 1<<2,
 };
 
 typedef struct Tinfo Tinfo;
@@ -79,10 +80,12 @@ Lvl *lvlread(FILE *f)
 	Lvl *l = lvlnew(d, w, h);
 	if (!l)
 		return NULL;
+
 	int x, y, z;
 	x = y = z = 0;
 	if (fgetc(f) != '\n')
 		goto errnl;
+
 	for (z = 0; z < d; z++) {
 		int base = z * w * h;
 		for (y = 0; y < h; y++) {
@@ -165,6 +168,7 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, bool bkgrnd, Point offs)
 			int ind = base + x * h + y;
 			int t = l->tiles[ind];
 			Point pt = (Point){ pxx, offs.y + y * Theight };
+
 			if (bkgrnd)
 				bkgrnddraw(g, anims, t, pt);
 			else {
@@ -193,12 +197,14 @@ Isect tileisect(int t, int x, int y, Rect r)
 	return isection(r, tilebbox(x, y));
 }
 
-Rect testtiles(Rect a, Point v)
+Rect hitzone(Rect a, Point v)
 {
 	Rect b = a;
 	rectmv(&b, v.x, v.y);
+
 	a = rectnorm(a);
 	b = rectnorm(b);
+
 	int xmin = a.a.x < b.a.x ? a.a.x : b.a.x;
 	int ymin = a.a.y < b.b.y ? a.a.y : b.a.y;
 	int xmax = a.b.x > b.b.x ? ceil(a.b.x) : ceil(b.b.x);
@@ -209,12 +215,13 @@ Rect testtiles(Rect a, Point v)
 	ymax /= Theight;
 	if (ymin > 0)
 		ymin--;
+
 	return (Rect) { .a = {xmin, ymin}, .b = {xmax, ymax} };
 }
 
 Isect lvlisect(Lvl *l, int z, Rect r, Point v)
 {
-	Rect test = testtiles(r, v);
+	Rect test = hitzone(r, v);
 
 	Isect isect = (Isect) { .is = 0, .dx = 0.0, .dy = 0.0 };
 	Rect mv = r;
