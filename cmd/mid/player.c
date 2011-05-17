@@ -59,14 +59,21 @@ static void imgmvscroll(Player *p, Point *transl, float dx, float dy)
 
 static void dofall(Player *p, Isect is)
 {
-	if(p->v.y > 0 && is.dy > 0) {
-		p->fall = 0;
-		p->ddy = 0;
-	} else {
-		if (p->v.y < 0 && is.dy > 0) /* hit my head on something */
-			p->v.y = 0;
-		p->fall = 1;
+	if(p->v.y > 0 && is.dy > 0 && p->fall) { /* hit the ground */
+		/* Constantly try to fall in order to test ground
+		 * beneath us. */
+		p->v.y = Grav;
 		p->ddy = Grav;
+		p->fall = 0;
+	} else if (p->v.y < 0 && is.dy > 0) { /* hit my head on something */
+		p->v.y = 0;
+		p->ddy = Grav;
+		p->fall = 1;
+	}
+	if (p->v.y > 0 && is.dy <= 0 && !p->fall) { /* are we falling now? */
+		p->v.y = 0;
+		p->ddy = Grav;
+		p->fall = 1;
 	}
 }
 
