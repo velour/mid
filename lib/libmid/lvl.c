@@ -155,7 +155,7 @@ Rect tilebbox(int x, int y)
 {
 	Point a = (Point) {x * Twidth, y * Theight};
 	Point b = (Point) {(x + 1) * Twidth, (y + 1) * Theight};
-	return (Rect){ a, b };
+	return (Rect){ .a = a, .b = b };
 }
 
 void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, bool bkgrnd, Point offs)
