@@ -1,0 +1,29 @@
+* lvl.c: get most prominent level tile overlapping the given bbox.
+  This way, the player will move slower in water and such.
+
+* Enemies
+  resource directory tree for each enemy:
+
+  resrc/
+  +- <enemy>/
+     +- stand/
+        +- anim
+        +- 0.png
+     +- walk/
+     +- jump/
+
+  This way each enemy is specified solely by <enemy> and the code
+  should be able to find all of its animations from there.  Eventually
+  we can put other data for the enemy in this directory if we want to.
+
+* Should we merge some of the enemy code with player.c?  It seems like
+  the player will share all of the resource structure and such.
+
+* Inventory
+  Probably need a bunch of code for displaying the inventory:
+  - selecting items
+  - scrolling?
+  - viewing item descriptions?
+
+* Stats, exp, etc.
+  - very small number of stats... only ones that make sense
