@@ -19,9 +19,10 @@ struct Player {
 	float ddy;
 	Anim *stand, *walk, *jump, *cur;
 	_Bool fall;
+	char *km;
 };
 
-Player *playernew(int x, int y)
+Player *playernew(int x, int y, char km[])
 {
 	Player *p = malloc(sizeof(*p));
 	if (!p)
@@ -40,6 +41,7 @@ Player *playernew(int x, int y)
 	p->v = (Point) { 0, 0 };
 	p->ddy =  Grav;
 	p->fall = 1;
+	p->km = km;
 	return p;
 }
 
@@ -132,25 +134,23 @@ void playerhandle(Player *p, Event *e)
 {
 	if (e->type != Keychng || e->repeat)
 		return;
-	switch(e->key){
-	case 's':
+
+	char k = e->key;
+	if(k == p->km[Mvleft]){
 		if (e->down && p->v.x > -Dx)
 			p->v.x -= Dx;
 		else if (!e->down)
 			p->v.x += Dx;
-		break;
-	case 'f':
+	}else if(k == p->km[Mvright]){
 		if (e->down && p->v.x < Dx)
 			p->v.x += Dx;
 		else if (!e->down)
 			p->v.x -= Dx;
-		break;
-	case 'e':
+	}else if(k == p->km[Mvjump]){
 		if(!p->fall){
 			p->v.y = (e->down ? -Dy : 0.0);
 			p->ddy = Grav;
 			p->fall = 1;
 		}
-		break;
 	}
 }

@@ -37,7 +37,13 @@ int main(int argc, char *argv[])
 	if (!init())
 		fatal("Failed to initialize: %s", miderrstr());
 
-	Game *gm = gamenew();
+	char dkm[] = {
+		[Mvleft] = 's',
+		[Mvright] = 'f',
+		[Mvjump] = 'e',
+	};
+
+	Game *gm = gamenew(dkm);
 	Scrn mainscrn = { &gamemt, gm };
 
 	Scrnstk *stk = scrnstknew();
