@@ -7,7 +7,10 @@ enum Action{
 	Mvleft,
 	Mvright,
 	Mvjump,
+	Nactions,
 };
+
+_Bool keymapread(char km[Nactions], char *fname);
 
 typedef struct Game Game;
 Game *gamenew(char keymap[]);

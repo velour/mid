@@ -43,6 +43,22 @@ int main(int argc, char *argv[])
 		[Mvjump] = 'e',
 	};
 
+	char *kmname = NULL;
+
+#	define ARGIS(a) argv[i][0] == '-' && argv[i][1] == a
+
+	for(int i = 1; i < argc; i++){
+	if(ARGIS('k')){
+		if(i + 1 == argc)
+			die("k requires a filename", miderrstr());
+		kmname = argv[i+1];
+		i++;
+	}
+	}
+
+	if(kmname && keymapread(dkm, kmname))
+		die("failed to read %s", kmname);
+
 	Game *gm = gamenew(dkm);
 	Scrn mainscrn = { &gamemt, gm };
 

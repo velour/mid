@@ -9,6 +9,7 @@ OFILES := main.o\
 	resrc.o\
 	game.o\
 	player.o\
+	keymap.o\
 
 HFILES := ../../include/mid.h\
 	../../include/log.h\

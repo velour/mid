@@ -9,7 +9,14 @@ void prfn(const char *func, const char *fmt, ...);
 void prfnerr(const char *func, int err, const char *fmt, ...);
 void flushlog(void);
 
+void exit(int);
 void abort(void);
+
+#define die(...) \
+	do {\
+		prfn(__func__, __VA_ARGS__);\
+		exit(1);\
+	} while(0)
 
 #define fatal(...)				\
 	do {					\
