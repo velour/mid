@@ -9,13 +9,11 @@ Rtab *imgs;
 
 void *imgload(const char *path, void *_ignrd)
 {
-	pr("Loading img %s", path);
 	return imgnew(gfx, path);
 }
 
 void imgunload(const char *path, void *img, void *_info)
 {
-	pr("Unloading img %s", path);
 	imgfree(img);
 }
 
@@ -28,13 +26,11 @@ Rtab *anim;
 
 void *animload(const char *path, void *_ignrd)
 {
-	pr("Loading anim %s", path);
 	return animnew(imgs, path);
 }
 
 void animunload(const char *path, void *anim, void *_info)
 {
-	pr("Unloading anim %s", path);
 	animfree(imgs, anim);
 }
 
@@ -47,7 +43,6 @@ void *_lvlload(const char *path, void *_ignrd)
 
 void lvlunload(const char *path, void *lvl, void *_ignrd)
 {
-	pr("Unloading lvl %s", path);
 	lvlfree(lvl);
 }
 
@@ -72,14 +67,11 @@ Rtab *txt;
 void *txtload(const char *path, void *_info)
 {
 	Txtinfo *info = _info;
-	pr("Loading text %s, %dpt", path, info->size);
 	return txtnew(path, info->size, info->color);
 }
 
 void txtunload(const char *path, void *txt, void *_info)
 {
-	Txtinfo *info = _info;
-	pr("Unloading txt %s, %dpt", path, info->size);
 	txtfree(txt);
 }
 
@@ -114,13 +106,11 @@ Rtab *music;
 
 void *musicload(const char *path, void *_ignrd)
 {
-	pr("Loading music %s", path);
 	return musicnew(path);
 }
 
 void musicunload(const char *path, void *music, void *_info)
 {
-	pr("Unloading music %s", path);
 	musicfree(music);
 }
 
@@ -133,13 +123,11 @@ Rtab *sfx;
 
 void *sfxload(const char *path, void *_ignrd)
 {
-	pr("Loading sfx %s", path);
 	return sfxnew(path);
 }
 
 void sfxunload(const char *path, void *s, void *_info)
 {
-	pr("Unloading sfx %s", path);
 	sfxnew(s);
 }
 
