@@ -3,7 +3,6 @@
 #include "resrc.h"
 #include "game.h"
 #include <stdlib.h>
-#include <math.h>
 
 /* Size of the bbox */
 enum { Tall = 32, Wide = 32 };
