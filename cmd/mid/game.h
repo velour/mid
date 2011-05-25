@@ -11,9 +11,10 @@ enum Action{
 };
 
 _Bool keymapread(char km[Nactions], char *fname);
+extern char kmap[Nactions];
 
 typedef struct Game Game;
-Game *gamenew(char keymap[]);
+Game *gamenew(void);
 void gamefree(Scrn *);
 void gameupdate(Scrn *, Scrnstk *);
 void gamedraw(Scrn *, Gfx *);
@@ -21,7 +22,7 @@ void gamehandle(Scrn *, Scrnstk *, Event *);
 Scrnmt gamemt;
 
 typedef struct Player Player;
-Player *playernew(int x, int y, char keymap[]);
+Player *playernew(int x, int y);
 void playerfree(Player *);
 void playerupdate(Player *, Lvl *l, int z, Point *tr);
 void playerdraw(Gfx *, Player *, Point tr);

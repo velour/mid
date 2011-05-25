@@ -18,7 +18,6 @@ struct Player {
 	float ddy;
 	Anim *stand, *walk, *jump, *cur;
 	_Bool fall;
-	char *km;
 };
 
 static void playermv(Player *p, Lvl *l, int z, Point *transl);
@@ -26,7 +25,7 @@ static void chnganim(Player *p);
 static void dofall(Player *p, Isect is);
 static void imgmvscroll(Player *p, Point *transl, float dx, float dy);
 
-Player *playernew(int x, int y, char km[])
+Player *playernew(int x, int y)
 {
 	Player *p = malloc(sizeof(*p));
 	if (!p)
@@ -45,7 +44,6 @@ Player *playernew(int x, int y, char km[])
 	p->v = (Point) { 0, 0 };
 	p->ddy =  Grav;
 	p->fall = 1;
-	p->km = km;
 	return p;
 }
 
@@ -140,17 +138,17 @@ void playerhandle(Player *p, Event *e)
 		return;
 
 	char k = e->key;
-	if(k == p->km[Mvleft]){
+	if(k == kmap[Mvleft]){
 		if (e->down && p->v.x > -Dx)
 			p->v.x -= Dx;
 		else if (!e->down)
 			p->v.x += Dx;
-	}else if(k == p->km[Mvright]){
+	}else if(k == kmap[Mvright]){
 		if (e->down && p->v.x < Dx)
 			p->v.x += Dx;
 		else if (!e->down)
 			p->v.x -= Dx;
-	}else if(k == p->km[Mvjump]){
+	}else if(k == kmap[Mvjump]){
 		if(!p->fall){
 			p->v.y = (e->down ? -Dy : 0.0);
 			p->ddy = Grav;

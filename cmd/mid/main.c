@@ -37,12 +37,6 @@ int main(int argc, char *argv[])
 	if (!init())
 		fatal("Failed to initialize: %s", miderrstr());
 
-	char dkm[] = {
-		[Mvleft] = 's',
-		[Mvright] = 'f',
-		[Mvjump] = 'e',
-	};
-
 	char *kmname = NULL;
 
 #	define ARGIS(a) argv[i][0] == '-' && argv[i][1] == a
@@ -56,10 +50,10 @@ int main(int argc, char *argv[])
 	}
 	}
 
-	if(kmname && keymapread(dkm, kmname))
+	if(kmname && keymapread(kmap, kmname))
 		die("failed to read %s", kmname);
 
-	Game *gm = gamenew(dkm);
+	Game *gm = gamenew();
 	Scrn mainscrn = { &gamemt, gm };
 
 	Scrnstk *stk = scrnstknew();

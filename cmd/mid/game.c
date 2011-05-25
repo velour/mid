@@ -12,7 +12,7 @@ struct Game {
 	Player *player;
 };
 
-Game *gamenew(char km[])
+Game *gamenew(void)
 {
 	Game *gm = malloc(sizeof(*gm));
 	if (!gm)
@@ -21,7 +21,7 @@ Game *gamenew(char km[])
 	gm->transl = (Point) { 0, 0 };
 	gm->z = 0;
 	gm->lvl = resrcacq(lvls, "lvl/0.lvl", NULL);
-	gm->player = playernew(64, 96, km);
+	gm->player = playernew(64, 96);
 
 	return gm;
 }

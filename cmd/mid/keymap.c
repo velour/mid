@@ -26,3 +26,9 @@ _Bool keymapread(char km[], char *fname){
 	fclose(f);
 	return 0;
 }
+
+char kmap[] = {
+	[Mvleft] = 's',
+	[Mvright] = 'f',
+	[Mvjump] = 'e',
+};
