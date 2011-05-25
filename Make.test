@@ -4,7 +4,7 @@ all: $(TARGS)
 
 %.test: %.o
 	@echo ld -o $@ $< $(LDFLAGS)
-	@$(B)/lod $(LD) -o $@ $(MANDLDFLAGS) $(LDFLAGS) $< $(LIB)
+	@lod $(LD) -o $@ $(MANDLDFLAGS) $(LDFLAGS) $< $(LIB)
 	@echo running $@
 	@./$@ && rm $@
 

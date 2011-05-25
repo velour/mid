@@ -1,6 +1,5 @@
 include ../../Make.inc
 
-B = ../..
 TARG := mid
 LIB :=\
 	../../lib/libmid/libmid.a\
