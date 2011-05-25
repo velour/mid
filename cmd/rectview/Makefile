@@ -1,5 +1,6 @@
 include ../../Make.inc
 
+B = ../..
 TARG := rectview
 LIB := ../../lib/libmid/libmid.a
 

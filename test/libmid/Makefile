@@ -1,5 +1,6 @@
 include ../../Make.inc
 
+B = ../..
 TESTS :=\
 	fs\
 
