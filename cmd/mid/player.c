@@ -21,6 +21,11 @@ struct Player {
 	char *km;
 };
 
+static void playermv(Player *p, Lvl *l, int z, Point *transl);
+static void chnganim(Player *p);
+static void dofall(Player *p, Isect is);
+static void imgmvscroll(Player *p, Point *transl, float dx, float dy);
+
 Player *playernew(int x, int y, char km[])
 {
 	Player *p = malloc(sizeof(*p));
@@ -49,19 +54,27 @@ void playerfree(Player *p)
 	free(p);
 }
 
-/* Move the player's image or scroll the screen. */
-static void imgmvscroll(Player *p, Point *transl, float dx, float dy)
+void playerupdate(Player *p, Lvl *l, int z, Point *tr)
 {
-	float imgx = p->imgloc.x, imgy = p->imgloc.y;
-	if ((dx < 0 && imgx < Scrlbuf) || (dx > 0 && imgx > Scrnw - Scrlbuf))
-		transl->x -= dx;
-	else
-		p->imgloc.x += dx;
+	animupdate(p->cur, 1);
+	playermv(p, l, z, tr);
 
-	if ((dy > 0 && imgy > Scrnh - Scrlbuf) || (dy < 0 && imgy < Scrlbuf))
-		transl->y -= dy;
-	else
-		p->imgloc.y += dy;
+	if(p->fall && p->v.y < Maxdy)
+		p->v.y += p->ddy;
+
+	chnganim(p);
+}
+
+static void playermv(Player *p, Lvl *l, int z, Point *transl)
+{
+	float xmul = p->v.x < 0 ? 1.0 : -1.0;
+	float ymul = p->v.y < 0 ? 1.0 : -1.0;
+	Isect is = lvlisect(l, z, p->bbox, p->v);
+	float dx = p->v.x + xmul * is.dx;
+	float dy = p->v.y + ymul * is.dy;
+	dofall(p, is);
+	rectmv(&p->bbox, dx, dy);
+	imgmvscroll(p, transl, dx, dy);
 }
 
 static void dofall(Player *p, Isect is)
@@ -84,7 +97,22 @@ static void dofall(Player *p, Isect is)
 	}
 }
 
-static void updateanim(Player *p)
+/* Move the player's image or scroll the screen. */
+static void imgmvscroll(Player *p, Point *transl, float dx, float dy)
+{
+	float imgx = p->imgloc.x, imgy = p->imgloc.y;
+	if ((dx < 0 && imgx < Scrlbuf) || (dx > 0 && imgx > Scrnw - Scrlbuf))
+		transl->x -= dx;
+	else
+		p->imgloc.x += dx;
+
+	if ((dy > 0 && imgy > Scrnh - Scrlbuf) || (dy < 0 && imgy < Scrlbuf))
+		transl->y -= dy;
+	else
+		p->imgloc.y += dy;
+}
+
+static void chnganim(Player *p)
 {
 	Anim *cur = p->cur;
 	if (p->fall)
@@ -95,29 +123,6 @@ static void updateanim(Player *p)
 		p->cur = p->stand;
 	if (p->cur != cur)
 		animreset(p->cur);
-}
-
-static void playermv(Player *p, Lvl *l, int z, Point *transl)
-{
-	float xmul = p->v.x < 0 ? 1.0 : -1.0;
-	float ymul = p->v.y < 0 ? 1.0 : -1.0;
-	Isect is = lvlisect(l, z, p->bbox, p->v);
-	float dx = p->v.x + xmul * is.dx;
-	float dy = p->v.y + ymul * is.dy;
-	dofall(p, is);
-	rectmv(&p->bbox, dx, dy);
-	imgmvscroll(p, transl, dx, dy);
-}
-
-void playerupdate(Player *p, Lvl *l, int z, Point *tr)
-{
-	animupdate(p->cur, 1);
-	playermv(p, l, z, tr);
-
-	if(p->fall && p->v.y < Maxdy)
-		p->v.y += p->ddy;
-
-	updateanim(p);
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
