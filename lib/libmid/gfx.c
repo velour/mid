@@ -1,11 +1,11 @@
 #include "../../include/mid.h"
-#include "../../include/log.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <stdio.h>
 
 struct Gfx{
 	SDL_Window *win;
