@@ -20,7 +20,7 @@ void gamefree(Scrn *);
 void gameupdate(Scrn *, Scrnstk *);
 void gamedraw(Scrn *, Gfx *);
 void gamehandle(Scrn *, Scrnstk *, Event *);
-Scrnmt gamemt;
+extern Scrnmt gamemt;
 
 typedef struct Player Player;
 Player *playernew(int x, int y);
@@ -30,3 +30,4 @@ void playerdraw(Gfx *, Player *, Point tr);
 void playerhandle(Player *, Event *);
 
 Scrn *invscrnnew(Player *, Lvl *);
+Scrn *titlescrnnew(Gfx *);

@@ -11,6 +11,7 @@ OFILES := main.o\
 	player.o\
 	keymap.o\
 	inv.o\
+	title.o\
 
 HFILES := ../../include/mid.h\
 	../../include/log.h\

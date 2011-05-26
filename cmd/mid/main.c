@@ -55,11 +55,8 @@ int main(int argc, char *argv[])
 	if(kmname && keymapread(kmap, kmname))
 		die("failed to read %s", kmname);
 
-	Game *gm = gamenew();
-	Scrn mainscrn = { &gamemt, gm };
-
 	Scrnstk *stk = scrnstknew();
-	scrnstkpush(stk, &mainscrn);
+	scrnstkpush(stk, titlescrnnew(gfx));
 
 	scrnrun(stk, gfx);
 	pr("Mean frame delay: %g ms", meandelay);
