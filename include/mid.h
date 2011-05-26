@@ -190,3 +190,4 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, _Bool bkgrnd, Point offs);
 /* Returns the reverse vector that must be added to v in order to
  * respect collisions. */
 Isect lvlisect(Lvl *l, int z, Rect r, Point v);
+extern _Bool lvlgridon;

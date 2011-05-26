@@ -27,11 +27,13 @@ static Tinfo *tiles[] = {
 	['w'] = &(Tinfo){ .file = "anim/water/anim", .flags = Water },
 };
 
-const int ntiles = sizeof(tiles) / sizeof(tiles[0]);
+bool lvlgridon = false;
+
+enum { Ntiles = sizeof(tiles) / sizeof(tiles[0]) };
 
 bool istile(int t)
 {
-	return t >= 0 && t < ntiles && tiles[t];
+	return t >= 0 && t < Ntiles && tiles[t];
 }
 
 struct Lvl {
@@ -173,10 +175,11 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, bool bkgrnd, Point offs)
 				bkgrnddraw(g, anims, t, pt);
 			else {
 				fgrnddraw(g, anims, t, pt);
-				/* draw a grid */
-				Rect r = tilebbox(x, y);
-				rectmv(&r, offs.x, offs.y);
-				gfxdrawrect(g, r, (Color){0,0,0,255});
+				if(lvlgridon){
+					Rect r = tilebbox(x, y);
+					rectmv(&r, offs.x, offs.y);
+					gfxdrawrect(g, r, (Color){0,0,0,255});
+				}
 			}
 		}
 	}

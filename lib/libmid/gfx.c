@@ -75,19 +75,9 @@ void gfxfillrect(Gfx *g, Rect r, Color c){
 	SDL_RenderFillRect(g->rend, &sr);
 }
 void gfxdrawrect(Gfx *g, Rect r, Color c){
+	SDL_Rect sr = { r.a.x, r.a.y, r.b.x - r.a.x, r.b.y - r.a.y };
 	rendcolor(g, c);
-	int x0 = r.a.x < r.b.x ? r.a.x : r.b.x;
-	int x1 = r.a.x > r.b.x ? r.a.x : r.b.x;
-	int y0 = r.a.y < r.b.y ? r.a.y : r.b.y;
-	int y1 = r.a.y > r.b.y ? r.a.y : r.b.y;
-	SDL_Rect top = { x0, y0, x1 - x0, 1 };
-	SDL_Rect left = { x0, y0, 1, y1 - y0 };
-	SDL_Rect bottom = { x1, y0, x1 - x0, 1 };
-	SDL_Rect right = { x1, y0, 1, y1 - y0 };
-	SDL_RenderFillRect(g->rend, &top);
-	SDL_RenderFillRect(g->rend, &bottom);
-	SDL_RenderFillRect(g->rend, &left);
-	SDL_RenderFillRect(g->rend, &right);
+	SDL_RenderDrawRect(g->rend, &sr);
 }
 
 struct Img{

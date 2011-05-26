@@ -47,6 +47,8 @@ int main(int argc, char *argv[])
 			die("k requires a filename", miderrstr());
 		kmname = argv[i+1];
 		i++;
+	}else if(ARGIS('d')){
+		lvlgridon = true;
 	}
 	}
 
