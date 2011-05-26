@@ -39,7 +39,8 @@ static void update(Scrn *s, Scrnstk *stk){
 }
 
 static void draw(Scrn *s, Gfx *g){
-	gfxclear(g, (Color){ 127, 255, 127, 255 });
+	gfxclear(g, (Color){ 127, 255, 127 });
+	gfxflip(g);
 }
 
 static void handle(Scrn *s, Scrnstk *stk, Event *e){
