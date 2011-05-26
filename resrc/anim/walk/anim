@@ -1,3 +1,5 @@
-2
+4
 100 1 anim/walk/0.png
-100 0 anim/walk/1.png
+100 2 anim/stand/0.png
+100 3 anim/walk/1.png
+100 0 anim/stand/0.png
