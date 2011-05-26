@@ -62,6 +62,7 @@ void gfxfree(Gfx *);
 Point gfxdims(const Gfx *);
 void gfxflip(Gfx *);
 void gfxclear(Gfx *, Color);
+void gfxdrawpoint(Gfx *, Point, Color);
 void gfxfillrect(Gfx *, Rect, Color);
 void gfxdrawrect(Gfx *, Rect, Color);
 
@@ -187,6 +188,7 @@ Lvl *lvlload(const char *path);
 void lvlfree(Lvl *l);
 void lvlupdate(Rtab *anims, Lvl *l);
 void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, _Bool bkgrnd, Point offs);
+void lvlminidraw(Gfx *, Lvl *, int z, Point);
 /* Returns the reverse vector that must be added to v in order to
  * respect collisions. */
 Isect lvlisect(Lvl *l, int z, Rect r, Point v);

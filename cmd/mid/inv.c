@@ -40,6 +40,8 @@ static void update(Scrn *s, Scrnstk *stk){
 
 static void draw(Scrn *s, Gfx *g){
 	gfxclear(g, (Color){ 127, 255, 127 });
+	Inv *i = s->data;
+	lvlminidraw(g, i->lvl, 0, (Point){0,0});
 	gfxflip(g);
 }
 

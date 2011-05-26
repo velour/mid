@@ -69,11 +69,17 @@ void gfxclear(Gfx *g, Color c){
 	SDL_RenderClear(g->rend);
 }
 
+void gfxdrawpoint(Gfx *g, Point p, Color c){
+	rendcolor(g, c);
+	SDL_RenderDrawPoint(g->rend, p.x, p.y);
+}
+
 void gfxfillrect(Gfx *g, Rect r, Color c){
 	SDL_Rect sr = { r.a.x, r.a.y, r.b.x - r.a.x, r.b.y - r.a.y };
 	rendcolor(g, c);
 	SDL_RenderFillRect(g->rend, &sr);
 }
+
 void gfxdrawrect(Gfx *g, Rect r, Color c){
 	SDL_Rect sr = { r.a.x, r.a.y, r.b.x - r.a.x, r.b.y - r.a.y };
 	rendcolor(g, c);

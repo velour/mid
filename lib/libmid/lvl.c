@@ -135,8 +135,8 @@ void drawtile(Gfx *g, Rtab *anims, int t, Point pt)
 
 void bkgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
 {
-	if (!tiles[t])
-		return;
+	assert(tiles[t] != NULL);
+
 	if (!(tiles[t]->flags & Bkgrnd)) {
 		/* White background behind foreground tiles so
 		 * blending works correctly. */
@@ -148,7 +148,9 @@ void bkgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
 }
 void fgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
 {
-	if (!tiles[t] || tiles[t]->flags & Bkgrnd)
+	assert(tiles[t] != NULL);
+
+	if (tiles[t]->flags & Bkgrnd)
 		return;
 	drawtile(g, anims, t, pt);
 }
@@ -181,6 +183,29 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, bool bkgrnd, Point offs)
 					gfxdrawrect(g, r, (Color){0,0,0,255});
 				}
 			}
+		}
+	}
+}
+
+void lvlminidraw(Gfx *g, Lvl *l, int z, Point offs)
+{
+	int w = l->w, h = l->h;
+	int base = z * w * h;
+	for (int x = 0; x < w; x++){
+		int pxx = offs.x + x;
+		for (int y = 0; y < h; y++) {
+			int ind = base + x * h + y;
+			int t = l->tiles[ind];
+			Point pt = (Point){ pxx, offs.y + y };
+
+			Color c;
+			if(tiles[t]->flags & Collide)
+				c = (Color){ 0, 0, 0, 255 };
+			else if(tiles[t]->flags & Bkgrnd)
+				c = (Color){ 255, 255, 255, 255 };
+			else if(tiles[t]->flags & Water)
+				c = (Color){ 75, 75, 255, 255 };
+			gfxdrawpoint(g, pt, c);
 		}
 	}
 }
