@@ -53,7 +53,16 @@ void gamedraw(Scrn *s, Gfx *g)
 
 void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 {
+	if(e->type != Keychng || e->repeat)
+		return;
+
 	Game *gm = s->data;
+
+	if(e->down && e->key == kmap[Mvinv]){
+		scrnstkpush(stk, invscrnnew(gm->player, gm->lvl));
+		return;
+	}
+
 	playerhandle(gm->player, e);
 }
 

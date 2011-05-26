@@ -31,4 +31,5 @@ char kmap[] = {
 	[Mvleft] = 's',
 	[Mvright] = 'f',
 	[Mvjump] = 'e',
+	[Mvinv] = 'n',
 };

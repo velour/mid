@@ -7,6 +7,7 @@ enum Action{
 	Mvleft,
 	Mvright,
 	Mvjump,
+	Mvinv,
 	Nactions,
 };
 
@@ -27,3 +28,5 @@ void playerfree(Player *);
 void playerupdate(Player *, Lvl *l, int z, Point *tr);
 void playerdraw(Gfx *, Player *, Point tr);
 void playerhandle(Player *, Event *);
+
+Scrn *invscrnnew(Player *, Lvl *);
