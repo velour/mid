@@ -125,10 +125,11 @@ static void chnganim(Player *p)
 
 void playerdraw(Gfx *g, Player *p, Point tr)
 {
-	Rect bbox = p->bbox;
-	rectmv(&bbox, tr.x, tr.y);
-	gfxfillrect(g, bbox, (Color){255,0,0,255});
-
+	if(lvlgridon){
+		Rect bbox = p->bbox;
+		rectmv(&bbox, tr.x, tr.y);
+		gfxfillrect(g, bbox, (Color){255,0,0,255});
+	}
 	animdraw(g, p->cur, p->imgloc);
 }
 
