@@ -1,6 +1,6 @@
 syntax: glob
-/mid
-/rectview
+cmd/mid/mid
+cmd/rectview/rectview
 *.o
 *.swp
 *.a
