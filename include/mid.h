@@ -1,6 +1,5 @@
-/* Mean frame delay.  May be useful for comparing computation
- * effort. */
-extern float meandelay;
+/* Mean frame time.  May be useful for comparing computation effort. */
+extern float meanftime;
 
 const char *miderrstr(void);
 void seterrstr(const char *fmt, ...);

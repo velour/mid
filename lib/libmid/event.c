@@ -7,7 +7,7 @@ enum { assert_keychar_eq = 1/!!('a' == SDLK_a) };
 
 static int prevtm = 0;
 
-float meandelay = 0.0;
+float meanftime = 0.0;
 static unsigned int nframes = 0;
 
 void framestart(void){
@@ -15,9 +15,11 @@ void framestart(void){
 }
 
 void framefinish(void){
-	int delay = prevtm + Ticktm - SDL_GetTicks();
+	int time = SDL_GetTicks();
+	int delay = prevtm + Ticktm - time;
+	int ftime = time - prevtm;
 	nframes++;
-	meandelay = meandelay + ((delay - meandelay) / nframes);
+	meanftime = meanftime + ((ftime - meanftime) / nframes);
 	if(delay > 0)
 		SDL_Delay(delay);
 }

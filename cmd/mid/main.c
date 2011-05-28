@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 	scrnstkpush(stk, titlescrnnew(gfx));
 
 	scrnrun(stk, gfx);
-	pr("Mean frame delay: %g ms", meandelay);
+	pr("Mean frame time: %g ms", meanftime);
 
 	deinit();
 	return 0;
