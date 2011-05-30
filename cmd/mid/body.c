@@ -15,12 +15,8 @@ static void chngdir(Body *b);
 static void chngact(Body *b);
 static void imgmvscroll(Body *b, Point *transl, float dx, float dy);
 
-Body *bodynew(const char *name, int x, int y)
+_Bool bodynew(Body *b, const char *name, int x, int y)
 {
-	Body *b = calloc(1, sizeof(*b));
-	if (!b)
-		return NULL;
-
 	const int nlen = strlen(name);
 	const int buflen = nlen + 20 /* Fix this */;
 	char buf[buflen + 1];
@@ -73,7 +69,7 @@ Body *bodynew(const char *name, int x, int y)
 	b->fall = true;
 	b->ddy = Grav;
 
-	return b;
+	return false;
 }
 
 void bodyfree(Body *b)

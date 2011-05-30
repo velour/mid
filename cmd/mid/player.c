@@ -7,7 +7,7 @@
 enum { Dx = 3, Dy = 8 };
 
 struct Player {
-	Body *body;
+	Body body;
 };
 
 Player *playernew(int x, int y)
@@ -15,28 +15,26 @@ Player *playernew(int x, int y)
 	Player *p = malloc(sizeof(*p));
 	if (!p)
 		return NULL;
-	p->body = bodynew("knight", x, y);
-	if (!p->body) {
+	if(bodynew(&p->body, "knight", x, y)){
 		free(p);
-		p = NULL;
+		return NULL;
 	}
 	return p;
 }
 
 void playerfree(Player *p)
 {
-	free(p->body);
 	free(p);
 }
 
 void playerupdate(Player *p, Lvl *l, int z, Point *tr)
 {
-	bodyupdate(p->body, l, z, tr);
+	bodyupdate(&p->body, l, z, tr);
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
 {
-	bodydraw(g, p->body, tr);
+	bodydraw(g, &p->body, tr);
 }
 
 void playerhandle(Player *p, Event *e)
@@ -46,20 +44,20 @@ void playerhandle(Player *p, Event *e)
 
 	char k = e->key;
 	if(k == kmap[Mvleft]){
-		if (e->down && p->body->vel.x > -Dx)
-			p->body->vel.x -= Dx;
+		if (e->down && p->body.vel.x > -Dx)
+			p->body.vel.x -= Dx;
 		else if (!e->down)
-			p->body->vel.x += Dx;
+			p->body.vel.x += Dx;
 	}else if(k == kmap[Mvright]){
-		if (e->down && p->body->vel.x < Dx)
-			p->body->vel.x += Dx;
+		if (e->down && p->body.vel.x < Dx)
+			p->body.vel.x += Dx;
 		else if (!e->down)
-			p->body->vel.x -= Dx;
+			p->body.vel.x -= Dx;
 	}else if(k == kmap[Mvjump]){
-		if(!p->body->fall){
-			p->body->vel.y = (e->down ? -Dy : 0.0);
-			p->body->ddy = Grav;
-			p->body->fall = 1;
+		if(!p->body.fall){
+			p->body.vel.y = (e->down ? -Dy : 0.0);
+			p->body.ddy = Grav;
+			p->body.fall = 1;
 		}
 	}
 }
