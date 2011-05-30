@@ -1,3 +1,6 @@
-left	o
-right	u
-jump	.
+left		o
+right		u
+jump		.
+forward		,
+back		p
+inv		b

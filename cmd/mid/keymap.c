@@ -17,6 +17,12 @@ _Bool keymapread(char km[], char *fname){
 			km[Mvright] = k;
 		else if(strcmp(act, "jump") == 0)
 			km[Mvjump] = k;
+		else if(strcmp(act, "forward") == 0)
+			km[Mvfwd] = k;
+		else if(strcmp(act, "back") == 0)
+			km[Mvbak] = k;
+		else if(strcmp(act, "inv") == 0)
+			km[Mvinv] = k;
 	}
 
 	if(ferror(f)){
