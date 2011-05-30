@@ -15,7 +15,7 @@ Player *playernew(int x, int y)
 	Player *p = malloc(sizeof(*p));
 	if (!p)
 		return NULL;
-	if(bodynew(&p->body, "knight", x, y)){
+	if(bodyinit(&p->body, "knight", x, y)){
 		free(p);
 		return NULL;
 	}

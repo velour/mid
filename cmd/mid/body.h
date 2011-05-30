@@ -24,7 +24,7 @@ struct Body {
 	_Bool fall;
 };
 
-_Bool bodynew(Body *, const char *name, int x, int y);
+_Bool bodyinit(Body *, const char *name, int x, int y);
 void bodyfree(Body *b);
 void bodydraw(Gfx *g, Body *b, Point tr);
 

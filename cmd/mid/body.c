@@ -5,54 +5,25 @@
 #include "game.h"
 #include <stdbool.h>
 #include <stdlib.h>
-#include <string.h>
+#include <stdio.h>
 
 const float Grav = 0.5;
 
+static void loadanim(Anim **a, const char *name, const char *dir, const char *act);
 static void bodymv(Body *b, Lvl *l, int z, Point *transl);
 static void dofall(Body *b, Isect is);
 static void chngdir(Body *b);
 static void chngact(Body *b);
 static void imgmvscroll(Body *b, Point *transl, float dx, float dy);
 
-_Bool bodynew(Body *b, const char *name, int x, int y)
+_Bool bodyinit(Body *b, const char *name, int x, int y)
 {
-	const int nlen = strlen(name);
-	const int buflen = nlen + 20 /* Fix this */;
-	char buf[buflen + 1];
-	strncpy(buf, name, buflen);
-
-	strncpy(buf + nlen, "/left/stand/anim", buflen - nlen);
-	buf[buflen] = '\0';
-	b->left.anim[Stand] = resrcacq(anim, buf, NULL);
-	if (!b->left.anim[Stand])
-		fatal("Failed to load %s: %s", buf, miderrstr());
-	strncpy(buf + nlen, "/left/walk/anim", buflen - nlen);
-	buf[buflen] = '\0';
-	b->left.anim[Walk] = resrcacq(anim, buf, NULL);
-	if (!b->left.anim[Walk])
-		fatal("Failed to load %s: %s", buf, miderrstr());
-	strncpy(buf + nlen, "/left/jump/anim", buflen - nlen);
-	buf[buflen] = '\0';
-	b->left.anim[Jump] = resrcacq(anim, buf, NULL);
-	if (!b->left.anim[Jump])
-		fatal("Failed to load %s: %s", buf, miderrstr());
-
-	strncpy(buf + nlen, "/right/stand/anim", buflen - nlen);
-	buf[buflen] = '\0';
-	b->right.anim[Stand] = resrcacq(anim, buf, NULL);
-	if (!b->right.anim[Stand])
-		fatal("Failed to load %s: %s", buf, miderrstr());
-	strncpy(buf + nlen, "/right/walk/anim", buflen - nlen);
-	buf[buflen] = '\0';
-	b->right.anim[Walk] = resrcacq(anim, buf, NULL);
-	if (!b->right.anim[Walk])
-		fatal("Failed to load %s: %s", buf, miderrstr());
-	strncpy(buf + nlen, "/right/jump/anim", buflen - nlen);
-	buf[buflen] = '\0';
-	b->right.anim[Jump] = resrcacq(anim, buf, NULL);
-	if (!b->right.anim[Jump])
-		fatal("Failed to load %s: %s", buf, miderrstr());
+	loadanim(&b->left.anim[Stand], name, "left", "stand");
+	loadanim(&b->left.anim[Walk], name, "left", "walk");
+	loadanim(&b->left.anim[Jump], name, "left", "jump");
+	loadanim(&b->right.anim[Stand], name, "right", "stand");
+	loadanim(&b->right.anim[Walk], name, "right", "walk");
+	loadanim(&b->right.anim[Jump], name, "right", "jump");
 
 	/* Eventually we want to load this from the resrc directory. */
 	b->left.bbox[Stand] = (Rect){ { x, y }, { x + Wide, y - Tall } };
@@ -88,6 +59,17 @@ void bodyupdate(Body *b, Lvl *l, int z, Point *transl)
 	if (b->curdir->anim[b->curact] != prevanim)
 		animreset(b->curdir->anim[b->curact]);
 	animupdate(b->curdir->anim[b->curact], 1);
+}
+
+enum { Buflen = 256 };
+
+static void loadanim(Anim **a, const char *name, const char *dir, const char *act)
+{
+	char buf[Buflen];
+	snprintf(buf, Buflen, "%s/%s/%s/anim", name, dir, act);
+	*a = resrcacq(anim, buf, NULL);
+	if (!*a)
+		fatal("Failed to load %s: %s", buf, miderrstr());
 }
 
 static void bodymv(Body *b, Lvl *l, int z, Point *transl)
