@@ -10,21 +10,22 @@ enum { Theight = 32, Twidth = 32 };
 
 enum {
 	Collide = 1<<0,
-	Bkgrnd = 1<<1,
-	Water = 1<<2,
+	Water = 1<<1,
 };
 
 typedef struct Tinfo Tinfo;
 struct Tinfo {
-	char *file;
-	Anim *anim;
+	char *bgfile;
+	char *fgfile;
+	Anim *bganim;
+	Anim *fganim;
 	unsigned int flags;
 };
 
 static Tinfo *tiles[] = {
-	[' '] = &(Tinfo){ .file = "anim/blank/anim", .flags = Bkgrnd },
-	['#'] = &(Tinfo){ .file = "anim/land/anim", .flags = Collide|Bkgrnd },
-	['w'] = &(Tinfo){ .file = "anim/water/anim", .flags = Water },
+	[' '] = &(Tinfo){ .bgfile = "anim/blank/anim", },
+	['#'] = &(Tinfo){ .bgfile = "anim/land/anim", .flags = Collide },
+	['w'] = &(Tinfo){ .fgfile = "anim/water/anim", .flags = Water },
 };
 
 bool lvlgridon = false;
@@ -124,35 +125,30 @@ Lvl *lvlload(const char *path)
 	return  l;
 }
 
-void drawtile(Gfx *g, Rtab *anims, int t, Point pt)
-{
-	if (tiles[t]->anim == NULL)
-		tiles[t]->anim = resrcacq(anims, tiles[t]->file, NULL);
-	if (!tiles[t]->anim)
-		abort();
-	animdraw(g, tiles[t]->anim, pt);
-}
-
 void bkgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
 {
 	assert(tiles[t] != NULL);
-
-	if (!(tiles[t]->flags & Bkgrnd)) {
-		/* White background behind foreground tiles so
-		 * blending works correctly. */
+	if (!tiles[t]->bgfile) {
 		Rect r = (Rect){{pt.x, pt.y}, {pt.x + Twidth, pt.y + Theight}};
 		gfxfillrect(g, r, (Color){255,255,255,255});
 		return;
 	}
-	drawtile(g, anims, t, pt);
+	if (!tiles[t]->bganim)
+		tiles[t]->bganim = resrcacq(anims, tiles[t]->bgfile, NULL);
+	if (!tiles[t]->bganim)
+		abort();
+	animdraw(g, tiles[t]->bganim, pt);
 }
 void fgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
 {
 	assert(tiles[t] != NULL);
-
-	if (tiles[t]->flags & Bkgrnd)
+	if (!tiles[t]->fgfile)
 		return;
-	drawtile(g, anims, t, pt);
+	if (!tiles[t]->fganim)
+		tiles[t]->fganim = resrcacq(anims, tiles[t]->fgfile, NULL);
+	if (!tiles[t]->fganim)
+		abort();
+	animdraw(g, tiles[t]->fganim, pt);
 }
 
 Rect tilebbox(int x, int y)
@@ -201,7 +197,7 @@ void lvlminidraw(Gfx *g, Lvl *l, int z, Point offs)
 			Color c;
 			if(tiles[t]->flags & Collide)
 				c = (Color){ 0, 0, 0, 255 };
-			else if(tiles[t]->flags & Bkgrnd)
+			else if(!tiles[t]->fgfile)
 				c = (Color){ 255, 255, 255, 255 };
 			else if(tiles[t]->flags & Water)
 				c = (Color){ 75, 75, 255, 255 };
@@ -212,9 +208,14 @@ void lvlminidraw(Gfx *g, Lvl *l, int z, Point offs)
 
 void lvlupdate(Rtab *anims, Lvl *l)
 {
-	for (int i = 0; i < sizeof(tiles) / sizeof(tiles[0]); i++)
-		if (tiles[i] && tiles[i]->anim)
-			animupdate(tiles[i]->anim, 1);
+	for (int i = 0; i < sizeof(tiles) / sizeof(tiles[0]); i++) {
+		if (!tiles[i])
+			continue;
+		if (tiles[i]->fganim)
+			animupdate(tiles[i]->fganim, 1);
+		if (tiles[i]->bganim)
+			animupdate(tiles[i]->bganim, 1);
+	}
 }
 
 Isect tileisect(int t, int x, int y, Rect r)
