@@ -8,6 +8,8 @@
 
 enum { Theight = 32, Twidth = 32 };
 
+static bool tileread(FILE *f, Lvl *l, int x, int y, int z);
+
 typedef struct Tinfo Tinfo;
 struct Tinfo {
 	char *bgfile;
@@ -57,24 +59,6 @@ void lvlfree(Lvl *l)
 	free(l);
 }
 
-int tileread(FILE *f)
-{
-	int c = fgetc(f);
-	if (c == EOF) {
-		seterrstr("Unexpected EOF");
-		goto err;
-	}
-
-	if (!istile(c)) {
-		seterrstr("Invalid tile: %c\n", c);
-		goto err;
-	}
-	return c;
-err:
-	return -1;
-}
-
-
 Lvl *lvlread(FILE *f)
 {
 	int w, h, d;
@@ -89,14 +73,10 @@ Lvl *lvlread(FILE *f)
 		goto errnl;
 
 	for (z = 0; z < d; z++) {
-		int base = z * w * h;
 		for (y = 0; y < h; y++) {
 			for (x = 0; x < w; x++){
-				int ind = base + x * h + y;
-				int c = tileread(f);
-				if (c < 0)
+				if (!tileread(f, l, x, y, z))
 					goto err;
-				l->tiles[ind] = c;
 			}
 			if (fgetc(f) != '\n')
 				goto errnl;
@@ -110,6 +90,33 @@ errnl:
 err:
 	free(l);
 	return NULL;
+}
+
+static bool tileread(FILE *f, Lvl *l, int x, int y, int z)
+{
+	int c = fgetc(f);
+	if (c == EOF) {
+		seterrstr("Unexpected EOF");
+		return false;
+	}
+
+	if (!istile(c)) {
+		seterrstr("Invalid tile: %c at x=%d, y=%d, z=%d\n", c, x, y, z);
+		return false;
+	}
+
+	if (z == 0 && tiles[c]->flags & BlkFdoor) {
+		seterrstr("Front door on x=%d, y=%d, z=0", x, y);
+		return false;
+	}
+	if (z == l->d - 1 && tiles[c]->flags & BlkBdoor) {
+		seterrstr("Back door on x=%d, y=%d, z=max", x, y);
+		return false;
+	}
+
+	l->tiles[z * l->w * l->h + x * l->h + y] = c;
+
+	return true;
 }
 
 Lvl *lvlload(const char *path)
