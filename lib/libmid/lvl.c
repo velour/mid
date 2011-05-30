@@ -11,6 +11,8 @@ enum { Theight = 32, Twidth = 32 };
 enum {
 	Collide = 1<<0,
 	Water = 1<<1,
+	Fdoor = 1<<2,
+	Bdoor = 1<<3,
 };
 
 typedef struct Tinfo Tinfo;
@@ -26,6 +28,8 @@ static Tinfo *tiles[] = {
 	[' '] = &(Tinfo){ .bgfile = "anim/blank/anim", },
 	['#'] = &(Tinfo){ .bgfile = "anim/land/anim", .flags = Collide },
 	['w'] = &(Tinfo){ .fgfile = "anim/water/anim", .flags = Water },
+	['>'] = &(Tinfo){ .bgfile = "anim/bdoor/anim", .flags = Bdoor },
+	['<'] = &(Tinfo){ .fgfile = "anim/fdoor/anim", .flags = Fdoor },
 };
 
 bool lvlgridon = false;

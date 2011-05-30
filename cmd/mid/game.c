@@ -21,6 +21,8 @@ Game *gamenew(void)
 	gm->transl = (Point) { 0, 0 };
 	gm->z = 0;
 	gm->lvl = resrcacq(lvls, "lvl/0.lvl", NULL);
+	if (!gm->lvl)
+		fatal("Failed to load level lvl/0.lvl: %s", miderrstr());
 	gm->player = playernew(64, 96);
 
 	return gm;
