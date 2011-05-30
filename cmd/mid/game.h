@@ -1,7 +1,7 @@
 enum { Scrnw = 512, Scrnh = 512 };
 
 /* Buffer from side of screen at which to begin scrolling. */
-enum { Scrlbuf = 100 };
+enum { Scrlbuf = 192 };
 
 enum Action{
 	Mvleft,
