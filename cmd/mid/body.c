@@ -33,8 +33,8 @@ _Bool bodyinit(Body *b, const char *name, int x, int y)
 	b->right.bbox[Walk] = (Rect){ { x, y }, { x + Wide, y - Tall } };
 	b->right.bbox[Jump] = (Rect){ { x, y }, { x + Wide, y - Tall } };
 
+	b->vel = (Point) { 0, 0 };
 	b->imgloc = (Point) { x, y - Tall };
-
 	b->curdir = &b->right;
 	b->curact = Stand;
 	b->fall = true;
