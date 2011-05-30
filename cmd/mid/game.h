@@ -6,6 +6,8 @@ enum { Scrlbuf = 192 };
 enum Action{
 	Mvleft,
 	Mvright,
+	Mvbak,
+	Mvfwd,
 	Mvjump,
 	Mvinv,
 	Nactions,
@@ -25,9 +27,9 @@ extern Scrnmt gamemt;
 typedef struct Player Player;
 Player *playernew(int x, int y);
 void playerfree(Player *);
-void playerupdate(Player *, Lvl *l, int z, Point *tr);
+void playerupdate(Player *, Lvl *l, int *z, Point *tr);
 void playerdraw(Gfx *, Player *, Point tr);
 void playerhandle(Player *, Event *);
 
-Scrn *invscrnnew(Player *, Lvl *);
+Scrn *invscrnnew(Player *, Lvl *, int z);
 Scrn *titlescrnnew(Gfx *);

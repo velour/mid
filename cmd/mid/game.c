@@ -40,7 +40,7 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 {
 	Game *gm = s->data;
 	lvlupdate(anim, gm->lvl);
-	playerupdate(gm->player, gm->lvl, gm->z, &gm->transl);
+	playerupdate(gm->player, gm->lvl, &gm->z, &gm->transl);
 }
 
 void gamedraw(Scrn *s, Gfx *g)
@@ -61,7 +61,7 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 	Game *gm = s->data;
 
 	if(e->down && e->key == kmap[Mvinv]){
-		scrnstkpush(stk, invscrnnew(gm->player, gm->lvl));
+		scrnstkpush(stk, invscrnnew(gm->player, gm->lvl, gm->z));
 		return;
 	}
 

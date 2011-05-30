@@ -41,6 +41,7 @@ struct Isect{
 
 Isect isection(Rect, Rect);
 int isect(Rect, Rect);
+float isectarea(Isect is);
 
 /*
 The minimal intersection will be positive, and the maximum intersection will
@@ -192,3 +193,20 @@ void lvlminidraw(Gfx *, Lvl *, int z, Point);
  * respect collisions. */
 Isect lvlisect(Lvl *l, int z, Rect r, Point v);
 extern _Bool lvlgridon;
+
+typedef struct Blkinfo Blkinfo;
+struct Blkinfo {
+	int x, y, z;
+	unsigned int flags;
+};
+
+enum {
+	BlkCollide = 1<<0,
+	BlkWater = 1<<1,
+	BlkFdoor = 1<<2,
+	BlkBdoor = 1<<3,
+};
+
+/* Get the information on the dominant block that r is overlapping. */
+Blkinfo lvlmajorblk(Lvl *l, int z, Rect r);
+

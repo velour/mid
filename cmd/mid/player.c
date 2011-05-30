@@ -8,6 +8,7 @@ enum { Dx = 3, Dy = 8 };
 
 struct Player {
 	Body body;
+	int dz;
 };
 
 Player *playernew(int x, int y)
@@ -19,6 +20,7 @@ Player *playernew(int x, int y)
 		free(p);
 		return NULL;
 	}
+	p->dz = 0;
 	return p;
 }
 
@@ -27,9 +29,17 @@ void playerfree(Player *p)
 	free(p);
 }
 
-void playerupdate(Player *p, Lvl *l, int z, Point *tr)
+void playerupdate(Player *p, Lvl *l, int *z, Point *tr)
 {
-	bodyupdate(&p->body, l, z, tr);
+	bodyupdate(&p->body, l, *z, tr);
+	if (p->dz == 0)
+		return;
+	Blkinfo bi = lvlmajorblk(l, *z, p->body.curdir->bbox[p->body.curact]);
+	if (p->dz > 0 && bi.flags & BlkBdoor)
+		*z += 1;
+	else if (p->dz < 0 && bi.flags & BlkFdoor)
+		*z -= 1;
+	p->dz = 0;
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
@@ -59,5 +69,9 @@ void playerhandle(Player *p, Event *e)
 			p->body.ddy = Grav;
 			p->body.fall = 1;
 		}
+	}else if(k == kmap[Mvbak] && e->down){
+		p->dz += 1;
+	}else if(k == kmap[Mvfwd] && e->down){
+		p->dz -= 1;
 	}
 }

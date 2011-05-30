@@ -15,6 +15,11 @@ float isection1d(Line1d a, Line1d b){
 		return -1.0;
 }
 
+float isectarea(Isect is)
+{
+	return is.dx * is.dy;
+}
+
 Line1d rectprojx(Rect r){
 	if(r.a.x < r.b.x)
 		return (Line1d){ .a = r.a.x, .b = r.b.x };

@@ -8,13 +8,6 @@
 
 enum { Theight = 32, Twidth = 32 };
 
-enum {
-	Collide = 1<<0,
-	Water = 1<<1,
-	Fdoor = 1<<2,
-	Bdoor = 1<<3,
-};
-
 typedef struct Tinfo Tinfo;
 struct Tinfo {
 	char *bgfile;
@@ -26,10 +19,12 @@ struct Tinfo {
 
 static Tinfo *tiles[] = {
 	[' '] = &(Tinfo){ .bgfile = "anim/blank/anim", },
-	['#'] = &(Tinfo){ .bgfile = "anim/land/anim", .flags = Collide },
-	['w'] = &(Tinfo){ .fgfile = "anim/water/anim", .flags = Water },
-	['>'] = &(Tinfo){ .bgfile = "anim/bdoor/anim", .flags = Bdoor },
-	['<'] = &(Tinfo){ .fgfile = "anim/fdoor/anim", .flags = Fdoor },
+	['#'] = &(Tinfo){ .bgfile = "anim/land/anim", .flags = BlkCollide },
+	['w'] = &(Tinfo){ .fgfile = "anim/water/anim", .flags = BlkWater },
+	['>'] = &(Tinfo){ .bgfile = "anim/bdoor/anim", .flags = BlkBdoor },
+	['<'] = &(Tinfo){ .fgfile = "anim/fdoor/anim",
+			  .bgfile = "anim/blank/anim",
+			  .flags = BlkFdoor },
 };
 
 bool lvlgridon = false;
@@ -199,11 +194,11 @@ void lvlminidraw(Gfx *g, Lvl *l, int z, Point offs)
 			Point pt = (Point){ pxx, offs.y + y };
 
 			Color c;
-			if(tiles[t]->flags & Collide)
+			if(tiles[t]->flags & BlkCollide)
 				c = (Color){ 0, 0, 0, 255 };
 			else if(!tiles[t]->fgfile)
 				c = (Color){ 255, 255, 255, 255 };
-			else if(tiles[t]->flags & Water)
+			else if(tiles[t]->flags & BlkWater)
 				c = (Color){ 75, 75, 255, 255 };
 			gfxdrawpoint(g, pt, c);
 		}
@@ -225,7 +220,7 @@ void lvlupdate(Rtab *anims, Lvl *l)
 Isect tileisect(int t, int x, int y, Rect r)
 {
 	assert(tiles[t]);
-	if (!(tiles[t]->flags & Collide))
+	if (!(tiles[t]->flags & BlkCollide))
 		return (Isect){ .is = 0 };
 	return isection(r, tilebbox(x, y));
 }
@@ -289,4 +284,37 @@ Isect lvlisect(Lvl *l, int z, Rect r, Point v)
 	}
 
 	return isect;
+}
+
+Blkinfo blkinfo(Lvl *l, int z, int x, int y)
+{
+	int i = z * l->w * l->h + x * l->h + y;
+	int t = l->tiles[i];
+	assert (tiles[t]);
+	return (Blkinfo) { .x = x, .y = y, .z = z, .flags = tiles[t]->flags };
+}
+
+Blkinfo lvlmajorblk(Lvl *l, int z, Rect r)
+{
+	Rect zone = hitzone(r, (Point){0, 0});
+	Blkinfo bi = blkinfo(l, z, zone.a.x, zone.a.y);
+	float area = 0.0;
+	Isect is = isection(r, tilebbox(bi.x, bi.y));
+	if (is.is)
+		area = isectarea(is);
+
+	for (int x = zone.a.x; x <= zone.b.x; x++) {
+		for (int y = zone.a.y; y <= zone.b.y; y++) {
+			is = isection(r, tilebbox(x, y));
+			if (is.is) {
+				float a = isectarea(is);
+				if (a > area) {
+					bi = blkinfo(l, z, x, y);
+					area = a;
+				}
+			}
+		}
+	}
+
+	return bi;
 }
