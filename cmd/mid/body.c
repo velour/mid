@@ -26,24 +26,37 @@ Body *bodynew(const char *name, int x, int y)
 	char buf[buflen + 1];
 	strncpy(buf, name, buflen);
 
-	strncpy(buf + nlen, "/stand/anim", buflen - nlen);
+	strncpy(buf + nlen, "/left/stand/anim", buflen - nlen);
 	buf[buflen] = '\0';
 	b->left.anim[Stand] = resrcacq(anim, buf, NULL);
 	if (!b->left.anim[Stand])
 		fatal("Failed to load %s: %s", buf, miderrstr());
-	strncpy(buf + nlen, "/walk/anim", buflen - nlen);
+	strncpy(buf + nlen, "/left/walk/anim", buflen - nlen);
 	buf[buflen] = '\0';
 	b->left.anim[Walk] = resrcacq(anim, buf, NULL);
 	if (!b->left.anim[Walk])
 		fatal("Failed to load %s: %s", buf, miderrstr());
-	strncpy(buf + nlen, "/jump/anim", buflen - nlen);
+	strncpy(buf + nlen, "/left/jump/anim", buflen - nlen);
 	buf[buflen] = '\0';
 	b->left.anim[Jump] = resrcacq(anim, buf, NULL);
 	if (!b->left.anim[Jump])
 		fatal("Failed to load %s: %s", buf, miderrstr());
-	b->right.anim[Stand] = b->left.anim[Stand];
-	b->right.anim[Walk] = b->left.anim[Walk];
-	b->right.anim[Jump] = b->left.anim[Jump];
+
+	strncpy(buf + nlen, "/right/stand/anim", buflen - nlen);
+	buf[buflen] = '\0';
+	b->right.anim[Stand] = resrcacq(anim, buf, NULL);
+	if (!b->right.anim[Stand])
+		fatal("Failed to load %s: %s", buf, miderrstr());
+	strncpy(buf + nlen, "/right/walk/anim", buflen - nlen);
+	buf[buflen] = '\0';
+	b->right.anim[Walk] = resrcacq(anim, buf, NULL);
+	if (!b->right.anim[Walk])
+		fatal("Failed to load %s: %s", buf, miderrstr());
+	strncpy(buf + nlen, "/right/jump/anim", buflen - nlen);
+	buf[buflen] = '\0';
+	b->right.anim[Jump] = resrcacq(anim, buf, NULL);
+	if (!b->right.anim[Jump])
+		fatal("Failed to load %s: %s", buf, miderrstr());
 
 	/* Eventually we want to load this from the resrc directory. */
 	b->left.bbox[Stand] = (Rect){ { x, y }, { x + Wide, y - Tall } };
