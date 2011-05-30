@@ -21,12 +21,12 @@ struct Tinfo {
 
 static Tinfo *tiles[] = {
 	[' '] = &(Tinfo){ .bgfile = "anim/blank/anim", },
-	['#'] = &(Tinfo){ .bgfile = "anim/land/anim", .flags = BlkCollide },
-	['w'] = &(Tinfo){ .fgfile = "anim/water/anim", .flags = BlkWater },
-	['>'] = &(Tinfo){ .bgfile = "anim/bdoor/anim", .flags = BlkBdoor },
+	['#'] = &(Tinfo){ .bgfile = "anim/land/anim", .flags = Blkcollide },
+	['w'] = &(Tinfo){ .fgfile = "anim/water/anim", .flags = Blkwater },
+	['>'] = &(Tinfo){ .bgfile = "anim/bdoor/anim", .flags = Blkbdoor },
 	['<'] = &(Tinfo){ .fgfile = "anim/fdoor/anim",
 			  .bgfile = "anim/blank/anim",
-			  .flags = BlkFdoor },
+			  .flags = Blkfdoor },
 };
 
 bool lvlgridon = false;
@@ -105,11 +105,11 @@ static bool tileread(FILE *f, Lvl *l, int x, int y, int z)
 		return false;
 	}
 
-	if (z == 0 && tiles[c]->flags & BlkFdoor) {
+	if (z == 0 && tiles[c]->flags & Blkfdoor) {
 		seterrstr("Front door on x=%d, y=%d, z=0", x, y);
 		return false;
 	}
-	if (z == l->d - 1 && tiles[c]->flags & BlkBdoor) {
+	if (z == l->d - 1 && tiles[c]->flags & Blkbdoor) {
 		seterrstr("Back door on x=%d, y=%d, z=max", x, y);
 		return false;
 	}
@@ -201,11 +201,11 @@ void lvlminidraw(Gfx *g, Lvl *l, int z, Point offs)
 			Point pt = (Point){ pxx, offs.y + y };
 
 			Color c;
-			if(tiles[t]->flags & BlkCollide)
+			if(tiles[t]->flags & Blkcollide)
 				c = (Color){ 0, 0, 0, 255 };
 			else if(!tiles[t]->fgfile)
 				c = (Color){ 255, 255, 255, 255 };
-			else if(tiles[t]->flags & BlkWater)
+			else if(tiles[t]->flags & Blkwater)
 				c = (Color){ 75, 75, 255, 255 };
 			gfxdrawpoint(g, pt, c);
 		}
@@ -227,7 +227,7 @@ void lvlupdate(Rtab *anims, Lvl *l)
 Isect tileisect(int t, int x, int y, Rect r)
 {
 	assert(tiles[t]);
-	if (!(tiles[t]->flags & BlkCollide))
+	if (!(tiles[t]->flags & Blkcollide))
 		return (Isect){ .is = 0 };
 	return isection(r, tilebbox(x, y));
 }

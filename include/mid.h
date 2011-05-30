@@ -201,10 +201,10 @@ struct Blkinfo {
 };
 
 enum {
-	BlkCollide = 1<<0,
-	BlkWater = 1<<1,
-	BlkFdoor = 1<<2,
-	BlkBdoor = 1<<3,
+	Blkcollide = 1<<0,
+	Blkwater = 1<<1,
+	Blkfdoor = 1<<2,
+	Blkbdoor = 1<<3,
 };
 
 /* Get the information on the dominant block that r is overlapping. */

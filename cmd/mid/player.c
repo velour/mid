@@ -35,9 +35,9 @@ void playerupdate(Player *p, Lvl *l, int *z, Point *tr)
 	if (p->dz == 0)
 		return;
 	Blkinfo bi = lvlmajorblk(l, *z, p->body.curdir->bbox[p->body.curact]);
-	if (p->dz > 0 && bi.flags & BlkBdoor)
+	if (p->dz > 0 && bi.flags & Blkbdoor)
 		*z += 1;
-	else if (p->dz < 0 && bi.flags & BlkFdoor)
+	else if (p->dz < 0 && bi.flags & Blkfdoor)
 		*z -= 1;
 	p->dz = 0;
 }
