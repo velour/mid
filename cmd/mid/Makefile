@@ -12,10 +12,12 @@ OFILES := main.o\
 	keymap.o\
 	inv.o\
 	title.o\
+	body.o\
 
 HFILES := ../../include/mid.h\
 	../../include/log.h\
 	resrc.h\
 	game.h\
+	body.h\
 
 include ../../Make.cmd
