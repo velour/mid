@@ -1,5 +1,4 @@
-* lvl.c: get most prominent level tile overlapping the given bbox.
-  This way, the player will move slower in water and such.
+* Move slower in water.
 
 * Different sized bodys... currently only 32x32.
 
