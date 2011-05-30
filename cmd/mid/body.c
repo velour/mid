@@ -68,7 +68,6 @@ void bodyfree(Body *b)
 	free(b);
 }
 
-/* If transl is non-null then this body will scroll the screen. */
 void bodyupdate(Body *b, Lvl *l, int z, Point *transl)
 {
 	bodymv(b, l, z, transl);
