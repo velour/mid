@@ -24,6 +24,12 @@ Game *gamenew(void)
 		fatal("Failed to load level lvl/0.lvl: %s", miderrstr());
 	gm->player = playernew(64, 96);
 
+	// Testing items
+	Item *axe = itemnew("Golden Pickaxe", "gaxe/anim");
+	invmod(&gm->inv, axe, 0, 0);
+	invmod(&gm->inv, axe, 1, 0);
+	invmod(&gm->inv, axe, 1, 1);
+
 	return gm;
 }
 

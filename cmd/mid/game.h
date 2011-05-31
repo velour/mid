@@ -31,14 +31,28 @@ void playerupdate(Player *, Lvl *l, int *z, Point *tr);
 void playerdraw(Gfx *, Player *, Point tr);
 void playerhandle(Player *, Event *);
 
+enum { Invrows = 3, Invcols = 3 };
+
+typedef struct Item Item;
+struct Item {
+	Anim *icon;
+	const char *name;
+};
+
 typedef struct Inv Inv;
 struct Inv {
 	int money;
+	Item *items[Invrows * Invcols];
 };
+
+Item *itemnew(const char *name, const char *anim);
+void itemfree(Item *);
 
 /* Caller must call gfxflip(). */
 void invdraw(Gfx *, Inv *);
 void invupdate(Inv *);
+/* Swap the item at the given inventory grid x,y.  Return the old item. */
+Item *invmod(Inv *, Item *, int x, int y);
 
 Scrn *invscrnnew(Inv *, Lvl *, int z);
 Scrn *titlescrnnew(Gfx *);
