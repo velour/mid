@@ -27,6 +27,7 @@ static Item *invat(Inv *inv, int x, int y);
 static void invfree(Scrn*);
 static void curdraw(Gfx *g, Item *inv);
 static void moneydraw(Gfx *g, Inv *inv);
+static void entrydraw(Gfx *g, Inv *inv, Item *cur, int r, int c);
 static void griddraw(Gfx *g, Inv *inv, Item *cur);
 static Txt *gettxt(void);
 
@@ -93,20 +94,25 @@ static void griddraw(Gfx *g, Inv *inv, Item *cur)
 {
 	for (int r = 0; r < Invrows; r++) {
 		for (int c = 0; c < Invcols; c++) {
-			int x0 = Xmin + r * Pad;
-			int y0 = Ymin + c * Pad;
-			Point a = (Point) { r * Iconw + x0, c * Iconh + y0 };
-			Point b = (Point) { (r + 1) * Iconw + x0, (c + 1) * Iconh + y0 };
-			Rect rect = (Rect){ a, b };
-			Item *it = inv->items[r * Invcols + c];
-			if (cur && it == cur)
-				gfxfillrect(g, rect, (Color){255,255,255,100});
-			gfxdrawrect(g, rect, (Color){0});
-
-			if (it)
-				animdraw(g, it->icon, a);
+			entrydraw(g, inv, cur, r, c);
 		}
 	}
+}
+
+static void entrydraw(Gfx *g, Inv *inv, Item *cur, int r, int c)
+{
+	int x0 = Xmin + r * Pad;
+	int y0 = Ymin + c * Pad;
+	Point a = (Point) { r * Iconw + x0, c * Iconh + y0 };
+	Point b = (Point) { (r + 1) * Iconw + x0, (c + 1) * Iconh + y0 };
+	Rect rect = (Rect){ a, b };
+	Item *it = inv->items[r * Invcols + c];
+	if (cur && it == cur)
+		gfxfillrect(g, rect, (Color){255,255,255,100});
+	gfxdrawrect(g, rect, (Color){0});
+
+	if (it)
+		animdraw(g, it->icon, a);
 }
 
 static void curdraw(Gfx *g, Item *inv)
