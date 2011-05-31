@@ -3,18 +3,14 @@
 #include "game.h"
 #include "body.h"
 #include <stdlib.h>
-#include <stdbool.h>
 
-enum { Dxwater = 1, Dxair = 3, Dy = 8 };
+enum { Dx = 3, Dy = 8 };
+static const float Dxwater = 0.6f, Dywater = 0.2f;
 
 struct Player {
 	Body body;
-	bool water;
-	bool left, right;
 	int dz;
 };
-
-static int curdx(Player *p);
 
 Player *playernew(int x, int y)
 {
@@ -37,13 +33,14 @@ void playerupdate(Player *p, Lvl *l, int *z, Point *tr)
 {
 	Blkinfo bi = lvlmajorblk(l, *z, p->body.curdir->bbox[p->body.curact]);
 
-	p->water = bi.flags & Blkwater;
+	float olddx = p->body.vel.x;
+	if (bi.flags & Blkwater && p->body.vel.x)
+		p->body.vel.x = (p->body.vel.x < 0 ? -1 : 1) * Dxwater * Dx;
 
-	p->body.vel.x = 0;
-	if (p->left)
-		p->body.vel.x -= curdx(p);
-	if (p->right)
-		p->body.vel.x += curdx(p);
+	float oldddy = p->body.ddy;
+	if(bi.flags & Blkwater && p->body.ddy)
+		p->body.ddy = (p->body.ddy < 0 ? -1 : 1) * Dywater * Grav;
+
 
 	if (p->dz > 0 && bi.flags & Blkbdoor)
 		*z += 1;
@@ -53,6 +50,8 @@ void playerupdate(Player *p, Lvl *l, int *z, Point *tr)
 	p->dz = 0;
 
 	bodyupdate(&p->body, l, *z, tr);
+	p->body.vel.x = olddx;
+	p->body.ddy = oldddy;
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
@@ -67,9 +66,15 @@ void playerhandle(Player *p, Event *e)
 
 	char k = e->key;
 	if(k == kmap[Mvleft]){
-		p->left = e->down;
+		if(e->down && p->body.vel.x > -Dx)
+			p->body.vel.x -= Dx;
+		else if(!e->down)
+			p->body.vel.x += Dx;
 	}else if(k == kmap[Mvright]){
-		p->right = e->down;
+		if(e->down && p->body.vel.x < Dx)
+			p->body.vel.x += Dx;
+		else if(!e->down)
+			p->body.vel.x -= Dx;
 	}else if(k == kmap[Mvjump]){
 		if(!p->body.fall){
 			p->body.vel.y = (e->down ? -Dy : 0.0);
@@ -81,11 +86,4 @@ void playerhandle(Player *p, Event *e)
 	}else if(k == kmap[Mvfwd] && e->down){
 		p->dz -= 1;
 	}
-}
-
-static int curdx(Player *p)
-{
-	if (p->water)
-		return Dxwater;
-	return Dxair;
 }
