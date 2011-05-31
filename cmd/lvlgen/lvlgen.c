@@ -108,10 +108,11 @@ static void doors(char tiles[], int w, int h, int d)
 	for (int z = 0; z < d - 1; z++) {
 		int x = rand() % (w - 2) + 1;
 		int y = rand() % (h - 2) + 1;
-		tiles[z * w * h + y * w + x] = '>';
-		tiles[(z + 1) * w * h + y * w + x] = '<';
-		tiles[z * w * h + (y + 1) * w + x] = '#';
-		tiles[(z + 1) * w * h + (y + 1) * w + x] = '#';
+		tiles[y * w + x] = '>';
+		tiles[w * h + y * w + x] = '<';
+		tiles[(y + 1) * w + x] = '#';
+		tiles[w * h + (y + 1) * w + x] = '#';
+		tiles += w * h;
 	}
 }
 
