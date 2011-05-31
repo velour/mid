@@ -27,7 +27,9 @@ Game *gamenew(void)
 	// Testing items
 	Item *axe = itemnew("Golden Pickaxe", "gaxe/anim");
 	invmod(&gm->inv, axe, 0, 0);
+	axe = itemnew("Golden Pickaxe", "gaxe/anim");
 	invmod(&gm->inv, axe, 1, 0);
+	axe = itemnew("Golden Pickaxe", "gaxe/anim");
 	invmod(&gm->inv, axe, 1, 1);
 
 	return gm;
