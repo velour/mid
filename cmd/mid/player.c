@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 enum { Dx = 3, Dy = 8 };
-static const float Dxwater = 0.6f;
+static const float Dxwater = 0.6f, Dywater = 0.2f;
 
 struct Player {
 	Body body;
@@ -38,6 +38,11 @@ void playerupdate(Player *p, Lvl *l, int *z, Point *tr)
 	if (bi.flags & Blkwater && p->body.vel.x)
 		p->body.vel.x = (p->body.vel.x < 0 ? -1 : 1) * Dxwater * Dx;
 
+	float oldddy = p->body.ddy;
+	if(bi.flags & Blkwater && p->body.ddy)
+		p->body.ddy = (p->body.ddy < 0 ? -1 : 1) * Dywater * Grav;
+
+
 	if (p->dz > 0 && bi.flags & Blkbdoor)
 		*z += 1;
 	else if (p->dz < 0 && bi.flags & Blkfdoor)
@@ -47,6 +52,7 @@ void playerupdate(Player *p, Lvl *l, int *z, Point *tr)
 
 	bodyupdate(&p->body, l, *z, tr);
 	p->body.vel.x = olddx;
+	p->body.ddy = oldddy;
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
