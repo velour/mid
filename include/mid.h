@@ -57,7 +57,7 @@ struct Color{
 
 typedef struct Gfx Gfx;
 
-Gfx *gfxinit(int w, int h);
+Gfx *gfxinit(int w, int h, const char *title);
 void gfxfree(Gfx *);
 Point gfxdims(const Gfx *);
 void gfxflip(Gfx *);
