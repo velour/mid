@@ -78,10 +78,10 @@ typedef struct Txt Txt;
 
 Txt *txtnew(const char *font, int sz, Color);
 void txtfree(Txt *);
-Point txtdims(const Txt *, const char *);
+Point txtdims(const Txt *, const char *fmt, ...);
 Img *txt2img(Gfx *, Txt *, const char *fmt, ...);
-// Prefer txt2img to this!
-Point txtdraw(Gfx *, Txt *, const char *, Point);
+// Prefer txt2img to this for static text
+Point txtdraw(Gfx *, Txt *, Point, const char *fmt, ...);
 
 _Bool sndinit(void);
 void sndfree(void);

@@ -14,6 +14,11 @@ struct Gfx{
 
 static Gfx gfx;
 
+enum { Bufsize = 256 };
+
+static Img *vtxt2img(Gfx *g, Txt *t, const char *fmt, va_list ap);
+static Point vtxtdims(const Txt *t, const char *fmt, va_list ap);
+
 Gfx *gfxinit(int w, int h, const char *title){
 	if(TTF_Init() < 0)
 		return NULL;
@@ -152,7 +157,20 @@ void txtfree(Txt *t){
 	free(t);
 }
 
-Point txtdims(const Txt *t, const char *s){
+Point txtdims(const Txt *t, const char *fmt, ...){
+	va_list ap;
+
+	va_start(ap, fmt);
+	Point p = vtxtdims(t, fmt, ap);
+	va_end(ap);
+	return p;
+}
+
+static Point vtxtdims(const Txt *t, const char *fmt, va_list ap)
+{
+	char s[Bufsize + 1];
+	vsnprintf(s, Bufsize + 1, fmt, ap);
+
 	int w, h;
 	(void)TTF_SizeUTF8(t->font, s, &w, &h);
 	return (Point){ w, h };
@@ -162,15 +180,37 @@ static SDL_Color c2s(Color c){
 	return (SDL_Color){ c.r, c.g, c.b };
 }
 
-enum { Bufsize = 256 };
-
 Img *txt2img(Gfx *g, Txt *t, const char *fmt, ...){
 	va_list ap;
-	char s[Bufsize + 1];
 
 	va_start(ap, fmt);
-	vsnprintf(s, Bufsize + 1, fmt, ap);
+	Img *i = vtxt2img(g, t, fmt, ap);
 	va_end(ap);
+	return i;
+}
+
+Point txtdraw(Gfx *g, Txt *t, Point p, const char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	Img *i = vtxt2img(g, t, fmt, ap);
+	va_end(ap);
+
+	imgdraw(g, i, p);
+	imgfree(i);
+
+	va_start(ap, fmt);
+	Point ret = (Point){ p.x + vtxtdims(t, fmt, ap).x, p.y };
+	va_end(ap);
+
+	return ret;
+}
+
+static Img *vtxt2img(Gfx *g, Txt *t, const char *fmt, va_list ap)
+{
+	char s[Bufsize + 1];
+	vsnprintf(s, Bufsize + 1, fmt, ap);
 
 	SDL_Surface *srf = TTF_RenderUTF8_Blended(t->font, s, c2s(t->color));
 	if (!srf)
@@ -190,12 +230,3 @@ Img *txt2img(Gfx *g, Txt *t, const char *fmt, ...){
 	return i;
 }
 
-//TODO: this is sub-optimal
-Point txtdraw(Gfx *g, Txt *t, const char *s, Point p){
-	Img *i = txt2img(g,t,s) ;
-	/* test for !i here. */
-	imgdraw(g, i, p);
-	imgfree(i);
-
-	return (Point){ p.x + txtdims(t,s).x, p.y };
-}
