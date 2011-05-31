@@ -20,14 +20,11 @@ enum { Xmin = Scrnw - Width - 1, Ymin = 15 };
 
 static const char *moneystr = "gold";
 
-static Txt *invtxt;
-static Txtinfo txtinfo = (Txtinfo) { .size = 12, .color = (Color) {0} };
-
 static void update(Scrn*,Scrnstk*);
 static void draw(Scrn*,Gfx*);
 static void handle(Scrn*,Scrnstk*,Event*);
-static void invfree(Scrn*);
 static Item *invat(Inv *inv, int x, int y);
+static void invfree(Scrn*);
 static void drawcur(Gfx *g, Item *inv);
 static void moneydraw(Gfx *g, Inv *inv);
 static void griddraw(Gfx *g, Inv *inv);
@@ -84,26 +81,6 @@ static void draw(Scrn *s, Gfx *g){
 	gfxflip(g);
 }
 
-static void handle(Scrn *s, Scrnstk *stk, Event *e){
-	if (e->type == Mousemv) {
-		Invscr *i = s->data;
-		i->curitem = invat(i->inv, e->x, e->y);
-	}
-
-	if(e->type != Keychng || e->repeat)
-		return;
-
-	if(e->down && e->key == kmap[Mvinv]){
-		scrnstkpop(stk);
-		return;
-	}
-}
-
-static void invfree(Scrn *s){
-	free(s->data);
-	free(s);
-}
-
 static void moneydraw(Gfx *g, Inv *inv)
 {
 	Txt *invtxt = gettxt();
@@ -136,6 +113,40 @@ static void entrydraw(Gfx *g, Inv *inv, int r, int c)
 		animdraw(g, it->icon, a);
 }
 
+static void drawcur(Gfx *g, Item *inv)
+{
+	Txt *invtxt = gettxt();
+	Point d = txtdims(invtxt, inv->name);
+	Point p = (Point) { .x = Scrnw - d.x, .y = Height + d.y + 1 };
+	txtdraw(g, invtxt, p, inv->name);
+}
+
+static Txt *gettxt(void)
+{
+	static Txt *invtxt;
+	static Txtinfo txtinfo = (Txtinfo) { .size = 12, .color = (Color) {0} };
+	if (!invtxt) {
+		invtxt = resrcacq(txt, "txt/FreeSans.ttf", &txtinfo);
+		if (!invtxt)
+			fatal("Failed to load inventory text");
+	}
+	return invtxt;
+}
+static void handle(Scrn *s, Scrnstk *stk, Event *e){
+	if (e->type == Mousemv) {
+		Invscr *i = s->data;
+		i->curitem = invat(i->inv, e->x, e->y);
+	}
+
+	if(e->type != Keychng || e->repeat)
+		return;
+
+	if(e->down && e->key == kmap[Mvinv]){
+		scrnstkpop(stk);
+		return;
+	}
+}
+
 static Item *invat(Inv *inv, int x, int y)
 {
 	if (x < Xmin || x > Xmin + Width || y < Ymin || y > Ymin + Height)
@@ -151,20 +162,7 @@ static Item *invat(Inv *inv, int x, int y)
 	return inv->items[i * Invcols + j];
 }
 
-static void drawcur(Gfx *g, Item *inv)
-{
-	Txt *invtxt = gettxt();
-	Point d = txtdims(invtxt, inv->name);
-	Point p = (Point) { .x = Scrnw - d.x, .y = Height + d.y + 1 };
-	txtdraw(g, invtxt, p, inv->name);
-}
-
-static Txt *gettxt(void)
-{
-	if (!invtxt) {
-		invtxt = resrcacq(txt, "txt/FreeSans.ttf", &txtinfo);
-		if (!invtxt)
-			fatal("Failed to load inventory text");
-	}
-	return invtxt;
+static void invfree(Scrn *s){
+	free(s->data);
+	free(s);
 }
