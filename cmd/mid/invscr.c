@@ -1,5 +1,7 @@
 #include "../../include/mid.h"
+#include "../../include/log.h"
 #include "game.h"
+#include "resrc.h"
 #include <stdlib.h>
 
 typedef struct Invscr Invscr;
@@ -10,10 +12,27 @@ struct Invscr{
 	int z;
 };
 
+enum { Iconw = 32, Iconh = 32 };
+enum { Pad = 1 };
+enum { Width = Iconw * Invcols + Pad * (Invcols - 1),
+       Height = Iconh * Invrows + Pad * (Invrows - 1) };
+enum { Xmin = Scrnw - Width - 1, Ymin = 15 };
+
+static const char *moneystr = "gold";
+
+static Txt *invtxt;
+static Txtinfo txtinfo = (Txtinfo) { .size = 12, .color = (Color) {0} };
+
 static void update(Scrn*,Scrnstk*);
 static void draw(Scrn*,Gfx*);
 static void handle(Scrn*,Scrnstk*,Event*);
 static void invfree(Scrn*);
+static Item *invat(Inv *inv, int x, int y);
+static void drawcur(Gfx *g, Item *inv);
+static void moneydraw(Gfx *g, Inv *inv);
+static void griddraw(Gfx *g, Inv *inv);
+static void entrydraw(Gfx *g, Inv *inv, int r, int c);
+static Txt *gettxt(void);
 
 static Scrnmt invmt = {
 	update,
@@ -41,16 +60,27 @@ Scrn *invscrnnew(Inv *i, Lvl *lvl, int z){
 
 static void update(Scrn *s, Scrnstk *stk){
 	Invscr *i = s->data;
-	invupdate(i->inv);
+	Inv *inv = i->inv;
+	for (int i = 0; i < Invcols * Invrows; i++) {
+		Item *it = inv->items[i];
+		if (!it)
+			continue;
+		animupdate(it->icon, 1);
+	}
 }
 
 static void draw(Scrn *s, Gfx *g){
 	gfxclear(g, (Color){ 127, 255, 127 });
+
 	Invscr *i = s->data;
 	lvlminidraw(g, i->lvl, i->z, (Point){0,0});
-	invdraw(g, i->inv);
+
+	Inv *inv = i->inv;
+	moneydraw(g, inv);
+	griddraw(g, inv);
 	if (i->curitem)
-		invdrawcur(g, i->curitem);
+		drawcur(g, i->curitem);
+
 	gfxflip(g);
 }
 
@@ -72,4 +102,69 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 static void invfree(Scrn *s){
 	free(s->data);
 	free(s);
+}
+
+static void moneydraw(Gfx *g, Inv *inv)
+{
+	Txt *invtxt = gettxt();
+	Point d = txtdims(invtxt, moneystr);
+	txtdraw(g, invtxt, (Point) { Scrnw - d.x, 1 }, moneystr);
+	d.x += txtdims(invtxt, "%d ", inv->money).x;
+	txtdraw(g, invtxt, (Point) { Scrnw - d.x , 1 }, "%d ", inv->money);
+}
+
+static void griddraw(Gfx *g, Inv *inv)
+{
+	for (int r = 0; r < Invrows; r++) {
+		for (int c = 0; c < Invcols; c++) {
+			entrydraw(g, inv, r, c);
+		}
+	}
+}
+
+static void entrydraw(Gfx *g, Inv *inv, int r, int c)
+{
+	int x0 = Xmin + r * Pad;
+	int y0 = Ymin + c * Pad;
+	Point a = (Point) { r * Iconw + x0, c * Iconh + y0 };
+	Point b = (Point) { (r + 1) * Iconw + x0, (c + 1) * Iconh + y0 };
+	Rect rect = (Rect){ a, b };
+	gfxdrawrect(g, rect, (Color){0});
+
+	Item *it = inv->items[r * Invcols + c];
+	if (it)
+		animdraw(g, it->icon, a);
+}
+
+static Item *invat(Inv *inv, int x, int y)
+{
+	if (x < Xmin || x > Xmin + Width || y < Ymin || y > Ymin + Height)
+		return NULL;
+
+	int i = (x - Xmin) / (Iconw + Pad);
+	int j = (y - Ymin) / (Iconh + Pad);
+
+	if (x > Xmin + i * (Iconw + Pad) + Iconw
+	    || y > Ymin + j * (Iconh + Pad) + Iconh)
+		return NULL;	/* In padding */
+
+	return inv->items[i * Invcols + j];
+}
+
+static void drawcur(Gfx *g, Item *inv)
+{
+	Txt *invtxt = gettxt();
+	Point d = txtdims(invtxt, inv->name);
+	Point p = (Point) { .x = Scrnw - d.x, .y = Height + d.y + 1 };
+	txtdraw(g, invtxt, p, inv->name);
+}
+
+static Txt *gettxt(void)
+{
+	if (!invtxt) {
+		invtxt = resrcacq(txt, "txt/FreeSans.ttf", &txtinfo);
+		if (!invtxt)
+			fatal("Failed to load inventory text");
+	}
+	return invtxt;
 }
