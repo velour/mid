@@ -18,15 +18,13 @@ static int curdx(Player *p);
 
 Player *playernew(int x, int y)
 {
-	Player *p = malloc(sizeof(*p));
+	Player *p = calloc(1, sizeof(*p));
 	if (!p)
 		return NULL;
 	if(bodyinit(&p->body, "knight", x, y, 0)){
 		free(p);
 		return NULL;
 	}
-	p->water = false;
-	p->dz = 0;
 	return p;
 }
 

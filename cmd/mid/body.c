@@ -62,7 +62,8 @@ void bodyupdate(Body *b, Lvl *l, int z, Point *transl)
 	chngact(b);
 	if (b->curdir->anim[b->curact] != prevanim)
 		animreset(b->curdir->anim[b->curact]);
-	animupdate(b->curdir->anim[b->curact], 1);
+	else
+		animupdate(b->curdir->anim[b->curact], 1);
 }
 
 enum { Buflen = 256 };
