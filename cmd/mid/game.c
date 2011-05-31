@@ -10,16 +10,15 @@ struct Game {
 	int z;			/* current level z-level */
 	Lvl *lvl;
 	Player *player;
+	Inv inv;
 };
 
 Game *gamenew(void)
 {
-	Game *gm = malloc(sizeof(*gm));
+	Game *gm = calloc(1, sizeof(*gm));
 	if (!gm)
 		return NULL;
 
-	gm->transl = (Point) { 0, 0 };
-	gm->z = 0;
 	gm->lvl = resrcacq(lvls, "lvl/0.lvl", NULL);
 	if (!gm->lvl)
 		fatal("Failed to load level lvl/0.lvl: %s", miderrstr());
@@ -61,7 +60,7 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 	Game *gm = s->data;
 
 	if(e->down && e->key == kmap[Mvinv]){
-		scrnstkpush(stk, invscrnnew(gm->player, gm->lvl, gm->z));
+		scrnstkpush(stk, invscrnnew(&gm->inv, gm->lvl, gm->z));
 		return;
 	}
 

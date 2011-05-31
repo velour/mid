@@ -31,5 +31,15 @@ void playerupdate(Player *, Lvl *l, int *z, Point *tr);
 void playerdraw(Gfx *, Player *, Point tr);
 void playerhandle(Player *, Event *);
 
-Scrn *invscrnnew(Player *, Lvl *, int z);
+typedef struct Inv Inv;
+struct Inv {
+	int money;
+};
+
+/* Caller must call gfxflip(). */
+void invdraw(Gfx *, Inv *);
+void invupdate(Inv *);
+
+Scrn *invscrnnew(Inv *, Lvl *, int z);
 Scrn *titlescrnnew(Gfx *);
+

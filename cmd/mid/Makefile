@@ -11,6 +11,7 @@ OFILES := main.o\
 	player.o\
 	keymap.o\
 	invscr.o\
+	inv.o\
 	title.o\
 	body.o\
 

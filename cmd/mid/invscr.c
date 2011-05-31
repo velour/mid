@@ -4,7 +4,7 @@
 
 typedef struct Invscr Invscr;
 struct Invscr{
-	Player *p;
+	Inv *inv;
 	Lvl *lvl;
 	int z;
 };
@@ -21,11 +21,11 @@ static Scrnmt invmt = {
 	invfree,
 };
 
-Scrn *invscrnnew(Player *p, Lvl *lvl, int z){
+Scrn *invscrnnew(Inv *i, Lvl *lvl, int z){
 	Invscr *inv = malloc(sizeof(*inv));
 	if(!inv)
 		return NULL;
-	inv->p = p;
+	inv->inv = i;
 	inv->lvl = lvl;
 	inv->z = z;
 
@@ -38,12 +38,15 @@ Scrn *invscrnnew(Player *p, Lvl *lvl, int z){
 }
 
 static void update(Scrn *s, Scrnstk *stk){
+	Invscr *i = s->data;
+	invupdate(i->inv);
 }
 
 static void draw(Scrn *s, Gfx *g){
 	gfxclear(g, (Color){ 127, 255, 127 });
 	Invscr *i = s->data;
 	lvlminidraw(g, i->lvl, i->z, (Point){0,0});
+	invdraw(g, i->inv);
 	gfxflip(g);
 }
 
