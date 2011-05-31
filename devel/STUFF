@@ -10,4 +10,6 @@
   - very small number of stats... only ones that make sense
 
 * Hard-coded resource path gets in the way if you want to run mid from its
-  subdir, or ever install it…
+  subdir, or ever install it…  (Just need to add to the roots array).
+
+* Random level generation
