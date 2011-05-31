@@ -15,8 +15,9 @@ struct Invscr{
 enum { Iconw = 64, Iconh = 64 };
 enum { Pad = 1 };
 enum { Width = Iconw * Invcols + Pad * (Invcols - 1),
-       Height = Iconh * Invrows + Pad * (Invrows - 1) };
-enum { Xmin = Scrnw - Width - 1, Ymin = 15 };
+       Height = Iconh * Invrows + Pad * (Invrows - 1),
+       Imgh = 204, Imgw = 204 };
+enum { Xmin = Scrnw - Imgw, Ymin = 25 };
 
 static const char *moneystr = "gold";
 
@@ -92,6 +93,12 @@ static void moneydraw(Gfx *g, Inv *inv)
 
 static void griddraw(Gfx *g, Inv *inv, Item *cur)
 {
+	Img *img = resrcacq(imgs, "img/inv.png", NULL);
+	if (!img)
+		fatal("Failed to load inventory img: %s", miderrstr());
+	imgdraw(g, img, (Point){ .x = Xmin - 5, .y = Ymin - 5 });
+	resrcrel(imgs, "img/inv.png", NULL);
+
 	for (int r = 0; r < Invrows; r++) {
 		for (int c = 0; c < Invcols; c++) {
 			entrydraw(g, inv, cur, r, c);
@@ -108,7 +115,7 @@ static void entrydraw(Gfx *g, Inv *inv, Item *cur, int r, int c)
 	Rect rect = (Rect){ a, b };
 	Item *it = inv->items[r * Invcols + c];
 	if (cur && it == cur)
-		gfxfillrect(g, rect, (Color){255,255,255,100});
+		gfxfillrect(g, rect, (Color){0x99,0x66,0,0xFF});
 	gfxdrawrect(g, rect, (Color){0});
 
 	if (it)
@@ -119,7 +126,7 @@ static void curdraw(Gfx *g, Item *inv)
 {
 	Txt *invtxt = gettxt();
 	Point d = txtdims(invtxt, inv->name);
-	Point p = (Point) { .x = Scrnw - d.x, .y = Height + Ymin + Pad };
+	Point p = (Point) { .x = Scrnw - d.x, .y = Imgh + Ymin + Pad };
 	txtdraw(g, invtxt, p, inv->name);
 }
 
