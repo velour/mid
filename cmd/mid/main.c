@@ -17,9 +17,6 @@ bool init()
 	if(!gfx)
 		return false;
 
-	if (!sndinit())
-		fatal("Failed to initialze sound: %s\n", miderrstr());
-
 	initresrc();
 
 	return true;
@@ -28,7 +25,6 @@ bool init()
 void deinit()
 {
 	freeresrc();
-	sndfree();
 	gfxfree(gfx);
 }
 
