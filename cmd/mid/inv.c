@@ -26,21 +26,25 @@ void invdraw(Gfx *g, Inv *inv)
 	griddraw(g, inv);
 }
 
+static void entrydraw(Gfx *g, Inv *inv, int r, int c)
+{
+	int x0 = Xmin + r * Pad;
+	int y0 = Ymin + c * Pad;
+	Point a = (Point) { r * Iconw + x0, c * Iconh + y0 };
+	Point b = (Point) { (r + 1) * Iconw + x0, (c + 1) * Iconh + y0 };
+	Rect rect = (Rect){ a, b };
+	gfxdrawrect(g, rect, (Color){0});
+
+	Item *it = inv->items[r * Invcols + c];
+	if (it)
+		animdraw(g, it->icon, a);
+}
+
 static void griddraw(Gfx *g, Inv *inv)
 {
 	for (int r = 0; r < Invrows; r++) {
 		for (int c = 0; c < Invcols; c++) {
-			int x0 = Xmin + r * Pad;
-			int y0 = Ymin + c * Pad;
-			Point a = (Point) { r * Iconw + x0, c * Iconh + y0 };
-			Point b = (Point) { (r + 1) * Iconw + x0, (c + 1) * Iconh + y0 };
-			Rect rect = (Rect){ a, b };
-			gfxdrawrect(g, rect, (Color){0});
-
-			Item *it = inv->items[r * Invcols + c];
-			if (!it)
-				continue;
-			animdraw(g, it->icon, a);
+			entrydraw(g, inv, r, c);
 		}
 	}
 }
