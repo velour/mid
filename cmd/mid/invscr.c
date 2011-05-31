@@ -117,7 +117,7 @@ static void drawcur(Gfx *g, Item *inv)
 {
 	Txt *invtxt = gettxt();
 	Point d = txtdims(invtxt, inv->name);
-	Point p = (Point) { .x = Scrnw - d.x, .y = Height + d.y + 1 };
+	Point p = (Point) { .x = Scrnw - d.x, .y = Height + Ymin + Pad };
 	txtdraw(g, invtxt, p, inv->name);
 }
 
@@ -132,6 +132,7 @@ static Txt *gettxt(void)
 	}
 	return invtxt;
 }
+
 static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	if (e->type == Mousemv) {
 		Invscr *i = s->data;
