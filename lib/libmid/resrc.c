@@ -155,8 +155,10 @@ static Resrc *resrcload(Rtab *t, const char *file, void *aux)
 		fscat(roots[i], file, path);
 		found = fsexists(path);
 	}
-	if (!found)
+	if (!found) {
+		seterrstr("Not found");
 		return NULL;
+	}
 
 	Resrc *r = resrcnew(path, file, aux);
 	if (!r)
