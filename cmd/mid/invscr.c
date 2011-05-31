@@ -12,7 +12,7 @@ struct Invscr{
 	int z;
 };
 
-enum { Iconw = 32, Iconh = 32 };
+enum { Iconw = 64, Iconh = 64 };
 enum { Pad = 1 };
 enum { Width = Iconw * Invcols + Pad * (Invcols - 1),
        Height = Iconh * Invrows + Pad * (Invrows - 1) };
