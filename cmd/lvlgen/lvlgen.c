@@ -106,11 +106,15 @@ static bool withprob(float p)
 static void doors(char tiles[], int w, int h, int d)
 {
 	for (int z = 0; z < d - 1; z++) {
-		int x = rand() % (w - 2) + 1;
-		int y = rand() % (h - 2) + 1;
+		int x, y;
+		do {	 /* Don't put two doors in the same place.  */
+			x = rand() % (w - 2) + 1;
+			y = rand() % (h - 2) + 1;
+		} while (tiles[y * w + x] == '<');
+
 		tiles[y * w + x] = '>';
-		tiles[w * h + y * w + x] = '<';
 		tiles[(y + 1) * w + x] = '#';
+		tiles[w * h + y * w + x] = '<';
 		tiles[w * h + (y + 1) * w + x] = '#';
 		tiles += w * h;
 	}
