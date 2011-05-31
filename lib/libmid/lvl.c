@@ -8,7 +8,15 @@
 
 enum { Theight = 32, Twidth = 32 };
 
+static Lvl *lvlnew(int d, int w, int h);
+static Lvl *lvlread(FILE *f);
 static bool tileread(FILE *f, Lvl *l, int x, int y, int z);
+static void bkgrnddraw(Gfx *g, Rtab *anims, int t, Point pt);
+static void fgrnddraw(Gfx *g, Rtab *anims, int t, Point pt);
+static Rect tilebbox(int x, int y);
+static Isect tileisect(int t, int x, int y, Rect r);
+static Rect hitzone(Rect a, Point v);
+static Blkinfo blkinfo(Lvl *l, int z, int x, int y);
 
 typedef struct Tinfo Tinfo;
 struct Tinfo {
@@ -43,7 +51,24 @@ struct Lvl {
 	char tiles[];
 };
 
-Lvl *lvlnew(int d, int w, int h)
+void lvlfree(Lvl *l)
+{
+	free(l);
+}
+
+Lvl *lvlload(const char *path)
+{
+	FILE *f = fopen(path, "r");
+	if (!f)
+		return NULL;
+	Lvl *l = lvlread(f);
+	int err = errno;
+	fclose(f);
+	errno = err;
+	return  l;
+}
+
+static Lvl *lvlnew(int d, int w, int h)
 {
 	Lvl *l = malloc(sizeof(*l) + sizeof(char[d * w * h]));
 	if (!l)
@@ -54,12 +79,7 @@ Lvl *lvlnew(int d, int w, int h)
 	return l;
 }
 
-void lvlfree(Lvl *l)
-{
-	free(l);
-}
-
-Lvl *lvlread(FILE *f)
+static Lvl *lvlread(FILE *f)
 {
 	int w, h, d;
 	fscanf(f, " %d %d %d",&d, &w, &h);
@@ -119,19 +139,7 @@ static bool tileread(FILE *f, Lvl *l, int x, int y, int z)
 	return true;
 }
 
-Lvl *lvlload(const char *path)
-{
-	FILE *f = fopen(path, "r");
-	if (!f)
-		return NULL;
-	Lvl *l = lvlread(f);
-	int err = errno;
-	fclose(f);
-	errno = err;
-	return  l;
-}
-
-void bkgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
+static void bkgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
 {
 	assert(tiles[t] != NULL);
 	if (!tiles[t]->bgfile) {
@@ -145,7 +153,8 @@ void bkgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
 		abort();
 	animdraw(g, tiles[t]->bganim, pt);
 }
-void fgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
+
+static void fgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
 {
 	assert(tiles[t] != NULL);
 	if (!tiles[t]->fgfile)
@@ -157,7 +166,7 @@ void fgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
 	animdraw(g, tiles[t]->fganim, pt);
 }
 
-Rect tilebbox(int x, int y)
+static Rect tilebbox(int x, int y)
 {
 	Point a = (Point) {x * Twidth, y * Theight};
 	Point b = (Point) {(x + 1) * Twidth, (y + 1) * Theight};
@@ -224,36 +233,6 @@ void lvlupdate(Rtab *anims, Lvl *l)
 	}
 }
 
-Isect tileisect(int t, int x, int y, Rect r)
-{
-	assert(tiles[t]);
-	if (!(tiles[t]->flags & Blkcollide))
-		return (Isect){ .is = 0 };
-	return isection(r, tilebbox(x, y));
-}
-
-Rect hitzone(Rect a, Point v)
-{
-	Rect b = a;
-	rectmv(&b, v.x, v.y);
-
-	a = rectnorm(a);
-	b = rectnorm(b);
-
-	int xmin = a.a.x < b.a.x ? a.a.x : b.a.x;
-	int ymin = a.a.y < b.b.y ? a.a.y : b.a.y;
-	int xmax = a.b.x > b.b.x ? ceil(a.b.x) : ceil(b.b.x);
-	int ymax = a.b.y > b.b.y ? ceil(a.b.y) : ceil(b.b.y);
-	xmin /= Twidth;
-	xmax /= Twidth;
-	ymin /= Theight;
-	ymax /= Theight;
-	if (ymin > 0)
-		ymin--;
-
-	return (Rect) { .a = {xmin, ymin}, .b = {xmax, ymax} };
-}
-
 Isect lvlisect(Lvl *l, int z, Rect r, Point v)
 {
 	Rect test = hitzone(r, v);
@@ -293,12 +272,34 @@ Isect lvlisect(Lvl *l, int z, Rect r, Point v)
 	return isect;
 }
 
-Blkinfo blkinfo(Lvl *l, int z, int x, int y)
+static Isect tileisect(int t, int x, int y, Rect r)
 {
-	int i = z * l->w * l->h + x * l->h + y;
-	int t = l->tiles[i];
-	assert (tiles[t]);
-	return (Blkinfo) { .x = x, .y = y, .z = z, .flags = tiles[t]->flags };
+	assert(tiles[t]);
+	if (!(tiles[t]->flags & Blkcollide))
+		return (Isect){ .is = 0 };
+	return isection(r, tilebbox(x, y));
+}
+
+static Rect hitzone(Rect a, Point v)
+{
+	Rect b = a;
+	rectmv(&b, v.x, v.y);
+
+	a = rectnorm(a);
+	b = rectnorm(b);
+
+	int xmin = a.a.x < b.a.x ? a.a.x : b.a.x;
+	int ymin = a.a.y < b.b.y ? a.a.y : b.a.y;
+	int xmax = a.b.x > b.b.x ? ceil(a.b.x) : ceil(b.b.x);
+	int ymax = a.b.y > b.b.y ? ceil(a.b.y) : ceil(b.b.y);
+	xmin /= Twidth;
+	xmax /= Twidth;
+	ymin /= Theight;
+	ymax /= Theight;
+	if (ymin > 0)
+		ymin--;
+
+	return (Rect) { .a = {xmin, ymin}, .b = {xmax, ymax} };
 }
 
 Blkinfo lvlmajorblk(Lvl *l, int z, Rect r)
@@ -324,4 +325,12 @@ Blkinfo lvlmajorblk(Lvl *l, int z, Rect r)
 	}
 
 	return bi;
+}
+
+static Blkinfo blkinfo(Lvl *l, int z, int x, int y)
+{
+	int i = z * l->w * l->h + x * l->h + y;
+	int t = l->tiles[i];
+	assert (tiles[t]);
+	return (Blkinfo) { .x = x, .y = y, .z = z, .flags = tiles[t]->flags };
 }
