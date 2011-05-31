@@ -50,6 +50,7 @@ void itemfree(Item *);
 
 /* Caller must call gfxflip(). */
 void invdraw(Gfx *, Inv *);
+void invdrawcur(Gfx *, Item *);
 void invupdate(Inv *);
 /* Swap the item at the given inventory grid x,y.  Return the old item. */
 Item *invmod(Inv *, Item *, int x, int y);

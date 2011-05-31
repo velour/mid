@@ -6,6 +6,7 @@ typedef struct Invscr Invscr;
 struct Invscr{
 	Inv *inv;
 	Lvl *lvl;
+	Item *curitem;
 	int z;
 };
 
@@ -28,6 +29,7 @@ Scrn *invscrnnew(Inv *i, Lvl *lvl, int z){
 	inv->inv = i;
 	inv->lvl = lvl;
 	inv->z = z;
+	inv->curitem = NULL;
 
 	Scrn *s = malloc(sizeof(*s));
 	if(!s)
@@ -47,10 +49,17 @@ static void draw(Scrn *s, Gfx *g){
 	Invscr *i = s->data;
 	lvlminidraw(g, i->lvl, i->z, (Point){0,0});
 	invdraw(g, i->inv);
+	if (i->curitem)
+		invdrawcur(g, i->curitem);
 	gfxflip(g);
 }
 
 static void handle(Scrn *s, Scrnstk *stk, Event *e){
+	if (e->type == Mousemv) {
+		Invscr *i = s->data;
+		i->curitem = invat(i->inv, e->x, e->y);
+	}
+
 	if(e->type != Keychng || e->repeat)
 		return;
 

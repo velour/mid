@@ -18,6 +18,7 @@ static Txtinfo txtinfo = (Txtinfo) { .size = 12, .color = (Color) {0} };
 static void moneydraw(Gfx *g, Inv *inv);
 static void griddraw(Gfx *g, Inv *inv);
 static void entrydraw(Gfx *g, Inv *inv, int r, int c);
+static Txt *gettxt(void);
 
 void invdraw(Gfx *g, Inv *inv)
 {
@@ -27,11 +28,7 @@ void invdraw(Gfx *g, Inv *inv)
 
 static void moneydraw(Gfx *g, Inv *inv)
 {
-	if (!invtxt) {
-		invtxt = resrcacq(txt, "txt/FreeSans.ttf", &txtinfo);
-		if (!invtxt)
-			fatal("Failed to load inventory text");
-	}
+	Txt *invtxt = gettxt();
 	Point d = txtdims(invtxt, moneystr);
 	txtdraw(g, invtxt, (Point) { Scrnw - d.x, 1 }, moneystr);
 	d.x += txtdims(invtxt, "%d ", inv->money).x;
@@ -111,4 +108,22 @@ Item *invat(Inv *inv, int x, int y)
 		return NULL;	/* In padding */
 
 	return inv->items[i * Invcols + j];
+}
+
+void invdrawcur(Gfx *g, Item *inv)
+{
+	Txt *invtxt = gettxt();
+	Point d = txtdims(invtxt, inv->name);
+	Point p = (Point) { .x = Scrnw - d.x, .y = Height + d.y + 1 };
+	txtdraw(g, invtxt, p, inv->name);
+}
+
+static Txt *gettxt(void)
+{
+	if (!invtxt) {
+		invtxt = resrcacq(txt, "txt/FreeSans.ttf", &txtinfo);
+		if (!invtxt)
+			fatal("Failed to load inventory text");
+	}
+	return invtxt;
 }
