@@ -10,6 +10,8 @@ enum { Width = Iconw * Invcols + Pad * (Invcols - 1),
        Height = Iconh * Invrows + Pad * (Invrows - 1) };
 enum { Xmin = Scrnw - Width - 1, Ymin = 15 };
 
+static const char *moneystr = "gold";
+
 static Txt *invtxt;
 static Txtinfo txtinfo = (Txtinfo) { .size = 12, .color = (Color) {0} };
 
@@ -23,8 +25,8 @@ void invdraw(Gfx *g, Inv *inv)
 		if (!invtxt)
 			fatal("Failed to load inventory text");
 	}
-	Point d = txtdims(invtxt, "gold");
-	txtdraw(g, invtxt, (Point) { Scrnw - d.x, 1 }, "gold");
+	Point d = txtdims(invtxt, moneystr);
+	txtdraw(g, invtxt, (Point) { Scrnw - d.x, 1 }, moneystr);
 	d.x += txtdims(invtxt, "%d ", inv->money).x;
 	txtdraw(g, invtxt, (Point) { Scrnw - d.x , 1 }, "%d ", inv->money);
 	griddraw(g, inv);
