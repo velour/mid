@@ -14,6 +14,7 @@ static Txt *invtxt;
 static Txtinfo txtinfo = (Txtinfo) { .size = 12, .color = (Color) {0} };
 
 static void griddraw(Gfx *g, Inv *inv);
+static void entrydraw(Gfx *g, Inv *inv, int r, int c);
 
 void invdraw(Gfx *g, Inv *inv)
 {
@@ -24,6 +25,15 @@ void invdraw(Gfx *g, Inv *inv)
 	}
 	txtdraw(g, invtxt, (Point){ 0, Scrnh - 12 }, "money: %d", inv->money);
 	griddraw(g, inv);
+}
+
+static void griddraw(Gfx *g, Inv *inv)
+{
+	for (int r = 0; r < Invrows; r++) {
+		for (int c = 0; c < Invcols; c++) {
+			entrydraw(g, inv, r, c);
+		}
+	}
 }
 
 static void entrydraw(Gfx *g, Inv *inv, int r, int c)
@@ -38,15 +48,6 @@ static void entrydraw(Gfx *g, Inv *inv, int r, int c)
 	Item *it = inv->items[r * Invcols + c];
 	if (it)
 		animdraw(g, it->icon, a);
-}
-
-static void griddraw(Gfx *g, Inv *inv)
-{
-	for (int r = 0; r < Invrows; r++) {
-		for (int c = 0; c < Invcols; c++) {
-			entrydraw(g, inv, r, c);
-		}
-	}
 }
 
 void invupdate(Inv *inv)
