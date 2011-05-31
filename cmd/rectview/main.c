@@ -37,7 +37,7 @@ int main(int argc, const char *argv[]){
 		fputs("I need an image name.\n", stderr);
 		return 1;
 	}
-	gfx = gfxinit(640, 480);
+	gfx = gfxinit(640, 480, "rectview");
 	if(!gfx){
 		fprintf(stderr, "Failed to start gfx: %s\n", miderrstr());
 		return 1;

@@ -14,7 +14,7 @@ struct Gfx{
 
 static Gfx gfx;
 
-Gfx *gfxinit(int w, int h){
+Gfx *gfxinit(int w, int h, const char *title){
 	if(TTF_Init() < 0)
 		return NULL;
 
@@ -26,7 +26,7 @@ Gfx *gfxinit(int w, int h){
 			return NULL;
 	}
 
-	gfx.win = SDL_CreateWindow("TODO: Title...",
+	gfx.win = SDL_CreateWindow(title,
 				   SDL_WINDOWPOS_CENTERED,
 				   SDL_WINDOWPOS_CENTERED,
 				   w, h,
