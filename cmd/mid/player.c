@@ -10,8 +10,7 @@ enum { Dxwater = 1, Dxair = 3, Dy = 8 };
 struct Player {
 	Body body;
 	bool water;
-	bool left;
-	bool right;
+	bool left, right;
 	int dz;
 };
 
@@ -22,7 +21,7 @@ Player *playernew(int x, int y)
 	Player *p = malloc(sizeof(*p));
 	if (!p)
 		return NULL;
-	if(bodyinit(&p->body, "knight", x, y)){
+	if(bodyinit(&p->body, "knight", x, y, 0)){
 		free(p);
 		return NULL;
 	}
@@ -52,6 +51,7 @@ void playerupdate(Player *p, Lvl *l, int *z, Point *tr)
 		*z += 1;
 	else if (p->dz < 0 && bi.flags & Blkfdoor)
 		*z -= 1;
+	p->body.z = *z;
 	p->dz = 0;
 
 	bodyupdate(&p->body, l, *z, tr);
@@ -59,7 +59,7 @@ void playerupdate(Player *p, Lvl *l, int *z, Point *tr)
 
 void playerdraw(Gfx *g, Player *p, Point tr)
 {
-	bodydraw(g, &p->body, tr);
+	bodydraw(g, &p->body, p->body.z, tr);
 }
 
 void playerhandle(Player *p, Event *e)

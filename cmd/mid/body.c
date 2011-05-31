@@ -16,7 +16,7 @@ static void chngdir(Body *b);
 static void chngact(Body *b);
 static void imgmvscroll(Body *b, Point *transl, float dx, float dy);
 
-_Bool bodyinit(Body *b, const char *name, int x, int y)
+_Bool bodyinit(Body *b, const char *name, int x, int y, int z)
 {
 	loadanim(&b->left.anim[Stand], name, "left", "stand");
 	loadanim(&b->left.anim[Walk], name, "left", "walk");
@@ -34,6 +34,7 @@ _Bool bodyinit(Body *b, const char *name, int x, int y)
 	b->right.bbox[Jump] = (Rect){ { x, y }, { x + Wide, y - Tall } };
 
 	b->vel = (Point) { 0, 0 };
+	b->z = z;
 	b->imgloc = (Point) { x, y - Tall };
 	b->curdir = &b->right;
 	b->curact = Stand;
@@ -50,6 +51,9 @@ void bodyfree(Body *b)
 
 void bodyupdate(Body *b, Lvl *l, int z, Point *transl)
 {
+	if (z != b->z)
+		return;
+
 	bodymv(b, l, z, transl);
 	if (b->fall && b->vel.y < Maxdy)
 		b->vel.y += b->ddy;
@@ -146,8 +150,11 @@ static void imgmvscroll(Body *b, Point *transl, float dx, float dy)
 }
 
 
-void bodydraw(Gfx *g, Body *b, Point tr)
+void bodydraw(Gfx *g, Body *b, int z, Point tr)
 {
+	if (b->z != z)
+		return;
+
 	if(lvlgridon){
 		Rect bbox = b->curdir->bbox[b->curact];
 		rectmv(&bbox, tr.x, tr.y);

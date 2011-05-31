@@ -20,13 +20,14 @@ struct Body {
 	Dir *curdir;
 	Act curact;
 	Point vel, imgloc;
+	int z;
 	float ddy;
 	_Bool fall;
 };
 
-_Bool bodyinit(Body *, const char *name, int x, int y);
+_Bool bodyinit(Body *, const char *name, int x, int y, int z);
 void bodyfree(Body *b);
-void bodydraw(Gfx *g, Body *b, Point tr);
+void bodydraw(Gfx *g, Body *b, int z, Point tr);
 
 /* If transl is non-NULL then this body will scroll the screen. */
 void bodyupdate(Body *b, Lvl *l, int z, Point *transl);
