@@ -2,8 +2,8 @@
 #include "game.h"
 #include <stdlib.h>
 
-typedef struct Inv Inv;
-struct Inv{
+typedef struct Invscr Invscr;
+struct Invscr{
 	Player *p;
 	Lvl *lvl;
 	int z;
@@ -22,7 +22,7 @@ static Scrnmt invmt = {
 };
 
 Scrn *invscrnnew(Player *p, Lvl *lvl, int z){
-	Inv *inv = malloc(sizeof(*inv));
+	Invscr *inv = malloc(sizeof(*inv));
 	if(!inv)
 		return NULL;
 	inv->p = p;
@@ -42,7 +42,7 @@ static void update(Scrn *s, Scrnstk *stk){
 
 static void draw(Scrn *s, Gfx *g){
 	gfxclear(g, (Color){ 127, 255, 127 });
-	Inv *i = s->data;
+	Invscr *i = s->data;
 	lvlminidraw(g, i->lvl, i->z, (Point){0,0});
 	gfxflip(g);
 }

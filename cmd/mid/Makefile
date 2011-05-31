@@ -10,7 +10,7 @@ OFILES := main.o\
 	game.o\
 	player.o\
 	keymap.o\
-	inv.o\
+	invscr.o\
 	title.o\
 	body.o\
 
