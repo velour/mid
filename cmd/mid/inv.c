@@ -13,11 +13,7 @@ void invdraw(Gfx *g, Inv *inv)
 		if (!invtxt)
 			fatal("Failed to load inventory text");
 	}
-	Img *img = txt2img(g, invtxt, "money: %d", inv->money);
-	if (!img)
-		fatal("Failed to create money text image");
-	imgdraw(g, img, (Point){ 0, Scrnh - 12 });
-	imgfree(img);
+	txtdraw(g, invtxt, (Point){ 0, Scrnh - 12 }, "money: %d", inv->money);
 }
 
 void invupdate(Inv *inv)
