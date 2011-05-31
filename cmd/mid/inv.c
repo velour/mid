@@ -15,10 +15,17 @@ static const char *moneystr = "gold";
 static Txt *invtxt;
 static Txtinfo txtinfo = (Txtinfo) { .size = 12, .color = (Color) {0} };
 
+static void moneydraw(Gfx *g, Inv *inv);
 static void griddraw(Gfx *g, Inv *inv);
 static void entrydraw(Gfx *g, Inv *inv, int r, int c);
 
 void invdraw(Gfx *g, Inv *inv)
+{
+	moneydraw(g, inv);
+	griddraw(g, inv);
+}
+
+static void moneydraw(Gfx *g, Inv *inv)
 {
 	if (!invtxt) {
 		invtxt = resrcacq(txt, "txt/FreeSans.ttf", &txtinfo);
@@ -29,7 +36,6 @@ void invdraw(Gfx *g, Inv *inv)
 	txtdraw(g, invtxt, (Point) { Scrnw - d.x, 1 }, moneystr);
 	d.x += txtdims(invtxt, "%d ", inv->money).x;
 	txtdraw(g, invtxt, (Point) { Scrnw - d.x , 1 }, "%d ", inv->money);
-	griddraw(g, inv);
 }
 
 static void griddraw(Gfx *g, Inv *inv)
