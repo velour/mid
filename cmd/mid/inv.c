@@ -98,3 +98,17 @@ void itemfree(Item *item)
 	free(item);
 }
 
+Item *invat(Inv *inv, int x, int y)
+{
+	if (x < Xmin || x > Xmin + Width || y < Ymin || y > Ymin + Height)
+		return NULL;
+
+	int i = (x - Xmin) / (Iconw + Pad);
+	int j = (y - Ymin) / (Iconh + Pad);
+
+	if (x > Xmin + i * (Iconw + Pad) + Iconw
+	    || y > Ymin + j * (Iconh + Pad) + Iconh)
+		return NULL;	/* In padding */
+
+	return inv->items[i * Invcols + j];
+}

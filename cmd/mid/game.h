@@ -53,6 +53,8 @@ void invdraw(Gfx *, Inv *);
 void invupdate(Inv *);
 /* Swap the item at the given inventory grid x,y.  Return the old item. */
 Item *invmod(Inv *, Item *, int x, int y);
+/* Inventory item at the given screen location */
+Item *invat(Inv *inv, int x, int y);
 
 Scrn *invscrnnew(Inv *, Lvl *, int z);
 Scrn *titlescrnnew(Gfx *);
