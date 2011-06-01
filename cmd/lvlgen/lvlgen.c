@@ -3,15 +3,38 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <time.h>
+#include <assert.h>
 
 /* 2 above brick are reachable via jump. */
 enum { Playerx = 2, Playery = 3 };
 
+typedef struct Pair Pair;
+struct Pair {
+	int x, y;
+};
+
+typedef struct Path Path;
+struct Path {
+	Pair start;
+	Pair end;
+};
+
+typedef enum Dir Dir;
+enum Dir { Left, Right };
+
 static void init(char tiles[], int w, int h, int d);
 static void gen(char tiles[], int w, int h, int d);
 static void water(char tiles[], int w, int h);
-static void floor(char tiles[], int w, int h, int r);
 static void doors(char tiles[], int w, int h, int d);
+static void platforms(char tiles[], int w, int h);
+static bool blocking(Path plat, Path path[], int plen);
+static bool overlap(Path a, Path b);
+static void fillpath(char tiles[], int w, Path plat, char c);
+static bool clear(char tiles[], int w, int h, int x0, int y0, int x1, int y1);
+static Path platform(char tiles[], int w, int h, Dir dir, int x, int y);
+static Pair jump(char tiles[], int w, int h, int x, int y);
+static bool land(char t);
+
 static bool withprob(float p);
 static void output(char tiles[], int w, int h, int d);
 
@@ -42,7 +65,6 @@ int main(int argc, char *argv[])
 static void init(char tiles[], int w, int h, int d)
 {
 	memset(tiles, ' ', w * h * d);
-	tiles[(Playery + 1) * w + Playerx] = '#';
 	for (int z = 0; z < d; z++) {
 		for (int x = 0; x < w; x++) {
 			tiles[x] = '#';
@@ -59,11 +81,145 @@ static void init(char tiles[], int w, int h, int d)
 static void gen(char tiles[], int w, int h, int d)
 {
 	for (int z = 0; z < d; z++) {
-		for (int r = 1; r < h - 1; r++)
-			floor(tiles, w, h, r);
-		tiles += w * h;
+		platforms(tiles, w, h);
 		water(tiles, w, h);
+		tiles += w * h;
 	}
+}
+
+static const Pair jumps[] = {
+	{ 2, -2 },
+	{ 1, -2 },
+};
+
+enum { Njumps = sizeof(jumps) / sizeof(jumps[0]) };
+
+static void platforms(char tiles[], int w, int h)
+{
+	int plen = 0;
+	Path path[w * h];
+
+	for (int y = h - 2; y > 0; y--) {
+		for (int x = 1; x < w - 1; x++) {
+			if (!land(tiles[(y + 1) * w + x]))
+				continue;
+			Pair j = jump(tiles, w, h, x, y);
+			if (j.x == x && j.y == y)
+				continue;
+			Dir dir = Left;
+			if (j.x > x)
+				dir = Right;
+			j.y += 1;
+			Path p = platform(tiles, w, h, dir, j.x, j.y);
+			if (!blocking(p, path, plen)) {
+				fillpath(tiles, w, p, '#');
+				path[plen] = (Path) {{x, y}, j};
+				plen++;
+			}
+		}
+	}
+
+/*
+	for (int i = 0; i < plen; i++) {
+		fprintf(stderr, "Jump: %d,%d -> %d,%d\n", path[i].start.x,
+			path[i].start.y, path[i].end.x, path[i].end.y);
+		assert (clear(tiles, w, h, path[i].start.x, path[i].start.y,
+			      path[i].end.x, path[i].end.y));
+	}
+*/
+}
+
+static void fillpath(char tiles[], int w, Path plat, char c)
+{
+	for (int x = plat.start.x; x <= plat.end.x; x++)
+		for (int y = plat.start.y; y <= plat.end.y; y++)
+			tiles[y * w + x] = c;
+}
+
+static bool blocking(Path plat, Path path[], int plen)
+{
+	for (int i = 0; i < plen; i++)
+		if (overlap(plat, path[i]))
+		    return true;
+	return false;
+}
+
+static bool overlap(Path a, Path b)
+{
+	bool xhit = a.start.x <= b.end.x && a.start.x >= b.start.x;
+	xhit = xhit || b.start.x <= a.end.x && b.start.x >= a.start.x;
+
+	bool yhit = a.start.y <= b.end.y && a.start.y >= b.start.y;
+	yhit = yhit || b.start.y <= a.end.y && b.start.y >= a.start.y;
+
+	return xhit && yhit;
+}
+
+static const float Platpr = 0.5;
+
+static Path platform(char tiles[], int w, int h, Dir dir, int x, int y)
+{
+	Pair start, end;
+	if (dir == Right) {
+		int space = w - x;
+		int len = rand() % space + 1;
+		end.y = start.y = y;
+		start.x = x;
+		end.x = x + len;
+	} else {
+		int space = w;
+		int len = rand() % space;
+		end.y = start.y = y;
+		start.x = x - len;
+		end.x = x;
+	}
+
+	return (Path) {start, end};
+}
+
+static Pair jump(char tiles[], int w, int h, int x, int y)
+{
+	if (withprob(1.0 - Platpr))
+		return (Pair) {x, y};
+
+	int i = rand() % Njumps;
+	int right = rand() % 2;
+	int x1 = x + (right ? 1 : -1) * jumps[i].x;
+	int y1 = y + jumps[i].y;
+	fprintf(stderr, "considering jump: %d,%d -> %d,%d\n", x, y, x1, y1);
+	if (!clear(tiles, w, h, x, y, x1, y1)) {
+		fprintf(stderr, "jump bad\n");
+		return (Pair) {x, y};
+	}
+	fprintf(stderr, "jump good\n");
+
+	return (Pair) {x1, y1};
+}
+
+static bool land(char t)
+{
+	return t == '#';
+}
+
+static bool clear(char tiles[], int w, int h, int x0, int y0, int x1, int y1)
+{
+
+	y1 -= 1;
+	if (y1 <= 0 || x1 <= 0 || x1 >= h - 1)
+		return false;
+
+	if (x0 > x1) {
+		int t = x0;
+		x0 = x1;
+		x1 = t;
+	}
+	for (int i = x0; i <= x1; i++) {
+		for (int j = y0; j >= y1; j--) {
+			if (tiles[j * w + i] == '#')
+				return false;
+		}
+	}
+	return true;
 }
 
 static const float Wmaxfrac = 1.0;
@@ -87,20 +243,6 @@ static void water(char tiles[], int w, int h)
 }
 
 static const float Fprob = 0.4;
-
-static void floor(char tiles[], int w, int h, int r)
-{
-	if (withprob(1.0 - Fprob))
-		return;
- 	int len = rand() % (w - 3) + 1;
-	int slack = w - 2 - len;
-	int x0 = rand() % slack + 1;
-
-	fprintf(stderr, "row %d, floor length %d, start %d\n", r, len, x0);
-
-	for (int x = x0; x < x0 + len; x++)
-		tiles[r * w + x] = '#';
-}
 
 static bool withprob(float p)
 {
@@ -129,6 +271,7 @@ static void output(char tiles[], int w, int h, int d)
 	printf("%d %d %d\n", d, w, h);
 	for (int z = 0; z < d; z++) {
 		for (int y = 0; y < h; y++) {
+			printf("%02d ", y);
 			for (int x = 0; x < w; x++) {
 				fputc(tiles[z * h * w + y * w + x], stdout);
 			}
