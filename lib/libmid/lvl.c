@@ -6,8 +6,6 @@
 #include <errno.h>
 #include <math.h>
 
-enum { Theight = 32, Twidth = 32 };
-
 static Lvl *lvlnew(int d, int w, int h);
 static Lvl *lvlread(FILE *f);
 static bool tileread(FILE *f, Lvl *l, int x, int y, int z);
