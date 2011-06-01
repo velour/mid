@@ -5,6 +5,7 @@
 #include <time.h>
 
 /* 2 above brick are reachable via jump. */
+enum { Playerx = 2, Playery = 3 };
 
 static void init(char tiles[], int w, int h, int d);
 static void gen(char tiles[], int w, int h, int d);
@@ -41,6 +42,7 @@ int main(int argc, char *argv[])
 static void init(char tiles[], int w, int h, int d)
 {
 	memset(tiles, ' ', w * h * d);
+	tiles[(Playery + 1) * w + Playerx] = '#';
 	for (int z = 0; z < d; z++) {
 		for (int x = 0; x < w; x++) {
 			tiles[x] = '#';
