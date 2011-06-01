@@ -118,15 +118,6 @@ static void platforms(char tiles[], int w, int h)
 			}
 		}
 	}
-
-/*
-	for (int i = 0; i < plen; i++) {
-		fprintf(stderr, "Jump: %d,%d -> %d,%d\n", path[i].start.x,
-			path[i].start.y, path[i].end.x, path[i].end.y);
-		assert (clear(tiles, w, h, path[i].start.x, path[i].start.y,
-			      path[i].end.x, path[i].end.y));
-	}
-*/
 }
 
 static void fillpath(char tiles[], int w, Path plat, char c)
@@ -186,12 +177,8 @@ static Pair jump(char tiles[], int w, int h, int x, int y)
 	int right = rand() % 2;
 	int x1 = x + (right ? 1 : -1) * jumps[i].x;
 	int y1 = y + jumps[i].y;
-	fprintf(stderr, "considering jump: %d,%d -> %d,%d\n", x, y, x1, y1);
-	if (!clear(tiles, w, h, x, y, x1, y1)) {
-		fprintf(stderr, "jump bad\n");
+	if (!clear(tiles, w, h, x, y, x1, y1))
 		return (Pair) {x, y};
-	}
-	fprintf(stderr, "jump good\n");
 
 	return (Pair) {x1, y1};
 }
@@ -271,7 +258,6 @@ static void output(char tiles[], int w, int h, int d)
 	printf("%d %d %d\n", d, w, h);
 	for (int z = 0; z < d; z++) {
 		for (int y = 0; y < h; y++) {
-			printf("%02d ", y);
 			for (int x = 0; x < w; x++) {
 				fputc(tiles[z * h * w + y * w + x], stdout);
 			}
