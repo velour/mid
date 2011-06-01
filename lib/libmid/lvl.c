@@ -134,7 +134,7 @@ static bool tileread(FILE *f, Lvl *l, int x, int y, int z)
 		return false;
 	}
 
-	l->tiles[z * l->w * l->h + x * l->h + y] = c;
+	l->tiles[z * l->w * l->h + y * l->w + x] = c;
 
 	return true;
 }
@@ -180,7 +180,7 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, bool bkgrnd, Point offs)
 	for (int x = 0; x < w; x++){
 		int pxx = offs.x + x * Twidth;
 		for (int y = 0; y < h; y++) {
-			int ind = base + x * h + y;
+			int ind = base + y * w + x;
 			int t = l->tiles[ind];
 			Point pt = (Point){ pxx, offs.y + y * Theight };
 
@@ -205,7 +205,7 @@ void lvlminidraw(Gfx *g, Lvl *l, int z, Point offs)
 	for (int x = 0; x < w; x++){
 		int pxx = offs.x + x;
 		for (int y = 0; y < h; y++) {
-			int ind = base + x * h + y;
+			int ind = base + y * w + x;
 			int t = l->tiles[ind];
 			Point pt = (Point){ pxx, offs.y + y };
 
@@ -242,7 +242,7 @@ Isect lvlisect(Lvl *l, int z, Rect r, Point v)
 	rectmv(&mv, 0, v.y);
 	for (int x = test.a.x; x <= test.b.x; x++) {
 		for (int y = test.a.y; y <= test.b.y; y++) {
-			int i = z * l->h * l->w + x * l->h + y;
+			int i = z * l->h * l->w + y * l->w + x;
 			Isect is = tileisect(l->tiles[i], x, y, mv);
 			if (is.is && is.dy > isect.dy) {
 				isect.is = true;
@@ -259,7 +259,7 @@ Isect lvlisect(Lvl *l, int z, Rect r, Point v)
 	rectmv(&mv, v.x, v.y + (v.y < 0 ? isect.dy : -isect.dy));
 	for (int x = test.a.x; x <= test.b.x; x++) {
 		for (int y = test.a.y; y <= test.b.y; y++) {
-			int i = z * l->h * l->w + x * l->h + y;
+			int i = z * l->h * l->w + y * l->w + x;
 			Isect is = tileisect(l->tiles[i], x, y, mv);
 			if (is.is && is.dx > isect.dx) {
 				isect.is = true;
@@ -329,7 +329,7 @@ Blkinfo lvlmajorblk(Lvl *l, int z, Rect r)
 
 static Blkinfo blkinfo(Lvl *l, int z, int x, int y)
 {
-	int i = z * l->w * l->h + x * l->h + y;
+	int i = z * l->w * l->h + y * l->w + x;
 	int t = l->tiles[i];
 	assert (tiles[t]);
 	return (Blkinfo) { .x = x, .y = y, .z = z, .flags = tiles[t]->flags };
