@@ -1,6 +1,7 @@
 syntax: glob
 cmd/mid/mid
 cmd/rectview/rectview
+cmd/lvlgen/lvlgen
 *.o
 *.swp
 *.a
