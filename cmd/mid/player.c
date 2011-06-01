@@ -1,7 +1,6 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include "game.h"
-#include "body.h"
 #include <stdlib.h>
 
 enum { Dx = 3, Dy = 8 };

@@ -11,6 +11,7 @@ struct Game {
 	Lvl *lvl;
 	Player *player;
 	Inv inv;
+	Enemy *e;
 };
 
 Game *gamenew(void)
@@ -23,6 +24,7 @@ Game *gamenew(void)
 	if (!gm->lvl)
 		fatal("Failed to load level lvl/0.lvl: %s", miderrstr());
 	gm->player = playernew(64, 96);
+	gm->e = enemynew('u', (Point){128,160});
 
 	// Testing items
 	Item *axe = itemnew("Golden Pickaxe", "gaxe/anim");
@@ -39,6 +41,7 @@ void gamefree(Scrn *s)
 {
 	Game *gm = s->data;
 	playerfree(gm->player);
+	gm->e->mt->free(gm->e);
 	resrcrel(lvls, "lvl/0.lvl", NULL);
 	free(gm);
 }
@@ -48,6 +51,7 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 	Game *gm = s->data;
 	lvlupdate(anim, gm->lvl);
 	playerupdate(gm->player, gm->lvl, &gm->z, &gm->transl);
+	gm->e->mt->update(gm->e, gm->player, gm->lvl);
 }
 
 void gamedraw(Scrn *s, Gfx *g)
@@ -56,6 +60,7 @@ void gamedraw(Scrn *s, Gfx *g)
 	gfxclear(g, (Color){ 0, 0, 0, 0 });
 	lvldraw(g, anim, gm->lvl, gm->z, true, gm->transl);
 	playerdraw(g, gm->player, gm->transl);
+	gm->e->mt->draw(gm->e, g, gm->transl);
 	lvldraw(g, anim, gm->lvl, gm->z, false, gm->transl);
 	gfxflip(g);
 }

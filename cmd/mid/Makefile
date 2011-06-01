@@ -14,11 +14,11 @@ OFILES := main.o\
 	inv.o\
 	title.o\
 	body.o\
+	enemy.o\
 
 HFILES := ../../include/mid.h\
 	../../include/log.h\
 	resrc.h\
 	game.h\
-	body.h\
 
 include ../../Make.cmd
