@@ -59,10 +59,10 @@ static void init(char tiles[], int w, int h, int d)
 static void gen(char tiles[], int w, int h, int d)
 {
 	for (int z = 0; z < d; z++) {
-		water(tiles, w, h);
 		for (int r = 1; r < h - 1; r++)
 			floor(tiles, w, h, r);
 		tiles += w * h;
+		water(tiles, w, h);
 	}
 }
 
@@ -79,7 +79,9 @@ static void water(char tiles[], int w, int h)
 
 	for (int y = h - 2; y > h - ht - 2; y--) {
 		for (int x = 1; x < w - 1; x++) {
-			tiles[y * w + x] = 'w';
+			int i = y * w + x;
+			if (tiles[i] == ' ')
+				tiles[i] = 'w';
 		}
 	}
 }
