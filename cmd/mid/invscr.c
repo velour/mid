@@ -75,8 +75,8 @@ static void draw(Scrn *s, Gfx *g){
 	Invscr *i = s->data;
 	lvlminidraw(g, i->lvl, i->z, (Point){0,0});
 
-	float px = i->ppos.x / 32.0f;
-	float py = i->ppos.y / 32.0f;
+	float px = i->ppos.x / Twidth;
+	float py = i->ppos.y / Theight - 1.0f;
 	Rect r = {
 		(Point){ px*2, py*2 },
 		(Point){ px*2 + 2, py*2 + 2 }
