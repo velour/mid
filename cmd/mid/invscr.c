@@ -8,6 +8,7 @@ typedef struct Invscr Invscr;
 struct Invscr{
 	Inv *inv;
 	Lvl *lvl;
+	Point ppos;
 	Item *curitem;
 	int z;
 };
@@ -39,12 +40,13 @@ static Scrnmt invmt = {
 	invfree,
 };
 
-Scrn *invscrnnew(Inv *i, Lvl *lvl, int z){
+Scrn *invscrnnew(Inv *i, Lvl *lvl, Point p, int z){
 	Invscr *inv = malloc(sizeof(*inv));
 	if(!inv)
 		return NULL;
 	inv->inv = i;
 	inv->lvl = lvl;
+	inv->ppos = p;
 	inv->z = z;
 	inv->curitem = NULL;
 
@@ -72,6 +74,14 @@ static void draw(Scrn *s, Gfx *g){
 
 	Invscr *i = s->data;
 	lvlminidraw(g, i->lvl, i->z, (Point){0,0});
+
+	float px = i->ppos.x / 32.0f;
+	float py = i->ppos.y / 32.0f;
+	Rect r = {
+		(Point){ px*2, py*2 },
+		(Point){ px*2 + 2, py*2 + 2 }
+	};
+	gfxdrawrect(g, r, (Color){ 255, 0, 0, 255 });
 
 	Inv *inv = i->inv;
 	moneydraw(g, inv);

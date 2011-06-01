@@ -184,6 +184,10 @@ void animdraw(Gfx *, Anim *, Point);
 void animreset(Anim *a);
 
 typedef struct Lvl Lvl;
+struct Lvl {
+	int d, w, h;
+	char tiles[];
+};
 Lvl *lvlload(const char *path);
 void lvlfree(Lvl *l);
 void lvlupdate(Rtab *anims, Lvl *l);

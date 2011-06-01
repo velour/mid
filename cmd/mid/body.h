@@ -5,8 +5,12 @@ enum { Maxdy = 12 };
 extern const float Grav;
 
 typedef enum Act Act;
-enum Act { Stand, Walk, Jump,
-	   Nacts};
+enum Act {
+	Stand,
+	Walk,
+	Jump,
+	Nacts
+};
 
 typedef struct Dir Dir;
 struct Dir {

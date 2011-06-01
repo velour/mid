@@ -68,7 +68,7 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 	Game *gm = s->data;
 
 	if(e->down && e->key == kmap[Mvinv]){
-		scrnstkpush(stk, invscrnnew(&gm->inv, gm->lvl, gm->z));
+		scrnstkpush(stk, invscrnnew(&gm->inv, gm->lvl, playerpos(gm->player), gm->z));
 		return;
 	}
 

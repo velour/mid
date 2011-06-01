@@ -30,6 +30,7 @@ void playerfree(Player *);
 void playerupdate(Player *, Lvl *l, int *z, Point *tr);
 void playerdraw(Gfx *, Player *, Point tr);
 void playerhandle(Player *, Event *);
+Point playerpos(Player *);
 
 enum { Invrows = 3, Invcols = 3 };
 
@@ -51,6 +52,6 @@ void itemfree(Item *);
 /* Swap the item at the given inventory grid x,y.  Return the old item. */
 Item *invmod(Inv *, Item *, int x, int y);
 
-Scrn *invscrnnew(Inv *, Lvl *, int z);
+Scrn *invscrnnew(Inv *, Lvl *, Point ppos, int z);
 Scrn *titlescrnnew(Gfx *);
 

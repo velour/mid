@@ -87,3 +87,8 @@ void playerhandle(Player *p, Event *e)
 		p->dz -= 1;
 	}
 }
+
+Point playerpos(Player *p)
+{
+	return p->body.curdir->bbox[p->body.curact].a;
+}

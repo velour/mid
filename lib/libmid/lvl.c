@@ -46,11 +46,6 @@ bool istile(int t)
 	return t >= 0 && t < Ntiles && tiles[t];
 }
 
-struct Lvl {
-	int d, w, h;
-	char tiles[];
-};
-
 void lvlfree(Lvl *l)
 {
 	free(l);
@@ -212,11 +207,20 @@ void lvlminidraw(Gfx *g, Lvl *l, int z, Point offs)
 			Color c;
 			if(tiles[t]->flags & Blkcollide)
 				c = (Color){ 0, 0, 0, 255 };
+			else if(tiles[t]->flags & Blkbdoor)
+				c = (Color){ 0, 255, 0, 255 };
+			else if(tiles[t]->flags & Blkfdoor)
+				c = (Color){ 64, 255, 0, 255 };
 			else if(!tiles[t]->fgfile)
 				c = (Color){ 255, 255, 255, 255 };
 			else if(tiles[t]->flags & Blkwater)
 				c = (Color){ 75, 75, 255, 255 };
-			gfxdrawpoint(g, pt, c);
+
+			Rect r = {
+				(Point){ pt.x * 2, pt.y *2 },
+				(Point){ pt.x*2 + 2, pt.y*2 + 2 }
+			};
+			gfxdrawrect(g, r, c);
 		}
 	}
 }
