@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 	int seed = time(NULL);
 	if (argc == 5)
 		seed = strtol(argv[4], NULL, 10);
-	printf("seed: %d\n", seed);
+	fprintf(stderr, "seed: %d\n", seed);
 	srand(seed);
 
 	char tiles[w * h * d];
@@ -73,7 +73,7 @@ static void water(char tiles[], int w, int h)
 		return;
 
 	int ht = rand() % (int)(Wmaxfrac * (h - 2)) + 1;
-	printf("water height: %d\n", ht);
+	fprintf(stderr, "water height: %d\n", ht);
 
 	for (int y = h - 2; y > h - ht - 2; y--) {
 		for (int x = 1; x < w - 1; x++) {
@@ -92,7 +92,7 @@ static void floor(char tiles[], int w, int h, int r)
 	int slack = w - 2 - len;
 	int x0 = rand() % slack + 1;
 
-	printf("row %d, floor length %d, start %d\n", r, len, x0);
+	fprintf(stderr, "row %d, floor length %d, start %d\n", r, len, x0);
 
 	for (int x = x0; x < x0 + len; x++)
 		tiles[r * w + x] = '#';
