@@ -91,3 +91,8 @@ Point playerpos(Player *p)
 {
 	return p->body.curdir->bbox[p->body.curact].a;
 }
+
+Rect playerbox(Player *p)
+{
+	return p->body.curdir->bbox[p->body.curact];
+}

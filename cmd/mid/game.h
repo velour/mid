@@ -69,6 +69,7 @@ void playerupdate(Player *, Lvl *l, int *z, Point *tr);
 void playerdraw(Gfx *, Player *, Point tr);
 void playerhandle(Player *, Event *);
 Point playerpos(Player *);
+Rect playerbox(Player *);
 
 enum { Invrows = 3, Invcols = 3 };
 

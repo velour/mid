@@ -19,6 +19,8 @@ struct Unti{
 	Color c;
 };
 
+static Rect untibox(Unti*,Point);
+
 static Enemy *(*spawns[])(Point) = {
 	['u'] = untinew,
 };
@@ -55,12 +57,21 @@ static void untifree(Enemy *e){
 static void untiupdate(Enemy *e, Player *p, Lvl *l){
 	// Real enemies will do AI and the usual physics
 	Unti *u = e->data;
+	if(isect(untibox(u, (Point){0}), playerbox(p)))
+		u->c.b = 255;
+	else
+		u->c.b = 55;
 	u->c.r++;
 }
 
 static void untidraw(Enemy *e, Gfx *g, Point tr){
 	Unti *u = e->data;
+	
+	gfxfillrect(g, untibox(u, tr), u->c);
+}
+
+static Rect untibox(Unti *u, Point tr){
 	Point a = { u->p.x + tr.x, u->p.y + tr.y };
 	Point b = { a.x + Wide, a.y + Tall };
-	gfxfillrect(g, (Rect){ a, b }, u->c);
+	return (Rect){ a, b };
 }
