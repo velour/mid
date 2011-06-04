@@ -36,7 +36,7 @@ static Tinfo *tiles[] = {
 			  .flags = Tilefdoor },
 };
 
-bool lvlgridon = false;
+int debugging = 0;
 
 enum { Ntiles = sizeof(tiles) / sizeof(tiles[0]) };
 
@@ -175,7 +175,7 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 		int pxx = offs.x + x * Twidth;
 		for (int y = 0; y < h; y++) {
 			int ind = base + y * w + x;
-			if (!(l->blks[ind].flags & Blkvis) && !lvlgridon)
+			if (!(l->blks[ind].flags & Blkvis) && debugging < 2)
 				continue;
 			int t = l->blks[ind].tile;
 			Point pt = (Point){ pxx, offs.y + y * Theight };
@@ -184,7 +184,7 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 				bkgrnddraw(g, t, pt);
 			else {
 				fgrnddraw(g, t, pt);
-				if(lvlgridon){
+				if(debugging >= 2){
 					Rect r = tilebbox(x, y);
 					rectmv(&r, offs.x, offs.y);
 					gfxdrawrect(g, r, (Color){0,0,0,255});
@@ -202,7 +202,7 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs)
 		int pxx = offs.x + x;
 		for (int y = 0; y < h; y++) {
 			int ind = base + y * w + x;
-			if (!(l->blks[ind].flags & Blkvis) && !lvlgridon)
+			if (!(l->blks[ind].flags & Blkvis) && debugging < 2)
 				continue;
 			int t = l->blks[ind].tile;
 			Point pt = (Point){ pxx, offs.y + y };

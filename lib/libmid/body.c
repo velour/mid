@@ -147,7 +147,7 @@ static void imgmvscroll(Body *b, Point *transl, float dx, float dy)
 
 void bodydraw(Gfx *g, Body *b, Point tr)
 {
-	if(lvlgridon){
+	if(debugging){
 		Rect bbox = b->curdir->bbox[b->curact];
 		rectmv(&bbox, tr.x, tr.y);
 		gfxfillrect(g, bbox, (Color){255,0,0,255});

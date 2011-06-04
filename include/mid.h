@@ -1,5 +1,6 @@
 /* Mean frame time.  May be useful for comparing computation effort. */
 extern float meanftime;
+extern int debugging;
 
 const char *miderrstr(void);
 void seterrstr(const char *fmt, ...);
@@ -218,7 +219,6 @@ void lvlminidraw(Gfx *, Lvl *, Point);
 /* Returns the reverse vector that must be added to v in order to
  * respect collisions. */
 Isect lvlisect(Lvl *l, Rect r, Point v);
-extern _Bool lvlgridon;
 
 typedef struct Blkinfo Blkinfo;
 struct Blkinfo {

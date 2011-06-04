@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 		kmname = argv[i+1];
 		i++;
 	}else if(ARGIS('d')){
-		lvlgridon = true;
+		debugging++;
 	}
 	}
 
