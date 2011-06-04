@@ -11,8 +11,8 @@ enum { Blkvis = 1 << 1 };
 static Lvl *lvlnew(int d, int w, int h);
 static Lvl *lvlread(FILE *f);
 static bool tileread(FILE *f, Lvl *l, int x, int y, int z);
-static void bkgrnddraw(Gfx *g, Rtab *anims, int t, Point pt);
-static void fgrnddraw(Gfx *g, Rtab *anims, int t, Point pt);
+static void bkgrnddraw(Gfx *g, int t, Point pt);
+static void fgrnddraw(Gfx *g, int t, Point pt);
 static Rect tilebbox(int x, int y);
 static Isect tileisect(int t, int x, int y, Rect r);
 static Rect hitzone(Rect a, Point v);
@@ -134,7 +134,7 @@ static bool tileread(FILE *f, Lvl *l, int x, int y, int z)
 	return true;
 }
 
-static void bkgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
+static void bkgrnddraw(Gfx *g, int t, Point pt)
 {
 	assert(tiles[t] != NULL);
 	if (!tiles[t]->bgfile) {
@@ -143,19 +143,19 @@ static void bkgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
 		return;
 	}
 	if (!tiles[t]->bganim)
-		tiles[t]->bganim = resrcacq(anims, tiles[t]->bgfile, NULL);
+		tiles[t]->bganim = resrcacq(anim, tiles[t]->bgfile, NULL);
 	if (!tiles[t]->bganim)
 		abort();
 	animdraw(g, tiles[t]->bganim, pt);
 }
 
-static void fgrnddraw(Gfx *g, Rtab *anims, int t, Point pt)
+static void fgrnddraw(Gfx *g, int t, Point pt)
 {
 	assert(tiles[t] != NULL);
 	if (!tiles[t]->fgfile)
 		return;
 	if (!tiles[t]->fganim)
-		tiles[t]->fganim = resrcacq(anims, tiles[t]->fgfile, NULL);
+		tiles[t]->fganim = resrcacq(anim, tiles[t]->fgfile, NULL);
 	if (!tiles[t]->fganim)
 		abort();
 	animdraw(g, tiles[t]->fganim, pt);
@@ -168,7 +168,7 @@ static Rect tilebbox(int x, int y)
 	return (Rect){ .a = a, .b = b };
 }
 
-void lvldraw(Gfx *g, Rtab *anims, Lvl *l, bool bkgrnd, Point offs)
+void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 {
 	int w = l->w, h = l->h;
 	int base = l->z * w * h;
@@ -182,9 +182,9 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, bool bkgrnd, Point offs)
 			Point pt = (Point){ pxx, offs.y + y * Theight };
 
 			if (bkgrnd)
-				bkgrnddraw(g, anims, t, pt);
+				bkgrnddraw(g, t, pt);
 			else {
-				fgrnddraw(g, anims, t, pt);
+				fgrnddraw(g, t, pt);
 				if(lvlgridon){
 					Rect r = tilebbox(x, y);
 					rectmv(&r, offs.x, offs.y);
@@ -229,7 +229,7 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs)
 	}
 }
 
-void lvlupdate(Rtab *anims, Lvl *l)
+void lvlupdate(Lvl *l)
 {
 	for (int i = 0; i < sizeof(tiles) / sizeof(tiles[0]); i++) {
 		if (!tiles[i])

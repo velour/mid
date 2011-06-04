@@ -90,7 +90,7 @@ err:
 	return false;
 }
 
-Anim *animnew(Rtab *imgs, const char *path)
+Anim *animnew(const char *path)
 {
 	assert (imgs);
 	int n;
@@ -116,7 +116,7 @@ err:
 	return NULL;
 }
 
-void animfree(Rtab *imgs, Anim *a)
+void animfree(Anim *a)
 {
 	for (int i = 0; i < a->nframes; i++) {
 		resrcrel(imgs, a->frames[i].file, NULL);

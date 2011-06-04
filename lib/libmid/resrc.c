@@ -241,12 +241,12 @@ Rtab *anim;
 
 void *animload(const char *path, void *_ignrd)
 {
-	return animnew(imgs, path);
+	return animnew(path);
 }
 
 void animunload(const char *path, void *anim, void *_info)
 {
-	animfree(imgs, anim);
+	animfree(anim);
 }
 
 Rtab *lvls;

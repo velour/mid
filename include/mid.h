@@ -191,8 +191,8 @@ void initresrc(void);
 void freeresrc(void);
 
 typedef struct Anim Anim;
-Anim *animnew(Rtab *imgs, const char *);
-void animfree(Rtab *imgs, Anim *);
+Anim *animnew(const char *);
+void animfree(Anim *);
 void animupdate(Anim *, int);
 void animdraw(Gfx *, Anim *, Point);
 void animreset(Anim *a);
@@ -210,8 +210,8 @@ struct Lvl {
 };
 Lvl *lvlload(const char *path);
 void lvlfree(Lvl *l);
-void lvlupdate(Rtab *anims, Lvl *l);
-void lvldraw(Gfx *g, Rtab *anims, Lvl *l, _Bool bkgrnd, Point offs);
+void lvlupdate(Lvl *l);
+void lvldraw(Gfx *g, Lvl *l, _Bool bkgrnd, Point offs);
 void lvlminidraw(Gfx *, Lvl *, Point);
 /* Returns the reverse vector that must be added to v in order to
  * respect collisions. */

@@ -75,7 +75,7 @@ void gamefree(Scrn *s)
 void gameupdate(Scrn *s, Scrnstk *stk)
 {
 	Game *gm = s->data;
-	lvlupdate(anim, gm->lvl);
+	lvlupdate(gm->lvl);
 	playerupdate(gm->player, gm->lvl, &gm->transl);
 
 	Enms es = gm->enms[gm->lvl->z];
@@ -89,7 +89,7 @@ void gamedraw(Scrn *s, Gfx *g)
 {
 	Game *gm = s->data;
 	gfxclear(g, (Color){ 0, 0, 0, 0 });
-	lvldraw(g, anim, gm->lvl, true, gm->transl);
+	lvldraw(g, gm->lvl, true, gm->transl);
 	playerdraw(g, gm->player, gm->transl);
 
 	Enms es = gm->enms[gm->lvl->z];
@@ -98,7 +98,7 @@ void gamedraw(Scrn *s, Gfx *g)
 	for(size_t i = 0; i < n; i++)
 		e[i].mt->draw(&e[i], g, gm->transl);
 
-	lvldraw(g, anim, gm->lvl, false, gm->transl);
+	lvldraw(g, gm->lvl, false, gm->transl);
 	gfxflip(g);
 }
 
