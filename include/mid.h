@@ -211,10 +211,10 @@ struct Blkinfo {
 };
 
 enum {
-	Blkcollide = 1<<0,
-	Blkwater = 1<<1,
-	Blkfdoor = 1<<2,
-	Blkbdoor = 1<<3,
+	Tilecollide = 1<<0,
+	Tilewater = 1<<1,
+	Tilefdoor = 1<<2,
+	Tilebdoor = 1<<3,
 };
 
 enum { Theight = 32, Twidth = 32 };
@@ -222,3 +222,6 @@ enum { Theight = 32, Twidth = 32 };
 /* Get the information on the dominant block that r is overlapping. */
 Blkinfo lvlmajorblk(Lvl *l, Rect r);
 
+/* Update the visibility of the level given that the player is viewing
+ * the level from location (x, y). */
+void lvlvis(Lvl *l, int x, int y);
