@@ -28,9 +28,9 @@ void playerfree(Player *p)
 	free(p);
 }
 
-void playerupdate(Player *p, Lvl *l, int *z, Point *tr)
+void playerupdate(Player *p, Lvl *l, Point *tr)
 {
-	Blkinfo bi = lvlmajorblk(l, *z, p->body.curdir->bbox[p->body.curact]);
+	Blkinfo bi = lvlmajorblk(l, p->body.curdir->bbox[p->body.curact]);
 
 	float olddx = p->body.vel.x;
 	if (bi.flags & Blkwater && p->body.vel.x)
@@ -42,20 +42,20 @@ void playerupdate(Player *p, Lvl *l, int *z, Point *tr)
 
 
 	if (p->dz > 0 && bi.flags & Blkbdoor)
-		*z += 1;
+		l->z += 1;
 	else if (p->dz < 0 && bi.flags & Blkfdoor)
-		*z -= 1;
-	p->body.z = *z;
+		l->z -= 1;
+	p->body.z = l->z;
 	p->dz = 0;
 
-	bodyupdate(&p->body, l, *z, tr);
+	bodyupdate(&p->body, l, tr);
 	p->body.vel.x = olddx;
 	p->body.ddy = oldddy;
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
 {
-	bodydraw(g, &p->body, p->body.z, tr);
+	bodydraw(g, &p->body, tr);
 }
 
 void playerhandle(Player *p, Event *e)

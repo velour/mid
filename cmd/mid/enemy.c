@@ -26,7 +26,7 @@ static Enemy *(*spawns[])(Point) = {
 };
 
 Enemy *enemynew(unsigned char id, Point loc){
-	if(id > sizeof(spawns)/sizeof(spawns[0]))
+	if(id >= sizeof(spawns)/sizeof(spawns[0]))
 		return NULL;
 
 	return spawns[id](loc);
@@ -55,9 +55,15 @@ static void untifree(Enemy *e){
 }
 
 static void untiupdate(Enemy *e, Player *p, Lvl *l){
-	// Real enemies will do AI and the usual physics
+	// Real enemies will do AI
 	Unti *u = e->data;
-	if(isect(untibox(u, (Point){0}), playerbox(p)))
+
+	Rect box = untibox(u, (Point){0});
+
+	Isect i = lvlisect(l, box, (Point){ 0, 1 });
+	if(i.is) u->p.y += 1 + i.dy;
+
+	if(isect(box, playerbox(p)))
 		u->c.b = 255;
 	else
 		u->c.b = 55;

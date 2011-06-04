@@ -36,10 +36,10 @@ struct Body {
 
 _Bool bodyinit(Body *, const char *name, int x, int y, int z);
 void bodyfree(Body *b);
-void bodydraw(Gfx *g, Body *b, int z, Point tr);
+void bodydraw(Gfx *g, Body *b, Point tr);
 
 /* If transl is non-NULL then this body will scroll the screen. */
-void bodyupdate(Body *b, Lvl *l, int z, Point *transl);
+void bodyupdate(Body *b, Lvl *l, Point *transl);
 
 enum Action{
 	Mvleft,
@@ -65,7 +65,7 @@ extern Scrnmt gamemt;
 typedef struct Player Player;
 Player *playernew(int x, int y);
 void playerfree(Player *);
-void playerupdate(Player *, Lvl *l, int *z, Point *tr);
+void playerupdate(Player *, Lvl *l, Point *tr);
 void playerdraw(Gfx *, Player *, Point tr);
 void playerhandle(Player *, Event *);
 Point playerpos(Player *);
@@ -91,7 +91,7 @@ void itemfree(Item *);
 /* Swap the item at the given inventory grid x,y.  Return the old item. */
 Item *invmod(Inv *, Item *, int x, int y);
 
-Scrn *invscrnnew(Inv *, Lvl *, Point ppos, int z);
+Scrn *invscrnnew(Inv *, Lvl *, Point ppos);
 Scrn *titlescrnnew(Gfx *);
 
 typedef struct Enemy Enemy;

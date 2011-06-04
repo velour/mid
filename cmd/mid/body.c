@@ -9,7 +9,7 @@
 const float Grav = 0.5;
 
 static void loadanim(Anim **a, const char *name, const char *dir, const char *act);
-static void bodymv(Body *b, Lvl *l, int z, Point *transl);
+static void bodymv(Body *b, Lvl *l, Point *transl);
 static void dofall(Body *b, Isect is);
 static void chngdir(Body *b);
 static void chngact(Body *b);
@@ -48,12 +48,9 @@ void bodyfree(Body *b)
 	free(b);
 }
 
-void bodyupdate(Body *b, Lvl *l, int z, Point *transl)
+void bodyupdate(Body *b, Lvl *l, Point *transl)
 {
-	if (z != b->z)
-		return;
-
-	bodymv(b, l, z, transl);
+	bodymv(b, l, transl);
 	if (b->fall && b->vel.y < Maxdy)
 		b->vel.y += b->ddy;
 	Anim *prevanim = b->curdir->anim[b->curact];
@@ -76,11 +73,11 @@ static void loadanim(Anim **a, const char *name, const char *dir, const char *ac
 		fatal("Failed to load %s: %s", buf, miderrstr());
 }
 
-static void bodymv(Body *b, Lvl *l, int z, Point *transl)
+static void bodymv(Body *b, Lvl *l, Point *transl)
 {
 	float xmul = b->vel.x < 0 ? 1.0 : -1.0;
 	float ymul = b->vel.y < 0 ? 1.0 : -1.0;
-	Isect is = lvlisect(l, z, b->curdir->bbox[b->curact], b->vel);
+	Isect is = lvlisect(l, b->curdir->bbox[b->curact], b->vel);
 	float dx = b->vel.x + xmul * is.dx;
 	float dy = b->vel.y + ymul * is.dy;
 	dofall(b, is);
@@ -150,11 +147,8 @@ static void imgmvscroll(Body *b, Point *transl, float dx, float dy)
 }
 
 
-void bodydraw(Gfx *g, Body *b, int z, Point tr)
+void bodydraw(Gfx *g, Body *b, Point tr)
 {
-	if (b->z != z)
-		return;
-
 	if(lvlgridon){
 		Rect bbox = b->curdir->bbox[b->curact];
 		rectmv(&bbox, tr.x, tr.y);
