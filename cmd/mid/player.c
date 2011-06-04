@@ -9,6 +9,9 @@ static const float Dxwater = 0.6f, Dywater = 0.2f;
 struct Player {
 	Body body;
 	int dz;
+
+	/* if changed, update visibility. */
+	Blkinfo bi;
 };
 
 Player *playernew(int x, int y)
@@ -20,6 +23,8 @@ Player *playernew(int x, int y)
 		free(p);
 		return NULL;
 	}
+
+	p->bi.x = p->bi.y = p->bi.z = -1;
 	return p;
 }
 
@@ -32,7 +37,9 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 {
 	Blkinfo bi = lvlmajorblk(l, p->body.curdir->bbox[p->body.curact]);
 
-	lvlvis(l, bi.x, bi.y);
+	if (bi.x != p->bi.x || bi.y != p->bi.x || bi.z != p->bi.z)
+		lvlvis(l, bi.x, bi.y);
+	p->bi = bi;
 
 	float olddx = p->body.vel.x;
 	if (bi.flags & Tilewater && p->body.vel.x)
