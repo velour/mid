@@ -1,6 +1,5 @@
 left		o
 right		u
 jump		.
-forward		,
-back		p
+door		p
 inv		b

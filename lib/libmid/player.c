@@ -1,13 +1,14 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include <stdlib.h>
+#include <stdbool.h>
 
 enum { Dx = 3, Dy = 8 };
 static const float Dxwater = 0.6f, Dywater = 0.2f;
 
 struct Player {
 	Body body;
-	int dz;
+	bool door;
 
 	/* if changed, update visibility. */
 	Blkinfo bi;
@@ -49,12 +50,12 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 		p->body.ddy = (p->body.ddy < 0 ? -1 : 1) * Dywater * Grav;
 
 
-	if (p->dz > 0 && bi.flags & Tilebdoor)
+	if (p->door && bi.flags & Tilebdoor)
 		l->z += 1;
-	else if (p->dz < 0 && bi.flags & Tilefdoor)
+	else if (p->door && bi.flags & Tilefdoor)
 		l->z -= 1;
 	p->body.z = l->z;
-	p->dz = 0;
+	p->door = false;
 
 	bodyupdate(&p->body, l, tr);
 	p->body.vel.x = olddx;
@@ -88,10 +89,8 @@ void playerhandle(Player *p, Event *e)
 			p->body.ddy = Grav;
 			p->body.fall = 1;
 		}
-	}else if(k == kmap[Mvbak] && e->down){
-		p->dz += 1;
-	}else if(k == kmap[Mvfwd] && e->down){
-		p->dz -= 1;
+	}else if(k == kmap[Mvdoor] && e->down){
+		p->door = true;
 	}
 }
 

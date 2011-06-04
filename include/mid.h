@@ -243,8 +243,7 @@ void lvlvis(Lvl *l, int x, int y);
 enum Action{
 	Mvleft,
 	Mvright,
-	Mvbak,
-	Mvfwd,
+	Mvdoor,
 	Mvjump,
 	Mvinv,
 	Nactions,
