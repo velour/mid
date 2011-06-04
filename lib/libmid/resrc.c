@@ -220,13 +220,11 @@ void rtabfree(Rtab *t)
 	free(t);
 }
 
-static Gfx *gfx;
-
 Rtab *imgs;
 
 void *imgload(const char *path, void *_ignrd)
 {
-	return imgnew(gfx, path);
+	return imgnew(path);
 }
 
 void imgunload(const char *path, void *img, void *_info)
@@ -347,9 +345,8 @@ static Resrcops sfxtype = {
 	.unload = sfxunload,
 };
 
-void initresrc(Gfx *g)
+void initresrc(void)
 {
-	gfx = g;
 	imgs = rtabnew(&imgtype);
 	assert(imgs != NULL);
 	anim = rtabnew(&animtype);
@@ -364,7 +361,7 @@ void initresrc(Gfx *g)
 	assert(sfx != NULL);
 }
 
-void freeresrc()
+void freeresrc(void)
 {
 	rtabfree(sfx);
 	rtabfree(music);

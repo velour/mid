@@ -67,7 +67,7 @@ void gfxdrawrect(Gfx *, Rect, Color);
 
 typedef struct Img Img;
 
-Img *imgnew(Gfx *, const char *path);
+Img *imgnew(const char *path);
 void imgfree(Img *);
 /* Returns negative dimensions on failure. */
 Point imgdims(const Img *);
@@ -187,8 +187,8 @@ extern Rtab *lvls;
 extern Rtab *txt;
 extern Rtab *music;
 extern Rtab *sfx;
-void initresrc(Gfx*);
-void freeresrc();
+void initresrc(void);
+void freeresrc(void);
 
 typedef struct Anim Anim;
 Anim *animnew(Rtab *imgs, const char *);
