@@ -1,7 +1,6 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include "game.h"
-#include "resrc.h"
 #include <stdlib.h>
 
 typedef struct Invscr Invscr;

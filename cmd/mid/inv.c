@@ -1,6 +1,5 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
-#include "resrc.h"
 #include "game.h"
 #include <stdlib.h>
 

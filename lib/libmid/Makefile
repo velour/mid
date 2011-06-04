@@ -12,6 +12,10 @@ OFILES :=\
 	snd.o\
 	anim.o\
 	lvl.o\
+	player.o\
+	keymap.o\
+	enemy.o\
+	body.o\
 
 HFILES :=\
 	../../include/mid.h\

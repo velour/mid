@@ -1,6 +1,5 @@
 #include "../../include/log.h"
 #include "../../include/mid.h"
-#include "resrc.h"
 #include "game.h"
 #include <stdlib.h>
 #include <stdbool.h>
@@ -17,7 +16,7 @@ bool init()
 	if(!gfx)
 		return false;
 
-	initresrc();
+	initresrc(gfx);
 
 	return true;
 }

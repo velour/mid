@@ -1,5 +1,4 @@
 #include "../../include/mid.h"
-#include "game.h"
 #include <string.h>
 #include <stdlib.h>
 

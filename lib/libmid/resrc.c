@@ -219,3 +219,157 @@ void rtabfree(Rtab *t)
 	}
 	free(t);
 }
+
+static Gfx *gfx;
+
+Rtab *imgs;
+
+void *imgload(const char *path, void *_ignrd)
+{
+	return imgnew(gfx, path);
+}
+
+void imgunload(const char *path, void *img, void *_info)
+{
+	imgfree(img);
+}
+
+static Resrcops imgtype = {
+	.load = imgload,
+	.unload = imgunload,
+};
+
+Rtab *anim;
+
+void *animload(const char *path, void *_ignrd)
+{
+	return animnew(imgs, path);
+}
+
+void animunload(const char *path, void *anim, void *_info)
+{
+	animfree(imgs, anim);
+}
+
+Rtab *lvls;
+
+void *_lvlload(const char *path, void *_ignrd)
+{
+	return lvlload(path);
+}
+
+void lvlunload(const char *path, void *lvl, void *_ignrd)
+{
+	lvlfree(lvl);
+}
+
+static Resrcops lvltype = {
+	.load = _lvlload,
+	.unload = lvlunload,
+};
+
+static Resrcops animtype = {
+	.load = animload,
+	.unload = animunload,
+};
+
+Rtab *txt;
+
+void *txtload(const char *path, void *_info)
+{
+	Txtinfo *info = _info;
+	return txtnew(path, info->size, info->color);
+}
+
+void txtunload(const char *path, void *txt, void *_info)
+{
+	txtfree(txt);
+}
+
+unsigned int txthash(const char *path, void *_info)
+{
+	Txtinfo *info = _info;
+	return strhash(path) ^ info->size
+		^ (info->color.r << 24)
+		^ (info->color.g << 16)
+		^ (info->color.b << 8)
+		^ info->color.a;
+}
+
+bool txteq(void *_a, void *_b)
+{
+	Txtinfo *a = _a, *b = _b;
+	return a->size == b->size
+		&& a->color.r == b->color.r
+		&& a->color.g == b->color.g
+		&& a->color.b == b->color.b
+		&& a->color.a == b->color.a;
+}
+
+static Resrcops txttype = {
+	.load = txtload,
+	.unload = txtunload,
+	.hash = txthash,
+	.eq = txteq,
+};
+
+Rtab *music;
+
+void *musicload(const char *path, void *_ignrd)
+{
+	return musicnew(path);
+}
+
+void musicunload(const char *path, void *music, void *_info)
+{
+	musicfree(music);
+}
+
+static Resrcops musictype = {
+	.load = musicload,
+	.unload = musicunload,
+};
+
+Rtab *sfx;
+
+void *sfxload(const char *path, void *_ignrd)
+{
+	return sfxnew(path);
+}
+
+void sfxunload(const char *path, void *s, void *_info)
+{
+	sfxnew(s);
+}
+
+static Resrcops sfxtype = {
+	.load = sfxload,
+	.unload = sfxunload,
+};
+
+void initresrc(Gfx *g)
+{
+	gfx = g;
+	imgs = rtabnew(&imgtype);
+	assert(imgs != NULL);
+	anim = rtabnew(&animtype);
+	assert(anim != NULL);
+	lvls = rtabnew(&lvltype);
+	assert(lvls != NULL);
+	txt = rtabnew(&txttype);
+	assert(txt != NULL);
+	music = rtabnew(&musictype);
+	assert(music != NULL);
+	sfx = rtabnew(&sfxtype);
+	assert(sfx != NULL);
+}
+
+void freeresrc()
+{
+	rtabfree(sfx);
+	rtabfree(music);
+	rtabfree(txt);
+	rtabfree(lvls);
+	rtabfree(anim);
+	rtabfree(imgs);
+}

@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "game.h"
-#include "resrc.h"
 
 enum { Maxenms = 32 };
 

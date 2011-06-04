@@ -6,19 +6,13 @@ LIB :=\
 	../../lib/liblog/liblog.a\
 
 OFILES := main.o\
-	resrc.o\
 	game.o\
-	player.o\
-	keymap.o\
 	invscr.o\
 	inv.o\
 	title.o\
-	body.o\
-	enemy.o\
 
 HFILES := ../../include/mid.h\
 	../../include/log.h\
-	resrc.h\
 	game.h\
 
 include ../../Make.cmd

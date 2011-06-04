@@ -176,6 +176,21 @@ void *resrcacq(Rtab *, const char *file, void *aux);
 /* Release a reference to a resource. */
 void resrcrel(Rtab *, const char *file, void *aux);
 
+typedef struct Txtinfo Txtinfo;
+struct Txtinfo {
+	unsigned int size;
+	Color color;
+};
+
+extern Rtab *imgs;
+extern Rtab *anim;
+extern Rtab *lvls;
+extern Rtab *txt;
+extern Rtab *music;
+extern Rtab *sfx;
+void initresrc(Gfx*);
+void freeresrc();
+
 typedef struct Anim Anim;
 Anim *animnew(Rtab *imgs, const char *);
 void animfree(Rtab *imgs, Anim *);
@@ -225,3 +240,84 @@ Blkinfo lvlmajorblk(Lvl *l, Rect r);
 /* Update the visibility of the level given that the player is viewing
  * the level from location (x, y). */
 void lvlvis(Lvl *l, int x, int y);
+
+enum Action{
+	Mvleft,
+	Mvright,
+	Mvbak,
+	Mvfwd,
+	Mvjump,
+	Mvinv,
+	Nactions,
+};
+
+_Bool keymapread(char km[Nactions], char *fname);
+extern char kmap[Nactions];
+
+enum { Scrnw = 512, Scrnh = 512 };
+
+/* Buffer from side of screen at which to begin scrolling. */
+enum { Scrlbuf = 192 };
+
+enum { Tall = 32, Wide = 32 };
+
+enum { Maxdy = 12 };
+
+extern const float Grav;
+
+typedef enum Act Act;
+enum Act {
+	Stand,
+	Walk,
+	Jump,
+	Nacts
+};
+
+typedef struct Dir Dir;
+struct Dir {
+	Anim *anim[Nacts];
+	Rect bbox[Nacts];
+};
+
+typedef struct Body Body;
+struct Body {
+	Dir left, right;
+	Dir *curdir;
+	Act curact;
+	Point vel, imgloc;
+	int z;
+	float ddy;
+	_Bool fall;
+};
+
+_Bool bodyinit(Body *, const char *name, int x, int y, int z);
+void bodyfree(Body *b);
+void bodydraw(Gfx *g, Body *b, Point tr);
+
+/* If transl is non-NULL then this body will scroll the screen. */
+void bodyupdate(Body *b, Lvl *l, Point *transl);
+
+typedef struct Player Player;
+Player *playernew(int x, int y);
+void playerfree(Player *);
+void playerupdate(Player *, Lvl *l, Point *tr);
+void playerdraw(Gfx *, Player *, Point tr);
+void playerhandle(Player *, Event *);
+Point playerpos(Player *);
+Rect playerbox(Player *);
+
+typedef struct Enemy Enemy;
+typedef struct Enemymt Enemymt;
+
+struct Enemymt{
+	void (*free)(Enemy*);
+	void (*update)(Enemy*, Player*, Lvl*);
+	void (*draw)(Enemy*, Gfx*, Point tr);
+};
+
+struct Enemy{
+	Enemymt *mt;
+	void *data;
+};
+
+_Bool enemyinit(Enemy *, unsigned char id, Point loc);
