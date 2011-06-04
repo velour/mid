@@ -32,18 +32,20 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 {
 	Blkinfo bi = lvlmajorblk(l, p->body.curdir->bbox[p->body.curact]);
 
+	lvlvis(l, bi.x, bi.y);
+
 	float olddx = p->body.vel.x;
-	if (bi.flags & Blkwater && p->body.vel.x)
+	if (bi.flags & Tilewater && p->body.vel.x)
 		p->body.vel.x = (p->body.vel.x < 0 ? -1 : 1) * Dxwater * Dx;
 
 	float oldddy = p->body.ddy;
-	if(bi.flags & Blkwater && p->body.ddy)
+	if(bi.flags & Tilewater && p->body.ddy)
 		p->body.ddy = (p->body.ddy < 0 ? -1 : 1) * Dywater * Grav;
 
 
-	if (p->dz > 0 && bi.flags & Blkbdoor)
+	if (p->dz > 0 && bi.flags & Tilebdoor)
 		l->z += 1;
-	else if (p->dz < 0 && bi.flags & Blkfdoor)
+	else if (p->dz < 0 && bi.flags & Tilefdoor)
 		l->z -= 1;
 	p->body.z = l->z;
 	p->dz = 0;

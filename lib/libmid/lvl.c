@@ -6,6 +6,8 @@
 #include <errno.h>
 #include <math.h>
 
+enum { Blkvis = 1 << 1 };
+
 static Lvl *lvlnew(int d, int w, int h);
 static Lvl *lvlread(FILE *f);
 static bool tileread(FILE *f, Lvl *l, int x, int y, int z);
@@ -27,12 +29,12 @@ struct Tinfo {
 
 static Tinfo *tiles[] = {
 	[' '] = &(Tinfo){ .bgfile = "anim/blank/anim", },
-	['#'] = &(Tinfo){ .bgfile = "anim/land/anim", .flags = Blkcollide },
-	['w'] = &(Tinfo){ .fgfile = "anim/water/anim", .flags = Blkwater },
-	['>'] = &(Tinfo){ .bgfile = "anim/bdoor/anim", .flags = Blkbdoor },
+	['#'] = &(Tinfo){ .bgfile = "anim/land/anim", .flags = Tilecollide },
+	['w'] = &(Tinfo){ .fgfile = "anim/water/anim", .flags = Tilewater },
+	['>'] = &(Tinfo){ .bgfile = "anim/bdoor/anim", .flags = Tilebdoor },
 	['<'] = &(Tinfo){ .fgfile = "anim/fdoor/anim",
 			  .bgfile = "anim/blank/anim",
-			  .flags = Blkfdoor },
+			  .flags = Tilefdoor },
 };
 
 bool lvlgridon = false;
@@ -118,11 +120,11 @@ static bool tileread(FILE *f, Lvl *l, int x, int y, int z)
 		return false;
 	}
 
-	if (z == 0 && tiles[c]->flags & Blkfdoor) {
+	if (z == 0 && tiles[c]->flags & Tilefdoor) {
 		seterrstr("Front door on x=%d, y=%d, z=0", x, y);
 		return false;
 	}
-	if (z == l->d - 1 && tiles[c]->flags & Blkbdoor) {
+	if (z == l->d - 1 && tiles[c]->flags & Tilebdoor) {
 		seterrstr("Back door on x=%d, y=%d, z=max", x, y);
 		return false;
 	}
@@ -174,6 +176,8 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, bool bkgrnd, Point offs)
 		int pxx = offs.x + x * Twidth;
 		for (int y = 0; y < h; y++) {
 			int ind = base + y * w + x;
+			if (!(l->blks[ind].flags & Blkvis))
+				continue;
 			int t = l->blks[ind].tile;
 			Point pt = (Point){ pxx, offs.y + y * Theight };
 
@@ -199,19 +203,21 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs)
 		int pxx = offs.x + x;
 		for (int y = 0; y < h; y++) {
 			int ind = base + y * w + x;
+			if (!(l->blks[ind].flags & Blkvis))
+				continue;
 			int t = l->blks[ind].tile;
 			Point pt = (Point){ pxx, offs.y + y };
 
 			Color c;
-			if(tiles[t]->flags & Blkcollide)
+			if(tiles[t]->flags & Tilecollide)
 				c = (Color){ 0, 0, 0, 255 };
-			else if(tiles[t]->flags & Blkbdoor)
+			else if(tiles[t]->flags & Tilebdoor)
 				c = (Color){ 0, 255, 0, 255 };
-			else if(tiles[t]->flags & Blkfdoor)
+			else if(tiles[t]->flags & Tilefdoor)
 				c = (Color){ 64, 255, 0, 255 };
 			else if(!tiles[t]->fgfile)
 				c = (Color){ 255, 255, 255, 255 };
-			else if(tiles[t]->flags & Blkwater)
+			else if(tiles[t]->flags & Tilewater)
 				c = (Color){ 75, 75, 255, 255 };
 
 			Rect r = {
@@ -277,7 +283,7 @@ Isect lvlisect(Lvl *l, Rect r, Point v)
 static Isect tileisect(int t, int x, int y, Rect r)
 {
 	assert(tiles[t]);
-	if (!(tiles[t]->flags & Blkcollide))
+	if (!(tiles[t]->flags & Tilecollide))
 		return (Isect){ .is = 0 };
 	return isection(r, tilebbox(x, y));
 }
@@ -335,4 +341,67 @@ static Blkinfo blkinfo(Lvl *l, int x, int y)
 	int t = l->blks[i].tile;
 	assert (tiles[t]);
 	return (Blkinfo) { .x = x, .y = y, .z = l->z, .flags = tiles[t]->flags };
+}
+
+void swap(int *a, int *b)
+{
+	int t = *a;
+	*a = *b;
+	*b = t;
+}
+
+
+/*
+ * Based on Bresenham's line algorithm: Rasterize a line from the
+ * location (x0, y0) to (x1, y1).  Set rasterized blocks to visible,
+ * stop when the line is finished or when a collidable block was hit.
+ */
+void visline(Lvl *l, int x0, int y0, int x1, int y1)
+{
+	bool steep = abs(y1 - y0) > abs(x1 - x0);
+	if (steep) {
+		swap(&x0, &y0);
+		swap(&x1, &y1);
+	}
+	int dx = abs(x1 - x0);
+	int dy = abs(y1 - y0);
+	float err = 0.0;
+	float derr = (float)dy / (float)dx;
+	int ystep = y0 < y1 ? 1 : -1;
+	int y = y0;
+	int base = l->z * l->w * l->h;
+	int xstep = x0 < x1 ? 1 : -1;
+	for (int x = x0; ; x += xstep) {
+		int px = steep ? y : x;
+		int py = steep ? x : y;
+		int ind = base + py * l->w + px;
+		int t = l->blks[ind].tile;
+		l->blks[ind].flags |= Blkvis;
+		if (tiles[t]->flags & Tilecollide || x == x1)
+			break;
+		err += derr;
+		if (err >= 0.5) {
+			y += ystep;
+				err -= 1.0;
+		}
+	}
+}
+
+/* Update the visibility of the level given that the player is viewing
+ * the level from location (x, y).  This works by rasterizing
+ * 'visibility lines' from (x,y) to each block on the convex hull of
+ * the map.
+ *
+ * This seems pretty fast, it hardly changes the frame rendering time
+ * at all. */
+void lvlvis(Lvl *l, int x, int y)
+{
+	for (int i = 0; i < l->w; i++) {
+		visline(l, x, y, i, 0);
+		visline(l, x, y, i, l->h - 1);
+	}
+	for (int i = 0; i < l->h; i++) {
+		visline(l, x, y, 0, i);
+		visline(l, x, y, l->w - 1, i);
+	}
 }
