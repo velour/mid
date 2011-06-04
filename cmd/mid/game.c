@@ -27,7 +27,7 @@ Game *gamenew(void)
 	if (!lvl)
 		fatal("Failed to load level lvl/0.lvl: %s", miderrstr());
 
-	Game *gm = calloc(1, sizeof(*gm) + sizeof(Enms)*lvl->d);
+	Game *gm = calloc(1, sizeof(*gm) + sizeof(Enms[lvl->d]));
 	if (!gm){
 		lvlfree(lvl);
 		return NULL;
