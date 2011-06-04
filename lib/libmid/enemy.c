@@ -1,5 +1,4 @@
 #include "../../include/mid.h"
-#include <string.h>
 #include <stdlib.h>
 
 static _Bool untiinit(Enemy *, Point);
@@ -14,9 +13,13 @@ static Enemymt untimt = {
 
 typedef struct Unti Unti;
 struct Unti{
-	Point p;
+	Point p, v;
+	float ddy;
 	Color c;
 };
+
+enum { Dx = 3, Dy = 8 };
+static const float Dxwater = 1.2f, Dywater = 1.2f;
 
 static Rect untibox(Unti*,Point);
 
@@ -53,10 +56,20 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 	Unti *u = e->data;
 
 	Rect box = untibox(u, (Point){0});
+/*
+	Blkinfo bi = lvlmajorblk(l, box);
 
-	Isect i = lvlisect(l, box, (Point){ 0, 1 });
-	if(i.is) u->p.y += 1 + i.dy;
+	float olddx = u->v.x;
+	if(bi.flags & Tilewater && u->v.x)
+		u->v.x = (u->v.x < 0 ? -1 : 1) * Dxwater * Dx;
 
+	float oldddy = u->ddy;
+	if(bi.flags & Tilewater && u->ddy)
+		u->ddy = (u->ddy < 0 ? -1 : 1) * Dywater * Grav;
+
+	Isect i = lvlisect(l, box, u->v);
+	if(i.is) u->p.y += u->v.x + i.dy;
+*/
 	if(isect(box, playerbox(p)))
 		u->c.b = 255;
 	else
