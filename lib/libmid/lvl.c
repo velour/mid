@@ -175,7 +175,7 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 		int pxx = offs.x + x * Twidth;
 		for (int y = 0; y < h; y++) {
 			int ind = base + y * w + x;
-			if (!(l->blks[ind].flags & Blkvis))
+			if (!(l->blks[ind].flags & Blkvis) && !lvlgridon)
 				continue;
 			int t = l->blks[ind].tile;
 			Point pt = (Point){ pxx, offs.y + y * Theight };
@@ -202,7 +202,7 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs)
 		int pxx = offs.x + x;
 		for (int y = 0; y < h; y++) {
 			int ind = base + y * w + x;
-			if (!(l->blks[ind].flags & Blkvis))
+			if (!(l->blks[ind].flags & Blkvis) && !lvlgridon)
 				continue;
 			int t = l->blks[ind].tile;
 			Point pt = (Point){ pxx, offs.y + y };
