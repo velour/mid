@@ -1,29 +1,38 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
+#include <stddef.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include "game.h"
 #include "resrc.h"
+
+enum { Maxenms = 32 };
 
 struct Game {
 	Point transl;
 	Lvl *lvl;
 	Player *player;
 	Inv inv;
-	Enemy *e;
+	Enemy **enms[];
 };
 
 Game *gamenew(void)
 {
-	Game *gm = calloc(1, sizeof(*gm));
-	if (!gm)
-		return NULL;
-
-	gm->lvl = resrcacq(lvls, "lvl/0.lvl", NULL);
-	if (!gm->lvl)
+	Lvl *lvl = resrcacq(lvls, "lvl/0.lvl", NULL);
+	if (!lvl)
 		fatal("Failed to load level lvl/0.lvl: %s", miderrstr());
+
+	Game *gm = calloc(1, sizeof(*gm) + sizeof(Enemy**)*lvl->d);
+	if (!gm){
+		lvlfree(lvl);
+		return NULL;
+	}
+
+	gm->lvl = lvl;
 	gm->player = playernew(64, 96);
-	gm->e = enemynew('u', (Point){128,96});
+	gm->enms[0] = calloc(Maxenms, sizeof(Enemy*));
+	gm->enms[0][0] = enemynew('u', (Point){128,96});
+	gm->enms[1] = calloc(Maxenms, sizeof(Enemy*));
 
 	// Testing items
 	Item *axe = itemnew("Golden Pickaxe", "gaxe/anim");
@@ -40,7 +49,11 @@ void gamefree(Scrn *s)
 {
 	Game *gm = s->data;
 	playerfree(gm->player);
-	gm->e->mt->free(gm->e);
+
+	Enemy **e = gm->enms[gm->lvl->z];
+	for(size_t i = 0; i < Maxenms && e[i]; i++)
+		e[i]->mt->free(e[i]);
+
 	resrcrel(lvls, "lvl/0.lvl", NULL);
 	free(gm);
 }
@@ -50,7 +63,10 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 	Game *gm = s->data;
 	lvlupdate(anim, gm->lvl);
 	playerupdate(gm->player, gm->lvl, &gm->transl);
-	gm->e->mt->update(gm->e, gm->player, gm->lvl);
+
+	Enemy **e = gm->enms[gm->lvl->z];
+	for(size_t i = 0; i < Maxenms && e[i]; i++)
+		e[i]->mt->update(e[i], gm->player, gm->lvl);
 }
 
 void gamedraw(Scrn *s, Gfx *g)
@@ -59,7 +75,11 @@ void gamedraw(Scrn *s, Gfx *g)
 	gfxclear(g, (Color){ 0, 0, 0, 0 });
 	lvldraw(g, anim, gm->lvl, true, gm->transl);
 	playerdraw(g, gm->player, gm->transl);
-	gm->e->mt->draw(gm->e, g, gm->transl);
+
+	Enemy **e = gm->enms[gm->lvl->z];
+	for(size_t i = 0; i < Maxenms && e[i]; i++)
+		e[i]->mt->draw(e[i], g, gm->transl);
+
 	lvldraw(g, anim, gm->lvl, false, gm->transl);
 	gfxflip(g);
 }
