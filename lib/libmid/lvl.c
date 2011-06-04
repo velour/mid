@@ -63,13 +63,12 @@ Lvl *lvlload(const char *path)
 
 static Lvl *lvlnew(int d, int w, int h)
 {
-	Lvl *l = malloc(sizeof(*l) + sizeof(char[d * w * h]));
+	Lvl *l = calloc(1, sizeof(*l) + sizeof(Blk[d * w * h]));
 	if (!l)
 		return NULL;
 	l->d = d;
 	l->w = w;
 	l->h = h;
-	l->z = 0;
 	return l;
 }
 
@@ -128,7 +127,7 @@ static bool tileread(FILE *f, Lvl *l, int x, int y, int z)
 		return false;
 	}
 
-	l->tiles[z * l->w * l->h + y * l->w + x] = c;
+	l->blks[z * l->w * l->h + y * l->w + x].tile = c;
 
 	return true;
 }
@@ -175,7 +174,7 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, bool bkgrnd, Point offs)
 		int pxx = offs.x + x * Twidth;
 		for (int y = 0; y < h; y++) {
 			int ind = base + y * w + x;
-			int t = l->tiles[ind];
+			int t = l->blks[ind].tile;
 			Point pt = (Point){ pxx, offs.y + y * Theight };
 
 			if (bkgrnd)
@@ -200,7 +199,7 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs)
 		int pxx = offs.x + x;
 		for (int y = 0; y < h; y++) {
 			int ind = base + y * w + x;
-			int t = l->tiles[ind];
+			int t = l->blks[ind].tile;
 			Point pt = (Point){ pxx, offs.y + y };
 
 			Color c;
@@ -246,7 +245,7 @@ Isect lvlisect(Lvl *l, Rect r, Point v)
 	for (int x = test.a.x; x <= test.b.x; x++) {
 		for (int y = test.a.y; y <= test.b.y; y++) {
 			int i = l->z * l->h * l->w + y * l->w + x;
-			Isect is = tileisect(l->tiles[i], x, y, mv);
+			Isect is = tileisect(l->blks[i].tile, x, y, mv);
 			if (is.is && is.dy > isect.dy) {
 				isect.is = true;
 				isect.dy = is.dy;
@@ -263,7 +262,7 @@ Isect lvlisect(Lvl *l, Rect r, Point v)
 	for (int x = test.a.x; x <= test.b.x; x++) {
 		for (int y = test.a.y; y <= test.b.y; y++) {
 			int i = l->z * l->h * l->w + y * l->w + x;
-			Isect is = tileisect(l->tiles[i], x, y, mv);
+			Isect is = tileisect(l->blks[i].tile, x, y, mv);
 			if (is.is && is.dx > isect.dx) {
 				isect.is = true;
 				isect.dx = is.dx;
@@ -333,7 +332,7 @@ Blkinfo lvlmajorblk(Lvl *l, Rect r)
 static Blkinfo blkinfo(Lvl *l, int x, int y)
 {
 	int i = l->z * l->w * l->h + y * l->w + x;
-	int t = l->tiles[i];
+	int t = l->blks[i].tile;
 	assert (tiles[t]);
 	return (Blkinfo) { .x = x, .y = y, .z = l->z, .flags = tiles[t]->flags };
 }
