@@ -37,14 +37,14 @@ int main(int argc, char *argv[])
 static void init(Lvl *l)
 {
 	for (int z = 0; z < l->d; z++) {
-		for (int y = 0; y < l->h; y++) {
-			for (int x = 0; x < l->w; x++) {
-				int c = ' ';
-				if (x == 0 || x == l->w - 1 || y == 0 || y == l->h - 1)
-					c = '#';
-				ind(l, x, y, z)->tile = c;
-			}
-		}
+	for (int y = 0; y < l->h; y++) {
+	for (int x = 0; x < l->w; x++) {
+		int c = ' ';
+		if (x == 0 || x == l->w - 1 || y == 0 || y == l->h - 1)
+				c = '#';
+			ind(l, x, y, z)->tile = c;
+	}
+	}
 	}
 }
 
