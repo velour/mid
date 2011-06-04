@@ -23,7 +23,7 @@ Scrn *titlescrnnew(Gfx *g){
 	Tit *t = malloc(sizeof(*t));
 	if(!t)
 		return NULL;
-	Txt *txt = txtnew("resrc/txt/FreeSans.ttf", 72, (Color){0});
+	Txt *txt = txtnew("resrc/txt/prstartk.ttf", 72, (Color){0});
 	if(!txt){
 		free(t);
 		return NULL;

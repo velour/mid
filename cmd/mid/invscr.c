@@ -142,7 +142,7 @@ static Txt *gettxt(void)
 	static Txt *invtxt;
 	static Txtinfo txtinfo = (Txtinfo) { .size = 12, .color = (Color) {0} };
 	if (!invtxt) {
-		invtxt = resrcacq(txt, "txt/FreeSans.ttf", &txtinfo);
+		invtxt = resrcacq(txt, "txt/retganon.ttf", &txtinfo);
 		if (!invtxt)
 			fatal("Failed to load inventory text");
 	}
