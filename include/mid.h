@@ -182,7 +182,7 @@ struct Txtinfo {
 };
 
 extern Rtab *imgs;
-extern Rtab *anim;
+extern Rtab *anims;
 extern Rtab *lvls;
 extern Rtab *txt;
 extern Rtab *music;

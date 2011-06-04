@@ -9,7 +9,7 @@ Item *itemnew(const char *name, const char *resrc)
 	if (!item)
 		fatal("malloc failed: %s", miderrstr());
 
-	item->icon = resrcacq(anim, resrc, NULL);
+	item->icon = resrcacq(anims, resrc, NULL);
 	if (!item->icon)
 		fatal("Failed to load icon for item %s: %s", name, miderrstr());
 	item->name = name;

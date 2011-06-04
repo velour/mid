@@ -143,7 +143,7 @@ static void bkgrnddraw(Gfx *g, int t, Point pt)
 		return;
 	}
 	if (!tiles[t]->bganim)
-		tiles[t]->bganim = resrcacq(anim, tiles[t]->bgfile, NULL);
+		tiles[t]->bganim = resrcacq(anims, tiles[t]->bgfile, NULL);
 	if (!tiles[t]->bganim)
 		abort();
 	animdraw(g, tiles[t]->bganim, pt);
@@ -155,7 +155,7 @@ static void fgrnddraw(Gfx *g, int t, Point pt)
 	if (!tiles[t]->fgfile)
 		return;
 	if (!tiles[t]->fganim)
-		tiles[t]->fganim = resrcacq(anim, tiles[t]->fgfile, NULL);
+		tiles[t]->fganim = resrcacq(anims, tiles[t]->fgfile, NULL);
 	if (!tiles[t]->fganim)
 		abort();
 	animdraw(g, tiles[t]->fganim, pt);

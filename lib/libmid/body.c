@@ -66,7 +66,7 @@ static void loadanim(Anim **a, const char *name, const char *dir, const char *ac
 {
 	char buf[Buflen];
 	snprintf(buf, Buflen, "%s/%s/%s/anim", name, dir, act);
-	*a = resrcacq(anim, buf, NULL);
+	*a = resrcacq(anims, buf, NULL);
 	if (!*a)
 		fatal("Failed to load %s: %s", buf, miderrstr());
 }
