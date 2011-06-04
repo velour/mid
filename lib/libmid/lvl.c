@@ -8,7 +8,6 @@
 
 enum { Blkvis = 1 << 1 };
 
-static Lvl *lvlnew(int d, int w, int h);
 static Lvl *lvlread(FILE *f);
 static bool tileread(FILE *f, Lvl *l, int x, int y, int z);
 static void bkgrnddraw(Gfx *g, int t, Point pt);
@@ -63,7 +62,7 @@ Lvl *lvlload(const char *path)
 	return  l;
 }
 
-static Lvl *lvlnew(int d, int w, int h)
+Lvl *lvlnew(int d, int w, int h)
 {
 	Lvl *l = calloc(1, sizeof(*l) + sizeof(Blk[d * w * h]));
 	if (!l)

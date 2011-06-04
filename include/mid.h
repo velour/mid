@@ -208,6 +208,8 @@ struct Lvl {
 	int d, w, h, z;
 	Blk blks[];
 };
+
+Lvl *lvlnew(int d, int w, int h);
 Lvl *lvlload(const char *path);
 void lvlfree(Lvl *l);
 void lvlupdate(Lvl *l);
