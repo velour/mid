@@ -16,7 +16,7 @@ bool init()
 	if(!gfx)
 		return false;
 
-	initresrc(gfx);
+	initresrc();
 
 	return true;
 }

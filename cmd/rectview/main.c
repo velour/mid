@@ -100,7 +100,7 @@ static void printboxes(void){
 }
 
 static void *imgload(const char *p, void *ignore){
-	return imgnew(gfx, p);
+	return imgnew(p);
 }
 
 static void update(Scrn *s, Scrnstk *stk){

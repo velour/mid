@@ -95,12 +95,12 @@ struct Img{
 	SDL_Texture *tex;
 };
 
-Img *imgnew(Gfx *g, const char *path){
+Img *imgnew(const char *path){
 	SDL_Surface *s = IMG_Load(path);
 	if(!s)
 		return NULL;
 
-	SDL_Texture *t = SDL_CreateTextureFromSurface(g->rend, s);
+	SDL_Texture *t = SDL_CreateTextureFromSurface(gfx.rend, s);
 	SDL_FreeSurface(s);
 	if(!t)
 		return NULL;
