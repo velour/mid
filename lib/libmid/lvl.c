@@ -313,7 +313,7 @@ Blkinfo lvlmajorblk(Lvl *l, Rect r)
 {
 	Rect zone = hitzone(r, (Point){0, 0});
 	Blkinfo bi = blkinfo(l, zone.a.x, zone.a.y);
-	float area = 0.0;
+	double area = 0.0;
 	Isect is = isection(r, tilebbox(bi.x, bi.y));
 	if (is.is)
 		area = isectarea(is);
@@ -322,7 +322,7 @@ Blkinfo lvlmajorblk(Lvl *l, Rect r)
 		for (int y = zone.a.y; y <= zone.b.y; y++) {
 			is = isection(r, tilebbox(x, y));
 			if (is.is) {
-				float a = isectarea(is);
+				double a = isectarea(is);
 				if (a > area) {
 					bi = blkinfo(l, x, y);
 					area = a;
@@ -364,8 +364,8 @@ void visline(Lvl *l, int x0, int y0, int x1, int y1)
 	}
 	int dx = abs(x1 - x0);
 	int dy = abs(y1 - y0);
-	float err = 0.0;
-	float derr = (float)dy / (float)dx;
+	double err = 0.0;
+	double derr = (double)dy / (double)dx;
 	int ystep = y0 < y1 ? 1 : -1;
 	int y = y0;
 	int base = l->z * l->w * l->h;

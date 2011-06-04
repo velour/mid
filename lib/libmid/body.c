@@ -4,14 +4,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-const float Grav = 0.5;
+const double Grav = 0.5;
 
 static void loadanim(Anim **a, const char *name, const char *dir, const char *act);
 static void bodymv(Body *b, Lvl *l, Point *transl);
 static void dofall(Body *b, Isect is);
 static void chngdir(Body *b);
 static void chngact(Body *b);
-static void imgmvscroll(Body *b, Point *transl, float dx, float dy);
+static void imgmvscroll(Body *b, Point *transl, double dx, double dy);
 
 _Bool bodyinit(Body *b, const char *name, int x, int y, int z)
 {
@@ -73,11 +73,11 @@ static void loadanim(Anim **a, const char *name, const char *dir, const char *ac
 
 static void bodymv(Body *b, Lvl *l, Point *transl)
 {
-	float xmul = b->vel.x < 0 ? 1.0 : -1.0;
-	float ymul = b->vel.y < 0 ? 1.0 : -1.0;
+	double xmul = b->vel.x < 0 ? 1.0 : -1.0;
+	double ymul = b->vel.y < 0 ? 1.0 : -1.0;
 	Isect is = lvlisect(l, b->curdir->bbox[b->curact], b->vel);
-	float dx = b->vel.x + xmul * is.dx;
-	float dy = b->vel.y + ymul * is.dy;
+	double dx = b->vel.x + xmul * is.dx;
+	double dy = b->vel.y + ymul * is.dy;
 	dofall(b, is);
 	for (int i = 0; i < Nacts; i++) {
 		rectmv(&b->left.bbox[i], dx, dy);
@@ -124,7 +124,7 @@ static void chngact(Body *b)
 		b->curact = Stand;
 }
 
-static void imgmvscroll(Body *b, Point *transl, float dx, float dy)
+static void imgmvscroll(Body *b, Point *transl, double dx, double dy)
 {
 	if (!transl) {
 		b->imgloc.x += dx;
@@ -132,7 +132,7 @@ static void imgmvscroll(Body *b, Point *transl, float dx, float dy)
 		return;
 	}
 
-	float imgx = b->imgloc.x, imgy = b->imgloc.y;
+	double imgx = b->imgloc.x, imgy = b->imgloc.y;
 	if ((dx < 0 && imgx < Scrlbuf) || (dx > 0 && imgx > Scrnw - Scrlbuf))
 		transl->x -= dx;
 	else

@@ -10,7 +10,7 @@
 static void init(Lvl *l);
 static void output(Lvl *l);
 static Blk *ind(Lvl *l, int x, int y, int z);
-//static bool withprob(float p);
+//static bool withprob(double p);
 
 int main(int argc, char *argv[])
 {
@@ -69,7 +69,7 @@ static Blk *ind(Lvl *l, int x, int y, int z)
 }
 
 /*
-static bool withprob(float p)
+static bool withprob(double p)
 {
 	return (rand() % 100 + 1) < 100 * p;
 }

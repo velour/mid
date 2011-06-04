@@ -2,11 +2,11 @@
 #include <assert.h>
 #include <math.h>
 
-static int between(float min, float max, float n){
+static int between(double min, double max, double n){
 	return n >= min && n <= max;
 }
 
-float isection1d(Line1d a, Line1d b){
+double isection1d(Line1d a, Line1d b){
 	if(between(b.a, b.b, a.b))
 		return a.b - b.a;
 	else if(between(a.a, a.b, b.b))
@@ -15,7 +15,7 @@ float isection1d(Line1d a, Line1d b){
 		return -1.0;
 }
 
-float isectarea(Isect is)
+double isectarea(Isect is)
 {
 	return is.dx * is.dy;
 }
@@ -34,20 +34,20 @@ Line1d rectprojy(Rect r){
 		return (Line1d){ .a = r.b.y, .b = r.a.y };
 }
 
-void ptmv(Point *p, float dx, float dy) {
+void ptmv(Point *p, double dx, double dy) {
 	p->x += dx;
 	p->y += dy;
 }
 
-void rectmv(Rect *r, float dx, float dy){
+void rectmv(Rect *r, double dx, double dy){
 	ptmv(&r->a, dx, dy);
 	ptmv(&r->b, dx, dy);
 }
 
 Isect isection(Rect a, Rect b){
-	float ix = isection1d(rectprojx(a), rectprojx(b));
+	double ix = isection1d(rectprojx(a), rectprojx(b));
 	if(ix > 0.0){
-		float iy = isection1d(rectprojy(a), rectprojy(b));
+		double iy = isection1d(rectprojy(a), rectprojy(b));
 		if(iy > 0.0)
 			return (Isect){ .is = 1, .dx = ix, .dy = iy };
 		else
@@ -76,12 +76,12 @@ Isect minisect(Rect a, Rect b){
 Rect rectnorm(Rect r)
 {
 	if (r.a.x > r.b.x) {
-		float t = r.a.x;
+		double t = r.a.x;
 		r.a.x = r.b.x;
 		r.b.x = t;
 	}
 	if (r.a.y > r.b.y) {
-		float t = r.a.y;
+		double t = r.a.y;
 		r.a.y = r.b.y;
 		r.b.y = t;
 	}

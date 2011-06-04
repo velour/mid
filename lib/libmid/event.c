@@ -7,7 +7,7 @@ enum { assert_keychar_eq = 1/!!('a' == SDLK_a) };
 
 static int prevtm = 0;
 
-float meanftime = 0.0;
+double meanftime = 0.0;
 static unsigned int nframes = 0;
 
 void framestart(void){

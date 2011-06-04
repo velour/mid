@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 enum { Dx = 3, Dy = 8 };
-static const float Dxwater = 0.6f, Dywater = 0.2f;
+static const double Dxwater = 0.6f, Dywater = 0.2f;
 
 struct Player {
 	Body body;
@@ -41,11 +41,11 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 		lvlvis(l, bi.x, bi.y);
 	p->bi = bi;
 
-	float olddx = p->body.vel.x;
+	double olddx = p->body.vel.x;
 	if (bi.flags & Tilewater && p->body.vel.x)
 		p->body.vel.x = (p->body.vel.x < 0 ? -1 : 1) * Dxwater * Dx;
 
-	float oldddy = p->body.ddy;
+	double oldddy = p->body.ddy;
 	if(bi.flags & Tilewater && p->body.ddy)
 		p->body.ddy = (p->body.ddy < 0 ? -1 : 1) * Dywater * Grav;
 

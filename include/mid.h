@@ -1,5 +1,5 @@
 /* Mean frame time.  May be useful for comparing computation effort. */
-extern float meanftime;
+extern double meanftime;
 extern int debugging;
 
 const char *miderrstr(void);
@@ -7,19 +7,19 @@ void seterrstr(const char *fmt, ...);
 
 typedef struct Point Point;
 struct Point{
-	float x, y;
+	double x, y;
 };
 
 typedef struct Line1d Line1d;
 struct Line1d{
-	float a, b;
+	double a, b;
 };
 
 /*
 Returns the absolute value of the intersection of two lines.
 Returns a negative number if the lines don't intersect.
 */
-float isection1d(Line1d, Line1d);
+double isection1d(Line1d, Line1d);
 
 typedef struct Rect Rect;
 struct Rect{
@@ -28,20 +28,20 @@ struct Rect{
 
 Line1d rectprojx(Rect);
 Line1d rectprojy(Rect);
-void rectmv(Rect *, float dx, float dy);
+void rectmv(Rect *, double dx, double dy);
 /* Makes point a the min,min and point b the max,max. */
 Rect rectnorm(Rect r);
-void ptmv(Point *, float dx, float dy);
+void ptmv(Point *, double dx, double dy);
 
 typedef struct Isect Isect;
 struct Isect{
 	_Bool is;
-	float dx, dy; /* isection1d of x and y projs */
+	double dx, dy; /* isection1d of x and y projs */
 };
 
 Isect isection(Rect, Rect);
 int isect(Rect, Rect);
-float isectarea(Isect is);
+double isectarea(Isect is);
 
 /*
 The minimal intersection will be positive, and the maximum intersection will
@@ -122,7 +122,7 @@ struct Event{
 	_Bool repeat;
 	char key;
 
-	float x, y, dx, dy;
+	double x, y, dx, dy;
 	int butt;
 };
 
@@ -263,7 +263,7 @@ enum { Tall = 32, Wide = 32 };
 
 enum { Maxdy = 12 };
 
-extern const float Grav;
+extern const double Grav;
 
 typedef enum Act Act;
 enum Act {
@@ -286,7 +286,7 @@ struct Body {
 	Act curact;
 	Point vel, imgloc;
 	int z;
-	float ddy;
+	double ddy;
 	_Bool fall;
 };
 

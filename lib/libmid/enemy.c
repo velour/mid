@@ -14,12 +14,12 @@ static Enemymt untimt = {
 typedef struct Unti Unti;
 struct Unti{
 	Point p, v;
-	float ddy;
+	double ddy;
 	Color c;
 };
 
 enum { Dx = 3, Dy = 8 };
-static const float Dxwater = 1.2f, Dywater = 1.2f;
+static const double Dxwater = 1.2f, Dywater = 1.2f;
 
 static Rect untibox(Unti*,Point);
 
@@ -59,11 +59,11 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 /*
 	Blkinfo bi = lvlmajorblk(l, box);
 
-	float olddx = u->v.x;
+	double olddx = u->v.x;
 	if(bi.flags & Tilewater && u->v.x)
 		u->v.x = (u->v.x < 0 ? -1 : 1) * Dxwater * Dx;
 
-	float oldddy = u->ddy;
+	double oldddy = u->ddy;
 	if(bi.flags & Tilewater && u->ddy)
 		u->ddy = (u->ddy < 0 ? -1 : 1) * Dywater * Grav;
 
