@@ -62,11 +62,14 @@ void gamefree(Scrn *s)
 	Game *gm = s->data;
 	playerfree(gm->player);
 
-	Enms es = gm->enms[gm->lvl->z];
-	Enemy *e = es.es;
-	int n = es.n;
-	for(size_t i = 0; i < n; i++)
-		e[i].mt->free(&e[i]);
+	for (int z = 0; z < gm->lvl->d; z++) {
+		Enms es = gm->enms[z];
+		Enemy *e = es.es;
+		if (!e)
+			continue;
+		for(size_t i = 0; i < es.n; i++)
+			e[i].mt->free(&e[i]);
+	}
 
 	resrcrel(lvls, "lvl/0.lvl", NULL);
 	free(gm);
