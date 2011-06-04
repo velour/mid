@@ -185,17 +185,17 @@ void animreset(Anim *a);
 
 typedef struct Lvl Lvl;
 struct Lvl {
-	int d, w, h;
+	int d, w, h, z;
 	char tiles[];
 };
 Lvl *lvlload(const char *path);
 void lvlfree(Lvl *l);
 void lvlupdate(Rtab *anims, Lvl *l);
-void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, _Bool bkgrnd, Point offs);
-void lvlminidraw(Gfx *, Lvl *, int z, Point);
+void lvldraw(Gfx *g, Rtab *anims, Lvl *l, _Bool bkgrnd, Point offs);
+void lvlminidraw(Gfx *, Lvl *, Point);
 /* Returns the reverse vector that must be added to v in order to
  * respect collisions. */
-Isect lvlisect(Lvl *l, int z, Rect r, Point v);
+Isect lvlisect(Lvl *l, Rect r, Point v);
 extern _Bool lvlgridon;
 
 typedef struct Blkinfo Blkinfo;
@@ -214,5 +214,5 @@ enum {
 enum { Theight = 32, Twidth = 32 };
 
 /* Get the information on the dominant block that r is overlapping. */
-Blkinfo lvlmajorblk(Lvl *l, int z, Rect r);
+Blkinfo lvlmajorblk(Lvl *l, Rect r);
 

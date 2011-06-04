@@ -7,7 +7,6 @@
 
 struct Game {
 	Point transl;
-	int z;			/* current level z-level */
 	Lvl *lvl;
 	Player *player;
 	Inv inv;
@@ -24,7 +23,7 @@ Game *gamenew(void)
 	if (!gm->lvl)
 		fatal("Failed to load level lvl/0.lvl: %s", miderrstr());
 	gm->player = playernew(64, 96);
-	gm->e = enemynew('u', (Point){128,160});
+	gm->e = enemynew('u', (Point){128,96});
 
 	// Testing items
 	Item *axe = itemnew("Golden Pickaxe", "gaxe/anim");
@@ -50,7 +49,7 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 {
 	Game *gm = s->data;
 	lvlupdate(anim, gm->lvl);
-	playerupdate(gm->player, gm->lvl, &gm->z, &gm->transl);
+	playerupdate(gm->player, gm->lvl, &gm->transl);
 	gm->e->mt->update(gm->e, gm->player, gm->lvl);
 }
 
@@ -58,10 +57,10 @@ void gamedraw(Scrn *s, Gfx *g)
 {
 	Game *gm = s->data;
 	gfxclear(g, (Color){ 0, 0, 0, 0 });
-	lvldraw(g, anim, gm->lvl, gm->z, true, gm->transl);
+	lvldraw(g, anim, gm->lvl, true, gm->transl);
 	playerdraw(g, gm->player, gm->transl);
 	gm->e->mt->draw(gm->e, g, gm->transl);
-	lvldraw(g, anim, gm->lvl, gm->z, false, gm->transl);
+	lvldraw(g, anim, gm->lvl, false, gm->transl);
 	gfxflip(g);
 }
 
@@ -73,7 +72,7 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 	Game *gm = s->data;
 
 	if(e->down && e->key == kmap[Mvinv]){
-		scrnstkpush(stk, invscrnnew(&gm->inv, gm->lvl, playerpos(gm->player), gm->z));
+		scrnstkpush(stk, invscrnnew(&gm->inv, gm->lvl, playerpos(gm->player)));
 		return;
 	}
 

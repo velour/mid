@@ -10,7 +10,6 @@ struct Invscr{
 	Lvl *lvl;
 	Point ppos;
 	Item *curitem;
-	int z;
 };
 
 enum { Iconw = 64, Iconh = 64 };
@@ -40,14 +39,13 @@ static Scrnmt invmt = {
 	invfree,
 };
 
-Scrn *invscrnnew(Inv *i, Lvl *lvl, Point p, int z){
+Scrn *invscrnnew(Inv *i, Lvl *lvl, Point p){
 	Invscr *inv = malloc(sizeof(*inv));
 	if(!inv)
 		return NULL;
 	inv->inv = i;
 	inv->lvl = lvl;
 	inv->ppos = p;
-	inv->z = z;
 	inv->curitem = NULL;
 
 	Scrn *s = malloc(sizeof(*s));
@@ -73,7 +71,7 @@ static void draw(Scrn *s, Gfx *g){
 	gfxclear(g, (Color){ 127, 127, 127 });
 
 	Invscr *i = s->data;
-	lvlminidraw(g, i->lvl, i->z, (Point){0,0});
+	lvlminidraw(g, i->lvl, (Point){0,0});
 
 	float px = i->ppos.x / Twidth;
 	float py = i->ppos.y / Theight - 1.0f;

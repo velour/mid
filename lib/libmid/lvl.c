@@ -14,7 +14,7 @@ static void fgrnddraw(Gfx *g, Rtab *anims, int t, Point pt);
 static Rect tilebbox(int x, int y);
 static Isect tileisect(int t, int x, int y, Rect r);
 static Rect hitzone(Rect a, Point v);
-static Blkinfo blkinfo(Lvl *l, int z, int x, int y);
+static Blkinfo blkinfo(Lvl *l, int x, int y);
 
 typedef struct Tinfo Tinfo;
 struct Tinfo {
@@ -69,6 +69,7 @@ static Lvl *lvlnew(int d, int w, int h)
 	l->d = d;
 	l->w = w;
 	l->h = h;
+	l->z = 0;
 	return l;
 }
 
@@ -166,10 +167,10 @@ static Rect tilebbox(int x, int y)
 	return (Rect){ .a = a, .b = b };
 }
 
-void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, bool bkgrnd, Point offs)
+void lvldraw(Gfx *g, Rtab *anims, Lvl *l, bool bkgrnd, Point offs)
 {
 	int w = l->w, h = l->h;
-	int base = z * w * h;
+	int base = l->z * w * h;
 	for (int x = 0; x < w; x++){
 		int pxx = offs.x + x * Twidth;
 		for (int y = 0; y < h; y++) {
@@ -191,10 +192,10 @@ void lvldraw(Gfx *g, Rtab *anims, Lvl *l, int z, bool bkgrnd, Point offs)
 	}
 }
 
-void lvlminidraw(Gfx *g, Lvl *l, int z, Point offs)
+void lvlminidraw(Gfx *g, Lvl *l, Point offs)
 {
 	int w = l->w, h = l->h;
-	int base = z * w * h;
+	int base = l->z * w * h;
 	for (int x = 0; x < w; x++){
 		int pxx = offs.x + x;
 		for (int y = 0; y < h; y++) {
@@ -235,7 +236,7 @@ void lvlupdate(Rtab *anims, Lvl *l)
 	}
 }
 
-Isect lvlisect(Lvl *l, int z, Rect r, Point v)
+Isect lvlisect(Lvl *l, Rect r, Point v)
 {
 	Rect test = hitzone(r, v);
 
@@ -244,7 +245,7 @@ Isect lvlisect(Lvl *l, int z, Rect r, Point v)
 	rectmv(&mv, 0, v.y);
 	for (int x = test.a.x; x <= test.b.x; x++) {
 		for (int y = test.a.y; y <= test.b.y; y++) {
-			int i = z * l->h * l->w + y * l->w + x;
+			int i = l->z * l->h * l->w + y * l->w + x;
 			Isect is = tileisect(l->tiles[i], x, y, mv);
 			if (is.is && is.dy > isect.dy) {
 				isect.is = true;
@@ -261,7 +262,7 @@ Isect lvlisect(Lvl *l, int z, Rect r, Point v)
 	rectmv(&mv, v.x, v.y + (v.y < 0 ? isect.dy : -isect.dy));
 	for (int x = test.a.x; x <= test.b.x; x++) {
 		for (int y = test.a.y; y <= test.b.y; y++) {
-			int i = z * l->h * l->w + y * l->w + x;
+			int i = l->z * l->h * l->w + y * l->w + x;
 			Isect is = tileisect(l->tiles[i], x, y, mv);
 			if (is.is && is.dx > isect.dx) {
 				isect.is = true;
@@ -304,10 +305,10 @@ static Rect hitzone(Rect a, Point v)
 	return (Rect) { .a = {xmin, ymin}, .b = {xmax, ymax} };
 }
 
-Blkinfo lvlmajorblk(Lvl *l, int z, Rect r)
+Blkinfo lvlmajorblk(Lvl *l, Rect r)
 {
 	Rect zone = hitzone(r, (Point){0, 0});
-	Blkinfo bi = blkinfo(l, z, zone.a.x, zone.a.y);
+	Blkinfo bi = blkinfo(l, zone.a.x, zone.a.y);
 	float area = 0.0;
 	Isect is = isection(r, tilebbox(bi.x, bi.y));
 	if (is.is)
@@ -319,7 +320,7 @@ Blkinfo lvlmajorblk(Lvl *l, int z, Rect r)
 			if (is.is) {
 				float a = isectarea(is);
 				if (a > area) {
-					bi = blkinfo(l, z, x, y);
+					bi = blkinfo(l, x, y);
 					area = a;
 				}
 			}
@@ -329,10 +330,10 @@ Blkinfo lvlmajorblk(Lvl *l, int z, Rect r)
 	return bi;
 }
 
-static Blkinfo blkinfo(Lvl *l, int z, int x, int y)
+static Blkinfo blkinfo(Lvl *l, int x, int y)
 {
-	int i = z * l->w * l->h + y * l->w + x;
+	int i = l->z * l->w * l->h + y * l->w + x;
 	int t = l->tiles[i];
 	assert (tiles[t]);
-	return (Blkinfo) { .x = x, .y = y, .z = z, .flags = tiles[t]->flags };
+	return (Blkinfo) { .x = x, .y = y, .z = l->z, .flags = tiles[t]->flags };
 }
