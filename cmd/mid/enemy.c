@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-static Enemy *untinew(Point);
+static _Bool untiinit(Enemy *, Point);
 static void untifree(Enemy*);
 static void untiupdate(Enemy*,Player*,Lvl*);
 static void untidraw(Enemy*,Gfx*,Point);
@@ -21,37 +21,32 @@ struct Unti{
 
 static Rect untibox(Unti*,Point);
 
-static Enemy *(*spawns[])(Point) = {
-	['u'] = untinew,
+static _Bool (*spawns[])(Enemy*,Point) = {
+	['u'] = untiinit,
 };
 
-Enemy *enemynew(unsigned char id, Point loc){
+_Bool enemyinit(Enemy *e, unsigned char id, Point loc){
 	if(id >= sizeof(spawns)/sizeof(spawns[0]))
-		return NULL;
+		return 0;
 
-	return spawns[id](loc);
+	return spawns[id](e, loc);
 }
 
-static Enemy *untinew(Point p){
-	Enemy *e = calloc(1, sizeof(*e));
-	if(!e)
-		return NULL;
-
+static _Bool untiinit(Enemy *e, Point p){
 	Unti *u = calloc(1, sizeof(*u));
 	if(!u)
-		return NULL;
+		return 0;
 
 	u->p = p;
 	u->c = (Color){ 255, 55, 55, 255 };
 
 	e->mt = &untimt;
 	e->data = u;
-	return e;
+	return 1;
 }
 
 static void untifree(Enemy *e){
 	free(e->data);
-	free(e);
 }
 
 static void untiupdate(Enemy *e, Player *p, Lvl *l){

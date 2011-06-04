@@ -108,4 +108,4 @@ struct Enemy{
 	void *data;
 };
 
-Enemy *enemynew(unsigned char id, Point loc);
+_Bool enemyinit(Enemy *, unsigned char id, Point loc);
