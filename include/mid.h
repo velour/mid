@@ -235,6 +235,7 @@ enum {
 
 enum { Theight = 32, Twidth = 32 };
 
+Blkinfo blkinfo(Lvl *l, int x, int y);
 /* Get the information on the dominant block that r is overlapping. */
 Blkinfo lvlmajorblk(Lvl *l, Rect r);
 

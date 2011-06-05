@@ -6,6 +6,7 @@
 #include <assert.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
+#include "path.h"
 
 static void init(Lvl *l);
 static void output(Lvl *l);

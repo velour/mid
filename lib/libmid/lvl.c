@@ -334,7 +334,7 @@ Blkinfo lvlmajorblk(Lvl *l, Rect r)
 	return bi;
 }
 
-static Blkinfo blkinfo(Lvl *l, int x, int y)
+Blkinfo blkinfo(Lvl *l, int x, int y)
 {
 	int i = l->z * l->w * l->h + y * l->w + x;
 	int t = l->blks[i].tile;
