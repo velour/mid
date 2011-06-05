@@ -3,11 +3,14 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 const double Grav = 0.5;
 
 static void loadanim(Anim **a, const char *name, const char *dir, const char *act);
 static void bodymv(Body *b, Lvl *l, Point *transl);
+static double tillwhole(double loc, double vel);
+static Point velstep(Body *b, Point p);
 static void dofall(Body *b, Isect is);
 static void chngdir(Body *b);
 static void chngact(Body *b);
@@ -73,17 +76,56 @@ static void loadanim(Anim **a, const char *name, const char *dir, const char *ac
 
 static void bodymv(Body *b, Lvl *l, Point *transl)
 {
-	double xmul = b->vel.x < 0 ? 1.0 : -1.0;
-	double ymul = b->vel.y < 0 ? 1.0 : -1.0;
-	Isect is = lvlisect(l, b->curdir->bbox[b->curact], b->vel);
-	double dx = b->vel.x + xmul * is.dx;
-	double dy = b->vel.y + ymul * is.dy;
-	dofall(b, is);
-	for (int i = 0; i < Nacts; i++) {
-		rectmv(&b->left.bbox[i], dx, dy);
-		rectmv(&b->right.bbox[i], dx, dy);
+	double xmul = b->vel.x > 0 ? 1.0 : -1.0;
+	double ymul = b->vel.y > 0 ? 1.0 : -1.0;
+	Isect fallis = (Isect) { .is = false };
+	Point v = b->vel;
+	Point left = (Point) { fabs(v.x), fabs(v.y) };
+
+	while (left.x > 0.0 || left.y > 0.0) {
+		Point d = velstep(b, v);
+		left.x -= fabs(d.x);
+		left.y -= fabs(d.y);
+		Isect is = lvlisect(l, b->curdir->bbox[b->curact], d);
+		if (is.is && is.dy != 0.0)
+			fallis = is;
+		d.x = d.x + -xmul * is.dx;
+		d.y = d.y + -ymul * is.dy;
+		v.x -= d.x;
+		v.y -= d.y;
+		for (int i = 0; i < Nacts; i++) {
+			rectmv(&b->left.bbox[i], d.x, d.y);
+			rectmv(&b->right.bbox[i], d.x, d.y);
+		}
+		imgmvscroll(b, transl, d.x, d.y);
 	}
-	imgmvscroll(b, transl, dx, dy);
+	dofall(b, fallis);
+}
+
+static Point velstep(Body *b, Point v)
+{
+	Point loc = b->curdir->bbox[b->curact].a;
+	Point d = (Point) { tillwhole(loc.x, v.x), tillwhole(loc.y, v.y) };
+	if (d.x == 0.0 && v.x != 0.0)
+		d.x = fabs(v.x) / v.x;
+	if (fabs(d.x) > fabs(v.x))
+		d.x = v.x;
+	if (d.y == 0.0 && v.y != 0.0)
+		d.y = fabs(v.y) / v.y;
+	if (fabs(d.y) > fabs(v.y))
+		d.y = v.y;
+	return d;
+}
+
+static double tillwhole(double loc, double vel)
+{
+	if (vel > 0) {
+		int l = loc + 0.5;
+		return l - loc;
+	} else {
+		int l = loc;
+		return l - loc;
+	}
 }
 
 static void dofall(Body *b, Isect is)
