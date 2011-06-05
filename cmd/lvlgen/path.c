@@ -9,7 +9,7 @@
 static bool segok(Lvl *l, Path *p, Seg s);
 static bool segconfl(Lvl *l, Path *p, Seg s);
 static bool segclr(Lvl *l, Seg s);
-static bool beenthere(Path *p, Seg s);
+static bool beenthere(Lvl *l, Path *p, Seg s);
 static int segarea(Seg s, Loc l[], int sz);
 static int segblks(Seg s, Loc l[], int sz);
 
@@ -17,10 +17,11 @@ static int segblks(Seg s, Loc l[], int sz);
  * level.  The comment above the move describes it: s is the start
  * loc, # is a block and c is a location that must be cleared to make
  * the move. */
-const Move moves[] = {
+static Move allmoves[] = {
 	/* sc
            ## */
-	{ .dx = 1, .dy = 0,
+	{ .wt = 1,
+	  .dx = 1, .dy = 0,
 	  .nclr = 2,
 	  .clr = { {0, 0}, {1, 0} },
 	  .nblks = 2,
@@ -28,7 +29,8 @@ const Move moves[] = {
 
 	/* cs
            ## */
-	{ .dx = -1, .dy = 0,
+	{ .wt = 1,
+	  .dx = -1, .dy = 0,
 	  .nclr = 2,
 	  .clr = { {0, 0}, {-1, 0} },
 	  .nblks = 2,
@@ -36,7 +38,8 @@ const Move moves[] = {
 
 	/* scc
            ### */
-	{ .dx = 2, .dy = 0,
+	{ .wt = 2,
+	  .dx = 2, .dy = 0,
 	  .nclr = 3,
 	  .clr = { {0, 0}, {1, 0}, {2, 0} },
 	  .nblks = 3,
@@ -44,16 +47,36 @@ const Move moves[] = {
 
 	/* ccs
            ### */
-	{ .dx = -2, .dy = 0,
+	{ .wt = 2,
+	  .dx = -2, .dy = 0,
 	  .nclr = 3,
 	  .clr = { {0, 0}, {-1, 0}, {-2, 0} },
 	  .nblks = 3,
 	  .blks = { {0, 1}, {-1, 1}, {-2, 1} } },
 
+	/* sccc
+           #### */
+	{ .wt = 2,
+	  .dx = 3, .dy = 0,
+	  .nclr = 4,
+	  .clr = { {0, 0}, {1, 0}, {2, 0}, {3, 0} },
+	  .nblks = 4,
+	  .blks = { {0, 1}, {1, 1}, {2, 1}, {3, 1} } },
+
+	/* cccs
+           #### */
+	{ .wt = 2,
+	  .dx = -3, .dy = 0,
+	  .nclr = 3,
+	  .clr = { {0, 0}, {-1, 0}, {-2, 0}, {-3, 0} },
+	  .nblks = 3,
+	  .blks = { {0, 1}, {-1, 1}, {-2, 1}, {-3, 1} } },
+
 	/* ccccc
            scccc
            #   # */
-	{ .dx = 4, .dy = 0,
+	{ .wt = 1,
+	  .dx = 4, .dy = 0,
 	  .nclr = 10,
 	  .clr = { {0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0},
 		   {0, -1}, {1, -1}, {2, -1}, {3, -1}, {4, -1}, },
@@ -63,7 +86,8 @@ const Move moves[] = {
 	/* ccccc
            ccccs
            #   # */
-	{ .dx = -4, .dy = 0,
+	{ .wt = 1,
+	  .dx = -4, .dy = 0,
 	  .nclr = 10,
 	  .clr = { {0, 0}, {-1, 0}, {-2, 0}, {-3, 0}, {-4, 0},
 		   {0, -1}, {-1, -1}, {-2, -1}, {-3, -1}, {-4, -1}, },
@@ -72,71 +96,150 @@ const Move moves[] = {
 	/* cc
 	   s#
 	   # */
-	{ .dx = 1, .dy = -1,
+	{ .wt = 1,
+	  .dx = 1, .dy = -1,
 	  .nclr = 3, .clr = { {0, 0}, {0, -1}, {1, -1} },
 	  .nblks = 2, .blks = { {0, 1}, {1, 0} } },
+
+	/* cc
+	   s#
+	   ##*/
+	{ .wt = 1,
+	  .dx = 1, .dy = -1,
+	  .nclr = 3, .clr = { {0, 0}, {0, -1}, {1, -1} },
+	  .nblks = 3, .blks = { {0, 1}, {1, 1}, {1, 0} } },
 
 	/* cs
 	   c#
 	   # */
-	{ .dx = -1, .dy = 1,
+	{ .wt = 1,
+	  .dx = -1, .dy = 1,
 	  .nclr = 3,
 	  .clr = { {0, 0}, {-1, 0}, {-1, 1} },
 	  .nblks = 2,
 	  .blks = { {0, 1}, {-1, 2} } },
 
+	/* cs
+	   c#
+	   ##*/
+	{ .wt = 2,
+	  .dx = -1, .dy = 1,
+	  .nclr = 3,
+	  .clr = { {0, 0}, {-1, 0}, {-1, 1} },
+	  .nblks = 3,
+	  .blks = { {0, 1}, {0, 2}, {-1, 2} } },
+
 	/* sc
 	   #c
 	    # */
-	{ .dx = 1, .dy = 1,
+	{ .wt = 1,
+	  .dx = 1, .dy = 1,
 	  .nclr = 3,
 	  .clr = { {0, 0}, {1, 0}, {1, 1} },
 	  .nblks = 2,
 	  .blks = { {0, 1}, {1, 2} } },
 
+	/* sc
+	   #c
+	   ## */
+	{ .wt = 1,
+	  .dx = 1, .dy = 1,
+	  .nclr = 3,
+	  .clr = { {0, 0}, {1, 0}, {1, 1} },
+	  .nblks = 3,
+	  .blks = { {0, 1}, {0, 2}, {1, 2} } },
+
 	/* cc
 	   #s
 	    # */
-	{ .dx = -1, .dy = -1,
+	{ .wt = 1,
+	  .dx = -1, .dy = -1,
 	  .nclr = 3,
 	  .clr = { {0, 0}, {0, -1}, {-1, -1} },
 	  .nblks = 2,
 	  .blks = { {0, 1}, {-1, 0} } },
 
+	/* cc
+	   #s
+	   ## */
+	{ .wt = 2,
+	  .dx = -1, .dy = -1,
+	  .nclr = 3,
+	  .clr = { {0, 0}, {0, -1}, {-1, -1} },
+	  .nblks = 3,
+	  .blks = { {0, 1}, {-1, 1}, {-1, 0} } },
+
 	/* ccc
            cc#
            s
            # */
-	{ .dx = 2, .dy = -2,
+	{ .wt = 1,
+	  .dx = 2, .dy = -2,
 	  .nclr = 6,
 	  .clr = { {0, 0}, {0, -1}, {0, -2}, {1, -1}, {1, -2}, {2, -2} },
 	  .nblks = 2, .blks = { {0, 1}, {2, -1} } },
+
+	/* ccc
+           cc#
+           s##
+           ### */
+	{ .wt = 2,
+	  .dx = 2, .dy = -2,
+	  .nclr = 6,
+	  .clr = { {0, 0}, {0, -1}, {0, -2}, {1, -1}, {1, -2}, {2, -2} },
+	  .nblks = 6,
+	  .blks = { {0, 1}, {1, 1}, {2, 1}, {1, 0}, {2, 0}, {2, -1} } },
 
 	/* ccs
            c #
            c
            # */
-	{ .dx = -2, .dy = 2,
+	{ .wt = 1,
+	  .dx = -2, .dy = 2,
 	  .nclr = 5,
 	  .clr = { {0, 0}, {-1, 0}, {-2, 0}, {-2, 1}, {-2, 2} },
 	  .nblks = 2,
 	  .blks = { {0, 1}, {-2, 3} } },
 
+	/* ccs
+           c #
+           c##
+           ### */
+	{ .wt = 2,
+	  .dx = -2, .dy = 2,
+	  .nclr = 5,
+	  .clr = { {0, 0}, {-1, 0}, {-2, 0}, {-2, 1}, {-2, 2} },
+	  .nblks = 6,
+	  .blks = { {0, 1}, {0, 2}, {0, 3}, {-1, 2}, {-1, 3}, {-2, 3} } },
+
 	/* ccc
            #cc
              s
              # */
-	{ .dx = -2, .dy = -2,
+	{ .wt = 1,
+	  .dx = -2, .dy = -2,
 	  .nclr = 6,
 	  .clr = { {0, 0}, {0, -1}, {0, -2}, {-1, -1}, {-1, -2}, {-2, -2} },
 	  .nblks = 2,
 	  .blks = { {0, 1}, {-2, -1} } },
 
+	/* ccc
+           #cc
+           ##s
+           ### */
+	{ .wt = 2,
+	  .dx = -2, .dy = -2,
+	  .nclr = 6,
+	  .clr = { {0, 0}, {0, -1}, {0, -2}, {-1, -1}, {-1, -2}, {-2, -2} },
+	  .nblks = 6,
+	  .blks = { {0, 1}, {-1, 1}, {-2, 1}, {-1, 0}, {-2, 0}, {-2, -1} } },
+
 	/* scc
            # c
              c
              # */
-	{ .dx = 2, .dy = 2,
+	{ .wt = 1,
+	  .dx = 2, .dy = 2,
 	  .nclr = 5,
 	  .clr = { {0, 0}, {1, 0}, {2, 0}, {2, 1}, {2, 2} },
 	  .nblks = 2,
@@ -144,31 +247,113 @@ const Move moves[] = {
 
 	/* scc
            # c
+           ##c
+           ### */
+	{ .wt = 2,
+	  .dx = 2, .dy = 2,
+	  .nclr = 5,
+	  .clr = { {0, 0}, {1, 0}, {2, 0}, {2, 1}, {2, 2} },
+	  .nblks = 6,
+	  .blks = { {0, 1}, {0, 2}, {0, 3}, {1, 2}, {1, 3}, {2, 3} } },
+
+	/* scc
+           # c
              c
              c
              # */
-	{ .dx = 2, .dy = 3,
+	{ .wt = 1,
+	  .dx = 2, .dy = 3,
 	  .nclr = 6,
 	  .clr = { {0, 0}, {1, 0}, {2, 0}, {2, 1}, {2, 2}, {2, 3} },
 	  .nblks = 2,
 	  .blks = { {0, 1}, {2, 4} } },
+
 	/* ccs
            c #
            c
            c
            # */
-	{ .dx = -2, .dy = 3,
+	{ .wt = 1,
+	  .dx = -2, .dy = 3,
 	  .nclr = 6,
 	  .clr = { {0, 0}, {-1, 0}, {-2, 0}, {-2, 1}, {-2, 2}, {-2, 3} },
 	  .nblks = 2,
 	  .blks = { {0, 1}, {-2, 4} } },
+
+	/* sc
+           #c
+            c
+            c
+            # */
+	{ .wt = 1,
+	  .dx = 1, .dy = 3,
+	  .nclr = 5,
+	  .clr = { {0, 0}, {1, 0}, {1, 1}, {1, 2}, {1, 3} },
+	  .nblks = 2,
+	  .blks = { {0, 1}, {1, 4} } },
+
+	/* cs
+           c#
+           c
+           c
+           # */
+	{ .wt = 1,
+	  .dx = -1, .dy = 3,
+	  .nclr = 5,
+	  .clr = { {0, 0}, {-1, 0}, {-1, 1}, {-1, 2}, {-1, 3} },
+	  .nblks = 2,
+	  .blks = { {0, 1}, {-1, 4} } },
+
+	/* sc
+           #c
+           #c
+           #c
+           ## */
+	{ .wt = 2,
+	  .dx = 1, .dy = 3,
+	  .nclr = 5,
+	  .clr = { {0, 0}, {1, 0}, {1, 1}, {1, 2}, {1, 3} },
+	  .nblks = 3,
+	  .blks = { {0, 1}, {0, 2}, {0, 3}, {0, 4}, {1, 4} } },
+
+	/* cs
+           c#
+           c#
+           c#
+           ## */
+	{ .wt = 2,
+	  .dx = -1, .dy = 3,
+	  .nclr = 5,
+	  .clr = { {0, 0}, {-1, 0}, {-1, 1}, {-1, 2}, {-1, 3} },
+	  .nblks = 5,
+	  .blks = { {0, 1}, {0, 2}, {0, 3}, {0, 4}, {-1, 4} } },
 };
 
-const int Nmoves = sizeof(moves) / sizeof(moves[0]);
+static const int Nallmoves = sizeof(allmoves) / sizeof(allmoves[0]);
+
+Move **moves;
+int Nmoves;
+
+void mvinit(void)
+{
+	for (int i = 0; i < Nallmoves; i++)
+		Nmoves += allmoves[i].wt;
+	moves = calloc(Nmoves, sizeof(*moves));
+	if (!moves)
+		fatal("Failed to allocate move array");
+	int nxt = 0;
+	for (int i = 0; i < Nallmoves; i++) {
+		for (int j = 0; j < allmoves[i].wt; j++) {
+			moves[nxt] = &allmoves[i];
+			nxt++;
+		}
+	}
+	assert(nxt == Nmoves);
+}
 
 enum { Bufsz = 10 };
 
-Seg segmk(Loc l, const Move *m)
+Seg segmk(Loc l, Move *m)
 {
 	Seg s;
 	s.l0 = l;
@@ -222,7 +407,7 @@ static bool segok(Lvl *l, Path *p, Seg s)
 		&& s.l1.y > 0 && s.l1.y < l->h - 1;
 
 	return inrange && segclr(l, s) && !segconfl(l, p, s)
-		&& !beenthere(p, s);
+		&& !beenthere(l, p, s);
 }
 
 /* Conflict with other path segments? */
@@ -254,10 +439,10 @@ static bool segclr(Lvl *l, Seg s)
 	return true;
 }
 
-static bool beenthere(Path *p, Seg s)
+static bool beenthere(Lvl *l, Path *p, Seg s)
 {
 	for (int i = 0; i < p->n; i++) {
-		if (p->ss[i].l0.x == s.l1.x && p->ss[i].l0.y == s.l1.y)
+		if (p->used[s.l1.y * l->w + s.l1.x])
 			return true;
 	}
 	return false;

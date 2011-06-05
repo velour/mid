@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
 	pr("seed: %d\n", seed);
 	srand(seed);
 
+	mvinit();
 	init(l);
 	zlayer((Loc) { 2, 3 }, l);
 	output(l);
@@ -89,7 +90,7 @@ static void buildpath(Lvl *lvl, Path *p, Loc loc)
 		int base = rand() % Nmoves;
 		for (int j = 0; j < Nmoves; j++) {
 			int mv = (base + j) % Nmoves;
-			Seg s = segmk(loc, &moves[mv]);
+			Seg s = segmk(loc, moves[mv]);
 			if (pathadd(lvl, p, s)) {
 				printf("loc=%d,%d, mv=%d, loc'=%d,%d\n",
 				       loc.x, loc.y, mv, s.l1.x, s.l1.y);

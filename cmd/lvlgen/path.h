@@ -7,6 +7,8 @@ enum { Maxarea = 10, Maxblks = 10 };
 
 typedef struct Move Move;
 struct Move {
+	int wt;
+
 	int dx, dy;
 
 	/* Array of locs that must be 'clear' */
@@ -18,16 +20,16 @@ struct Move {
 	Loc blks[Maxblks];
 };
 
-extern const Move moves[];
-extern const int Nmoves;
+extern Move **moves;
+extern int Nmoves;
 
 typedef struct Seg Seg;
 struct Seg {
 	Loc l0, l1;;
-	const Move *mv;
+	Move *mv;
 };
 
-enum { Maxsegs = 50 };
+enum { Maxsegs = 1024 };
 
 typedef struct Path Path;
 struct Path {
@@ -36,9 +38,10 @@ struct Path {
 	bool used[];
 };
 
+void mvinit(void);
 Path *pathnew(Lvl *l);
 void pathfree(Path *p);
 _Bool pathadd(Lvl *l, Path *p, Seg s);
-Seg segmk(Loc l, const Move *m);
+Seg segmk(Loc l, Move *m);
 void segpr(Seg s);
 void pathpr(Lvl *l, Path *p);
