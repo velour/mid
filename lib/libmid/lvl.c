@@ -15,7 +15,6 @@ static void fgrnddraw(Gfx *g, int t, Point pt);
 static Rect tilebbox(int x, int y);
 static Isect tileisect(int t, int x, int y, Rect r);
 static Rect hitzone(Rect a, Point v);
-static Blkinfo blkinfo(Lvl *l, int x, int y);
 
 typedef struct Tinfo Tinfo;
 struct Tinfo {

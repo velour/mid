@@ -1,15 +1,25 @@
-typedef struct Move Move;
-struct Move {
-	int dx, dy;
-};
-
-extern const Move moves[];
-extern const int Nmoves;
-
 typedef struct Loc Loc;
 struct Loc {
 	int x, y;
 };
+
+enum { Maxarea = 10, Maxblks = 10 };
+
+typedef struct Move Move;
+struct Move {
+	int dx, dy;
+
+	/* Array of locs that must be 'clear' */
+	int nclr;
+	Loc clr[Maxarea];
+
+	/* Array of blocks. */
+	int nblks;
+	Loc blks[Maxblks];
+};
+
+extern const Move moves[];
+extern const int Nmoves;
 
 typedef struct Seg Seg;
 struct Seg {
@@ -30,3 +40,5 @@ Path *pathnew(Lvl *l);
 void pathfree(Path *p);
 _Bool pathadd(Lvl *l, Path *p, Seg s);
 Seg segmk(Loc l, const Move *m);
+void segpr(Seg s);
+void pathpr(Lvl *l, Path *p);

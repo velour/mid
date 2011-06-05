@@ -10,8 +10,11 @@
 
 static void init(Lvl *l);
 static void output(Lvl *l);
+/* Fill in a z-layer and return a Loc for a good door placement to the
+ * next zlayer. */
+static Loc zlayer(Loc loc, Lvl *lvl);
+static void buildpath(Lvl *lvl, Path *p, Loc loc);
 static Blk *ind(Lvl *l, int x, int y, int z);
-//static bool withprob(double p);
 
 int main(int argc, char *argv[])
 {
@@ -22,6 +25,8 @@ int main(int argc, char *argv[])
 	int w = strtol(argv[1], NULL, 10);
 	int h = strtol(argv[2], NULL, 10);
 	int d = strtol(argv[3], NULL, 10);
+	if (d != 1)
+		fatal("d != 1 is unimplemented");
 	Lvl *l = lvlnew(d, w, h);
 	int seed = time(NULL);
 	if (argc == 5)
@@ -30,6 +35,7 @@ int main(int argc, char *argv[])
 	srand(seed);
 
 	init(l);
+	zlayer((Loc) { 2, 3 }, l);
 	output(l);
 
 	return 0;
@@ -63,15 +69,40 @@ static void output(Lvl *l)
 	}
 }
 
+static Loc zlayer(Loc loc, Lvl *lvl)
+{
+	Path *p = pathnew(lvl);
+	buildpath(lvl, p, loc);
+	pr("path length: %d", p->n);
+	pathpr(lvl, p);
+	pathfree(p);
+	return loc;
+}
+
+enum { Maxbr = 5 };
+
+static void buildpath(Lvl *lvl, Path *p, Loc loc)
+{
+	int br = rand() % Maxbr + 1;
+	pr("branching: %d", br);
+	for (int i = 0; i < br; i++) {
+		int base = rand() % Nmoves;
+		for (int j = 0; j < Nmoves; j++) {
+			int mv = (base + j) % Nmoves;
+			Seg s = segmk(loc, &moves[mv]);
+			if (pathadd(lvl, p, s)) {
+				printf("loc=%d,%d, mv=%d, loc'=%d,%d\n",
+				       loc.x, loc.y, mv, s.l1.x, s.l1.y);
+				pathpr(lvl, p);
+				buildpath(lvl, p, s.l1);
+				break;
+			}
+		}
+	}
+}
+
 static Blk *ind(Lvl *l, int x, int y, int z)
 {
 	int i = z * l->w * l->h + y * l->w + x;
 	return &l->blks[i];
 }
-
-/*
-static bool withprob(double p)
-{
-	return (rand() % 100 + 1) < 100 * p;
-}
-*/
