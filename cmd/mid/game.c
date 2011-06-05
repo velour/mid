@@ -44,7 +44,6 @@ Game *gamenew(void)
 		free(gm);
 		return NULL;
 	}
-	gm->enms[1].n = 0;
 
 	// Testing items
 	Item *axe = itemnew("Golden Pickaxe", "gaxe/anim");
