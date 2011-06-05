@@ -256,6 +256,7 @@ static Move allmoves[] = {
 	  .nblks = 6,
 	  .blks = { {0, 1}, {0, 2}, {0, 3}, {1, 2}, {1, 3}, {2, 3} } },
 
+#if 0
 	/* scc
            # c
              c
@@ -327,6 +328,7 @@ static Move allmoves[] = {
 	  .clr = { {0, 0}, {-1, 0}, {-1, 1}, {-1, 2}, {-1, 3} },
 	  .nblks = 5,
 	  .blks = { {0, 1}, {0, 2}, {0, 3}, {0, 4}, {-1, 4} } },
+#endif
 };
 
 static const int Nallmoves = sizeof(allmoves) / sizeof(allmoves[0]);
