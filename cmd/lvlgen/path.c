@@ -488,9 +488,9 @@ void pathpr(Lvl *l, Path *p)
 				else
 					c = 'O';
 			}
-			fputc(c, stdout);
+			fputc(c, stderr);
 		}
-		fputc('\n', stdout);
+		fputc('\n', stderr);
 	}
-	fputc('\n', stdout);
+	fputc('\n', stderr);
 }

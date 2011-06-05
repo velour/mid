@@ -92,7 +92,8 @@ static void buildpath(Lvl *lvl, Path *p, Loc loc)
 			int mv = (base + j) % Nmoves;
 			Seg s = segmk(loc, moves[mv]);
 			if (pathadd(lvl, p, s)) {
-				printf("loc=%d,%d, mv=%d, loc'=%d,%d\n",
+				fprintf(stderr,
+					"loc=%d,%d, mv=%d, loc'=%d,%d\n",
 				       loc.x, loc.y, mv, s.l1.x, s.l1.y);
 				pathpr(lvl, p);
 				buildpath(lvl, p, s.l1);
