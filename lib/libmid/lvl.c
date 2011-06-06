@@ -280,6 +280,8 @@ Isect lvlisect(Lvl *l, Rect r, Point v)
 
 static Isect tileisect(int t, int x, int y, Rect r)
 {
+	if (!tiles[t])
+		printf("t=[%c]", t);
 	assert(tiles[t]);
 	if (!(tiles[t]->flags & Tilecollide))
 		return (Isect){ .is = 0 };
