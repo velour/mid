@@ -126,7 +126,8 @@ static Loc doorloc(Loc loc, Lvl *lvl, Path *p)
 		Loc l1 = (Loc) { rand() % (lvl->w - 1) + 1,
 				 rand() % (lvl->h - 1) + 1 };
 		bool used = p->used[l1.y * lvl->w + l1.x];
-		if (used || dist(loc, l1) >= mindist)
+		Blkinfo bi = blkinfo(lvl, l1.x, l1.y + 1);
+		if (used && dist(loc, l1) >= mindist && bi.flags & Tilecollide)
 			return l1;
 	}
 
