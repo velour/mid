@@ -3,7 +3,7 @@ struct Loc {
 	int x, y;
 };
 
-enum { Maxarea = 10, Maxblks = 10 };
+enum { Maxblks = 15 };
 
 typedef struct Move Move;
 struct Move {
@@ -13,7 +13,7 @@ struct Move {
 
 	/* Array of locs that must be 'clear' */
 	int nclr;
-	Loc clr[Maxarea];
+	Loc clr[Maxblks];
 
 	/* Array of blocks. */
 	int nblks;

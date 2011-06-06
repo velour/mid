@@ -72,25 +72,29 @@ static Move allmoves[] = {
 	  .nblks = 3,
 	  .blks = { {0, 1}, {-1, 1}, {-2, 1}, {-3, 1} } },
 
-	/* ccccc
+	/* cccc
+           ccccc
            scccc
            #   # */
 	{ .wt = 1,
 	  .dx = 4, .dy = 0,
-	  .nclr = 10,
+	  .nclr = 14,
 	  .clr = { {0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0},
-		   {0, -1}, {1, -1}, {2, -1}, {3, -1}, {4, -1}, },
+		   {0, -1}, {1, -1}, {2, -1}, {3, -1}, {4, -1},
+		   {0, -2}, {1, -2}, {2, -2}, {3, -2} },
 	  .nblks = 2,
 	  .blks = { {0, 1}, {4, 1} } },
 
-	/* ccccc
+	/*  cccc
+           ccccc
            ccccs
            #   # */
 	{ .wt = 1,
 	  .dx = -4, .dy = 0,
-	  .nclr = 10,
+	  .nclr = 14,
 	  .clr = { {0, 0}, {-1, 0}, {-2, 0}, {-3, 0}, {-4, 0},
-		   {0, -1}, {-1, -1}, {-2, -1}, {-3, -1}, {-4, -1}, },
+		   {0, -1}, {-1, -1}, {-2, -1}, {-3, -1}, {-4, -1},
+		   {0, -2}, {-1, -2}, {-2, -2}, {-3, -2} },
 	  .nblks = 2, .blks = { {0, 1}, {-4, 1} } },
 
 	/* cc
@@ -286,8 +290,6 @@ void mvinit(void)
 	assert(nxt == Nmoves);
 }
 
-enum { Bufsz = 10 };
-
 Seg segmk(Loc l, Move *m)
 {
 	Seg s;
@@ -318,13 +320,13 @@ bool pathadd(Lvl *l, Path *p, Seg s)
 	if (p->n == Maxsegs - 1 || !segok(l, p, s))
 		return false;
 
-	Loc blks[Bufsz];
-	int n = segblks(s, blks, Bufsz);
+	Loc blks[Maxblks];
+	int n = segblks(s, blks, Maxblks);
 	int base = l->z * l->w * l->h;
 	for (int i = 0; i < n; i++)
 		l->blks[base + blks[i].y * l->w + blks[i].x].tile = '#';
 
-	n = segarea(s, blks, Bufsz);
+	n = segarea(s, blks, Maxblks);
 	for (int i = 0; i < n; i++)
 		p->used[blks[i].y * l->w + blks[i].x] = true;
 
@@ -348,8 +350,8 @@ static bool segok(Lvl *l, Path *p, Seg s)
 /* Conflict with other path segments? */
 static bool segconfl(Lvl *l, Path *p, Seg s)
 {
-	Loc blks[Bufsz];
-	int n = segblks(s, blks, Bufsz);
+	Loc blks[Maxblks];
+	int n = segblks(s, blks, Maxblks);
 
 	for (int i = 0; i < n; i++) {
 		if (p->used[blks[i].y * l->w + blks[i].x])
@@ -362,8 +364,8 @@ static bool segconfl(Lvl *l, Path *p, Seg s)
 /* Test if the segment area is clr. */
 static bool segclr(Lvl *l, Seg s)
 {
-	Loc blks[Bufsz];
-	int n = segarea(s, blks, Bufsz);
+	Loc blks[Maxblks];
+	int n = segarea(s, blks, Maxblks);
 
 	for (int i = 0; i < n; i++) {
 		Blkinfo b = blkinfo(l, blks[i].x, blks[i].y);
