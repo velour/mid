@@ -13,15 +13,12 @@ static Enemymt untimt = {
 
 typedef struct Unti Unti;
 struct Unti{
-	Point p, v;
-	double ddy;
+	Body b;
 	Color c;
 };
 
 enum { Dx = 3, Dy = 8 };
 static const double Dxwater = 1.2f, Dywater = 1.2f;
-
-static Rect untibox(Unti*,Point);
 
 static _Bool (*spawns[])(Enemy*,Point) = {
 	['u'] = untiinit,
@@ -39,7 +36,10 @@ static _Bool untiinit(Enemy *e, Point p){
 	if(!u)
 		return 0;
 
-	u->p = p;
+	if(bodyinit(&u->b, "knight", p.x, p.y, 0)){
+		free(u);
+		return 0;
+	}
 	u->c = (Color){ 255, 55, 55, 255 };
 
 	e->mt = &untimt;
@@ -55,22 +55,9 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 	// Real enemies will do AI
 	Unti *u = e->data;
 
-	Rect box = untibox(u, (Point){0});
-/*
-	Blkinfo bi = lvlmajorblk(l, box);
+	bodyupdate(&u->b, l, NULL);
 
-	double olddx = u->v.x;
-	if(bi.flags & Tilewater && u->v.x)
-		u->v.x = (u->v.x < 0 ? -1 : 1) * Dxwater * Dx;
-
-	double oldddy = u->ddy;
-	if(bi.flags & Tilewater && u->ddy)
-		u->ddy = (u->ddy < 0 ? -1 : 1) * Dywater * Grav;
-
-	Isect i = lvlisect(l, box, u->v);
-	if(i.is) u->p.y += u->v.x + i.dy;
-*/
-	if(isect(box, playerbox(p)))
+	if(isect(u->b.curdir->bbox[u->b.curact], playerbox(p)))
 		u->c.b = 255;
 	else
 		u->c.b = 55;
@@ -80,11 +67,5 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 static void untidraw(Enemy *e, Gfx *g, Point tr){
 	Unti *u = e->data;
 	
-	gfxfillrect(g, untibox(u, tr), u->c);
-}
-
-static Rect untibox(Unti *u, Point tr){
-	Point a = { u->p.x + tr.x, u->p.y + tr.y };
-	Point b = { a.x + Wide, a.y + Tall };
-	return (Rect){ a, b };
+	bodydraw(g, &u->b, tr);
 }
