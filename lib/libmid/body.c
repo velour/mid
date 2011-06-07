@@ -166,20 +166,19 @@ static void chngact(Body *b)
 		b->curact = Stand;
 }
 
-static void imgmvscroll(Body *b, Point *transl, double dx, double dy)
+static void imgmvscroll(Body *b, Point *tr, double dx, double dy)
 {
-	b->imgloc.x += dx;
-	b->imgloc.y += dy;
-
-	if (!transl)
+		b->imgloc.x += dx;
+		b->imgloc.y += dy;
+	if (!tr)
 		return;
 
-	double imgx = b->imgloc.x, imgy = b->imgloc.y;
+	double imgx = b->imgloc.x + tr->x, imgy = b->imgloc.y + tr->y;
 	if ((dx < 0 && imgx < Scrlbuf) || (dx > 0 && imgx > Scrnw - Scrlbuf))
-		transl->x -= dx;
+		tr->x -= dx;
 
 	if ((dy > 0 && imgy > Scrnh - Scrlbuf) || (dy < 0 && imgy < Scrlbuf))
-		transl->y -= dy;
+		tr->y -= dy;
 }
 
 
