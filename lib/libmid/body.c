@@ -168,22 +168,18 @@ static void chngact(Body *b)
 
 static void imgmvscroll(Body *b, Point *transl, double dx, double dy)
 {
-	if (!transl) {
-		b->imgloc.x += dx;
-		b->imgloc.y += dy;
+	b->imgloc.x += dx;
+	b->imgloc.y += dy;
+
+	if (!transl)
 		return;
-	}
 
 	double imgx = b->imgloc.x, imgy = b->imgloc.y;
 	if ((dx < 0 && imgx < Scrlbuf) || (dx > 0 && imgx > Scrnw - Scrlbuf))
 		transl->x -= dx;
-	else
-		b->imgloc.x += dx;
 
 	if ((dy > 0 && imgy > Scrnh - Scrlbuf) || (dy < 0 && imgy < Scrlbuf))
 		transl->y -= dy;
-	else
-		b->imgloc.y += dy;
 }
 
 
@@ -194,5 +190,6 @@ void bodydraw(Gfx *g, Body *b, Point tr)
 		rectmv(&bbox, tr.x, tr.y);
 		gfxfillrect(g, bbox, (Color){255,0,0,255});
 	}
-	animdraw(g, b->curdir->anim[b->curact], b->imgloc);
+	Point p = (Point) { b->imgloc.x + tr.x, b->imgloc.y + tr.y };
+	animdraw(g, b->curdir->anim[b->curact], p);
 }
