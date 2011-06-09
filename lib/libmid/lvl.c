@@ -15,6 +15,10 @@ static void fgrnddraw(Gfx *g, int t, Point pt);
 static Rect tilebbox(int x, int y);
 static Isect tileisect(int t, int x, int y, Rect r);
 static Rect hitzone(Rect a, Point v);
+static void visline(Lvl *l, int x0, int y0, int x1, int y1);
+static bool edge(Lvl *l, int x, int y);
+static bool blkd(Lvl *l, int x, int y);
+static Blk *blk(Lvl *l, int x, int y, int z);
 
 typedef struct Tinfo Tinfo;
 struct Tinfo {
@@ -127,7 +131,7 @@ static bool tileread(FILE *f, Lvl *l, int x, int y, int z)
 		return false;
 	}
 
-	l->blks[z * l->w * l->h + y * l->w + x].tile = c;
+	blk(l, x, y, z)->tile = c;
 
 	return true;
 }
@@ -169,14 +173,13 @@ static Rect tilebbox(int x, int y)
 void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 {
 	int w = l->w, h = l->h;
-	int base = l->z * w * h;
 	for (int x = 0; x < w; x++){
 		int pxx = offs.x + x * Twidth;
 		for (int y = 0; y < h; y++) {
-			int ind = base + y * w + x;
-			if (!(l->blks[ind].flags & Blkvis) && debugging < 2)
+			Blk *b = blk(l, x, y, l->z);
+			if (!(b->flags & Blkvis) && debugging < 2)
 				continue;
-			int t = l->blks[ind].tile;
+			int t = b->tile;
 			Point pt = (Point){ pxx, offs.y + y * Theight };
 
 			if (bkgrnd)
@@ -196,26 +199,26 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 void lvlminidraw(Gfx *g, Lvl *l, Point offs)
 {
 	int w = l->w, h = l->h;
-	int base = l->z * w * h;
 	for (int x = 0; x < w; x++){
 		int pxx = offs.x + x;
 		for (int y = 0; y < h; y++) {
-			int ind = base + y * w + x;
-			if (!(l->blks[ind].flags & Blkvis) && debugging < 2)
+			Blk *b = blk(l, x, y, l->z);
+			if (!(b->flags & Blkvis) && debugging < 2)
 				continue;
-			int t = l->blks[ind].tile;
+			int t = b->tile;
 			Point pt = (Point){ pxx, offs.y + y };
 
 			Color c;
-			if(tiles[t]->flags & Tilecollide)
+			unsigned int flags = tiles[t]->flags;
+			if(flags & Tilecollide)
 				c = (Color){ 0, 0, 0, 255 };
-			else if(tiles[t]->flags & Tilebdoor)
+			else if(flags & Tilebdoor)
 				c = (Color){ 0, 255, 0, 255 };
-			else if(tiles[t]->flags & Tilefdoor)
+			else if(flags & Tilefdoor)
 				c = (Color){ 64, 255, 0, 255 };
-			else if(!tiles[t]->fgfile)
+			else if(!flags)
 				c = (Color){ 255, 255, 255, 255 };
-			else if(tiles[t]->flags & Tilewater)
+			else if(flags & Tilewater)
 				c = (Color){ 75, 75, 255, 255 };
 
 			Rect r = {
@@ -248,8 +251,8 @@ Isect lvlisect(Lvl *l, Rect r, Point v)
 	rectmv(&mv, 0, v.y);
 	for (int x = test.a.x; x <= test.b.x; x++) {
 		for (int y = test.a.y; y <= test.b.y; y++) {
-			int i = l->z * l->h * l->w + y * l->w + x;
-			Isect is = tileisect(l->blks[i].tile, x, y, mv);
+			Blk *b = blk(l, x, y, l->z);
+			Isect is = tileisect(b->tile, x, y, mv);
 			if (is.is && is.dy > isect.dy) {
 				isect.is = true;
 				isect.dy = is.dy;
@@ -265,8 +268,8 @@ Isect lvlisect(Lvl *l, Rect r, Point v)
 	rectmv(&mv, v.x, v.y + (v.y < 0 ? isect.dy : -isect.dy));
 	for (int x = test.a.x; x <= test.b.x; x++) {
 		for (int y = test.a.y; y <= test.b.y; y++) {
-			int i = l->z * l->h * l->w + y * l->w + x;
-			Isect is = tileisect(l->blks[i].tile, x, y, mv);
+			Blk *b = blk(l, x, y, l->z);
+			Isect is = tileisect(b->tile, x, y, mv);
 			if (is.is && is.dx > isect.dx) {
 				isect.is = true;
 				isect.dx = is.dx;
@@ -337,8 +340,7 @@ Blkinfo lvlmajorblk(Lvl *l, Rect r)
 
 Blkinfo blkinfo(Lvl *l, int x, int y)
 {
-	int i = l->z * l->w * l->h + y * l->w + x;
-	int t = l->blks[i].tile;
+	int t = blk(l, x, y, l->z)->tile;
 	assert (tiles[t]);
 	return (Blkinfo) { .x = x, .y = y, .z = l->z, .flags = tiles[t]->flags };
 }
@@ -350,43 +352,11 @@ void swap(int *a, int *b)
 	*b = t;
 }
 
-
 /*
  * Based on Bresenham's line algorithm: Rasterize a line from the
  * location (x0, y0) to (x1, y1).  Set rasterized blocks to visible,
  * stop when the line is finished or when a collidable block was hit.
  */
-void visline(Lvl *l, int x0, int y0, int x1, int y1)
-{
-	bool steep = abs(y1 - y0) > abs(x1 - x0);
-	if (steep) {
-		swap(&x0, &y0);
-		swap(&x1, &y1);
-	}
-	int dx = abs(x1 - x0);
-	int dy = abs(y1 - y0);
-	double err = 0.0;
-	double derr = (double)dy / (double)dx;
-	int ystep = y0 < y1 ? 1 : -1;
-	int y = y0;
-	int base = l->z * l->w * l->h;
-	int xstep = x0 < x1 ? 1 : -1;
-	for (int x = x0; ; x += xstep) {
-		int px = steep ? y : x;
-		int py = steep ? x : y;
-		int ind = base + py * l->w + px;
-		int t = l->blks[ind].tile;
-		l->blks[ind].flags |= Blkvis;
-		if (tiles[t]->flags & Tilecollide || x == x1)
-			break;
-		err += derr;
-		if (err >= 0.5) {
-			y += ystep;
-				err -= 1.0;
-		}
-	}
-}
-
 /* Update the visibility of the level given that the player is viewing
  * the level from location (x, y).  This works by rasterizing
  * 'visibility lines' from (x,y) to each block on the convex hull of
@@ -406,6 +376,53 @@ void lvlvis(Lvl *l, int x, int y)
 	}
 }
 
+static void visline(Lvl *l, int x0, int y0, int x1, int y1)
+{
+	bool steep = abs(y1 - y0) > abs(x1 - x0);
+	if (steep) {
+		swap(&x0, &y0);
+		swap(&x1, &y1);
+	}
+	int dx = abs(x1 - x0);
+	int dy = abs(y1 - y0);
+	double err = 0.0;
+	double derr = (double)dy / (double)dx;
+	int ystep = y0 < y1 ? 1 : -1;
+	int y = y0;
+	int xstep = x0 < x1 ? 1 : -1;
+	for (int x = x0; ; x += xstep) {
+		int px = steep ? y : x;
+		int py = steep ? x : y;
+		blk(l, px, py, l->z)->flags |= Blkvis;
+		if (blkd(l, px, py) || x == x1)
+			break;
+		err += derr;
+		if (err >= 0.5) {
+			/* Test if diagonal movement is blocked on sides. */
+			int x1 = steep ? y + ystep : x + xstep;
+			int y1 = steep ? x + xstep : y + ystep;
+			if (blkd(l, x, y1) && blkd(l, x1, y)) {
+				if (edge(l, x1, y1))
+					blk(l, x1, y1, l->z)->flags |= Blkvis;
+				break;
+			}
+			y += ystep;
+			err -= 1.0;
+		}
+	}
+}
+
+static bool edge(Lvl *l, int x, int y)
+{
+	return x <= 0 || y <= 0 || x >= l->w - 1 || y >= l->h - 1;
+}
+
+static bool blkd(Lvl *l, int x, int y)
+{
+	int t = blk(l, x, y, l->z)->tile;
+	return tiles[t]->flags & Tilecollide;
+}
+
 float blkgrav(int flags)
 {
 	if(flags & Tilewater)
@@ -421,3 +438,9 @@ float blkdrag(int flags)
 	else
 		return 1.0f;
 }
+
+static Blk *blk(Lvl *l, int x, int y, int z)
+{
+	return &l->blks[z * l->w * l->h + y * l->w + x];
+}
+
