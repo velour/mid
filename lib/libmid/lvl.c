@@ -401,7 +401,7 @@ static void visline(Lvl *l, int x0, int y0, int x1, int y1)
 			/* Test if diagonal movement is blocked on sides. */
 			int x1 = steep ? y + ystep : x + xstep;
 			int y1 = steep ? x + xstep : y + ystep;
-			if (blkd(l, x, y1) && blkd(l, x1, y)) {
+			if (blkd(l, px, y1) && blkd(l, x1, py)) {
 				if (edge(l, x1, y1))
 					blk(l, x1, y1, l->z)->flags |= Blkvis;
 				break;
