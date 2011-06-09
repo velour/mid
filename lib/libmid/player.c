@@ -42,12 +42,11 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 	p->bi = bi;
 
 	double olddx = p->body.vel.x;
-	if (bi.flags & Tilewater && p->body.vel.x)
-		p->body.vel.x = (p->body.vel.x < 0 ? -1 : 1) * Dxwater * Dx;
+	if(olddx)
+		p->body.vel.x = (olddx < 0 ? -1 : 1) * blkdrag(bi.flags) * Dx;
 
 	double oldddy = p->body.ddy;
-	if(bi.flags & Tilewater && p->body.ddy)
-		p->body.ddy = (p->body.ddy < 0 ? -1 : 1) * Dywater * Grav;
+	p->body.ddy = blkgrav(bi.flags);
 
 
 	if (p->door && bi.flags & Tilebdoor)

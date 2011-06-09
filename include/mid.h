@@ -239,6 +239,9 @@ Blkinfo blkinfo(Lvl *l, int x, int y);
 /* Get the information on the dominant block that r is overlapping. */
 Blkinfo lvlmajorblk(Lvl *l, Rect r);
 
+float blkgrav(int flags);
+float blkdrag(int flags);
+
 /* Update the visibility of the level given that the player is viewing
  * the level from location (x, y). */
 void lvlvis(Lvl *l, int x, int y);

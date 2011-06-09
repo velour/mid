@@ -18,7 +18,6 @@ struct Unti{
 };
 
 enum { Dx = 3, Dy = 8 };
-static const double Dxwater = 1.2f, Dywater = 1.2f;
 
 static _Bool (*spawns[])(Enemy*,Point) = {
 	['u'] = untiinit,

@@ -405,3 +405,19 @@ void lvlvis(Lvl *l, int x, int y)
 		visline(l, x, y, l->w - 1, i);
 	}
 }
+
+float blkgrav(int flags)
+{
+	if(flags & Tilewater)
+		return 0.2f * Grav;
+	else
+		return Grav;
+}
+
+float blkdrag(int flags)
+{
+	if(flags & Tilewater)
+		return 0.6f;
+	else
+		return 1.0f;
+}
