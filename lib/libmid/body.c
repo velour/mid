@@ -15,7 +15,7 @@ static void chngdir(Body *b);
 static void chngact(Body *b);
 static void imgmvscroll(Body *b, Point *transl, double dx, double dy);
 
-_Bool bodyinit(Body *b, const char *name, int x, int y, int z)
+_Bool bodyinit(Body *b, const char *name, int x, int y)
 {
 	loadanim(&b->left.anim[Stand], name, "left", "stand");
 	loadanim(&b->left.anim[Walk], name, "left", "walk");
@@ -165,8 +165,8 @@ static void chngact(Body *b)
 
 static void imgmvscroll(Body *b, Point *tr, double dx, double dy)
 {
-		b->imgloc.x += dx;
-		b->imgloc.y += dy;
+	b->imgloc.x += dx;
+	b->imgloc.y += dy;
 	if (!tr)
 		return;
 

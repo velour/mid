@@ -296,7 +296,7 @@ struct Body {
 	_Bool fall;
 };
 
-_Bool bodyinit(Body *, const char *name, int x, int y, int z);
+_Bool bodyinit(Body *, const char *name, int x, int y);
 void bodyfree(Body *b);
 void bodydraw(Gfx *g, Body *b, Point tr);
 

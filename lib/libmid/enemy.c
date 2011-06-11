@@ -33,7 +33,7 @@ _Bool enemyinit(Enemy *e, unsigned char id, Point loc){
 static _Bool untiinit(Enemy *e, Point p){
 	Unti *u = xalloc(1, sizeof(*u));
 
-	if(bodyinit(&u->b, "knight", p.x, p.y, 0)){
+	if(bodyinit(&u->b, "knight", p.x, p.y)){
 		xfree(u);
 		return 0;
 	}

@@ -18,7 +18,7 @@ Player *playernew(int x, int y)
 {
 	Player *p = xalloc(1, sizeof(*p));
 
-	if(bodyinit(&p->body, "knight", x, y, 0)){
+	if(bodyinit(&p->body, "knight", x, y)){
 		xfree(p);
 		return NULL;
 	}
