@@ -1,7 +1,7 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
-#include <stdlib.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 enum { Dx = 3, Dy = 8 };
 static const double Dxwater = 0.6f, Dywater = 0.2f;
@@ -16,11 +16,10 @@ struct Player {
 
 Player *playernew(int x, int y)
 {
-	Player *p = calloc(1, sizeof(*p));
-	if (!p)
-		return NULL;
+	Player *p = xalloc(1, sizeof(*p));
+
 	if(bodyinit(&p->body, "knight", x, y, 0)){
-		free(p);
+		xfree(p);
 		return NULL;
 	}
 
@@ -30,7 +29,7 @@ Player *playernew(int x, int y)
 
 void playerfree(Player *p)
 {
-	free(p);
+	xfree(p);
 }
 
 void playerupdate(Player *p, Lvl *l, Point *tr)

@@ -1,5 +1,5 @@
 #include "../../include/mid.h"
-#include <stdlib.h>
+#include <stddef.h>
 
 static _Bool untiinit(Enemy *, Point);
 static void untifree(Enemy*);
@@ -31,12 +31,10 @@ _Bool enemyinit(Enemy *e, unsigned char id, Point loc){
 }
 
 static _Bool untiinit(Enemy *e, Point p){
-	Unti *u = calloc(1, sizeof(*u));
-	if(!u)
-		return 0;
+	Unti *u = xalloc(1, sizeof(*u));
 
 	if(bodyinit(&u->b, "knight", p.x, p.y, 0)){
-		free(u);
+		xfree(u);
 		return 0;
 	}
 	u->c = (Color){ 255, 55, 55, 255 };
@@ -47,7 +45,7 @@ static _Bool untiinit(Enemy *e, Point p){
 }
 
 static void untifree(Enemy *e){
-	free(e->data);
+	xfree(e->data);
 }
 
 static void untiupdate(Enemy *e, Player *p, Lvl *l){

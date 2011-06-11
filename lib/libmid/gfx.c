@@ -3,7 +3,6 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 #include <assert.h>
-#include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -105,18 +104,14 @@ Img *imgnew(const char *path){
 	if(!t)
 		return NULL;
 
-	Img *i = malloc(sizeof(*i));
-	if (!i){
-		SDL_DestroyTexture(t);
-		return NULL;
-	}
+	Img *i = xalloc(1, sizeof(*i));
 	i->tex = t;
 	return i;
 }
 
 void imgfree(Img *img){
 	SDL_DestroyTexture(img->tex);
-	free(img);
+	xfree(img);
 }
 
 Point imgdims(const Img *img){
@@ -142,11 +137,7 @@ Txt *txtnew(const char *font, int sz, Color c){
 	TTF_Font *f = TTF_OpenFont(font, sz);
 	if(!f)
 		return NULL;
-	Txt *t = malloc(sizeof(*t));
-	if(!t){
-		TTF_CloseFont(f);
-		return NULL;
-	}
+	Txt *t = xalloc(1, sizeof(*t));
 	t->font = f;
 	t->color = c;
 	return t;
@@ -154,7 +145,7 @@ Txt *txtnew(const char *font, int sz, Color c){
 
 void txtfree(Txt *t){
 	TTF_CloseFont(t->font);
-	free(t);
+	xfree(t);
 }
 
 Point txtdims(const Txt *t, const char *fmt, ...){
@@ -221,11 +212,7 @@ static Img *vtxt2img(Gfx *g, Txt *t, const char *fmt, va_list ap)
 	if (!tex)
 		return NULL;
 
-	Img *i = malloc(sizeof(*i));
-	if (!i){
-		SDL_DestroyTexture(tex);
-		return NULL;
-	}
+	Img *i = xalloc(1, sizeof(*i));
 	i->tex = tex;
 	return i;
 }

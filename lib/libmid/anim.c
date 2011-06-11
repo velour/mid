@@ -3,7 +3,6 @@
 #include "fs.h"
 #include <assert.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <errno.h>
@@ -45,9 +44,8 @@ static int readpath(FILE *f, char buf[], int len)
 char *strdup(const char s[])
 {
 	int l = strlen(s);
-	char *dst = malloc(sizeof(*dst) * l + 1);
-	if (!dst)
-		return NULL;
+	char *dst = xalloc(sizeof(*dst) * l + 1, 1);
+
 	int i;
 	for (i = 0; i < l; i++)
 		dst[i] = s[i];
@@ -99,9 +97,7 @@ Anim *animnew(const char *path)
 		return NULL;
 	if (fscanf(f, "%d", &n) != 1)
 		goto err;
-	Anim *anim = calloc(1, sizeof(*anim) + sizeof(Frame[n]));
-	if (!anim)
-		goto err;
+	Anim *anim = xalloc(1, sizeof(*anim) + sizeof(Frame[n]));
 	if (!readframes(imgs, f, n, anim))
 		goto err1;
 	anim->nframes = n;
@@ -110,7 +106,7 @@ Anim *animnew(const char *path)
 	fclose(f);
 	return anim;
 err1:
-	free(anim);
+	xfree(anim);
 err:
 	fclose(f);
 	return NULL;
@@ -120,9 +116,9 @@ void animfree(Anim *a)
 {
 	for (int i = 0; i < a->nframes; i++) {
 		resrcrel(imgs, a->frames[i].file, NULL);
-		free(a->frames[i].file);
+		xfree(a->frames[i].file);
 	}
-	free(a);
+	xfree(a);
 }
 
 void animupdate(Anim *a, int n)

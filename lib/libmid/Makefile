@@ -16,6 +16,7 @@ OFILES :=\
 	keymap.o\
 	enemy.o\
 	body.o\
+	mem.o\
 
 HFILES :=\
 	../../include/mid.h\

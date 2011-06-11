@@ -1,7 +1,7 @@
 #include "../../include/mid.h"
 #include <assert.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <errno.h>
 #include <math.h>
@@ -50,7 +50,7 @@ bool istile(int t)
 
 void lvlfree(Lvl *l)
 {
-	free(l);
+	xfree(l);
 }
 
 Lvl *lvlload(const char *path)
@@ -67,7 +67,7 @@ Lvl *lvlload(const char *path)
 
 Lvl *lvlnew(int d, int w, int h)
 {
-	Lvl *l = calloc(1, sizeof(*l) + sizeof(Blk[d * w * h]));
+	Lvl *l = xalloc(1, sizeof(*l) + sizeof(Blk[d * w * h]));
 	if (!l)
 		return NULL;
 	l->d = d;
@@ -105,7 +105,7 @@ static Lvl *lvlread(FILE *f)
 errnl:
 	seterrstr("Expected newline in level file: z=%d, x=%d, y=%d", z, x, y);
 err:
-	free(l);
+	xfree(l);
 	return NULL;
 }
 
@@ -146,8 +146,7 @@ static void bkgrnddraw(Gfx *g, int t, Point pt)
 	}
 	if (!tiles[t]->bganim)
 		tiles[t]->bganim = resrcacq(anims, tiles[t]->bgfile, NULL);
-	if (!tiles[t]->bganim)
-		abort();
+	assert(tiles[t]->bganim);
 	animdraw(g, tiles[t]->bganim, pt);
 }
 
@@ -158,8 +157,7 @@ static void fgrnddraw(Gfx *g, int t, Point pt)
 		return;
 	if (!tiles[t]->fganim)
 		tiles[t]->fganim = resrcacq(anims, tiles[t]->fgfile, NULL);
-	if (!tiles[t]->fganim)
-		abort();
+	assert(tiles[t]->fganim);
 	animdraw(g, tiles[t]->fganim, pt);
 }
 

@@ -1,8 +1,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <assert.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include "fs.h"
@@ -20,10 +20,8 @@ void fscat(const char *d, const char *f, char cat[])
 		f += 1;
 		fl -= 1;
 	}
-	if (dl + fl >= PATH_MAX) {
-		fprintf(stderr, "Paths too long to fscat\n");
-		abort();
-	}
+	assert(dl + fl < PATH_MAX && "Paths too long to fscat\n");
+
 	strncpy(cat, d, dl);
 	if (dl > 0) {
 		cat[dl] = DIRSEP;

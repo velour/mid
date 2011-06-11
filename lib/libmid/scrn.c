@@ -1,5 +1,5 @@
 #include "../../include/mid.h"
-#include <stdlib.h>
+#include <assert.h>
 
 void framestart(void);
 void framefinish(void);
@@ -12,9 +12,7 @@ struct Scrnstk{
 };
 
 Scrnstk *scrnstknew(void){
-	Scrnstk *s = calloc(1, sizeof(*s));
-	if (!s)
-		return NULL;
+	Scrnstk *s = xalloc(1, sizeof(*s));
 	s->nxt = s->scrns;
 	return s;
 }
@@ -25,12 +23,12 @@ void scrnstkfree(Scrnstk *stk){
 		Scrn *s = stk->scrns[i];
 		s->mt->free(s);
 	}
-	free(stk);
+	xfree(stk);
 }
 
 void scrnstkpush(Scrnstk *stk, Scrn *s){
-	if (stk->nxt == &stk->scrns[Stkmax - 1])
-		abort();
+	assert(stk->nxt != &stk->scrns[Stkmax - 1]);
+
 	*(stk->nxt) = s;
 	stk->nxt++;
 }
@@ -40,8 +38,8 @@ Scrn *scrnstktop(Scrnstk *s){
 }
 
 void scrnstkpop(Scrnstk *stk){
-	if (stk->nxt < &stk->scrns[0])
-		abort();
+	assert(stk->nxt >= &stk->scrns[0]);
+
 	Scrn *s = stk->nxt[-1];
 	s->mt->free(s);
 	stk->nxt--;

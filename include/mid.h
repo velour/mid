@@ -2,6 +2,9 @@
 extern double meanftime;
 extern int debugging;
 
+void *xalloc(unsigned long n, unsigned long sz);
+void xfree(void*);
+
 const char *miderrstr(void);
 void seterrstr(const char *fmt, ...);
 

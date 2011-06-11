@@ -1,3 +1,4 @@
+#include "../../include/mid.h"
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 #include <stdbool.h>
@@ -26,20 +27,16 @@ void sndfree(void)
 	Mix_CloseAudio();
 }
 
-typedef struct Music Music;
 struct Music {
 	Mix_Music *m;
 };
 
 Music *musicnew(const char *path)
 {
-	Music *m = malloc(sizeof(*m));
-	if (!m)
-		return NULL;
-
+	Music *m = xalloc(1, sizeof(*m));
 	m->m = Mix_LoadMUS(path);
 	if (!m->m) {
-		free(m);
+		xfree(m);
 		return NULL;
 	}
 
@@ -49,7 +46,7 @@ Music *musicnew(const char *path)
 void musicfree(Music *m)
 {
 	Mix_FreeMusic(m->m);
-	free(m);
+	xfree(m);
 }
 
 void musicstart(Music *m, int fadein)
@@ -72,19 +69,16 @@ void musicresume(void)
 	Mix_ResumeMusic();
 }
 
-typedef struct Sfx Sfx;
 struct Sfx {
 	Mix_Chunk *c;
 };
 
 Sfx *sfxnew(const char *path)
 {
-	Sfx *s = malloc(sizeof(*s));
-	if (!s)
-		return NULL;
+	Sfx *s = xalloc(1, sizeof(*s));
 	s->c = Mix_LoadWAV(path);
 	if (!s->c) {
-		free(s);
+		xfree(s);
 		return NULL;
 	}
 
@@ -94,7 +88,7 @@ Sfx *sfxnew(const char *path)
 void sfxfree(Sfx *s)
 {
 	Mix_FreeChunk(s->c);
-	free(s);
+	xfree(s);
 }
 
 void sfxplay(Sfx *s)

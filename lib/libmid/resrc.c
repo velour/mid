@@ -3,7 +3,6 @@
  * simple cache with a FIFO-ish replacement policy. */
 #include <assert.h>
 #include <stdbool.h>
-#include <stdlib.h>
 #include <string.h>
 #include "fs.h"
 #include "../../include/mid.h"
@@ -79,8 +78,8 @@ static void tblrem(Resrcops *ops, Resrc *tbl[], int sz, Resrc *rm)
 	Resrc *p;
 	for (p = tbl[i]; p->nxt && p->nxt != rm; p = p->nxt)
 		;
-	if (!p->nxt)
-		abort();
+	assert(p->nxt);
+
 	if (p->nxt == rm)
 		p->nxt = rm->nxt;
 }
@@ -98,13 +97,13 @@ static void rtabgrow(Rtab *t)
 	int nxtsz = t->sz * 2;
 	if (nxtsz == 0)
 		nxtsz = Initsize;
-	Resrc **nxttbl = calloc(nxtsz, sizeof(*nxttbl));
+	Resrc **nxttbl = xalloc(nxtsz, sizeof(*nxttbl));
 	for (int i = 0; i < t->sz; i++) {
 		for (Resrc *p = t->tbl[i]; p; p = p->nxt)
 			tblins(t->ops, nxttbl, nxtsz, p);
 	}
 	if (t->tbl)
-		free(t->tbl);
+		xfree(t->tbl);
 	t->tbl = nxttbl;
 	t->sz = nxtsz;
 }
@@ -126,7 +125,7 @@ static void cacheresrc(Rtab *t, Resrc *r)
 		tblrem(t->ops, t->tbl, t->sz, bump);
 		if (t->ops->unload)
 			t->ops->unload(bump->path, bump->resrc, bump->aux);
-		free(bump);
+		xfree(bump);
 	}
 	assert (t->cfill < Cachesize);
 	t->cache[t->cfill] = r;
@@ -136,7 +135,7 @@ static void cacheresrc(Rtab *t, Resrc *r)
 
 static Resrc *resrcnew(const char *path, const char *file, void *aux)
 {
-	Resrc *r = calloc(1, sizeof(*r));
+	Resrc *r = xalloc(1, sizeof(*r));
 	if (!r)
 		return NULL;
 	strncpy(r->file, file, PATH_MAX + 1);
@@ -188,8 +187,8 @@ void *resrcacq(Rtab *t, const char *file, void *aux)
 void resrcrel(Rtab *t, const char *file, void *aux)
 {
 	Resrc *r = tblfind(t->ops, t->tbl, t->sz, file, aux);
-	if (!r)
-		abort();
+	assert(r);
+
 	r->refs--;
 	if (r->refs == 0)
 		cacheresrc(t, r);
@@ -197,7 +196,7 @@ void resrcrel(Rtab *t, const char *file, void *aux)
 
 Rtab *rtabnew(Resrcops *ops)
 {
-	Rtab *t = calloc(1, sizeof(*t));
+	Rtab *t = xalloc(1, sizeof(*t));
 	if (!t)
 		return NULL;
 
@@ -214,10 +213,10 @@ void rtabfree(Rtab *t)
 			if (t->ops->unload)
 				t->ops->unload(p->path, p->resrc, p->aux);
 			q = p->nxt;
-			free(p);
+			xfree(p);
 		}
 	}
-	free(t);
+	xfree(t);
 }
 
 Rtab *imgs;

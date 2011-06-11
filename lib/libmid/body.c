@@ -1,7 +1,6 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include <stdbool.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 
@@ -46,7 +45,6 @@ _Bool bodyinit(Body *b, const char *name, int x, int y, int z)
 
 void bodyfree(Body *b)
 {
-	free(b);
 }
 
 void bodyupdate(Body *b, Lvl *l, Point *transl)
