@@ -44,8 +44,8 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 	if(olddx)
 		p->body.vel.x = (olddx < 0 ? -1 : 1) * blkdrag(bi.flags) * Dx;
 
-	double oldddy = p->body.ddy;
-	p->body.ddy = blkgrav(bi.flags);
+	double oldddy = p->body.a.y;
+	p->body.a.y = blkgrav(bi.flags);
 
 
 	if (p->door && bi.flags & Tilebdoor)
@@ -56,7 +56,7 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 
 	bodyupdate(&p->body, l, tr);
 	p->body.vel.x = olddx;
-	p->body.ddy = oldddy;
+	p->body.a.y = oldddy;
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
@@ -83,7 +83,7 @@ void playerhandle(Player *p, Event *e)
 	}else if(k == kmap[Mvjump]){
 		if(!p->body.fall){
 			p->body.vel.y = (e->down ? -Dy : 0.0);
-			p->body.ddy = Grav;
+			p->body.a.y = Grav;
 			p->body.fall = 1;
 		}
 	}else if(k == kmap[Mvdoor] && e->down){
