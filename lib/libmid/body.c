@@ -33,7 +33,6 @@ _Bool bodyinit(Body *b, const char *name, int x, int y, int z)
 	b->right.bbox[Jump] = (Rect){ { x, y }, { x + Wide, y - Tall } };
 
 	b->vel = (Point) { 0, 0 };
-	b->z = z;
 	b->imgloc = (Point) { x, y - Tall };
 	b->curdir = &b->right;
 	b->curact = Stand;

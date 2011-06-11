@@ -292,7 +292,6 @@ struct Body {
 	Dir *curdir;
 	Act curact;
 	Point vel, imgloc;
-	int z;
 	double ddy;
 	_Bool fall;
 };

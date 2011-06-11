@@ -52,7 +52,6 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 		l->z += 1;
 	else if (p->door && bi.flags & Tilefdoor)
 		l->z -= 1;
-	p->body.z = l->z;
 	p->door = false;
 
 	bodyupdate(&p->body, l, tr);
