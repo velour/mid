@@ -25,12 +25,7 @@ _Bool bodyinit(Body *b, const char *name, int x, int y)
 	loadanim(&b->right.anim[Jump], name, "right", "jump");
 
 	/* Eventually we want to load this from the resrc directory. */
-	b->left.bbox[Stand] = (Rect){ { x, y }, { x + Wide, y - Tall } };
-	b->left.bbox[Walk] = (Rect){ { x, y }, { x + Wide, y - Tall } };
-	b->left.bbox[Jump] = (Rect){ { x, y }, { x + Wide, y - Tall } };
-	b->right.bbox[Stand] = (Rect){ { x, y }, { x + Wide, y - Tall } };
-	b->right.bbox[Walk] = (Rect){ { x, y }, { x + Wide, y - Tall } };
-	b->right.bbox[Jump] = (Rect){ { x, y }, { x + Wide, y - Tall } };
+	b->bbox = (Rect){ { x, y }, { x + Wide, y - Tall } };
 
 	b->vel = (Point) { 0, 0 };
 	b->imgloc = (Point) { x, y - Tall };
@@ -83,17 +78,16 @@ static void bodymv(Body *b, Lvl *l, Point *transl)
 		Point d = velstep(b, v);
 		left.x -= fabs(d.x);
 		left.y -= fabs(d.y);
-		Isect is = lvlisect(l, b->curdir->bbox[b->curact], d);
+		Isect is = lvlisect(l, b->bbox, d);
 		if (is.is && is.dy != 0.0)
 			fallis = is;
+
 		d.x = d.x + -xmul * is.dx;
 		d.y = d.y + -ymul * is.dy;
 		v.x -= d.x;
 		v.y -= d.y;
-		for (int i = 0; i < Nacts; i++) {
-			rectmv(&b->left.bbox[i], d.x, d.y);
-			rectmv(&b->right.bbox[i], d.x, d.y);
-		}
+
+		rectmv(&b->bbox, d.x, d.y);
 		imgmvscroll(b, transl, d.x, d.y);
 	}
 	dofall(b, fallis);
@@ -101,7 +95,7 @@ static void bodymv(Body *b, Lvl *l, Point *transl)
 
 static Point velstep(Body *b, Point v)
 {
-	Point loc = b->curdir->bbox[b->curact].a;
+	Point loc = b->bbox.a;
 	Point d = (Point) { tillwhole(loc.x, v.x), tillwhole(loc.y, v.y) };
 	if (d.x == 0.0 && v.x != 0.0)
 		d.x = fabs(v.x) / v.x;
@@ -182,7 +176,7 @@ static void imgmvscroll(Body *b, Point *tr, double dx, double dy)
 void bodydraw(Gfx *g, Body *b, Point tr)
 {
 	if(debugging){
-		Rect bbox = b->curdir->bbox[b->curact];
+		Rect bbox = b->bbox;
 		rectmv(&bbox, tr.x, tr.y);
 		gfxfillrect(g, bbox, (Color){255,0,0,255});
 	}

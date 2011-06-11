@@ -54,7 +54,7 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 
 	bodyupdate(&u->b, l, NULL);
 
-	if(isect(u->b.curdir->bbox[u->b.curact], playerbox(p)))
+	if(isect(u->b.bbox, playerbox(p)))
 		u->c.b = 255;
 	else
 		u->c.b = 55;

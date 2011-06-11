@@ -34,7 +34,7 @@ void playerfree(Player *p)
 
 void playerupdate(Player *p, Lvl *l, Point *tr)
 {
-	Blkinfo bi = lvlmajorblk(l, p->body.curdir->bbox[p->body.curact]);
+	Blkinfo bi = lvlmajorblk(l, p->body.bbox);
 
 	if (bi.x != p->bi.x || bi.y != p->bi.x || bi.z != p->bi.z)
 		lvlvis(l, bi.x, bi.y);
@@ -93,10 +93,10 @@ void playerhandle(Player *p, Event *e)
 
 Point playerpos(Player *p)
 {
-	return p->body.curdir->bbox[p->body.curact].a;
+	return p->body.bbox.a;
 }
 
 Rect playerbox(Player *p)
 {
-	return p->body.curdir->bbox[p->body.curact];
+	return p->body.bbox;
 }

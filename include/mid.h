@@ -283,11 +283,11 @@ enum Act {
 typedef struct Dir Dir;
 struct Dir {
 	Anim *anim[Nacts];
-	Rect bbox[Nacts];
 };
 
 typedef struct Body Body;
 struct Body {
+	Rect bbox;
 	Dir left, right;
 	Dir *curdir;
 	Act curact;
