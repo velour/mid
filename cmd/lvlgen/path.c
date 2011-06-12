@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
-#include "path.h"
+#include "lvlgen.h"
 
 static bool segok(Lvl *l, Path *p, Seg s);
 static bool segconfl(Lvl *l, Path *p, Seg s);
@@ -12,283 +12,6 @@ static bool segclr(Lvl *l, Seg s);
 static bool beenthere(Lvl *l, Path *p, Seg s);
 static int segarea(Seg s, Loc l[], int sz);
 static int segblks(Seg s, Loc l[], int sz);
-
-/* Moves that are pieced together to build a path throughout the
- * level.  The comment above the move describes it: s is the start
- * loc, # is a block and c is a location that must be cleared to make
- * the move. */
-static Move allmoves[] = {
-	/* sc
-           ## */
-	{ .wt = 1,
-	  .dx = 1, .dy = 0,
-	  .nclr = 2,
-	  .clr = { {0, 0}, {1, 0} },
-	  .nblks = 2,
-	  .blks = { {0, 1}, {1, 1} } },
-
-	/* cs
-           ## */
-	{ .wt = 1,
-	  .dx = -1, .dy = 0,
-	  .nclr = 2,
-	  .clr = { {0, 0}, {-1, 0} },
-	  .nblks = 2,
-	  .blks = { {0, 1}, {-1, 1} } },
-
-	/* scc
-           ### */
-	{ .wt = 2,
-	  .dx = 2, .dy = 0,
-	  .nclr = 3,
-	  .clr = { {0, 0}, {1, 0}, {2, 0} },
-	  .nblks = 3,
-	  .blks = { {0, 1}, {1, 1}, {2, 1} } },
-
-	/* ccs
-           ### */
-	{ .wt = 2,
-	  .dx = -2, .dy = 0,
-	  .nclr = 3,
-	  .clr = { {0, 0}, {-1, 0}, {-2, 0} },
-	  .nblks = 3,
-	  .blks = { {0, 1}, {-1, 1}, {-2, 1} } },
-
-	/* sccc
-           #### */
-	{ .wt = 2,
-	  .dx = 3, .dy = 0,
-	  .nclr = 4,
-	  .clr = { {0, 0}, {1, 0}, {2, 0}, {3, 0} },
-	  .nblks = 4,
-	  .blks = { {0, 1}, {1, 1}, {2, 1}, {3, 1} } },
-
-	/* cccs
-           #### */
-	{ .wt = 2,
-	  .dx = -3, .dy = 0,
-	  .nclr = 3,
-	  .clr = { {0, 0}, {-1, 0}, {-2, 0}, {-3, 0} },
-	  .nblks = 3,
-	  .blks = { {0, 1}, {-1, 1}, {-2, 1}, {-3, 1} } },
-
-	/* cccc
-           ccccc
-           scccc
-           #   # */
-	{ .wt = 1,
-	  .dx = 4, .dy = 0,
-	  .nclr = 14,
-	  .clr = { {0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0},
-		   {0, -1}, {1, -1}, {2, -1}, {3, -1}, {4, -1},
-		   {0, -2}, {1, -2}, {2, -2}, {3, -2} },
-	  .nblks = 2,
-	  .blks = { {0, 1}, {4, 1} } },
-
-	/*  cccc
-           ccccc
-           ccccs
-           #   # */
-	{ .wt = 1,
-	  .dx = -4, .dy = 0,
-	  .nclr = 14,
-	  .clr = { {0, 0}, {-1, 0}, {-2, 0}, {-3, 0}, {-4, 0},
-		   {0, -1}, {-1, -1}, {-2, -1}, {-3, -1}, {-4, -1},
-		   {0, -2}, {-1, -2}, {-2, -2}, {-3, -2} },
-	  .nblks = 2, .blks = { {0, 1}, {-4, 1} } },
-
-	/* cc
-	   s#
-	   # */
-	{ .wt = 1,
-	  .dx = 1, .dy = -1,
-	  .nclr = 3, .clr = { {0, 0}, {0, -1}, {1, -1} },
-	  .nblks = 2, .blks = { {0, 1}, {1, 0} } },
-
-	/* cc
-	   s#
-	   ##*/
-	{ .wt = 1,
-	  .dx = 1, .dy = -1,
-	  .nclr = 3, .clr = { {0, 0}, {0, -1}, {1, -1} },
-	  .nblks = 3, .blks = { {0, 1}, {1, 1}, {1, 0} } },
-
-	/* cs
-	   c#
-	   # */
-	{ .wt = 1,
-	  .dx = -1, .dy = 1,
-	  .nclr = 3,
-	  .clr = { {0, 0}, {-1, 0}, {-1, 1} },
-	  .nblks = 2,
-	  .blks = { {0, 1}, {-1, 2} } },
-
-	/* cs
-	   c#
-	   ##*/
-	{ .wt = 2,
-	  .dx = -1, .dy = 1,
-	  .nclr = 3,
-	  .clr = { {0, 0}, {-1, 0}, {-1, 1} },
-	  .nblks = 3,
-	  .blks = { {0, 1}, {0, 2}, {-1, 2} } },
-
-	/* sc
-	   #c
-	    # */
-	{ .wt = 1,
-	  .dx = 1, .dy = 1,
-	  .nclr = 3,
-	  .clr = { {0, 0}, {1, 0}, {1, 1} },
-	  .nblks = 2,
-	  .blks = { {0, 1}, {1, 2} } },
-
-	/* sc
-	   #c
-	   ## */
-	{ .wt = 1,
-	  .dx = 1, .dy = 1,
-	  .nclr = 3,
-	  .clr = { {0, 0}, {1, 0}, {1, 1} },
-	  .nblks = 3,
-	  .blks = { {0, 1}, {0, 2}, {1, 2} } },
-
-	/* cc
-	   #s
-	    # */
-	{ .wt = 1,
-	  .dx = -1, .dy = -1,
-	  .nclr = 3,
-	  .clr = { {0, 0}, {0, -1}, {-1, -1} },
-	  .nblks = 2,
-	  .blks = { {0, 1}, {-1, 0} } },
-
-	/* cc
-	   #s
-	   ## */
-	{ .wt = 2,
-	  .dx = -1, .dy = -1,
-	  .nclr = 3,
-	  .clr = { {0, 0}, {0, -1}, {-1, -1} },
-	  .nblks = 3,
-	  .blks = { {0, 1}, {-1, 1}, {-1, 0} } },
-
-	/*  c
-           ccc
-           cc#
-           s
-           # */
-	{ .wt = 1,
-	  .dx = 2, .dy = -2,
-	  .nclr = 7,
-	  .clr = { {0, 0}, {0, -1}, {0, -2}, {1, -1}, {1, -2},
-		   {1, -3}, {2, -2} },
-	  .nblks = 2, .blks = { {0, 1}, {2, -1} } },
-
-	/*  c
-           ccc
-           cc#
-           s##
-           ### */
-	{ .wt = 2,
-	  .dx = 2, .dy = -2,
-	  .nclr = 7,
-	  .clr = { {0, 0}, {0, -1}, {0, -2}, {1, -1}, {1, -2},
-		   {1, -3}, {2, -2} },
-	  .nblks = 6,
-	  .blks = { {0, 1}, {1, 1}, {2, 1}, {1, 0}, {2, 0}, {2, -1} } },
-
-	/* ccs
-           c #
-           c
-           # */
-	{ .wt = 1,
-	  .dx = -2, .dy = 2,
-	  .nclr = 5,
-	  .clr = { {0, 0}, {-1, 0}, {-2, 0}, {-2, 1}, {-2, 2} },
-	  .nblks = 2,
-	  .blks = { {0, 1}, {-2, 3} } },
-
-	/* ccs
-           c #
-           c##
-           ### */
-	{ .wt = 2,
-	  .dx = -2, .dy = 2,
-	  .nclr = 5,
-	  .clr = { {0, 0}, {-1, 0}, {-2, 0}, {-2, 1}, {-2, 2} },
-	  .nblks = 6,
-	  .blks = { {0, 1}, {0, 2}, {0, 3}, {-1, 2}, {-1, 3}, {-2, 3} } },
-
-	/*  c
-           ccc
-           #cc
-             s
-             # */
-	{ .wt = 1,
-	  .dx = -2, .dy = -2,
-	  .nclr = 7,
-	  .clr = { {0, 0}, {0, -1}, {0, -2}, {-1, -1}, {-1, -2},
-		   {-1, -3}, {-2, -2} },
-	  .nblks = 2,
-	  .blks = { {0, 1}, {-2, -1} } },
-
-	/* ccc
-           #cc
-           ##s
-           ### */
-	{ .wt = 2,
-	  .dx = -2, .dy = -2,
-	  .nclr = 6,
-	  .clr = { {0, 0}, {0, -1}, {0, -2}, {-1, -1}, {-1, -2}, {-2, -2} },
-	  .nblks = 6,
-	  .blks = { {0, 1}, {-1, 1}, {-2, 1}, {-1, 0}, {-2, 0}, {-2, -1} } },
-
-	/* scc
-           # c
-             c
-             # */
-	{ .wt = 1,
-	  .dx = 2, .dy = 2,
-	  .nclr = 5,
-	  .clr = { {0, 0}, {1, 0}, {2, 0}, {2, 1}, {2, 2} },
-	  .nblks = 2,
-	  .blks = { {0, 1}, {2, 3} } },
-
-	/* scc
-           # c
-           ##c
-           ### */
-	{ .wt = 2,
-	  .dx = 2, .dy = 2,
-	  .nclr = 5,
-	  .clr = { {0, 0}, {1, 0}, {2, 0}, {2, 1}, {2, 2} },
-	  .nblks = 6,
-	  .blks = { {0, 1}, {0, 2}, {0, 3}, {1, 2}, {1, 3}, {2, 3} } },
-
-};
-
-static const int Nallmoves = sizeof(allmoves) / sizeof(allmoves[0]);
-
-Move **moves;
-int Nmoves;
-
-void mvinit(void)
-{
-	for (int i = 0; i < Nallmoves; i++)
-		Nmoves += allmoves[i].wt;
-	moves = calloc(Nmoves, sizeof(*moves));
-	if (!moves)
-		fatal("Failed to allocate move array");
-	int nxt = 0;
-	for (int i = 0; i < Nallmoves; i++) {
-		for (int j = 0; j < allmoves[i].wt; j++) {
-			moves[nxt] = &allmoves[i];
-			nxt++;
-		}
-	}
-	assert(nxt == Nmoves);
-}
 
 Seg segmk(Loc l, Move *m)
 {
@@ -317,7 +40,7 @@ void pathfree(Path *p)
 
 bool pathadd(Lvl *l, Path *p, Seg s)
 {
-	if (p->n == Maxsegs - 1 || !segok(l, p, s))
+	if (p->n == Maxsegs || !segok(l, p, s))
 		return false;
 
 	Loc blks[Maxblks];
@@ -368,6 +91,9 @@ static bool segclr(Lvl *l, Seg s)
 	int n = segarea(s, blks, Maxblks);
 
 	for (int i = 0; i < n; i++) {
+		if (blks[i].x < 0 || blks[i].x >= l->w
+		    || blks[i].y < 0 || blks[i].y >= l->h)
+			return false;
 		Blkinfo b = blkinfo(l, blks[i].x, blks[i].y);
 		if (b.flags & Tilecollide)
 			return false;
@@ -404,11 +130,11 @@ static int segarea(Seg s, Loc l[], int sz)
 static int segblks(Seg s, Loc l[], int sz)
 {
 	const Move *m = s.mv;
-	if (sz < m->nblks)
+	if (sz < m->nblkd)
 		fatal("Blk buffer is too small");
-	for (int i = 0; i < m->nblks; i++)
-		l[i] = (Loc) {s.l0.x + m->blks[i].x, s.l0.y + m->blks[i].y};
-	return m->nblks;
+	for (int i = 0; i < m->nblkd; i++)
+		l[i] = (Loc) {s.l0.x + m->blkd[i].x, s.l0.y + m->blkd[i].y};
+	return m->nblkd;
 }
 
 void pathpr(Lvl *l, Path *p)

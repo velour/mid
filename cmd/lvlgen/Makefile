@@ -7,9 +7,10 @@ LIB := ../../lib/libmid/libmid.a\
 OFILES :=\
 	lvlgen.o\
 	path.o\
+	move.o\
 
 HFILES := ../../include/mid.h\
 	../../include/log.h\
-	path.h\
+	lvlgen.h\
 
 include ../../Make.cmd

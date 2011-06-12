@@ -3,12 +3,17 @@ struct Loc {
 	int x, y;
 };
 
+typedef struct Mvspec Mvspec;
+struct Mvspec {
+	int wt, w, h;
+	char *blks;
+};
+
 enum { Maxblks = 15 };
 
 typedef struct Move Move;
 struct Move {
 	int wt;
-
 	int dx, dy;
 
 	/* Array of locs that must be 'clear' */
@@ -16,12 +21,15 @@ struct Move {
 	Loc clr[Maxblks];
 
 	/* Array of blocks. */
-	int nblks;
-	Loc blks[Maxblks];
+	int nblkd;
+	Loc blkd[Maxblks];
+
+	Mvspec spec;
 };
 
-extern Move **moves;
-extern int Nmoves;
+Move *moves;
+int Nmoves;
+void movesini(void);
 
 typedef struct Seg Seg;
 struct Seg {
@@ -29,19 +37,21 @@ struct Seg {
 	Move *mv;
 };
 
+Seg segmk(Loc l, Move *m);
+void segpr(Seg s);
+
 enum { Maxsegs = 1024 };
 
 typedef struct Path Path;
 struct Path {
 	int n;
 	Seg ss[Maxsegs];
-	bool used[];
+	_Bool used[];
 };
 
-void mvinit(void);
-Path *pathnew(Lvl *l);
+struct Lvl;
+
+Path *pathnew(struct Lvl *l);
 void pathfree(Path *p);
-_Bool pathadd(Lvl *l, Path *p, Seg s);
-Seg segmk(Loc l, Move *m);
-void segpr(Seg s);
-void pathpr(Lvl *l, Path *p);
+_Bool pathadd(struct Lvl *l, Path *p, Seg s);
+void pathpr(struct Lvl *l, Path *p);

@@ -7,7 +7,7 @@
 #include <math.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
-#include "path.h"
+#include "lvlgen.h"
 
 static void init(Lvl *l);
 static void output(Lvl *l);
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 	pr("seed: %d\n", seed);
 	srand(seed);
 
-	mvinit();
+	movesini();
 	init(lvl);
 
 	Loc loc = (Loc) { 2, 3 };
@@ -100,7 +100,7 @@ static void buildpath(Lvl *lvl, Path *p, Loc loc)
 		int base = rand() % Nmoves;
 		for (int j = 0; j < Nmoves; j++) {
 			int mv = (base + j) % Nmoves;
-			Seg s = segmk(loc, moves[mv]);
+			Seg s = segmk(loc, &moves[mv]);
 			if (pathadd(lvl, p, s)) {
 				buildpath(lvl, p, s.l1);
 				break;
@@ -123,8 +123,8 @@ static Loc doorloc(Loc loc, Lvl *lvl, Path *p)
 	int mindist = mv * 2 / 3;
 
 	for ( ; ; ) {
-		Loc l1 = (Loc) { rand() % (lvl->w - 1) + 1,
-				 rand() % (lvl->h - 1) + 1 };
+		Loc l1 = (Loc) { rand() % (lvl->w - 2) + 1,
+				 rand() % (lvl->h - 2) + 1 };
 		bool used = p->used[l1.y * lvl->w + l1.x];
 		Blkinfo bi = blkinfo(lvl, l1.x, l1.y + 1);
 		if (used && dist(loc, l1) >= mindist && bi.flags & Tilecollide)
@@ -141,4 +141,3 @@ static double dist(Loc l0, Loc l1)
 	int dy = l1.y - l0.y;
 	return sqrt(dx * dx + dy * dy);
 }
-
