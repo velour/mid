@@ -12,6 +12,11 @@ static int clr(Mvspec s, Loc l[], int sz);
 static Loc mvstart(Mvspec s);
 static Loc mvend(Mvspec s);
 
+/* Move specification array: 's' is the start of the move, 'e' is the
+ * end of the move, '#' is a block, ' ' is a space that *must* be
+ * clear and anything else is a wild card (whatever ends up being put
+ * there while building the path).
+ */
 static Mvspec specs[] = {
 	{ .blks = "se"
                   "##",
