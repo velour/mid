@@ -1,3 +1,7 @@
+struct Blk;
+
+struct Blk *blk(Lvl *l, int x, int y, int z);
+
 typedef struct Loc Loc;
 struct Loc {
 	int x, y;
@@ -11,8 +15,8 @@ struct Mvspec {
 
 enum { Maxblks = 15 };
 
-typedef struct Move Move;
-struct Move {
+typedef struct Mv Mv;
+struct Mv {
 	int wt;
 	int dx, dy;
 
@@ -27,17 +31,18 @@ struct Move {
 	Mvspec spec;
 };
 
-Move *moves;
+Mv *moves;
 int Nmoves;
-void movesini(void);
+void mvini(void);
+void mvblit(Mv *mv, Lvl *l, Loc l0);
 
 typedef struct Seg Seg;
 struct Seg {
 	Loc l0, l1;;
-	Move *mv;
+	Mv *mv;
 };
 
-Seg segmk(Loc l, Move *m);
+Seg segmk(Loc l, Mv *m);
 void segpr(Seg s);
 
 enum { Maxsegs = 1024 };

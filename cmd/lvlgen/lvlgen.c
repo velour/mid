@@ -15,7 +15,6 @@ static void output(Lvl *l);
  * next zlayer. */
 static Loc zlayer(Loc loc, Lvl *lvl);
 static void buildpath(Lvl *lvl, Path *p, Loc loc);
-static Blk *ind(Lvl *l, int x, int y, int z);
 static Loc doorloc(Loc loc, Lvl *lvl, Path *p);
 static double dist(Loc l0, Loc l1);
 
@@ -35,16 +34,16 @@ int main(int argc, char *argv[])
 	pr("seed: %d\n", seed);
 	srand(seed);
 
-	movesini();
+	mvini();
 	init(lvl);
 
 	Loc loc = (Loc) { 2, 3 };
 	for (int z = 0; z < d; z++) {
 		loc = zlayer(loc, lvl);
 		if (z < d - 1) {
-			ind(lvl, loc.x, loc.y, lvl->z)->tile = '>';
+			blk(lvl, loc.x, loc.y, lvl->z)->tile = '>';
 			lvl->z++;
-			ind(lvl, loc.x, loc.y, lvl->z)->tile = '<';
+			blk(lvl, loc.x, loc.y, lvl->z)->tile = '<';
 		}
 	}
 
@@ -62,7 +61,7 @@ static void init(Lvl *l)
 		int c = ' ';
 		if (x == 0 || x == l->w - 1 || y == 0 || y == l->h - 1)
 				c = '#';
-			ind(l, x, y, z)->tile = c;
+			blk(l, x, y, z)->tile = c;
 	}
 	}
 	}
@@ -74,7 +73,7 @@ static void output(Lvl *l)
 	for (int z = 0; z < l->d; z++) {
 		for (int y = 0; y < l->h; y++) {
 			for (int x = 0; x < l->w; x++) {
-				fputc(ind(l, x, y, z)->tile, stdout);
+				fputc(blk(l, x, y, z)->tile, stdout);
 			}
 			fputc('\n', stdout);
 		}
@@ -109,7 +108,7 @@ static void buildpath(Lvl *lvl, Path *p, Loc loc)
 	}
 }
 
-static Blk *ind(Lvl *l, int x, int y, int z)
+Blk *blk(Lvl *l, int x, int y, int z)
 {
 	int i = z * l->w * l->h + y * l->w + x;
 	return &l->blks[i];

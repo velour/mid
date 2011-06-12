@@ -13,7 +13,7 @@ static bool beenthere(Lvl *l, Path *p, Seg s);
 static int segarea(Seg s, Loc l[], int sz);
 static int segblks(Seg s, Loc l[], int sz);
 
-Seg segmk(Loc l, Move *m)
+Seg segmk(Loc l, Mv *m)
 {
 	Seg s;
 	s.l0 = l;
@@ -43,13 +43,10 @@ bool pathadd(Lvl *l, Path *p, Seg s)
 	if (p->n == Maxsegs || !segok(l, p, s))
 		return false;
 
-	Loc blks[Maxblks];
-	int n = segblks(s, blks, Maxblks);
-	int base = l->z * l->w * l->h;
-	for (int i = 0; i < n; i++)
-		l->blks[base + blks[i].y * l->w + blks[i].x].tile = '#';
+	mvblit(s.mv, l, s.l0);
 
-	n = segarea(s, blks, Maxblks);
+	Loc blks[Maxblks];
+	int n = segarea(s, blks, Maxblks);
 	for (int i = 0; i < n; i++)
 		p->used[blks[i].y * l->w + blks[i].x] = true;
 
@@ -115,7 +112,7 @@ static bool beenthere(Lvl *l, Path *p, Seg s)
  * this segment. */
 static int segarea(Seg s, Loc l[], int sz)
 {
-	const Move *m = s.mv;
+	const Mv *m = s.mv;
 	if (sz < m->nclr)
 		fatal("Area buffer is too small");
 	for (int i = 0; i < m->nclr; i++)
@@ -129,7 +126,7 @@ static int segarea(Seg s, Loc l[], int sz)
  * filled in. */
 static int segblks(Seg s, Loc l[], int sz)
 {
-	const Move *m = s.mv;
+	const Mv *m = s.mv;
 	if (sz < m->nblkd)
 		fatal("Blk buffer is too small");
 	for (int i = 0; i < m->nblkd; i++)

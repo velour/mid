@@ -3,10 +3,14 @@
 #include <stdbool.h>
 #include <assert.h>
 #include "../../include/mid.h"
+#include "../../include/log.h"
 #include "lvlgen.h"
 
-static Move movemk(Mvspec s);
-static int locs(Mvspec s, Loc l0, bool (*p)(char c), Loc l[], int sz);
+static Mv mvmk(Mvspec s);
+static int blkd(Mvspec s, Loc l[], int sz);
+static int clr(Mvspec s, Loc l[], int sz);
+static Loc mvstart(Mvspec s);
+static Loc mvend(Mvspec s);
 
 static Mvspec specs[] = {
 	{ .blks = "se"
@@ -140,10 +144,10 @@ static Mvspec specs[] = {
 
 static const int Nspecs = sizeof(specs) / sizeof(specs[0]);
 
-Move *moves;
+Mv *moves;
 int Nmoves;
 
-void movesini(void)
+void mvini(void)
 {
 	for (int i = 0; i < Nspecs; i++)
 		Nmoves += specs[i].wt;
@@ -154,7 +158,7 @@ void movesini(void)
 	for (int i = 0; i < Nspecs; i++) {
 		Mvspec s = specs[i];
 		for (int j = 0; j < s.wt; j++) {
-			moves[nxt] = movemk(s);
+			moves[nxt] = mvmk(s);
 			nxt++;
 		}
 	}
@@ -181,41 +185,94 @@ bool isend(char c)
 	return c == 'e';
 }
 
-static Move movemk(Mvspec s)
+static Mv mvmk(Mvspec spec)
 {
-	Loc start, end;
-	locs(s, (Loc){0, 0}, isstart, &start, 1);
-	locs(s, (Loc){0, 0}, isend, &end, 1);
+	Loc s = mvstart(spec), e = mvend(spec);
 
-	Move mv;
-	mv.wt = s.wt;
-	mv.dx = end.x - start.x;
-	mv.dy = end.y - start.y;
-	mv.spec = s;
-	mv.nclr = locs(s, start, isclr, mv.clr, Maxblks);
-	mv.nblkd = locs(s, start, isblkd, mv.blkd, Maxblks);
+	Mv mv;
+	mv.wt = spec.wt;
+	mv.dx = e.x - s.x;
+	mv.dy = e.y - s.y;
+	mv.spec = spec;
+	mv.nclr = clr(spec, mv.clr, Maxblks);
+	mv.nblkd = blkd(spec, mv.blkd, Maxblks);
 
 	return mv;
 }
 
-// Get the locations of the various blocks matching character 'ch'.
-static int locs(Mvspec s, Loc l0, bool (*p)(char c), Loc l[], int sz)
+static Loc mvstart(Mvspec s)
+{
+	for (int x = 0; x < s.w; x++) {
+	for (int y = 0; y < s.h; y++) {
+		if (s.blks[y * s.w + x] == 's')
+			return (Loc) {x, y};
+	}
+	}
+	fatal("No start location specified for move");
+}
+
+static Loc mvend(Mvspec s)
+{
+	for (int x = 0; x < s.w; x++) {
+	for (int y = 0; y < s.h; y++) {
+		if (s.blks[y * s.w + x] == 'e')
+			return (Loc) {x, y};
+	}
+	}
+	fatal("No end location specified for move");
+}
+
+static int blkd(Mvspec s, Loc l[], int sz)
 {
 
 	int i = 0;
+	Loc l0 = mvstart(s);
 
 	for (int x = 0; x < s.w; x++) {
 	for (int y = 0; y < s.h; y++) {
-		if (p(s.blks[y * s.w + x])){
-			if (i < sz) {
-				l[i] = (Loc){x - l0.x , y - l0.y};
-				i++;
-			} else {
-				fprintf(stderr, "locs: array is too small\n");
-			}
+		if (isblkd(s.blks[y * s.w + x])){
+			if (i >= sz)
+				fatal("blkd: array is too small\n");
+			l[i] = (Loc){x - l0.x , y - l0.y};
+			i++;
 		}
 	}
 	}
 
 	return i;
+}
+
+static int clr(Mvspec s, Loc l[], int sz)
+{
+
+	int i = 0;
+	Loc l0 = mvstart(s);
+
+	for (int x = 0; x < s.w; x++) {
+	for (int y = 0; y < s.h; y++) {
+		if (isclr(s.blks[y * s.w + x])){
+			if (i >= sz)
+				fatal("clr: array is too small\n");
+			l[i] = (Loc){x - l0.x , y - l0.y};
+			i++;
+		}
+	}
+	}
+
+	return i;
+}
+
+void mvblit(Mv *mv, Lvl *l, Loc l0)
+{
+	Loc strt = mvstart(mv->spec);
+
+	for (int x = 0; x < mv->spec.w; x++) {
+	for (int y = 0; y < mv->spec.h; y++) {
+		if (mv->spec.blks[y * mv->spec.w + x] == '#') {
+			int lx = (x - strt.x) + l0.x;
+			int ly = (y - strt.y) + l0.y;
+			blk(l, lx, ly, l->z)->tile = '#';
+		}
+	}
+	}
 }
