@@ -1,3 +1,6 @@
+* Better door placement in lvlgen: technically, the current algorithm
+  is not guaranteed to terminate :-)
+
 * Different sized bodys... currently only 32x32.
 
 * Inventory
