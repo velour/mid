@@ -60,3 +60,5 @@ Path *pathnew(struct Lvl *l);
 void pathfree(Path *p);
 _Bool pathadd(struct Lvl *l, Path *p, Seg s);
 void pathpr(struct Lvl *l, Path *p);
+
+Loc doorloc(Lvl *lvl, Path *p, Loc loc);

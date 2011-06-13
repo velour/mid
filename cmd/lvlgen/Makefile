@@ -8,6 +8,7 @@ OFILES :=\
 	lvlgen.o\
 	path.o\
 	move.o\
+	door.o\
 
 HFILES := ../../include/mid.h\
 	../../include/log.h\

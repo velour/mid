@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <time.h>
 #include <assert.h>
-#include <math.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include "lvlgen.h"
@@ -15,8 +14,6 @@ static void output(Lvl *l);
  * next zlayer. */
 static Loc zlayer(Loc loc, Lvl *lvl);
 static void buildpath(Lvl *lvl, Path *p, Loc loc);
-static Loc doorloc(Loc loc, Lvl *lvl, Path *p);
-static double dist(Loc l0, Loc l1);
 
 int main(int argc, char *argv[])
 {
@@ -85,7 +82,7 @@ static Loc zlayer(Loc loc, Lvl *lvl)
 {
 	Path *p = pathnew(lvl);
 	buildpath(lvl, p, loc);
-	Loc nxt = doorloc(loc, lvl, p);
+	Loc nxt = doorloc(lvl, p, loc);
 	pathfree(p);
 	return nxt;
 }
@@ -112,31 +109,4 @@ Blk *blk(Lvl *l, int x, int y, int z)
 {
 	int i = z * l->w * l->h + y * l->w + x;
 	return &l->blks[i];
-}
-
-/* This algorithm is technically not even guaranteed to ever
- * terminate, but its OK for now. */
-static Loc doorloc(Loc loc, Lvl *lvl, Path *p)
-{
-	int mv = lvl->w > lvl->h ? lvl->w : lvl->h;
-	int mindist = mv * 2 / 3;
-
-	for ( ; ; ) {
-		Loc l1 = (Loc) { rand() % (lvl->w - 2) + 1,
-				 rand() % (lvl->h - 2) + 1 };
-		bool used = p->used[l1.y * lvl->w + l1.x];
-		Blkinfo bi = blkinfo(lvl, l1.x, l1.y + 1);
-		if (used && dist(loc, l1) >= mindist && bi.flags & Tilecollide)
-			return l1;
-	}
-
-	fatal("Can't get here");
-	return (Loc){0};
-}
-
-static double dist(Loc l0, Loc l1)
-{
-	int dx = l1.x - l0.x;
-	int dy = l1.y - l0.y;
-	return sqrt(dx * dx + dy * dy);
 }

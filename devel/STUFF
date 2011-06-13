@@ -1,5 +1,5 @@
-* Better door placement in lvlgen: technically, the current algorithm
-  is not guaranteed to terminate :-)
+* Dynamically select the path size in lvlgen based on width and
+  height.
 
 * Different sized bodys... currently only 32x32.
 
