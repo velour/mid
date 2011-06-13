@@ -33,7 +33,7 @@ _Bool enemyinit(Enemy *e, unsigned char id, Point loc){
 static _Bool untiinit(Enemy *e, Point p){
 	Unti *u = xalloc(1, sizeof(*u));
 
-	if(bodyinit(&u->b, "knight", p.x, p.y)){
+	if(bodyinit(&u->b, p.x, p.y)){
 		xfree(u);
 		return 0;
 	}
@@ -52,7 +52,7 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 	// Real enemies will do AI
 	Unti *u = e->data;
 
-	bodyupdate(&u->b, l, NULL);
+	bodyupdate(&u->b, l);
 
 	if(isect(u->b.bbox, playerbox(p)))
 		u->c.b = 255;
@@ -62,7 +62,7 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 }
 
 static void untidraw(Enemy *e, Gfx *g, Point tr){
-	Unti *u = e->data;
+//	Unti *u = e->data;
 	
-	bodydraw(g, &u->b, tr);
+	//bodydraw(g, &u->b, tr);
 }
