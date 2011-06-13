@@ -45,13 +45,12 @@ struct Seg {
 Seg segmk(Loc l, Mv *m);
 void segpr(Seg s);
 
-enum { Maxsegs = 1024 };
-
 typedef struct Path Path;
 struct Path {
 	int n;
-	Seg ss[Maxsegs];
-	_Bool used[];
+	int nsegs;
+	Seg *segs;
+	_Bool *used;
 };
 
 struct Lvl;
@@ -60,3 +59,5 @@ Path *pathnew(struct Lvl *l);
 void pathfree(Path *p);
 _Bool pathadd(struct Lvl *l, Path *p, Seg s);
 void pathpr(struct Lvl *l, Path *p);
+
+Loc doorloc(Lvl *lvl, Path *p, Loc loc);
