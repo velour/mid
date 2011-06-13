@@ -62,7 +62,11 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 }
 
 static void untidraw(Enemy *e, Gfx *g, Point tr){
-//	Unti *u = e->data;
-	
-	//bodydraw(g, &u->b, tr);
+	Unti *u = e->data;
+
+	Rect r = {
+		{u->b.bbox.a.x + tr.x, u->b.bbox.a.y + tr.y},
+		{u->b.bbox.b.x + tr.x, u->b.bbox.b.y + tr.y}
+	};
+	gfxfillrect(g, r, u->c);
 }
