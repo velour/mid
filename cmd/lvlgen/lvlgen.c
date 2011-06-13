@@ -91,9 +91,9 @@ enum { Minbr = 3, Maxbr = 9 };
 
 static void buildpath(Lvl *lvl, Path *p, Loc loc)
 {
-	int br = rand() % (Maxbr - Minbr) + Minbr;
+	int br = rnd(Minbr, Maxbr);
 	for (int i = 0; i < br; i++) {
-		int base = rand() % Nmoves;
+		int base = rnd(0, Nmoves);
 		for (int j = 0; j < Nmoves; j++) {
 			int mv = (base + j) % Nmoves;
 			Seg s = segmk(loc, &moves[mv]);
@@ -113,12 +113,12 @@ Blk *blk(Lvl *l, int x, int y, int z)
 
 int rnd(int min, int max)
 {
-	assert (min > 0);
+	assert (min >= 0);
 	assert (max > min);
 	int r = rand();
 
-	if (max - min == 0)
+	if (min == 0)
 		return r % max;
 
-	return r % (max - min) - min;
+	return r % (max - min) + min;
 }
