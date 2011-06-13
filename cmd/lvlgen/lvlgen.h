@@ -13,7 +13,7 @@ struct Mvspec {
 	char *blks;
 };
 
-enum { Maxblks = 15 };
+enum { Maxblks = 64 };
 
 typedef struct Mv Mv;
 struct Mv {
@@ -47,8 +47,7 @@ void segpr(Seg s);
 
 typedef struct Path Path;
 struct Path {
-	int n;
-	int nsegs;
+	int maxsegs, nsegs;
 	Seg *segs;
 	_Bool *used;
 };

@@ -21,8 +21,11 @@ Loc doorloc(Lvl *lvl, Path *p, Loc l0)
 	assert(sz > 0);
 	sortbydist(locs, sz, l0);
 
-	int i = (rand() % (sz / 4)) + (3 * sz / 4);
-	assert (i > 0);
+	int min = 3 * sz / 4;
+	int quart = sz / 4;
+	int max = min + quart;
+	int i = max - min == 0 ? rand() % sz : (rand() % quart) + min;
+	assert (i >= 0);
 	assert (i < sz);
 	return locs[i];
 }

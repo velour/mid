@@ -29,8 +29,8 @@ Path *pathnew(Lvl *l)
 {
 	Path *p = xalloc(1, sizeof(*p));
 	p->used = xalloc(l->w * l->h, sizeof(p->used[0]));
-	p->nsegs = l->w * l->h;
-	p->segs = xalloc(p->nsegs, sizeof(p->segs[0]));
+	p->maxsegs = l->w * l->h;
+	p->segs = xalloc(p->maxsegs, sizeof(p->segs[0]));
 	return p;
 }
 
@@ -43,7 +43,7 @@ void pathfree(Path *p)
 
 bool pathadd(Lvl *l, Path *p, Seg s)
 {
-	if (p->n == p->nsegs || !segok(l, p, s))
+	if (p->nsegs == p->maxsegs || !segok(l, p, s))
 		return false;
 
 	mvblit(s.mv, l, s.l0);
@@ -55,8 +55,8 @@ bool pathadd(Lvl *l, Path *p, Seg s)
 		p->used[blk.y * l->w + blk.x] = true;
 	}
 
-	p->segs[p->n] = s;
-	p->n++;
+	p->segs[p->nsegs] = s;
+	p->nsegs++;
 
 	return true;
 }
@@ -107,7 +107,7 @@ static bool segclr(Lvl *l, Seg s)
 
 static bool beenthere(Lvl *l, Path *p, Seg s)
 {
-	for (int i = 0; i < p->n; i++) {
+	for (int i = 0; i < p->nsegs; i++) {
 		if (p->used[s.l1.y * l->w + s.l1.x])
 			return true;
 	}

@@ -87,11 +87,11 @@ static Loc zlayer(Loc loc, Lvl *lvl)
 	return nxt;
 }
 
-enum { Maxbr = 5 };
+enum { Minbr = 3, Maxbr = 9 };
 
 static void buildpath(Lvl *lvl, Path *p, Loc loc)
 {
-	int br = rand() % Maxbr + 1;
+	int br = rand() % (Maxbr - Minbr) + Minbr;
 	for (int i = 0; i < br; i++) {
 		int base = rand() % Nmoves;
 		for (int j = 0; j < Nmoves; j++) {
@@ -109,4 +109,16 @@ Blk *blk(Lvl *l, int x, int y, int z)
 {
 	int i = z * l->w * l->h + y * l->w + x;
 	return &l->blks[i];
+}
+
+int rnd(int min, int max)
+{
+	assert (min > 0);
+	assert (max > min);
+	int r = rand();
+
+	if (max - min == 0)
+		return r % max;
+
+	return r % (max - min) - min;
 }

@@ -18,51 +18,67 @@ static Loc mvend(Mvspec s);
  * there while building the path).
  */
 static Mvspec specs[] = {
+	{ .blks = "######"
+                  "#    #"
+                  "#    #"
+                  "s    e"
+                  "#    #"
+                  "######",
+	  .wt = 2, .w = 6, .h = 6, },
+
+	{ .blks = "######"
+                  "#    #"
+                  "#    #"
+                  "e    s"
+                  "#    #"
+                  "######",
+	  .wt = 2, .w = 6, .h = 6, },
+
 	{ .blks = "se"
                   "##",
-	  .wt = 1, .w = 2, .h = 2, },
+	  .wt = 5, .w = 2, .h = 2, },
 
 	{ .blks = "es"
                   "##",
-	  .wt = 1, .w = 2, .h = 2, },
+	  .wt = 5, .w = 2, .h = 2, },
 
 	{ .blks = "s e"
                   "###",
-	  .wt = 2, .w = 3, .h = 2 },
+	  .wt = 10, .w = 3, .h = 2 },
 
 	{ .blks = "e s"
                   "###",
-	  .wt = 2, .w = 3, .h = 2 },
+	  .wt = 10, .w = 3, .h = 2 },
 
 	{ .blks = "s  e"
                   "####",
-          .wt = 2, .w = 4, .h = 2 },
+          .wt = 10, .w = 4, .h = 2 },
 
 	{ .blks = "e  s"
                   "####",
-          .wt = 2, .w = 4, .h = 2 },
+          .wt = 10, .w = 4, .h = 2 },
 
 	{ .blks = "    ."
                   "     "
                   "s   e"
 		  "#...#",
-          .wt = 2, .h = 4, .w = 5 },
+          .wt = 10, .h = 4, .w = 5 },
 
 	{ .blks = ".    "
                   "     "
                   "e   s"
 		  "#...#",
-          .wt = 2, .h = 4, .w = 5 },
+          .wt = 10, .h = 4, .w = 5 },
 
 	{ .blks = " e"
                   "s#"
 		  "#.",
-          .wt = 1, .w = 2, .h = 3 },
+          .wt = 0, .w = 2, .h = 3 },
 
 	{ .blks = " e"
                   "s#"
 		  "##",
-          .wt = 1, .w = 2, .h = 3 },
+          .wt = 5, .w = 2, .h = 3 },
 
 	{ .blks = " s"
                   "e#"
@@ -99,7 +115,7 @@ static Mvspec specs[] = {
                   "  #"
                   "s.."
 		  "#..",
-          .wt = 2, .w = 3, .h = 5 },
+          .wt = 10, .w = 3, .h = 5 },
 
 	{ .blks = ". ."
 	          "  e"
@@ -112,7 +128,7 @@ static Mvspec specs[] = {
                   " .#"
                   "e.."
 		  "#..",
-          .wt = 2, .w = 3, .h = 4 },
+          .wt = 10, .w = 3, .h = 4 },
 
 	{ .blks = "  s"
                   " .#"
@@ -125,7 +141,7 @@ static Mvspec specs[] = {
                   "#  "
                   "..s"
                   "..#",
-          .wt = 3, .w = 3, .h = 5 },
+          .wt = 15, .w = 3, .h = 5 },
 
 	{ .blks = "e  "
                   "#  "
@@ -137,7 +153,7 @@ static Mvspec specs[] = {
                   "#. "
                   "..e"
                   "..#",
-          .wt = 3, .w = 3, .h = 4 },
+          .wt = 15, .w = 3, .h = 4 },
 
 	{ .blks = "s  "
                   "#. "
@@ -170,26 +186,6 @@ void mvini(void)
 	assert(nxt == Nmoves);
 }
 
-bool isclr(char c)
-{
-	return c == ' ' || c == 's' || c == 'e';
-}
-
-bool isblkd(char c)
-{
-	return c == '#';
-}
-
-bool isstart(char c)
-{
-	return c == 's';
-}
-
-bool isend(char c)
-{
-	return c == 'e';
-}
-
 static Mv mvmk(Mvspec spec)
 {
 	Loc s = mvstart(spec), e = mvend(spec);
@@ -209,7 +205,8 @@ static Loc mvstart(Mvspec s)
 {
 	for (int x = 0; x < s.w; x++) {
 	for (int y = 0; y < s.h; y++) {
-		if (s.blks[y * s.w + x] == 's')
+		char c = s.blks[y * s.w + x];
+		if (c == 's')
 			return (Loc) {x, y};
 	}
 	}
@@ -220,7 +217,8 @@ static Loc mvend(Mvspec s)
 {
 	for (int x = 0; x < s.w; x++) {
 	for (int y = 0; y < s.h; y++) {
-		if (s.blks[y * s.w + x] == 'e')
+		char c = s.blks[y * s.w + x];
+		if (c == 'e')
 			return (Loc) {x, y};
 	}
 	}
@@ -235,7 +233,8 @@ static int blkd(Mvspec s, Loc l[], int sz)
 
 	for (int x = 0; x < s.w; x++) {
 	for (int y = 0; y < s.h; y++) {
-		if (isblkd(s.blks[y * s.w + x])){
+		char c = s.blks[y * s.w + x];
+		if (c == '#') {
 			if (i >= sz)
 				fatal("blkd: array is too small\n");
 			l[i] = (Loc){x - l0.x , y - l0.y};
@@ -255,7 +254,8 @@ static int clr(Mvspec s, Loc l[], int sz)
 
 	for (int x = 0; x < s.w; x++) {
 	for (int y = 0; y < s.h; y++) {
-		if (isclr(s.blks[y * s.w + x])){
+		char c = s.blks[y * s.w + x];
+		if (c == ' ' || c == 's' || c == 'e') {
 			if (i >= sz)
 				fatal("clr: array is too small\n");
 			l[i] = (Loc){x - l0.x , y - l0.y};
