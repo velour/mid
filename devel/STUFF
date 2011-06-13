@@ -1,6 +1,3 @@
-* Dynamically select the path size in lvlgen based on width and
-  height.
-
 * Different sized bodys... currently only 32x32.
 
 * Inventory

@@ -27,18 +27,23 @@ void segpr(Seg s)
 
 Path *pathnew(Lvl *l)
 {
-	Path *p = calloc(1, sizeof(*p) + sizeof(bool[l->w * l->h]));
+	Path *p = xalloc(1, sizeof(*p));
+	p->used = xalloc(l->w * l->h, sizeof(p->used[0]));
+	p->nsegs = l->w * l->h;
+	p->segs = xalloc(p->nsegs, sizeof(p->segs[0]));
 	return p;
 }
 
 void pathfree(Path *p)
 {
+	free(p->segs);
+	free(p->used);
 	free(p);
 }
 
 bool pathadd(Lvl *l, Path *p, Seg s)
 {
-	if (p->n == Maxsegs || !segok(l, p, s))
+	if (p->n == p->nsegs || !segok(l, p, s))
 		return false;
 
 	mvblit(s.mv, l, s.l0);
@@ -50,7 +55,7 @@ bool pathadd(Lvl *l, Path *p, Seg s)
 		p->used[blk.y * l->w + blk.x] = true;
 	}
 
-	p->ss[p->n] = s;
+	p->segs[p->n] = s;
 	p->n++;
 
 	return true;
