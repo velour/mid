@@ -10,8 +10,6 @@ static bool segok(Lvl *l, Path *p, Seg s);
 static bool segconfl(Lvl *l, Path *p, Seg s);
 static bool segclr(Lvl *l, Seg s);
 static bool beenthere(Lvl *l, Path *p, Seg s);
-static int segarea(Seg s, Loc l[], int sz);
-static int segblks(Seg s, Loc l[], int sz);
 
 Seg segmk(Loc l, Mv *m)
 {
@@ -45,10 +43,12 @@ bool pathadd(Lvl *l, Path *p, Seg s)
 
 	mvblit(s.mv, l, s.l0);
 
-	Loc blks[Maxblks];
-	int n = segarea(s, blks, Maxblks);
-	for (int i = 0; i < n; i++)
-		p->used[blks[i].y * l->w + blks[i].x] = true;
+	for (int i = 0; i < s.mv->nclr; i++) {
+		Loc blk = s.mv->clr[i];
+		blk.x += s.l0.x;
+		blk.y += s.l0.y;
+		p->used[blk.y * l->w + blk.x] = true;
+	}
 
 	p->ss[p->n] = s;
 	p->n++;
@@ -70,11 +70,13 @@ static bool segok(Lvl *l, Path *p, Seg s)
 /* Conflict with other path segments? */
 static bool segconfl(Lvl *l, Path *p, Seg s)
 {
-	Loc blks[Maxblks];
-	int n = segblks(s, blks, Maxblks);
-
-	for (int i = 0; i < n; i++) {
-		if (p->used[blks[i].y * l->w + blks[i].x])
+	for (int i = 0; i < s.mv->nblkd; i++) {
+		Loc blk = s.mv->blkd[i];
+		blk.x += s.l0.x;
+		blk.y += s.l0.y;
+		if (blk.x < 0 || blk.x >= l->w || blk.y < 0 || blk.y >= l->h)
+			return false;
+		if (p->used[blk.y * l->w + blk.x])
 			return true;
 	}
 
@@ -84,14 +86,13 @@ static bool segconfl(Lvl *l, Path *p, Seg s)
 /* Test if the segment area is clr. */
 static bool segclr(Lvl *l, Seg s)
 {
-	Loc blks[Maxblks];
-	int n = segarea(s, blks, Maxblks);
-
-	for (int i = 0; i < n; i++) {
-		if (blks[i].x < 0 || blks[i].x >= l->w
-		    || blks[i].y < 0 || blks[i].y >= l->h)
+	for (int i = 0; i < s.mv->nclr; i++) {
+		Loc blk = s.mv->clr[i];
+		blk.x += s.l0.x;
+		blk.y += s.l0.y;
+		if (blk.x < 0 || blk.x >= l->w || blk.y < 0 || blk.y >= l->h)
 			return false;
-		Blkinfo b = blkinfo(l, blks[i].x, blks[i].y);
+		Blkinfo b = blkinfo(l, blk.x, blk.y);
 		if (b.flags & Tilecollide)
 			return false;
 	}
@@ -106,32 +107,6 @@ static bool beenthere(Lvl *l, Path *p, Seg s)
 			return true;
 	}
 	return false;
-}
-
-/* Fill 'l' with the location of level blocks that must be clr for
- * this segment. */
-static int segarea(Seg s, Loc l[], int sz)
-{
-	const Mv *m = s.mv;
-	if (sz < m->nclr)
-		fatal("Area buffer is too small");
-	for (int i = 0; i < m->nclr; i++)
-		l[i] = (Loc) {s.l0.x + m->clr[i].x, s.l0.y + m->clr[i].y};
-	return m->nclr;
-}
-
-
-/* Fill in 'l' (which has size 'sz') with the location of the blocks
- * for the given segment.  The return value is the number of blocks
- * filled in. */
-static int segblks(Seg s, Loc l[], int sz)
-{
-	const Mv *m = s.mv;
-	if (sz < m->nblkd)
-		fatal("Blk buffer is too small");
-	for (int i = 0; i < m->nblkd; i++)
-		l[i] = (Loc) {s.l0.x + m->blkd[i].x, s.l0.y + m->blkd[i].y};
-	return m->nblkd;
 }
 
 void pathpr(Lvl *l, Path *p)
