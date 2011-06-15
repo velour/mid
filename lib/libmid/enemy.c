@@ -15,8 +15,6 @@ struct Unti{
 	Color c;
 };
 
-enum { Dx = 3, Dy = 8 };
-
 static _Bool (*spawns[])(Enemy*,Point) = {
 	['u'] = untiinit,
 };
