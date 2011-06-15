@@ -13,7 +13,6 @@ static Enemymt untimt = {
 
 typedef struct Unti Unti;
 struct Unti{
-	Body b;
 	Color c;
 };
 
@@ -31,12 +30,10 @@ _Bool enemyinit(Enemy *e, unsigned char id, Point loc){
 }
 
 static _Bool untiinit(Enemy *e, Point p){
-	Unti *u = xalloc(1, sizeof(*u));
-
-	if(bodyinit(&u->b, p.x, p.y)){
-		xfree(u);
+	if(bodyinit(&e->b, p.x, p.y))
 		return 0;
-	}
+
+	Unti *u = xalloc(1, sizeof(*u));
 	u->c = (Color){ 255, 55, 55, 255 };
 
 	e->mt = &untimt;
@@ -52,9 +49,9 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 	// Real enemies will do AI
 	Unti *u = e->data;
 
-	bodyupdate(&u->b, l);
+	bodyupdate(&e->b, l);
 
-	if(isect(u->b.bbox, playerbox(p)))
+	if(isect(e->b.bbox, playerbox(p)))
 		u->c.b = 255;
 	else
 		u->c.b = 55;
@@ -65,8 +62,8 @@ static void untidraw(Enemy *e, Gfx *g, Point tr){
 	Unti *u = e->data;
 
 	Rect r = {
-		{u->b.bbox.a.x + tr.x, u->b.bbox.a.y + tr.y},
-		{u->b.bbox.b.x + tr.x, u->b.bbox.b.y + tr.y}
+		{e->b.bbox.a.x + tr.x, e->b.bbox.a.y + tr.y},
+		{e->b.bbox.b.x + tr.x, e->b.bbox.b.y + tr.y}
 	};
 	gfxfillrect(g, r, u->c);
 }

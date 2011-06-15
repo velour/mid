@@ -306,6 +306,7 @@ struct Enemymt{
 
 struct Enemy{
 	Enemymt *mt;
+	Body b;
 	void *data;
 };
 
