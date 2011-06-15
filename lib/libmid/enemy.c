@@ -1,5 +1,4 @@
 #include "../../include/mid.h"
-#include <stddef.h>
 
 static _Bool untiinit(Enemy *, Point);
 static void untifree(Enemy*);
