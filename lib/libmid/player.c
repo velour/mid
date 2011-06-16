@@ -28,6 +28,7 @@ struct Player {
 
 	Body body;
 	bool door;
+	int jframes;
 
 	/* if changed, update visibility. */
 	Blkinfo bi;
@@ -77,7 +78,17 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 		p->body.vel.x = (olddx < 0 ? -1 : 1) * blkdrag(bi.flags) * Dx;
 
 	double oldddy = p->body.a.y;
-	p->body.a.y = blkgrav(bi.flags);
+	if(p->jframes > 3){
+		p->body.vel.y = -Dy * 0.5f;
+		p->jframes--;
+	}else if(p->jframes > 1){
+		p->body.vel.y = -Dy * 0.75f;
+		p->jframes--;
+	}else if(p->jframes == 1){
+		p->jframes--;
+		p->body.vel.y = -Dy;
+	}else
+		p->body.a.y = blkgrav(bi.flags);
 
 	if (p->door && bi.flags & Tilebdoor)
 		l->z += 1;
@@ -129,10 +140,11 @@ void playerhandle(Player *p, Event *e)
 		else if(!e->down)
 			p->body.vel.x -= Dx;
 	}else if(k == kmap[Mvjump]){
-		if(!p->body.fall){
-			p->body.vel.y = (e->down ? -Dy : 0.0);
-			p->body.a.y = Grav;
+		if(!e->down)
+			p->jframes = 0;
+		else if(!p->body.fall){
 			p->body.fall = 1;
+			p->jframes = 4;
 		}
 	}else if(k == kmap[Mvdoor] && e->down){
 		p->door = true;
