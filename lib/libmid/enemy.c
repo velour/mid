@@ -13,6 +13,7 @@ static Enemymt untimt = {
 typedef struct Unti Unti;
 struct Unti{
 	Color c;
+	Img *orb;
 };
 
 static _Bool (*spawns[])(Enemy*,Point) = {
@@ -32,6 +33,7 @@ static _Bool untiinit(Enemy *e, Point p){
 
 	Unti *u = xalloc(1, sizeof(*u));
 	u->c = (Color){ 255, 55, 55, 255 };
+	u->orb = resrcacq(imgs, "img/orb.png", 0);
 
 	e->mt = &untimt;
 	e->data = u;
@@ -62,5 +64,6 @@ static void untidraw(Enemy *e, Gfx *g, Point tr){
 		{e->b.bbox.a.x + tr.x, e->b.bbox.a.y + tr.y},
 		{e->b.bbox.b.x + tr.x, e->b.bbox.b.y + tr.y}
 	};
-	gfxfillrect(g, r, u->c);
+	//gfxfillrect(g, r, u->c);
+	imgdraw(g, u->orb, (Point){r.a.x, r.a.y - Tall});
 }
