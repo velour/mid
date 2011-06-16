@@ -41,6 +41,7 @@ static _Bool untiinit(Enemy *e, Point p){
 }
 
 static void untifree(Enemy *e){
+	resrcrel(imgs, "img/orb.png", 0);
 	xfree(e->data);
 }
 
