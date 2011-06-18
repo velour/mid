@@ -21,10 +21,6 @@ _Bool bodyinit(Body *b, int x, int y)
 	return false;
 }
 
-void bodyfree(Body *b)
-{
-}
-
 void bodyupdate(Body *b, Lvl *l)
 {
 	bodymv(b, l);
