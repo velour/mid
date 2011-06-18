@@ -28,8 +28,6 @@ void bodyupdate(Body *b, Lvl *l)
 		b->vel.y += b->a.y;
 }
 
-enum { Buflen = 256 };
-
 static void bodymv(Body *b, Lvl *l)
 {
 	double xmul = b->vel.x > 0 ? 1.0 : -1.0;
