@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 	mvini();
 	init(lvl);
 
-	Loc loc = (Loc) { 2, 3 };
+	Loc loc = (Loc) { 2, 2 };
 	for (int z = 0; z < d; z++) {
 		loc = zlayer(loc, lvl);
 		if (z < d - 1) {

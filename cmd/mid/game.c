@@ -25,7 +25,8 @@ struct Game {
 
 Game *gamenew(void)
 {
-	Lvl *lvl = lvlgen(30, 30, 10, rand());
+	int seed = rand();
+	Lvl *lvl = lvlgen(30, 30, 10, seed);
 	if (!lvl)
 		fatal("Failed to load level lvl/0.lvl: %s", miderrstr());
 
