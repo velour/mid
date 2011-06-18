@@ -2,12 +2,13 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <time.h>
+#include <sys/times.h>
 #include <assert.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include "lvlgen.h"
 
+static void doseed(int argc, char *argv[]);
 static void init(Lvl *l);
 static void output(Lvl *l);
 /* Fill in a z-layer and return a Loc for a good door placement to the
@@ -25,11 +26,7 @@ int main(int argc, char *argv[])
 	int h = strtol(argv[2], NULL, 10);
 	int d = strtol(argv[3], NULL, 10);
 	Lvl *lvl = lvlnew(d, w, h);
-	int seed = time(NULL);
-	if (argc == 5)
-		seed = strtol(argv[4], NULL, 10);
-	pr("seed: %d\n", seed);
-	srand(seed);
+	doseed(argc, argv);
 
 	mvini();
 	init(lvl);
@@ -48,6 +45,19 @@ int main(int argc, char *argv[])
 	lvlfree(lvl);
 
 	return 0;
+}
+
+static void doseed(int argc, char *argv[])
+{
+	int seed;
+	struct tms tm;
+
+	if (argc == 5)
+		seed = strtol(argv[4], NULL, 10);
+	else
+		seed =  times(&tm);
+	pr("level seed: %d\n", seed);
+	srand(seed);
 }
 
 static void init(Lvl *l)
