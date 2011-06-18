@@ -11,6 +11,9 @@ static const double Grav = 0.5;
 static bool tileread(FILE *f, Lvl *l, int x, int y, int z);
 static void bkgrnddraw(Gfx *g, int t, Point pt);
 static void fgrnddraw(Gfx *g, int t, Point pt);
+static bool isshaded(Lvl *l, int t, int x, int y);
+static bool isvis(Lvl *l, int x, int y);
+static void shade(Gfx *g, Point p);
 static Rect tilebbox(int x, int y);
 static Isect tileisect(int t, int x, int y, Rect r);
 static Rect hitzone(Rect a, Point v);
@@ -183,6 +186,8 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 				bkgrnddraw(g, t, pt);
 			else {
 				fgrnddraw(g, t, pt);
+				if (isshaded(l, t, x, y))
+					shade(g, pt);
 				if(debugging >= 2){
 					Rect r = tilebbox(x, y);
 					rectmv(&r, offs.x, offs.y);
@@ -191,6 +196,43 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 			}
 		}
 	}
+}
+
+static bool isshaded(Lvl *l, int t, int x, int y)
+{
+	assert(tiles[t]);
+	if (tiles[t]->flags & Tilecollide)
+		return false;
+
+	for (int i = x - 1; i < x + 1; i++) {
+	for (int j = y - 1; j < y + 1; j++) {
+		if (i == x && j == y)
+			continue;
+		if (!isvis(l, i, j))
+			return true;
+	}
+	}
+	return false;
+}
+
+// If the x,y is out of bounds of the array then it is visible.
+static bool isvis(Lvl *l, int x, int y)
+{
+	if (x < 0 || x >= l->w || y < 0 || y >= l->h)
+		return true;
+	return blk(l, x, y, l->z)->flags & Blkvis;
+}
+
+static void shade(Gfx *g, Point pt)
+{
+	static Img *img;
+
+	if (!img) {
+		img = resrcacq(imgs, "img/alph50.png", NULL);
+		assert(img);
+	}
+
+	imgdraw(g, img, pt);
 }
 
 void lvlminidraw(Gfx *g, Lvl *l, Point offs)
@@ -325,7 +367,7 @@ Blkinfo blkinfo(Lvl *l, int x, int y)
 	return (Blkinfo) { .x = x, .y = y, .z = l->z, .flags = tiles[t]->flags };
 }
 
-void swap(int *a, int *b)
+static void swap(int *a, int *b)
 {
 	int t = *a;
 	*a = *b;
