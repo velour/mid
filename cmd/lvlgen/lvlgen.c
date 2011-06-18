@@ -5,6 +5,7 @@
 #include <assert.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
+#include "../../include/rng.h"
 #include "lvlgen.h"
 
 static void doseed(int argc, char *argv[]);
@@ -14,6 +15,8 @@ static void output(Lvl *l);
  * next zlayer. */
 static Loc zlayer(Loc loc, Lvl *lvl);
 static void buildpath(Lvl *lvl, Path *p, Loc loc);
+
+Rng rng;
 
 int main(int argc, char *argv[])
 {
@@ -56,7 +59,7 @@ static void doseed(int argc, char *argv[])
 	else
 		seed =  times(&tm);
 	pr("Level seed: %d", seed);
-	srand(seed);
+	rngini(&rng, seed);
 }
 
 static void init(Lvl *l)
@@ -100,11 +103,11 @@ enum { Minbr = 3, Maxbr = 9 };
 
 static void buildpath(Lvl *lvl, Path *p, Loc loc)
 {
-	int br = rnd(Minbr, Maxbr);
+	unsigned int br = rnd(Minbr, Maxbr);
 	for (int i = 0; i < br; i++) {
-		int base = rnd(0, Nmoves);
+		unsigned int base = rnd(0, Nmoves);
 		for (int j = 0; j < Nmoves; j++) {
-			int mv = (base + j) % Nmoves;
+			unsigned int mv = (base + j) % Nmoves;
 			Seg s = segmk(loc, &moves[mv]);
 			if (pathadd(lvl, p, s)) {
 				buildpath(lvl, p, s.l1);
@@ -120,11 +123,11 @@ Blk *blk(Lvl *l, int x, int y, int z)
 	return &l->blks[i];
 }
 
-int rnd(int min, int max)
+unsigned int rnd(int min, int max)
 {
 	assert (min >= 0);
 	assert (max > min);
-	int r = rand();
+	unsigned int r = rngint(&rng);
 
 	if (min == 0)
 		return r % max;

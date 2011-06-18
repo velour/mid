@@ -1,5 +1,6 @@
 DIRS :=\
 	libmid\
+	librng\
 
 TESTDIRS := $(DIRS:%=%.test)
 
