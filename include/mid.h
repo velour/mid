@@ -292,6 +292,7 @@ void playerdraw(Gfx *, Player *, Point tr);
 void playerhandle(Player *, Event *);
 Point playerpos(Player *);
 Rect playerbox(Player *);
+void playerdmg(Player *, int x);
 
 typedef struct Enemy Enemy;
 typedef struct Enemymt Enemymt;

@@ -28,6 +28,7 @@ struct Player {
 	Body body;
 	bool door;
 	int jframes;
+	int iframes; // invulnerability after damage;
 
 	/* if changed, update visibility. */
 	Blkinfo bi;
@@ -107,6 +108,8 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 
 	if(p->jframes > 0)
 		p->jframes--;
+	if(p->iframes > 0)
+		p->iframes--;
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
@@ -116,8 +119,11 @@ void playerdraw(Gfx *g, Player *p, Point tr)
 		rectmv(&bbox, tr.x, tr.y);
 		gfxfillrect(g, bbox, (Color){255,0,0,255});
 	}
-	Point pt = { p->imgloc.x + tr.x, p->imgloc.y + tr.y };
-	animdraw(g, p->anim[p->act], pt);
+
+	if(p->iframes % 2 == 0){
+		Point pt = { p->imgloc.x + tr.x, p->imgloc.y + tr.y };
+		animdraw(g, p->anim[p->act], pt);
+	}
 }
 
 void playerhandle(Player *p, Event *e)
@@ -162,6 +168,18 @@ Point playerpos(Player *p)
 Rect playerbox(Player *p)
 {
 	return p->body.bbox;
+}
+
+void playerdmg(Player *p, int x){
+	if(p->iframes > 0)
+		return;
+fprintf(stderr, "ow\n");
+	p->iframes = 1000.0 / Ticktm; // 1s
+	p->hp -= x;
+	if(p->hp < 0){
+		puts("You loser, loser!");
+		p->hp = 0;
+	}
 }
 
 static void loadanim(Anim **a, const char *name, const char *dir, const char *act)
