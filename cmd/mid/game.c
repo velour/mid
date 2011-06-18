@@ -7,6 +7,8 @@
 
 enum { Maxenms = 32 };
 
+extern Lvl *lvlgen(int w, int h, int d, int sd);
+
 typedef struct Enms Enms;
 struct Enms{
 	Enemy *es;
@@ -23,7 +25,7 @@ struct Game {
 
 Game *gamenew(void)
 {
-	Lvl *lvl = resrcacq(lvls, "lvl/0.lvl", NULL);
+	Lvl *lvl = lvlgen(30, 30, 10, rand());
 	if (!lvl)
 		fatal("Failed to load level lvl/0.lvl: %s", miderrstr());
 
@@ -70,7 +72,7 @@ void gamefree(Scrn *s)
 			e[i].mt->free(&e[i]);
 	}
 
-	resrcrel(lvls, "lvl/0.lvl", NULL);
+	lvlfree(gm->lvl);
 	free(gm);
 }
 

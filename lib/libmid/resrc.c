@@ -248,23 +248,6 @@ void animunload(const char *path, void *anim, void *_info)
 	animfree(anim);
 }
 
-Rtab *lvls;
-
-void *_lvlload(const char *path, void *_ignrd)
-{
-	return lvlload(path);
-}
-
-void lvlunload(const char *path, void *lvl, void *_ignrd)
-{
-	lvlfree(lvl);
-}
-
-static Resrcops lvltype = {
-	.load = _lvlload,
-	.unload = lvlunload,
-};
-
 static Resrcops animtype = {
 	.load = animload,
 	.unload = animunload,
@@ -350,8 +333,6 @@ void initresrc(void)
 	assert(imgs != NULL);
 	anims = rtabnew(&animtype);
 	assert(anims != NULL);
-	lvls = rtabnew(&lvltype);
-	assert(lvls != NULL);
 	txt = rtabnew(&txttype);
 	assert(txt != NULL);
 	music = rtabnew(&musictype);
@@ -365,7 +346,6 @@ void freeresrc(void)
 	rtabfree(sfx);
 	rtabfree(music);
 	rtabfree(txt);
-	rtabfree(lvls);
 	rtabfree(anims);
 	rtabfree(imgs);
 }

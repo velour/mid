@@ -8,7 +8,6 @@
 
 enum { Blkvis = 1 << 1 };
 
-static Lvl *lvlread(FILE *f);
 static bool tileread(FILE *f, Lvl *l, int x, int y, int z);
 static void bkgrnddraw(Gfx *g, int t, Point pt);
 static void fgrnddraw(Gfx *g, int t, Point pt);
@@ -76,7 +75,7 @@ Lvl *lvlnew(int d, int w, int h)
 	return l;
 }
 
-static Lvl *lvlread(FILE *f)
+Lvl *lvlread(FILE *f)
 {
 	int w, h, d;
 	fscanf(f, " %d %d %d",&d, &w, &h);

@@ -10,6 +10,7 @@ OFILES := main.o\
 	invscr.o\
 	inv.o\
 	title.o\
+	lvl.o\
 
 HFILES := ../../include/mid.h\
 	../../include/log.h\

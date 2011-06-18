@@ -187,7 +187,6 @@ struct Txtinfo {
 
 extern Rtab *imgs;
 extern Rtab *anims;
-extern Rtab *lvls;
 extern Rtab *txt;
 extern Rtab *music;
 extern Rtab *sfx;
@@ -213,8 +212,11 @@ struct Lvl {
 	Blk blks[];
 };
 
+#include <stdio.h> // FILE
+
 Lvl *lvlnew(int d, int w, int h);
 Lvl *lvlload(const char *path);
+Lvl *lvlread(FILE *f);
 void lvlfree(Lvl *l);
 void lvlupdate(Lvl *l);
 void lvldraw(Gfx *g, Lvl *l, _Bool bkgrnd, Point offs);
