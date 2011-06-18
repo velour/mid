@@ -3,12 +3,12 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-enum { Dx = 3, Dy = 8 };
-
 static void loadanim(Anim **a, const char *name, const char *dir, const char *act);
 static void chngdir(Player *b);
 static void chngact(Player *b);
 static Point scroll(Player*, Point delta, Point transl);
+static double run(Player *);
+static double jmp(Player *);
 
 typedef enum Act Act;
 enum Act {
@@ -28,9 +28,13 @@ struct Player {
 	Body body;
 	bool door;
 	int jframes;
+	int iframes; // invulnerability after damage;
 
 	/* if changed, update visibility. */
 	Blkinfo bi;
+
+	int hp;
+	int dex;
 };
 
 Player *playernew(int x, int y)
@@ -54,6 +58,8 @@ Player *playernew(int x, int y)
 	p->imgloc = (Point){ x, y - Tall };
 
 	p->bi.x = p->bi.y = p->bi.z = -1;
+	p->hp = 10;
+	p->dex = 8;
 	return p;
 }
 
@@ -74,7 +80,7 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 
 	double olddx = p->body.vel.x;
 	if(olddx)
-		p->body.vel.x = (olddx < 0 ? -1 : 1) * blkdrag(bi.flags) * Dx;
+		p->body.vel.x = (olddx < 0 ? -1 : 1) * blkdrag(bi.flags) * run(p);
 
 	double oldddy = p->body.a.y;
 	p->body.a.y = blkgrav(bi.flags);
@@ -102,6 +108,8 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 
 	if(p->jframes > 0)
 		p->jframes--;
+	if(p->iframes > 0)
+		p->iframes--;
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
@@ -111,8 +119,11 @@ void playerdraw(Gfx *g, Player *p, Point tr)
 		rectmv(&bbox, tr.x, tr.y);
 		gfxfillrect(g, bbox, (Color){255,0,0,255});
 	}
-	Point pt = { p->imgloc.x + tr.x, p->imgloc.y + tr.y };
-	animdraw(g, p->anim[p->act], pt);
+
+	if(p->iframes % 2 == 0){
+		Point pt = { p->imgloc.x + tr.x, p->imgloc.y + tr.y };
+		animdraw(g, p->anim[p->act], pt);
+	}
 }
 
 void playerhandle(Player *p, Event *e)
@@ -122,15 +133,15 @@ void playerhandle(Player *p, Event *e)
 
 	char k = e->key;
 	if(k == kmap[Mvleft]){
-		if(e->down && p->body.vel.x > -Dx)
-			p->body.vel.x -= Dx;
+		if(e->down && p->body.vel.x > -run(p))
+			p->body.vel.x -= run(p);
 		else if(!e->down)
-			p->body.vel.x += Dx;
+			p->body.vel.x += run(p);
 	}else if(k == kmap[Mvright]){
-		if(e->down && p->body.vel.x < Dx)
-			p->body.vel.x += Dx;
+		if(e->down && p->body.vel.x < run(p))
+			p->body.vel.x += run(p);
 		else if(!e->down)
-			p->body.vel.x -= Dx;
+			p->body.vel.x -= run(p);
 	}else if(k == kmap[Mvjump]){
 		if(!e->down && p->body.fall){
 			if(p->body.vel.y < 0){
@@ -140,7 +151,7 @@ void playerhandle(Player *p, Event *e)
 			}
 			p->jframes = 0;
 		}else if(e->down && !p->body.fall){
-			p->body.vel.y = -Dy;
+			p->body.vel.y = -jmp(p);
 			p->body.fall = 1;
 			p->jframes = 8;
 		}
@@ -157,6 +168,18 @@ Point playerpos(Player *p)
 Rect playerbox(Player *p)
 {
 	return p->body.bbox;
+}
+
+void playerdmg(Player *p, int x){
+	if(p->iframes > 0)
+		return;
+fprintf(stderr, "ow\n");
+	p->iframes = 1000.0 / Ticktm; // 1s
+	p->hp -= x;
+	if(p->hp < 0){
+		puts("You loser, loser!");
+		p->hp = 0;
+	}
 }
 
 static void loadanim(Anim **a, const char *name, const char *dir, const char *act)
@@ -204,4 +227,12 @@ static Point scroll(Player *p, Point delta, Point tr){
 		tr.y -= dy;
 
 	return tr;
+}
+
+static double run(Player *p){
+	return p->dex / 2 - 1;
+}
+
+static double jmp(Player *p){
+	return p->dex;
 }
