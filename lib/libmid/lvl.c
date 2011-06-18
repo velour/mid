@@ -6,6 +6,7 @@
 #include <math.h>
 
 enum { Blkvis = 1 << 1 };
+static const double Grav;
 
 static bool tileread(FILE *f, Lvl *l, int x, int y, int z);
 static void bkgrnddraw(Gfx *g, int t, Point pt);

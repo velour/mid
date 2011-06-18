@@ -272,8 +272,6 @@ enum { Tall = 32, Wide = 32 };
 
 enum { Maxdy = 12 };
 
-extern const double Grav;
-
 typedef struct Body Body;
 struct Body {
 	Rect bbox;
