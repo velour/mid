@@ -281,9 +281,6 @@ struct Body {
 };
 
 _Bool bodyinit(Body *, int x, int y);
-void bodyfree(Body *b);
-
-/* If transl is non-NULL then this body will scroll the screen. */
 void bodyupdate(Body *b, Lvl *l);
 
 typedef struct Player Player;
