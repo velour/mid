@@ -133,10 +133,14 @@ void playerhandle(Player *p, Event *e)
 		else if(!e->down)
 			p->body.vel.x -= Dx;
 	}else if(k == kmap[Mvjump]){
-		if(!e->down){
-			p->body.vel.y += (8 - p->jframes);
+		if(!e->down && p->body.fall){
+			if(p->body.vel.y < 0){
+				p->body.vel.y += (8 - p->jframes);
+				if(p->body.vel.y > 0)
+					p->body.vel.y = 0;
+			}
 			p->jframes = 0;
-		}else if(!p->body.fall){
+		}else if(e->down && !p->body.fall){
 			p->body.vel.y = -Dy;
 			p->body.fall = 1;
 			p->jframes = 8;
