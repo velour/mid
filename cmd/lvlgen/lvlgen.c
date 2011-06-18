@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 	mvini();
 	init(lvl);
 
-	Loc loc = (Loc) { 2, 3 };
+	Loc loc = (Loc) { 2, 2 };
 	for (int z = 0; z < d; z++) {
 		loc = zlayer(loc, lvl);
 		if (z < d - 1) {
@@ -93,6 +93,7 @@ static void output(Lvl *l)
 static Loc zlayer(Loc loc, Lvl *lvl)
 {
 	Path *p = pathnew(lvl);
+	*pathused(p, loc) = true;
 	buildpath(lvl, p, loc);
 	Loc nxt = doorloc(lvl, p, loc);
 	pathfree(p);
