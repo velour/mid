@@ -24,8 +24,7 @@ Loc doorloc(Lvl *lvl, Path *p, Loc l0)
 	int q = sz / 4;
 	int min = 3 * q;
 	int max = min + q;
-	int i = max - min == 0 ? rnd(0, sz) : rnd(min, max);
-	assert (i >= 0);
+	unsigned int i = max - min == 0 ? rnd(0, sz) : rnd(min, max);
 	assert (i < sz);
 	return locs[i];
 }

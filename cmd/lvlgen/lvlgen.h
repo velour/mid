@@ -1,7 +1,7 @@
 struct Blk;
 
 struct Blk *blk(Lvl *l, int x, int y, int z);
-int rnd(int min, int max);
+unsigned int rnd(int min, int max);
 
 typedef struct Loc Loc;
 struct Loc {
