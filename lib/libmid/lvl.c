@@ -204,15 +204,8 @@ static bool isshaded(Lvl *l, int t, int x, int y)
 	if (tiles[t]->flags & Tilecollide)
 		return false;
 
-	for (int i = x - 1; i < x + 1; i++) {
-	for (int j = y - 1; j < y + 1; j++) {
-		if (i == x && j == y)
-			continue;
-		if (!isvis(l, i, j))
-			return true;
-	}
-	}
-	return false;
+	return !isvis(l, x-1, y) || !isvis(l, x+1, y)
+		|| !isvis(l, x, y-1) || !isvis(l, x, y+1);
 }
 
 // If the x,y is out of bounds of the array then it is visible.
