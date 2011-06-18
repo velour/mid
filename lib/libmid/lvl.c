@@ -312,27 +312,10 @@ static Rect hitzone(Rect a, Point v)
 
 Blkinfo lvlmajorblk(Lvl *l, Rect r)
 {
-	Rect zone = hitzone(r, (Point){0, 0});
-	Blkinfo bi = blkinfo(l, zone.a.x, zone.a.y);
-	double area = 0.0;
-	Isect is = isection(r, tilebbox(bi.x, bi.y));
-	if (is.is)
-		area = isectarea(is);
-
-	for (int x = zone.a.x; x <= zone.b.x; x++) {
-		for (int y = zone.a.y; y <= zone.b.y; y++) {
-			is = isection(r, tilebbox(x, y));
-			if (is.is) {
-				double a = isectarea(is);
-				if (a > area) {
-					bi = blkinfo(l, x, y);
-					area = a;
-				}
-			}
-		}
-	}
-
-	return bi;
+	r = rectnorm(r);
+	double xmid = (r.b.x + r.a.x) / 2;
+	double ymid = (r.b.y + r.a.y) / 2;
+	return blkinfo(l, xmid / Twidth, ymid / Theight);
 }
 
 Blkinfo blkinfo(Lvl *l, int x, int y)
