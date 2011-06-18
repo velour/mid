@@ -73,6 +73,7 @@ void gfxdrawrect(Gfx *, Rect, Color);
 
 typedef struct Img Img;
 
+_Bool lvlinit();
 Img *imgnew(const char *path);
 void imgfree(Img *);
 /* Returns negative dimensions on failure. */

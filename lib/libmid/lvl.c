@@ -22,6 +22,8 @@ static bool edge(Lvl *l, int x, int y);
 static bool blkd(Lvl *l, int x, int y);
 static Blk *blk(Lvl *l, int x, int y, int z);
 
+static Img *shdimg;
+
 typedef struct Tinfo Tinfo;
 struct Tinfo {
 	char *bgfile;
@@ -53,6 +55,16 @@ bool istile(int t)
 void lvlfree(Lvl *l)
 {
 	xfree(l);
+}
+
+bool lvlinit()
+{
+	if (!shdimg)
+		shdimg = resrcacq(imgs, "img/alph50.png", NULL);
+	if (!shdimg)
+		return false;
+
+	return true;
 }
 
 Lvl *lvlload(const char *path)
@@ -218,14 +230,7 @@ static bool isvis(Lvl *l, int x, int y)
 
 static void shade(Gfx *g, Point pt)
 {
-	static Img *img;
-
-	if (!img) {
-		img = resrcacq(imgs, "img/alph50.png", NULL);
-		assert(img);
-	}
-
-	imgdraw(g, img, pt);
+	imgdraw(g, shdimg, pt);
 }
 
 void lvlminidraw(Gfx *g, Lvl *l, Point offs)
