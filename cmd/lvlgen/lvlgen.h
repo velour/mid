@@ -49,6 +49,7 @@ void segpr(Seg s);
 typedef struct Path Path;
 struct Path {
 	int maxsegs, nsegs;
+	int w;
 	Seg *segs;
 	_Bool *used;
 };
@@ -58,6 +59,7 @@ struct Lvl;
 Path *pathnew(struct Lvl *l);
 void pathfree(Path *p);
 _Bool pathadd(struct Lvl *l, Path *p, Seg s);
+bool *pathused(Path *p, Loc l);
 void pathpr(struct Lvl *l, Path *p);
 
 Loc doorloc(Lvl *lvl, Path *p, Loc loc);

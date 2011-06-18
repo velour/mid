@@ -93,6 +93,7 @@ static void output(Lvl *l)
 static Loc zlayer(Loc loc, Lvl *lvl)
 {
 	Path *p = pathnew(lvl);
+	*pathused(p, loc) = true;
 	buildpath(lvl, p, loc);
 	Loc nxt = doorloc(lvl, p, loc);
 	pathfree(p);
