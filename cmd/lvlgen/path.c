@@ -65,6 +65,10 @@ static bool segok(Lvl *l, Path *p, Seg s)
 {
 	assert (s.l0.x > 0 && s.l0.x < l->w - 1);
 	assert (s.l0.y > 0 && s.l0.y < l->h - 1);
+
+	if (p->nsegs == 0 && !startonblk(s.mv))
+		return false;
+
 	bool inrange = s.l1.x > 0 && s.l1.x < l->w - 1
 		&& s.l1.y > 0 && s.l1.y < l->h - 1;
 

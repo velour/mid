@@ -36,6 +36,7 @@ Mv *moves;
 int Nmoves;
 void mvini(void);
 void mvblit(Mv *mv, Lvl *l, Loc l0);
+_Bool startonblk(Mv *mv);
 
 typedef struct Seg Seg;
 struct Seg {
@@ -48,8 +49,7 @@ void segpr(Seg s);
 
 typedef struct Path Path;
 struct Path {
-	int maxsegs, nsegs;
-	int w;
+	int w, maxsegs, nsegs;
 	Seg *segs;
 	_Bool *used;
 };

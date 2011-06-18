@@ -328,3 +328,11 @@ void mvblit(Mv *mv, Lvl *l, Loc l0)
 	}
 	}
 }
+
+bool startonblk(Mv *mv)
+{
+	for (int i = 0; i < mv->nblkd; i++)
+		if (mv->blkd[i].x == 0 && mv->blkd[i].y == 1)
+			return true;
+	return false;
+}
