@@ -68,6 +68,31 @@ void playerfree(Player *p)
 	xfree(p);
 }
 
+static void trydoor(Player *p, Lvl *l, Blkinfo bi)
+{
+	if (!p->door)
+		return;
+
+	int oldz = l->z;
+	if (p->door && bi.flags & Tilebdoor)
+		l->z += 1;
+	else if (p->door && bi.flags & Tilefdoor)
+		l->z -= 1;
+
+	p->door = false;
+
+	if (oldz == l->z)
+		return;
+
+	/* center the player on the door to prevent a bug that colud
+	 * land the player in a wall (possibly pushing them out of the
+	 * level). */
+	Point dst = (Point) { bi.x * Twidth, bi.y * Theight };
+	Point src = rectnorm(p->body.bbox).a;
+	double dx = dst.x - src.x, dy = dst.y - src.y;
+	rectmv(&p->body.bbox, dx, dy);
+}
+
 void playerupdate(Player *p, Lvl *l, Point *tr)
 {
 	Point ppos = playerpos(p);
@@ -85,11 +110,7 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 	double oldddy = p->body.a.y;
 	p->body.a.y = blkgrav(bi.flags);
 
-	if (p->door && bi.flags & Tilebdoor)
-		l->z += 1;
-	else if (p->door && bi.flags & Tilefdoor)
-		l->z -= 1;
-	p->door = false;
+	trydoor(p, l, bi);
 
 	bodyupdate(&p->body, l);
 	p->body.vel.x = olddx;
