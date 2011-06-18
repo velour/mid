@@ -1,3 +1,5 @@
+#include <stdio.h> // FILE
+
 /* Mean frame time.  May be useful for comparing computation effort. */
 extern double meanftime;
 extern int debugging;
@@ -211,8 +213,6 @@ struct Lvl {
 	int d, w, h, z;
 	Blk blks[];
 };
-
-#include <stdio.h> // FILE
 
 Lvl *lvlnew(int d, int w, int h);
 Lvl *lvlload(const char *path);
