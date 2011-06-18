@@ -15,8 +15,8 @@ _Bool bodyinit(Body *b, int x, int y)
 	/* Eventually we want to load this from the resrc directory. */
 	b->bbox = (Rect){ { x, y }, { x + Wide, y - Tall } };
 	b->vel = (Point) { 0, 0 };
-	b->fall = true;
-	b->a.y = Grav;
+	b->fall = false;
+	b->a.y = 0;
 
 	return false;
 }
@@ -95,7 +95,7 @@ static void dofall(Body *b, Isect is)
 		b->a.y = Grav;
 		b->fall = true;
 	}
-	if (b->vel.y > 0 && is.dy <= 0 && !b->fall) { /* are we falling now? */
+	if (!is.is && !b->fall) { /* are we falling now? */
 		b->vel.y = 0;
 		b->a.y = Grav;
 		b->fall = true;
