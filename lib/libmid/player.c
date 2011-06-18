@@ -3,12 +3,12 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-enum { Dx = 3, Dy = 8 };
-
 static void loadanim(Anim **a, const char *name, const char *dir, const char *act);
 static void chngdir(Player *b);
 static void chngact(Player *b);
 static Point scroll(Player*, Point delta, Point transl);
+static double run(Player *);
+static double jmp(Player *);
 
 typedef enum Act Act;
 enum Act {
@@ -31,6 +31,9 @@ struct Player {
 
 	/* if changed, update visibility. */
 	Blkinfo bi;
+
+	int hp;
+	int dex;
 };
 
 Player *playernew(int x, int y)
@@ -54,6 +57,8 @@ Player *playernew(int x, int y)
 	p->imgloc = (Point){ x, y - Tall };
 
 	p->bi.x = p->bi.y = p->bi.z = -1;
+	p->hp = 10;
+	p->dex = 8;
 	return p;
 }
 
@@ -74,7 +79,7 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 
 	double olddx = p->body.vel.x;
 	if(olddx)
-		p->body.vel.x = (olddx < 0 ? -1 : 1) * blkdrag(bi.flags) * Dx;
+		p->body.vel.x = (olddx < 0 ? -1 : 1) * blkdrag(bi.flags) * run(p);
 
 	double oldddy = p->body.a.y;
 	p->body.a.y = blkgrav(bi.flags);
@@ -122,15 +127,15 @@ void playerhandle(Player *p, Event *e)
 
 	char k = e->key;
 	if(k == kmap[Mvleft]){
-		if(e->down && p->body.vel.x > -Dx)
-			p->body.vel.x -= Dx;
+		if(e->down && p->body.vel.x > -run(p))
+			p->body.vel.x -= run(p);
 		else if(!e->down)
-			p->body.vel.x += Dx;
+			p->body.vel.x += run(p);
 	}else if(k == kmap[Mvright]){
-		if(e->down && p->body.vel.x < Dx)
-			p->body.vel.x += Dx;
+		if(e->down && p->body.vel.x < run(p))
+			p->body.vel.x += run(p);
 		else if(!e->down)
-			p->body.vel.x -= Dx;
+			p->body.vel.x -= run(p);
 	}else if(k == kmap[Mvjump]){
 		if(!e->down && p->body.fall){
 			if(p->body.vel.y < 0){
@@ -140,7 +145,7 @@ void playerhandle(Player *p, Event *e)
 			}
 			p->jframes = 0;
 		}else if(e->down && !p->body.fall){
-			p->body.vel.y = -Dy;
+			p->body.vel.y = -jmp(p);
 			p->body.fall = 1;
 			p->jframes = 8;
 		}
@@ -204,4 +209,12 @@ static Point scroll(Player *p, Point delta, Point tr){
 		tr.y -= dy;
 
 	return tr;
+}
+
+static double run(Player *p){
+	return p->dex / 2 - 1;
+}
+
+static double jmp(Player *p){
+	return p->dex;
 }
