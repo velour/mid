@@ -5,6 +5,6 @@ struct Rng {
 	uint64_t v;
 };
 
-Rng rngnew(uint64_t seed);
-uint64_t rngint(Rng r);
-double rngdbl(Rng r);
+void rngini(Rng *r, uint64_t seed);
+uint64_t rngint(Rng *r);
+double rngdbl(Rng *r);

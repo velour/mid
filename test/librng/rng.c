@@ -3,8 +3,9 @@
 
 int main()
 {
-	Rng r = rngnew(8008);
-	printf("%lu\n", rngint(r));
-	printf("%g\n", rngdbl(r));
+	Rng r;
+	rngini(&r, 8008);
+	printf("%lu\n", rngint(&r));
+	printf("%g\n", rngdbl(&r));
 	return 0;
 }
