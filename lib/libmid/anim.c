@@ -2,7 +2,6 @@
 #include "../../include/log.h"
 #include "fs.h"
 #include <assert.h>
-#include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 #include <errno.h>

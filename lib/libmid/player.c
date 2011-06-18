@@ -2,7 +2,6 @@
 #include "../../include/log.h"
 #include <stdbool.h>
 #include <stddef.h>
-#include <stdio.h>
 
 enum { Dx = 3, Dy = 8 };
 

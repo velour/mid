@@ -1,7 +1,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <assert.h>
-#include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>

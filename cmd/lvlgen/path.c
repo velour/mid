@@ -1,7 +1,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include "lvlgen.h"

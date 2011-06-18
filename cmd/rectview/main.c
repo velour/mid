@@ -1,5 +1,4 @@
 #include "../../include/mid.h"
-#include <stdio.h>
 
 static Gfx *gfx;
 static Img *img;

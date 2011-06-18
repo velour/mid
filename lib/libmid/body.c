@@ -1,7 +1,6 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include <stdbool.h>
-#include <stdio.h>
 #include <math.h>
 
 const double Grav = 0.5;

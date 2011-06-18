@@ -1,6 +1,5 @@
 #include "../../include/mid.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 void *xalloc(unsigned long n, unsigned long s){
 	void *v = calloc(n, s);

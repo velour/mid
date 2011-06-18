@@ -1,5 +1,4 @@
 #include "../../include/mid.h"
-#include <stdio.h>
 #include <string.h>
 
 _Bool keymapread(char km[], char *fname){

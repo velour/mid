@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <stdio.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
 

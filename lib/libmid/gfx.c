@@ -4,7 +4,6 @@
 #include <SDL/SDL_ttf.h>
 #include <assert.h>
 #include <stdarg.h>
-#include <stdio.h>
 
 struct Gfx{
 	SDL_Window *win;
