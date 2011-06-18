@@ -3,26 +3,20 @@
 #include <stdbool.h>
 #include <math.h>
 
-const double Grav = 0.5;
-
 static void bodymv(Body *b, Lvl *l);
 static double tillwhole(double loc, double vel);
 static Point velstep(Body *b, Point p);
-static void dofall(Body *b, Isect is);
+static void dofall(Body *b, Lvl*, Isect is);
 
 _Bool bodyinit(Body *b, int x, int y)
 {
 	/* Eventually we want to load this from the resrc directory. */
 	b->bbox = (Rect){ { x, y }, { x + Wide, y - Tall } };
 	b->vel = (Point) { 0, 0 };
-	b->fall = true;
-	b->a.y = Grav;
+	b->fall = false;
+	b->a.y = 0;
 
 	return false;
-}
-
-void bodyfree(Body *b)
-{
 }
 
 void bodyupdate(Body *b, Lvl *l)
@@ -31,8 +25,6 @@ void bodyupdate(Body *b, Lvl *l)
 	if (b->fall && b->vel.y < Maxdy)
 		b->vel.y += b->a.y;
 }
-
-enum { Buflen = 256 };
 
 static void bodymv(Body *b, Lvl *l)
 {
@@ -57,7 +49,7 @@ static void bodymv(Body *b, Lvl *l)
 
 		rectmv(&b->bbox, d.x, d.y);
 	}
-	dofall(b, fallis);
+	dofall(b, l, fallis);
 }
 
 static Point velstep(Body *b, Point v)
@@ -86,22 +78,22 @@ static double tillwhole(double loc, double vel)
 	}
 }
 
-static void dofall(Body *b, Isect is)
+static void dofall(Body *b, Lvl *l, Isect is)
 {
+	double g = blkgrav(lvlmajorblk(l, b->bbox).flags);
 	if(b->vel.y > 0 && is.dy > 0 && b->fall) { /* hit the ground */
 		/* Constantly try to fall in order to test ground
 		 * beneath us. */
-		b->vel.y = Grav;
-		b->a.y = Grav;
+		b->a.y = g;
 		b->fall = false;
 	} else if (b->vel.y < 0 && is.dy > 0) { /* hit my head on something */
 		b->vel.y = 0;
-		b->a.y = Grav;
+		b->a.y = g;
 		b->fall = true;
 	}
-	if (b->vel.y > 0 && is.dy <= 0 && !b->fall) { /* are we falling now? */
+	if (!is.is && !b->fall) { /* are we falling now? */
 		b->vel.y = 0;
-		b->a.y = Grav;
+		b->a.y = g;
 		b->fall = true;
 	}
 }
