@@ -56,7 +56,7 @@ static void doseed(int argc, char *argv[])
 		seed = strtol(argv[4], NULL, 10);
 	else
 		seed =  times(&tm);
-	pr("level seed: %d\n", seed);
+	pr("Level seed: %d\n", seed);
 	srand(seed);
 }
 
