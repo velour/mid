@@ -141,7 +141,7 @@ void playerdraw(Gfx *g, Player *p, Point tr)
 		gfxfillrect(g, bbox, (Color){255,0,0,255});
 	}
 
-	if(p->iframes % 2 == 0){
+	if(p->iframes % 4 == 0){
 		Point pt = { p->imgloc.x + tr.x, p->imgloc.y + tr.y };
 		animdraw(g, p->anim[p->act], pt);
 	}
