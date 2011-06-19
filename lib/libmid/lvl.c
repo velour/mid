@@ -60,7 +60,7 @@ void lvlfree(Lvl *l)
 bool lvlinit()
 {
 	if (!shdimg)
-		shdimg = resrcacq(imgs, "img/alph50.png", NULL);
+		shdimg = resrcacq(imgs, "img/alph128.png", NULL);
 	if (!shdimg)
 		return false;
 
