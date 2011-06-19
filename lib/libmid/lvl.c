@@ -10,6 +10,7 @@ static const double Grav = 0.5;
 
 static bool tileread(FILE *f, Lvl *l, int x, int y, int z);
 static void bkgrnddraw(Gfx *g, int t, Point pt);
+static void mgrnddraw(Gfx *g, int t, Point pt);
 static void fgrnddraw(Gfx *g, int t, Point pt);
 static bool isshaded(Lvl *l, int t, int x, int y);
 static bool isvis(Lvl *l, int x, int y);
@@ -26,10 +27,12 @@ static Img *shdimg;
 
 typedef struct Tinfo Tinfo;
 struct Tinfo {
-	char *bgfile;
-	char *fgfile;
+	char *bgfile, *mgfile, *fgfile;
 	Anim *bganim;
-	Anim *fganim;
+	/* Player and enemies draw on top of bganim but behind mganim
+	 * and fganim. */
+	Anim *mganim; 		/* mid ground (water) */
+	Anim *fganim;		/* foreground (z-- door) */
 	unsigned int flags;
 };
 
@@ -37,13 +40,12 @@ static Tinfo *tiles[] = {
 	[' '] = &(Tinfo){ .bgfile = "anim/blank/anim", .flags = Tilereach },
 	['.'] = &(Tinfo){ .bgfile = "anim/blank/anim", },
 	['#'] = &(Tinfo){ .bgfile = "anim/land/anim", .flags = Tilecollide },
-	['w'] = &(Tinfo){ .fgfile = "anim/water/anim", .flags = Tilewater },
-	['W'] = &(Tinfo){ .fgfile = "anim/water/anim",
-			  .flags = Tilewater | Tilereach },
-	['>'] = &(Tinfo){ .bgfile = "anim/bdoor/anim", .flags = Tilebdoor },
-	['<'] = &(Tinfo){ .fgfile = "anim/fdoor/anim",
-			  .bgfile = "anim/blank/anim",
-			  .flags = Tilefdoor },
+	['w'] = &(Tinfo){ .bgfile = "anim/blank/anim", .mgfile = "anim/water/anim", .flags = Tilewater },
+	['W'] = &(Tinfo){ .bgfile = "anim/blank/anim", .mgfile = "anim/water/anim", .flags = Tilewater | Tilereach },
+	['>'] = &(Tinfo){ .bgfile = "anim/bdoor/anim", .flags = Tilebdoor | Tilereach},
+	[')'] = &(Tinfo){ .bgfile = "anim/bdoor/anim", .mgfile = "anim/water/anim", .flags = Tilebdoor | Tilewater | Tilereach },
+	['<'] = &(Tinfo){ .fgfile = "anim/fdoor/anim", .bgfile = "anim/blank/anim", .flags = Tilefdoor | Tilereach},
+	['('] = &(Tinfo){ .fgfile = "anim/fdoor/anim", .mgfile = "anim/water/anim", .bgfile = "anim/blank/anim", .flags = Tilefdoor | Tilewater | Tilereach },
 };
 
 int debugging = 0;
@@ -167,6 +169,16 @@ static void bkgrnddraw(Gfx *g, int t, Point pt)
 	animdraw(g, tiles[t]->bganim, pt);
 }
 
+static void mgrnddraw(Gfx *g, int t, Point pt)
+{
+	assert(tiles[t] != NULL);
+	if (!tiles[t]->mgfile)
+		return;
+	if (!tiles[t]->mganim)
+		tiles[t]->mganim = resrcacq(anims, tiles[t]->mgfile, NULL);
+	assert(tiles[t]->mganim);
+	animdraw(g, tiles[t]->mganim, pt);
+}
 static void fgrnddraw(Gfx *g, int t, Point pt)
 {
 	assert(tiles[t] != NULL);
@@ -200,6 +212,7 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 			if (bkgrnd)
 				bkgrnddraw(g, t, pt);
 			else {
+				mgrnddraw(g, t, pt);
 				fgrnddraw(g, t, pt);
 				if (isshaded(l, t, x, y))
 					shade(g, pt);
@@ -275,6 +288,8 @@ void lvlupdate(Lvl *l)
 			continue;
 		if (tiles[i]->fganim)
 			animupdate(tiles[i]->fganim, 1);
+		if (tiles[i]->mganim)
+			animupdate(tiles[i]->mganim, 1);
 		if (tiles[i]->bganim)
 			animupdate(tiles[i]->bganim, 1);
 	}

@@ -1,6 +1,3 @@
-* If a door is under water then it should have water drawn behind it
-  instead of having an air bubble.
-
 * Different sized bodys... currently only 32x32.
 
 * Inventory
