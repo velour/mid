@@ -70,9 +70,8 @@ static bool segok(Lvl *l, Path *p, Seg s)
 static bool segconfl(Lvl *l, Path *p, Seg s)
 {
 	for (int i = 0; i < s.mv->nblkd; i++) {
-		Loc blk = s.mv->blkd[i];
-		blk.x += s.l0.x;
-		blk.y += s.l0.y;
+		Loc *bp = &s.mv->blkd[i];
+		Loc blk = (Loc) { bp->x + s.l0.x, bp->y + s.l0.y };
 		if (blk.x < 0 || blk.x >= l->w || blk.y < 0 || blk.y >= l->h)
 			return false;
 		if (used(l, blk))
@@ -86,9 +85,8 @@ static bool segconfl(Lvl *l, Path *p, Seg s)
 static bool segclr(Lvl *l, Seg s)
 {
 	for (int i = 0; i < s.mv->nclr; i++) {
-		Loc blk = s.mv->clr[i];
-		blk.x += s.l0.x;
-		blk.y += s.l0.y;
+		Loc *bp = &s.mv->clr[i];
+		Loc blk = (Loc) { bp->x + s.l0.x, bp->y + s.l0.y };
 		if (blk.x < 0 || blk.x >= l->w || blk.y < 0 || blk.y >= l->h)
 			return false;
 		Blkinfo b = blkinfo(l, blk.x, blk.y);

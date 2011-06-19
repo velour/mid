@@ -118,12 +118,6 @@ static void buildpath(Lvl *lvl, Path *p, Loc loc)
 	}
 }
 
-Blk *blk(Lvl *l, int x, int y, int z)
-{
-	int i = z * l->w * l->h + y * l->w + x;
-	return &l->blks[i];
-}
-
 unsigned int rnd(int min, int max)
 {
 	assert (min >= 0);

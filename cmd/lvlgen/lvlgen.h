@@ -1,6 +1,11 @@
 struct Blk;
 
-struct Blk *blk(Lvl *l, int x, int y, int z);
+static inline struct Blk *blk(Lvl *l, int x, int y, int z)
+{
+	int i = z * l->w * l->h + y * l->w + x;
+	return &l->blks[i];
+}
+
 unsigned int rnd(int min, int max);
 
 typedef struct Loc Loc;
