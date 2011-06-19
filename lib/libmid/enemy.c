@@ -28,8 +28,7 @@ _Bool enemyinit(Enemy *e, unsigned char id, int x, int y){
 }
 
 static _Bool untiinit(Enemy *e, int x, int y){
-	if(bodyinit(&e->b, x * Twidth, y * Theight))
-		return 0;
+	bodyinit(&e->b, x * Twidth, y * Theight);
 
 	Unti *u = xalloc(1, sizeof(*u));
 	u->c = (Color){ 255, 55, 55, 255 };

@@ -41,10 +41,7 @@ Player *playernew(int x, int y)
 {
 	Player *p = xalloc(1, sizeof(*p));
 
-	if(bodyinit(&p->body, x * Twidth, y * Theight)){
-		xfree(p);
-		return NULL;
-	}
+	bodyinit(&p->body, x * Twidth, y * Theight);
 
 	loadanim(&p->leftas[Stand], "knight", "left", "stand");
 	loadanim(&p->leftas[Walk], "knight", "left", "walk");

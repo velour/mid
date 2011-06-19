@@ -281,7 +281,7 @@ struct Body {
 	_Bool fall;
 };
 
-_Bool bodyinit(Body *, int x, int y);
+void bodyinit(Body *, int x, int y);
 void bodyupdate(Body *b, Lvl *l);
 
 typedef struct Player Player;
