@@ -75,7 +75,7 @@ static void draw(Scrn *s, Gfx *g){
 	lvlminidraw(g, i->lvl, (Point){0,0}, Scale);
 
 	double px = i->ppos.x / Twidth;
-	double py = i->ppos.y / Theight - 1.0f;
+	double py = i->ppos.y / Theight;
 	Rect r = {
 		(Point){ px*Scale, py*Scale },
 		(Point){ px*Scale + Scale, py*Scale + Scale }
