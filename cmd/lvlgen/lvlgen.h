@@ -1,11 +1,7 @@
 struct Blk;
+struct Lvl;
 
-static inline struct Blk *blk(Lvl *l, int x, int y, int z)
-{
-	int i = z * l->w * l->h + y * l->w + x;
-	return &l->blks[i];
-}
-
+struct Blk *blk(struct Lvl *l, int x, int y, int z);
 unsigned int rnd(int min, int max);
 
 typedef struct Loc Loc;
@@ -40,7 +36,7 @@ struct Mv {
 Mv *moves;
 int Nmoves;
 void mvini(void);
-void mvblit(Mv *mv, Lvl *l, Loc l0);
+void mvblit(Mv *mv, struct Lvl *l, Loc l0);
 _Bool startonblk(Mv *mv);
 
 typedef struct Seg Seg;
@@ -58,13 +54,13 @@ struct Path {
 	Seg *segs;
 };
 
-struct Lvl;
-
 Path *pathnew(struct Lvl *l);
 void pathfree(Path *p);
 _Bool pathadd(struct Lvl *l, Path *p, Seg s);
 void pathpr(struct Lvl *l, Path *p);
 
-bool used(Lvl *l, Loc loc);
+_Bool used(struct Lvl *l, Loc loc);
 
-Loc doorloc(Lvl *lvl, Path *p, Loc loc);
+Loc doorloc(struct Lvl *lvl, Path *p, Loc loc);
+
+void water(struct Lvl *lvl);

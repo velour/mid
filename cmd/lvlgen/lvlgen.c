@@ -97,6 +97,7 @@ static Loc zlayer(Loc loc, Lvl *lvl)
 	buildpath(lvl, p, loc);
 	Loc nxt = doorloc(lvl, p, loc);
 	pathfree(p);
+	water(lvl);
 	return nxt;
 }
 
@@ -129,3 +130,10 @@ unsigned int rnd(int min, int max)
 
 	return r % (max - min) + min;
 }
+
+Blk *blk(struct Lvl *l, int x, int y, int z)
+{
+	int i = z * l->w * l->h + y * l->w + x;
+	return &l->blks[i];
+}
+

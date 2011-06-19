@@ -38,6 +38,8 @@ static Tinfo *tiles[] = {
 	['.'] = &(Tinfo){ .bgfile = "anim/blank/anim", },
 	['#'] = &(Tinfo){ .bgfile = "anim/land/anim", .flags = Tilecollide },
 	['w'] = &(Tinfo){ .fgfile = "anim/water/anim", .flags = Tilewater },
+	['W'] = &(Tinfo){ .fgfile = "anim/water/anim",
+			  .flags = Tilewater | Tilereach },
 	['>'] = &(Tinfo){ .bgfile = "anim/bdoor/anim", .flags = Tilebdoor },
 	['<'] = &(Tinfo){ .fgfile = "anim/fdoor/anim",
 			  .bgfile = "anim/blank/anim",

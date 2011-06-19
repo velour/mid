@@ -10,6 +10,7 @@ OFILES :=\
 	path.o\
 	move.o\
 	door.o\
+	water.o\
 
 HFILES := ../../include/mid.h\
 	../../include/log.h\
