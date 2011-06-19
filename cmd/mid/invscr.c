@@ -122,7 +122,7 @@ static void curdraw(Gfx *g, Item *inv)
 {
 	Txt *invtxt = gettxt();
 	Point d = txtdims(invtxt, itemname(inv));
-	Point p = (Point) { .x = Scrnw - d.x, .y = Itemh * Invrows + Ymin + Pad };
+	Point p = (Point) { .x = Scrnw - d.x, .y = Height + Ymin + Pad};
 	txtdraw(g, invtxt, p, itemname(inv));
 }
 
