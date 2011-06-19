@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
 		loc = zlayer(loc, lvl);
 		if (z < d - 1) {
 			blk(lvl, loc.x, loc.y, lvl->z)->tile = '>';
+			water(lvl);
 			lvl->z++;
 			blk(lvl, loc.x, loc.y, lvl->z)->tile = '<';
 		}
@@ -97,7 +98,6 @@ static Loc zlayer(Loc loc, Lvl *lvl)
 	buildpath(lvl, p, loc);
 	Loc nxt = doorloc(lvl, p, loc);
 	pathfree(p);
-	water(lvl);
 	return nxt;
 }
 
