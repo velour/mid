@@ -246,7 +246,7 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale)
 			int t = b->tile;
 			Point pt = (Point){ pxx, offs.y + y };
 
-			Color c;
+			Color c = (Color){ 255, 255, 255, 255 };
 			unsigned int flags = tiles[t]->flags;
 			if(flags & Tilecollide)
 				c = (Color){ 0, 0, 0, 255 };
@@ -254,8 +254,6 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale)
 				c = (Color){ 0, 255, 0, 255 };
 			else if(flags & Tilefdoor)
 				c = (Color){ 64, 255, 0, 255 };
-			else if(!flags)
-				c = (Color){ 255, 255, 255, 255 };
 			else if(flags & Tilewater)
 				c = (Color){ 75, 75, 255, 255 };
 
