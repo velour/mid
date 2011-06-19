@@ -41,7 +41,7 @@ Player *playernew(int x, int y)
 {
 	Player *p = xalloc(1, sizeof(*p));
 
-	if(bodyinit(&p->body, x, y)){
+	if(bodyinit(&p->body, x * Twidth, y * Theight)){
 		xfree(p);
 		return NULL;
 	}
@@ -55,7 +55,7 @@ Player *playernew(int x, int y)
 
 	p->anim = p->rightas;
 	p->act = Stand;
-	p->imgloc = (Point){ x, y - Tall };
+	p->imgloc = (Point){ x * Twidth, y * Theight };
 
 	p->bi.x = p->bi.y = p->bi.z = -1;
 	p->hp = 10;

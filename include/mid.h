@@ -309,4 +309,4 @@ struct Enemy{
 	void *data;
 };
 
-_Bool enemyinit(Enemy *, unsigned char id, Point loc);
+_Bool enemyinit(Enemy *, unsigned char id, int x, int y);

@@ -38,10 +38,10 @@ Game *gamenew(void)
 	}
 
 	gm->lvl = lvl;
-	gm->player = playernew(64, 96);
+	gm->player = playernew(2, 2);
 	gm->enms[0].es = calloc(1, sizeof(Enemy));
 	gm->enms[0].n = 1;
-	if(!enemyinit(&gm->enms[0].es[0], 'u', (Point){128,96})){
+	if(!enemyinit(&gm->enms[0].es[0], 'u', 4, 2)){
 		lvlfree(lvl);
 		playerfree(gm->player);
 		free(gm->enms[0].es);

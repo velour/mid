@@ -1,6 +1,6 @@
 #include "../../include/mid.h"
 
-static _Bool untiinit(Enemy *, Point);
+static _Bool untiinit(Enemy *, int, int);
 static void untifree(Enemy*);
 static void untiupdate(Enemy*,Player*,Lvl*);
 static void untidraw(Enemy*,Gfx*,Point);
@@ -16,19 +16,19 @@ struct Unti{
 	Img *orb;
 };
 
-static _Bool (*spawns[])(Enemy*,Point) = {
+static _Bool (*spawns[])(Enemy*, int, int) = {
 	['u'] = untiinit,
 };
 
-_Bool enemyinit(Enemy *e, unsigned char id, Point loc){
+_Bool enemyinit(Enemy *e, unsigned char id, int x, int y){
 	if(id >= sizeof(spawns)/sizeof(spawns[0]))
 		return 0;
 
-	return spawns[id](e, loc);
+	return spawns[id](e, x, y);
 }
 
-static _Bool untiinit(Enemy *e, Point p){
-	if(bodyinit(&e->b, p.x, p.y))
+static _Bool untiinit(Enemy *e, int x, int y){
+	if(bodyinit(&e->b, x * Twidth, y * Theight))
 		return 0;
 
 	Unti *u = xalloc(1, sizeof(*u));
@@ -67,5 +67,5 @@ static void untidraw(Enemy *e, Gfx *g, Point tr){
 		{e->b.bbox.b.x + tr.x, e->b.bbox.b.y + tr.y}
 	};
 	//gfxfillrect(g, r, u->c);
-	imgdraw(g, u->orb, (Point){r.a.x, r.a.y - Tall});
+	imgdraw(g, u->orb, (Point){r.a.x, r.a.y});
 }
