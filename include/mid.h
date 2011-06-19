@@ -221,7 +221,7 @@ Lvl *lvlread(FILE *f);
 void lvlfree(Lvl *l);
 void lvlupdate(Lvl *l);
 void lvldraw(Gfx *g, Lvl *l, _Bool bkgrnd, Point offs);
-void lvlminidraw(Gfx *, Lvl *, Point);
+void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale);
 /* Returns the reverse vector that must be added to v in order to
  * respect collisions. */
 Isect lvlisect(Lvl *l, Rect r, Point v);

@@ -66,19 +66,21 @@ static void update(Scrn *s, Scrnstk *stk){
 	}
 }
 
+enum { Scale = 6 };
+
 static void draw(Scrn *s, Gfx *g){
 	gfxclear(g, (Color){ 127, 127, 127 });
 
 	Invscr *i = s->data;
-	lvlminidraw(g, i->lvl, (Point){0,0});
+	lvlminidraw(g, i->lvl, (Point){0,0}, Scale);
 
 	double px = i->ppos.x / Twidth;
 	double py = i->ppos.y / Theight - 1.0f;
 	Rect r = {
-		(Point){ px*2, py*2 },
-		(Point){ px*2 + 2, py*2 + 2 }
+		(Point){ px*Scale, py*Scale },
+		(Point){ px*Scale + Scale, py*Scale + Scale }
 	};
-	gfxdrawrect(g, r, (Color){ 255, 0, 0, 255 });
+	gfxfillrect(g, r, (Color){ 255, 0, 0, 255 });
 
 	Inv *inv = i->inv;
 	moneydraw(g, inv);

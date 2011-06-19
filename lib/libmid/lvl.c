@@ -233,7 +233,7 @@ static void shade(Gfx *g, Point pt)
 	imgdraw(g, shdimg, pt);
 }
 
-void lvlminidraw(Gfx *g, Lvl *l, Point offs)
+void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale)
 {
 	int w = l->w, h = l->h;
 	for (int x = 0; x < w; x++){
@@ -259,10 +259,10 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs)
 				c = (Color){ 75, 75, 255, 255 };
 
 			Rect r = {
-				(Point){ pt.x * 2, pt.y *2 },
-				(Point){ pt.x*2 + 2, pt.y*2 + 2 }
+				(Point){ pt.x * scale, pt.y * scale },
+				(Point){ pt.x * scale + scale, pt.y * scale + scale }
 			};
-			gfxdrawrect(g, r, c);
+			gfxfillrect(g, r, c);
 		}
 	}
 }
