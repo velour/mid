@@ -265,7 +265,7 @@ enum Action{
 _Bool keymapread(char km[Nactions], char *fname);
 extern char kmap[Nactions];
 
-enum { Scrnw = 512, Scrnh = 512 };
+enum { Scrnw = 1024, Scrnh = 576 };
 
 /* Buffer from side of screen at which to begin scrolling. */
 enum { Scrlbuf = 192 };
