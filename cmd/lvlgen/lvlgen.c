@@ -67,7 +67,7 @@ static void init(Lvl *l)
 	for (int z = 0; z < l->d; z++) {
 	for (int y = 0; y < l->h; y++) {
 	for (int x = 0; x < l->w; x++) {
-		int c = ' ';
+		int c = '.';
 		if (x == 0 || x == l->w - 1 || y == 0 || y == l->h - 1)
 				c = '#';
 			blk(l, x, y, z)->tile = c;
@@ -93,7 +93,7 @@ static void output(Lvl *l)
 static Loc zlayer(Loc loc, Lvl *lvl)
 {
 	Path *p = pathnew(lvl);
-	*pathused(p, loc) = true;
+	lvl->blks[loc.y * lvl->w + loc.x].tile = ' ';
 	buildpath(lvl, p, loc);
 	Loc nxt = doorloc(lvl, p, loc);
 	pathfree(p);

@@ -34,7 +34,8 @@ struct Tinfo {
 };
 
 static Tinfo *tiles[] = {
-	[' '] = &(Tinfo){ .bgfile = "anim/blank/anim", },
+	[' '] = &(Tinfo){ .bgfile = "anim/blank/anim", .flags = Tilereach },
+	['.'] = &(Tinfo){ .bgfile = "anim/blank/anim", },
 	['#'] = &(Tinfo){ .bgfile = "anim/land/anim", .flags = Tilecollide },
 	['w'] = &(Tinfo){ .fgfile = "anim/water/anim", .flags = Tilewater },
 	['>'] = &(Tinfo){ .bgfile = "anim/bdoor/anim", .flags = Tilebdoor },

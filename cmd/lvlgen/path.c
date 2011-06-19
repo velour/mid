@@ -27,8 +27,6 @@ void segpr(Seg s)
 Path *pathnew(Lvl *l)
 {
 	Path *p = xalloc(1, sizeof(*p));
-	p->w = l->w;
-	p->used = xalloc(l->w * l->h, sizeof(p->used[0]));
 	p->maxsegs = l->w * l->h;
 	p->segs = xalloc(p->maxsegs, sizeof(p->segs[0]));
 	return p;
@@ -37,7 +35,6 @@ Path *pathnew(Lvl *l)
 void pathfree(Path *p)
 {
 	free(p->segs);
-	free(p->used);
 	free(p);
 }
 
@@ -47,13 +44,6 @@ bool pathadd(Lvl *l, Path *p, Seg s)
 		return false;
 
 	mvblit(s.mv, l, s.l0);
-
-	for (int i = 0; i < s.mv->nclr; i++) {
-		Loc blk = s.mv->clr[i];
-		blk.x += s.l0.x;
-		blk.y += s.l0.y;
-		*pathused(p, blk) = true;
-	}
 
 	p->segs[p->nsegs] = s;
 	p->nsegs++;
@@ -85,7 +75,7 @@ static bool segconfl(Lvl *l, Path *p, Seg s)
 		blk.y += s.l0.y;
 		if (blk.x < 0 || blk.x >= l->w || blk.y < 0 || blk.y >= l->h)
 			return false;
-		if (*pathused(p, blk))
+		if (used(l, blk))
 			return true;
 	}
 
@@ -112,36 +102,13 @@ static bool segclr(Lvl *l, Seg s)
 static bool beenthere(Lvl *l, Path *p, Seg s)
 {
 	for (int i = 0; i < p->nsegs; i++) {
-		if (p->used[s.l1.y * l->w + s.l1.x])
+		if (used(l, s.l1))
 			return true;
 	}
 	return false;
 }
 
-void pathpr(Lvl *l, Path *p)
+bool used(Lvl *l, Loc loc)
 {
-	for (int y = 0; y < l->h; y++) {
-		for (int x = 0; x < l->w; x++) {
-			char c = ' ';
-			Blkinfo bi = blkinfo(l, x, y);
-			if (bi.flags & Tilecollide)
-				c = '#';
-			if (*pathused(p, (Loc){x, y})) {
-				if (c == '#')
-					c = '$';
-				else
-					c = 'O';
-			}
-			fputc(c, stderr);
-		}
-		fputc('\n', stderr);
-	}
-	fputc('\n', stderr);
+	return l->blks[loc.y * l->w + loc.x].tile == ' ';
 }
-
-
-bool *pathused(Path *p, Loc loc)
-{
-	return &p->used[loc.y * p->w + loc.x];
-}
-

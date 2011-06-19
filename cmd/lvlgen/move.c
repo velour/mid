@@ -13,8 +13,8 @@ static Loc mvend(Mvspec s);
 
 /* Move specification array: 's' is the start of the move, 'e' is the
  * end of the move, '#' is a block, ' ' is a space that *must* be
- * clear and anything else is a wild card (whatever ends up being put
- * there while building the path).
+ * clear and is considered reachable.  Anything else is a wild card
+ * (whatever ends up being put there while building the path).
  */
 static Mvspec specs[] = {
 	{ .blks = "######"
@@ -178,7 +178,7 @@ static Mvspec specs[] = {
           .wt = 10, .w = 3, .h = 4 },
 
 	{ .blks = "  s"
-                  " .#"
+                  "  #"
                   "e##"
 		  "###",
           .wt = 5, .w = 3, .h = 4 },
@@ -203,7 +203,7 @@ static Mvspec specs[] = {
           .wt = 15, .w = 3, .h = 4 },
 
 	{ .blks = "s  "
-                  "#. "
+                  "#  "
                   "##e"
                   "###",
           .wt = 5, .w = 3, .h = 4 },
@@ -320,11 +320,13 @@ void mvblit(Mv *mv, Lvl *l, Loc l0)
 
 	for (int x = 0; x < mv->spec.w; x++) {
 	for (int y = 0; y < mv->spec.h; y++) {
-		if (mv->spec.blks[y * mv->spec.w + x] == '#') {
-			int lx = (x - strt.x) + l0.x;
-			int ly = (y - strt.y) + l0.y;
+		int lx = (x - strt.x) + l0.x;
+		int ly = (y - strt.y) + l0.y;
+		int t = mv->spec.blks[y * mv->spec.w + x];
+		if (t == '#')
 			blk(l, lx, ly, l->z)->tile = '#';
-		}
+		if (t == ' ' || t == 's' || t == 'e')
+			blk(l, lx, ly, l->z)->tile = ' ';
 	}
 	}
 }

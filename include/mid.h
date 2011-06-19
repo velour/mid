@@ -234,9 +234,10 @@ struct Blkinfo {
 
 enum {
 	Tilecollide = 1<<0,
-	Tilewater = 1<<1,
-	Tilefdoor = 1<<2,
-	Tilebdoor = 1<<3,
+	Tilereach = 1<<1,
+	Tilewater = 1<<2,
+	Tilefdoor = 1<<3,
+	Tilebdoor = 1<<4,
 };
 
 enum { Theight = 32, Twidth = 32 };
