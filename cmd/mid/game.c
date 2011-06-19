@@ -22,7 +22,6 @@ struct Game {
 	Point transl;
 	Lvl *lvl;
 	Player *player;
-	Inv inv;
 	Item itms[Maxitms];
 	Enms enms[];
 };
@@ -52,14 +51,6 @@ Game *gamenew(void)
 		gm->enms[0].es[0].mt->free(&gm->enms[0].es[0]);
 		goto oops;
 	}
-
-	// Testing items
-	Icon *axe = iconnew("Golden Pickaxe", "gaxe/anim");
-	invmod(&gm->inv, axe, 0, 0);
-	axe = iconnew("Golden Pickaxe", "gaxe/anim");
-	invmod(&gm->inv, axe, 1, 0);
-	axe = iconnew("Golden Pickaxe", "gaxe/anim");
-	invmod(&gm->inv, axe, 1, 1);
 
 	return gm;
 
@@ -133,7 +124,7 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 	Game *gm = s->data;
 
 	if(e->down && e->key == kmap[Mvinv]){
-		scrnstkpush(stk, invscrnnew(&gm->inv, gm->lvl, playerpos(gm->player)));
+		scrnstkpush(stk, invscrnnew(gm->player, gm->lvl));
 		return;
 	}
 

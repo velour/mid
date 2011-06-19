@@ -8,7 +8,6 @@ LIB :=\
 OFILES := main.o\
 	game.o\
 	invscr.o\
-	inv.o\
 	title.o\
 	lvl.o\
 

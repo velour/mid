@@ -284,7 +284,40 @@ struct Body {
 void bodyinit(Body *, int x, int y);
 void bodyupdate(Body *b, Lvl *l);
 
+typedef enum Act Act;
+enum Act {
+	Stand,
+	Walk,
+	Jump,
+	Nacts
+};
+
+typedef struct Item Item;
+enum { Maxinv = 9 };
+
 typedef struct Player Player;
+struct Player {
+	Anim *leftas[Nacts];
+	Anim *rightas[Nacts];
+	Anim **anim;
+	Act act;
+	Point imgloc;
+
+	Body body;
+	_Bool door;
+	int jframes;
+	int iframes; // invulnerability after damage;
+
+	/* if changed, update visibility. */
+	Blkinfo bi;
+
+	int hp;
+	int dex;
+
+	int money;
+	Item *inv[Maxinv];
+};
+
 Player *playernew(int x, int y);
 void playerfree(Player *);
 void playerupdate(Player *, Lvl *l, Point *tr);
@@ -293,6 +326,7 @@ void playerhandle(Player *, Event *);
 Point playerpos(Player *);
 Rect playerbox(Player *);
 void playerdmg(Player *, int x);
+_Bool playertake(Player *, Item *);
 
 typedef struct Enemy Enemy;
 typedef struct Enemymt Enemymt;
@@ -317,7 +351,6 @@ enum ItemID{
 	ItemMax
 };
 
-typedef struct Item Item;
 struct Item{
 	ItemID id;
 	Body bod;
@@ -327,3 +360,5 @@ struct Item{
 _Bool iteminit(Item*, ItemID id, Point p);
 void itemupdate(Item*, Player*, Lvl*);
 void itemdraw(Item*, Gfx*, Point tr);
+void iteminvdraw(Item*, Gfx*, Point p);
+char *itemname(Item*);

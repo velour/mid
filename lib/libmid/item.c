@@ -3,6 +3,7 @@
 
 typedef struct ItemOps ItemOps;
 struct ItemOps{
+	char *name;
 	char *animname;
 	void (*update)(Item*,Player*,Lvl*);
 	Anim *anim;
@@ -11,7 +12,7 @@ struct ItemOps{
 static void statupupdate(Item*,Player*,Lvl*);
 
 static ItemOps ops[] = {
-	[ItemStatup] = { "anim/item/statup", statupupdate },
+	[ItemStatup] = { "Orb of Power", "anim/item/statup", statupupdate },
 };
 
 _Bool iteminit(Item *i, ItemID id, Point p){
@@ -45,11 +46,17 @@ void itemdraw(Item *i, Gfx *g, Point tr){
 	animdraw(g, ops[i->id].anim, pt);
 }
 
+void iteminvdraw(Item *i, Gfx *g, Point p){
+	animdraw(g, ops[i->id].anim, p);
+}
+
+char *itemname(Item *i){
+	return ops[i->id].name;
+}
+
 static void statupupdate(Item *i, Player *p, Lvl *l){
 	bodyupdate(&i->bod, l);
 
-	if(isect(i->bod.bbox, playerbox(p))){
+	if(isect(i->bod.bbox, playerbox(p)) && playertake(p, i))
 		i->gotit = 1;
-		//TODO: add to player's inventory
-	}
 }

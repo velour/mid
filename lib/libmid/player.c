@@ -10,33 +10,6 @@ static Point scroll(Player*, Point delta, Point transl);
 static double run(Player *);
 static double jmp(Player *);
 
-typedef enum Act Act;
-enum Act {
-	Stand,
-	Walk,
-	Jump,
-	Nacts
-};
-
-struct Player {
-	Anim *leftas[Nacts];
-	Anim *rightas[Nacts];
-	Anim **anim;
-	Act act;
-	Point imgloc;
-
-	Body body;
-	bool door;
-	int jframes;
-	int iframes; // invulnerability after damage;
-
-	/* if changed, update visibility. */
-	Blkinfo bi;
-
-	int hp;
-	int dex;
-};
-
 Player *playernew(int x, int y)
 {
 	Player *p = xalloc(1, sizeof(*p));
@@ -198,6 +171,16 @@ fprintf(stderr, "ow\n");
 		puts("You loser, loser!");
 		p->hp = 0;
 	}
+}
+
+_Bool playertake(Player *p, Item *i){
+	for(size_t j = 0; j < Maxinv; j++){
+		if(p->inv[j] != NULL)
+			continue;
+		p->inv[j] = i;
+		return 1;
+	}
+	return 0;
 }
 
 static void loadanim(Anim **a, const char *name, const char *dir, const char *act)
