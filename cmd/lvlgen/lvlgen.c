@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	init(lvl);
 
 	Loc loc = (Loc) { 2, 2 };
-	lvl->blks[loc.y * lvl->w + loc.x].tile = ' ';
+	blk(lvl, loc.x, loc.y, 0)->tile = ' ';
 	for (int z = 0; z < d; z++) {
 		loc = zlayer(loc, lvl);
 		if (z < d - 1) {
