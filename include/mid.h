@@ -293,7 +293,7 @@ enum Act {
 };
 
 typedef struct Item Item;
-enum { Maxinv = 9 };
+enum { Maxinv = 15 };
 
 typedef struct Player Player;
 struct Player {
