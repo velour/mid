@@ -470,7 +470,7 @@ float blkgrav(int flags)
 float blkdrag(int flags)
 {
 	if(flags & Tilewater)
-		return 0.6f;
+		return 0.7f;
 	else
 		return 1.0f;
 }
