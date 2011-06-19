@@ -462,7 +462,7 @@ static bool blkd(Lvl *l, int x, int y)
 float blkgrav(int flags)
 {
 	if(flags & Tilewater)
-		return 0.2f * Grav;
+		return 0.5f * Grav;
 	else
 		return Grav;
 }
