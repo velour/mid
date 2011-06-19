@@ -27,7 +27,7 @@ Game *gamenew(void)
 {
 	int seed = rand();
 	lvlinit();
-	Lvl *lvl = lvlgen(50, 50, 10, seed);
+	Lvl *lvl = lvlgen(50, 50, 5, seed);
 	if (!lvl)
 		fatal("Failed to load level lvl/0.lvl: %s", miderrstr());
 
