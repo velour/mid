@@ -13,7 +13,8 @@ struct Invscr{
 enum { Itemw = 32, Itemh = 32 };
 enum { Pad = 4 };
 enum { Width = Itemw * Invcols + Pad * (Invcols - 1),
-       Height = Itemh * Invrows + Pad * (Invrows - 1), };
+       Height = Itemh * Invrows + Pad * (Invrows - 1),
+};
 enum { Xmin = Scrnw - Width - 5, Ymin = 25 };
 
 static const char *moneystr = "gold";
