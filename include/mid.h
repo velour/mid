@@ -310,3 +310,19 @@ struct Enemy{
 };
 
 _Bool enemyinit(Enemy *, unsigned char id, int x, int y);
+
+typedef enum ItemID ItemID;
+enum ItemID{
+	ItemStatup,
+	ItemMax
+};
+
+typedef struct Item Item;
+struct Item{
+	ItemID id;
+	Body bod;
+};
+
+_Bool iteminit(Item*, ItemID id, Point p);
+void itemupdate(Item*, Player*, Lvl*);
+void itemdraw(Item*, Gfx*, Point tr);

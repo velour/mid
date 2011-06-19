@@ -3,9 +3,9 @@
 #include "game.h"
 #include <stdlib.h>
 
-Item *itemnew(const char *name, const char *resrc)
+Icon *iconnew(const char *name, const char *resrc)
 {
-	Item *item = malloc(sizeof(*item));
+	Icon *item = malloc(sizeof(*item));
 	if (!item)
 		fatal("malloc failed: %s", miderrstr());
 
@@ -17,15 +17,15 @@ Item *itemnew(const char *name, const char *resrc)
 	return item;
 }
 
-void itemfree(Item *item)
+void iconfree(Icon *item)
 {
 	free(item);
 }
 
-Item *invmod(Inv *inv, Item *new, int x, int y)
+Icon *invmod(Inv *inv, Icon *new, int x, int y)
 {
 	int i = x * Invcols + y;
-	Item *old = inv->items[i];
+	Icon *old = inv->items[i];
 	inv->items[i] = new;
 	return old;
 }

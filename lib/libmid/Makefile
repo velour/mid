@@ -17,6 +17,7 @@ OFILES :=\
 	enemy.o\
 	body.o\
 	mem.o\
+	item.o\
 
 HFILES :=\
 	../../include/mid.h\

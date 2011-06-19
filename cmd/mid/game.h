@@ -10,8 +10,8 @@ extern Scrnmt gamemt;
 
 enum { Invrows = 3, Invcols = 3 };
 
-typedef struct Item Item;
-struct Item {
+typedef struct Icon Icon;
+struct Icon {
 	Anim *icon;
 	const char *name;
 };
@@ -19,14 +19,14 @@ struct Item {
 typedef struct Inv Inv;
 struct Inv {
 	int money;
-	Item *items[Invrows * Invcols];
+	Icon *items[Invrows * Invcols];
 };
 
-Item *itemnew(const char *name, const char *anim);
-void itemfree(Item *);
+Icon *iconnew(const char *name, const char *anim);
+void iconfree(Icon *);
 
 /* Swap the item at the given inventory grid x,y.  Return the old item. */
-Item *invmod(Inv *, Item *, int x, int y);
+Icon *invmod(Inv *, Icon *, int x, int y);
 
 Scrn *invscrnnew(Inv *, Lvl *, Point ppos);
 Scrn *titlescrnnew(Gfx *);

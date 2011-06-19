@@ -8,7 +8,7 @@ struct Invscr{
 	Inv *inv;
 	Lvl *lvl;
 	Point ppos;
-	Item *curitem;
+	Icon *curitem;
 };
 
 enum { Iconw = 64, Iconh = 64 };
@@ -23,12 +23,12 @@ static const char *moneystr = "gold";
 static void update(Scrn*,Scrnstk*);
 static void draw(Scrn*,Gfx*);
 static void handle(Scrn*,Scrnstk*,Event*);
-static Item *invat(Inv *inv, int x, int y);
+static Icon *invat(Inv *inv, int x, int y);
 static void invfree(Scrn*);
-static void curdraw(Gfx *g, Item *inv);
+static void curdraw(Gfx *g, Icon *inv);
 static void moneydraw(Gfx *g, Inv *inv);
-static void entrydraw(Gfx *g, Inv *inv, Item *cur, int r, int c);
-static void griddraw(Gfx *g, Inv *inv, Item *cur);
+static void entrydraw(Gfx *g, Inv *inv, Icon *cur, int r, int c);
+static void griddraw(Gfx *g, Inv *inv, Icon *cur);
 static Txt *gettxt(void);
 
 static Scrnmt invmt = {
@@ -59,7 +59,7 @@ static void update(Scrn *s, Scrnstk *stk){
 	Invscr *i = s->data;
 	Inv *inv = i->inv;
 	for (int i = 0; i < Invcols * Invrows; i++) {
-		Item *it = inv->items[i];
+		Icon *it = inv->items[i];
 		if (!it)
 			continue;
 		animupdate(it->icon, 1);
@@ -100,7 +100,7 @@ static void moneydraw(Gfx *g, Inv *inv)
 	txtdraw(g, invtxt, (Point) { Scrnw - d.x , 1 }, "%d ", inv->money);
 }
 
-static void griddraw(Gfx *g, Inv *inv, Item *cur)
+static void griddraw(Gfx *g, Inv *inv, Icon *cur)
 {
 	Img *img = resrcacq(imgs, "img/inv.png", NULL);
 	if (!img)
@@ -115,14 +115,14 @@ static void griddraw(Gfx *g, Inv *inv, Item *cur)
 	}
 }
 
-static void entrydraw(Gfx *g, Inv *inv, Item *cur, int r, int c)
+static void entrydraw(Gfx *g, Inv *inv, Icon *cur, int r, int c)
 {
 	int x0 = Xmin + r * Pad;
 	int y0 = Ymin + c * Pad;
 	Point a = (Point) { r * Iconw + x0, c * Iconh + y0 };
 	Point b = (Point) { (r + 1) * Iconw + x0, (c + 1) * Iconh + y0 };
 	Rect rect = (Rect){ a, b };
-	Item *it = inv->items[r * Invcols + c];
+	Icon *it = inv->items[r * Invcols + c];
 	if (cur && it == cur)
 		gfxfillrect(g, rect, (Color){0x99,0x66,0,0xFF});
 	gfxdrawrect(g, rect, (Color){0});
@@ -131,7 +131,7 @@ static void entrydraw(Gfx *g, Inv *inv, Item *cur, int r, int c)
 		animdraw(g, it->icon, a);
 }
 
-static void curdraw(Gfx *g, Item *inv)
+static void curdraw(Gfx *g, Icon *inv)
 {
 	Txt *invtxt = gettxt();
 	Point d = txtdims(invtxt, inv->name);
@@ -166,7 +166,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	}
 }
 
-static Item *invat(Inv *inv, int x, int y)
+static Icon *invat(Inv *inv, int x, int y)
 {
 	if (x < Xmin || x > Xmin + Width || y < Ymin || y > Ymin + Height)
 		return NULL;

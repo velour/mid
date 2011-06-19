@@ -5,7 +5,10 @@
 #include <stdbool.h>
 #include "game.h"
 
-enum { Maxenms = 32 };
+enum {
+	Maxenms = 32,
+	Maxitms = 1, //TODO: more than 1
+};
 
 extern Lvl *lvlgen(int w, int h, int d, int sd);
 
@@ -20,6 +23,7 @@ struct Game {
 	Lvl *lvl;
 	Player *player;
 	Inv inv;
+	Item itms[Maxitms];
 	Enms enms[];
 };
 
@@ -41,23 +45,30 @@ Game *gamenew(void)
 	gm->player = playernew(2, 2);
 	gm->enms[0].es = calloc(1, sizeof(Enemy));
 	gm->enms[0].n = 1;
-	if(!enemyinit(&gm->enms[0].es[0], 'u', 4, 2)){
-		lvlfree(lvl);
-		playerfree(gm->player);
-		free(gm->enms[0].es);
-		free(gm);
-		return NULL;
+	if(!enemyinit(&gm->enms[0].es[0], 'u', 4, 2))
+		goto oops;
+
+	if(!iteminit(gm->itms, ItemStatup, (Point){3,1})){
+		gm->enms[0].es[0].mt->free(&gm->enms[0].es[0]);
+		goto oops;
 	}
 
 	// Testing items
-	Item *axe = itemnew("Golden Pickaxe", "gaxe/anim");
+	Icon *axe = iconnew("Golden Pickaxe", "gaxe/anim");
 	invmod(&gm->inv, axe, 0, 0);
-	axe = itemnew("Golden Pickaxe", "gaxe/anim");
+	axe = iconnew("Golden Pickaxe", "gaxe/anim");
 	invmod(&gm->inv, axe, 1, 0);
-	axe = itemnew("Golden Pickaxe", "gaxe/anim");
+	axe = iconnew("Golden Pickaxe", "gaxe/anim");
 	invmod(&gm->inv, axe, 1, 1);
 
 	return gm;
+
+oops:
+	lvlfree(lvl);
+	playerfree(gm->player);
+	free(gm->enms[0].es);
+	free(gm);
+	return NULL;
 }
 
 void gamefree(Scrn *s)
@@ -84,6 +95,9 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 	lvlupdate(gm->lvl);
 	playerupdate(gm->player, gm->lvl, &gm->transl);
 
+	for(size_t i = 0; i < Maxitms; i++)
+		itemupdate(&gm->itms[i], gm->player, gm->lvl);
+
 	Enms es = gm->enms[gm->lvl->z];
 	Enemy *e = es.es;
 	int n = es.n;
@@ -97,6 +111,9 @@ void gamedraw(Scrn *s, Gfx *g)
 	gfxclear(g, (Color){ 0, 0, 0, 0 });
 	lvldraw(g, gm->lvl, true, gm->transl);
 	playerdraw(g, gm->player, gm->transl);
+
+	for(size_t i = 0; i < Maxitms; i++)
+		itemdraw(&gm->itms[i], g, gm->transl);
 
 	Enms es = gm->enms[gm->lvl->z];
 	Enemy *e = es.es;
