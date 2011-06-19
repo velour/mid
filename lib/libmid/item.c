@@ -33,14 +33,23 @@ _Bool iteminit(Item *i, ItemID id, Point p){
 }
 
 void itemupdate(Item *i, Player *p, Lvl *l){
+	if(i->gotit)
+		return;
 	ops[i->id].update(i, p, l);
 }
 
 void itemdraw(Item *i, Gfx *g, Point tr){
+	if(i->gotit)
+		return;
 	Point pt = { i->bod.bbox.a.x + tr.x, i->bod.bbox.a.y + tr.y };
 	animdraw(g, ops[i->id].anim, pt);
 }
 
 static void statupupdate(Item *i, Player *p, Lvl *l){
 	bodyupdate(&i->bod, l);
+
+	if(isect(i->bod.bbox, playerbox(p))){
+		i->gotit = 1;
+		//TODO: add to player's inventory
+	}
 }

@@ -321,6 +321,7 @@ typedef struct Item Item;
 struct Item{
 	ItemID id;
 	Body bod;
+	_Bool gotit;
 };
 
 _Bool iteminit(Item*, ItemID id, Point p);
