@@ -323,6 +323,8 @@ void mvblit(Mv *mv, Lvl *l, Loc l0)
 		int lx = (x - strt.x) + l0.x;
 		int ly = (y - strt.y) + l0.y;
 		int t = mv->spec.blks[y * mv->spec.w + x];
+		if (blk(l, lx, ly, l->z)->tile != '.')
+			continue;
 		if (t == '#')
 			blk(l, lx, ly, l->z)->tile = '#';
 		if (t == ' ' || t == 's' || t == 'e')

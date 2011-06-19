@@ -110,5 +110,6 @@ static bool beenthere(Lvl *l, Path *p, Seg s)
 
 bool used(Lvl *l, Loc loc)
 {
-	return l->blks[loc.y * l->w + loc.x].tile == ' ';
+	int t = l->blks[l->z * l->w * l->h + loc.y * l->w + loc.x].tile;
+	return t == ' ' || t == '<' || t == '>';
 }

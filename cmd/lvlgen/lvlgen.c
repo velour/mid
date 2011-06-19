@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
 	init(lvl);
 
 	Loc loc = (Loc) { 2, 2 };
+	lvl->blks[loc.y * lvl->w + loc.x].tile = ' ';
 	for (int z = 0; z < d; z++) {
 		loc = zlayer(loc, lvl);
 		if (z < d - 1) {
@@ -93,7 +94,6 @@ static void output(Lvl *l)
 static Loc zlayer(Loc loc, Lvl *lvl)
 {
 	Path *p = pathnew(lvl);
-	lvl->blks[loc.y * lvl->w + loc.x].tile = ' ';
 	buildpath(lvl, p, loc);
 	Loc nxt = doorloc(lvl, p, loc);
 	pathfree(p);
