@@ -10,12 +10,11 @@ struct Invscr{
 	Item *curitem;
 };
 
-enum { Itemw = 64, Itemh = 64 };
-enum { Pad = 1 };
+enum { Itemw = 32, Itemh = 32 };
+enum { Pad = 4 };
 enum { Width = Itemw * Invcols + Pad * (Invcols - 1),
-       Height = Itemh * Invrows + Pad * (Invrows - 1),
-       Imgh = 204, Imgw = 204 };
-enum { Xmin = Scrnw - Imgw, Ymin = 25 };
+       Height = Itemh * Invrows + Pad * (Invrows - 1), };
+enum { Xmin = Scrnw - Width - 5, Ymin = 25 };
 
 static const char *moneystr = "gold";
 
@@ -95,16 +94,10 @@ static void moneydraw(Gfx *g, int m)
 
 static void griddraw(Gfx *g, Item *inv[], Item *cur)
 {
-	Img *img = resrcacq(imgs, "img/inv.png", NULL);
-	if (!img)
-		fatal("Failed to load inventory img: %s", miderrstr());
-	imgdraw(g, img, (Point){ .x = Xmin - 5, .y = Ymin - 5 });
-	resrcrel(imgs, "img/inv.png", NULL);
-
 	for (int r = 0; r < Invrows; r++) {
-		for (int c = 0; c < Invcols; c++) {
-			entrydraw(g, inv, cur, r, c);
-		}
+	for (int c = 0; c < Invcols; c++) {
+		entrydraw(g, inv, cur, r, c);
+	}
 	}
 }
 
@@ -113,8 +106,9 @@ static void entrydraw(Gfx *g, Item *inv[], Item *cur, int r, int c)
 	int x0 = Xmin + r * Pad;
 	int y0 = Ymin + c * Pad;
 	Point a = (Point) { r * Itemw + x0, c * Itemh + y0 };
-	Point b = (Point) { (r + 1) * Itemw + x0, (c + 1) * Itemh + y0 };
-	Rect rect = (Rect){ a, b };
+	Rect rect = (Rect){ (Point) { a.x - 1, a.y - 1 },
+			    (Point) { (r + 1) * Itemw + x0 + 1,
+				      (c + 1) * Itemh + y0 + 1 } };
 	Item *it = inv[r * Invcols + c];
 	if (cur && it == cur)
 		gfxfillrect(g, rect, (Color){0x99,0x66,0,0xFF});
@@ -128,7 +122,7 @@ static void curdraw(Gfx *g, Item *inv)
 {
 	Txt *invtxt = gettxt();
 	Point d = txtdims(invtxt, itemname(inv));
-	Point p = (Point) { .x = Scrnw - d.x, .y = Imgh + Ymin + Pad };
+	Point p = (Point) { .x = Scrnw - d.x, .y = Itemh * Invrows + Ymin + Pad };
 	txtdraw(g, invtxt, p, itemname(inv));
 }
 
