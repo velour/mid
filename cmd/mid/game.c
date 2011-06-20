@@ -10,8 +10,6 @@ enum {
 	Maxitms = 1, //TODO: more than 1
 };
 
-extern Lvl *lvlgen(int w, int h, int d, int sd);
-
 typedef struct Enms Enms;
 struct Enms{
 	Enemy *es;
@@ -33,6 +31,9 @@ Game *gamenew(void)
 	Lvl *lvl = lvlgen(50, 50, 5, seed);
 	if (!lvl)
 		fatal("Failed to load level lvl/0.lvl: %s", miderrstr());
+
+	//TODO: replace this horrible hack with functionality in lvlgen
+	lvl->blks[101].tile = 'o';
 
 	Game *gm = calloc(1, sizeof(*gm) + sizeof(Enms[lvl->d]));
 	if (!gm){
@@ -125,6 +126,10 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 
 	if(e->down && e->key == kmap[Mvinv]){
 		scrnstkpush(stk, invscrnnew(gm->player, gm->lvl));
+		return;
+	}else if(e->down && e->key == kmap[Mvdoor] &&
+		gm->player->bi.flags & Tileshrempty){
+		scrnstkpush(stk, statscrnnew(gm->player, gm->lvl));
 		return;
 	}
 

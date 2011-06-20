@@ -20,25 +20,21 @@ static Scrnmt titmt = {
 };
 
 Scrn *titlescrnnew(Gfx *g){
-	Tit *t = malloc(sizeof(*t));
-	if(!t)
-		return NULL;
+	Tit *t = xalloc(1, sizeof(*t));
 	Txt *txt = txtnew("resrc/txt/prstartk.ttf", 72, (Color){0});
 	if(!txt){
-		free(t);
+		xfree(t);
 		return NULL;
 	}
 
 	t->title = txt2img(g, txt, "MID");
 	txtfree(txt);
 	if(!t->title){
-		free(t);
+		xfree(t);
 		return NULL;
 	}
 
-	Scrn *s = malloc(sizeof(*s));
-	if(!s)
-		return NULL;
+	Scrn *s = xalloc(1, sizeof(*s));
 	s->mt = &titmt;
 	s->data = t;
 	return s;

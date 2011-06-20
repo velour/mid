@@ -215,6 +215,7 @@ struct Lvl {
 	Blk blks[];
 };
 
+Lvl *lvlgen(int w, int h, int d, int sd);
 Lvl *lvlnew(int d, int w, int h);
 Lvl *lvlload(const char *path);
 Lvl *lvlread(FILE *f);
@@ -238,7 +239,11 @@ enum {
 	Tilewater = 1<<2,
 	Tilefdoor = 1<<3,
 	Tilebdoor = 1<<4,
+	Tileshrempty = 1 << 5,
+	Tileshrused = 1 << 6,
 };
+
+void lvluseshrine(Lvl *, int x, int y);
 
 enum { Theight = 32, Twidth = 32 };
 

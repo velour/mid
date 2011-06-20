@@ -78,13 +78,21 @@ static Tinfo *tiles[] = {
 		.bgfile = "anim/blank/anim",
 		.flags = Tilefdoor | Tilewater | Tilereach
 	},
+	['o'] = &(Tinfo){
+		.bgfile = "anim/shrine/empty.anim",
+		.flags = Tileshrempty,
+	},
+	['O'] = &(Tinfo){
+		.bgfile = "anim/shrine/used.anim",
+		.flags = Tileshrused,
+	},
 };
 
 int debugging = 0;
 
 enum { Ntiles = sizeof(tiles) / sizeof(tiles[0]) };
 
-bool istile(int t)
+static bool istile(int t)
 {
 	return t >= 0 && t < Ntiles && tiles[t];
 }
@@ -119,8 +127,6 @@ Lvl *lvlload(const char *path)
 Lvl *lvlnew(int d, int w, int h)
 {
 	Lvl *l = xalloc(1, sizeof(*l) + sizeof(Blk[d * w * h]));
-	if (!l)
-		return NULL;
 	l->d = d;
 	l->w = w;
 	l->h = h;
@@ -132,8 +138,6 @@ Lvl *lvlread(FILE *f)
 	int w, h, d;
 	fscanf(f, " %d %d %d",&d, &w, &h);
 	Lvl *l = lvlnew(d, w, h);
-	if (!l)
-		return NULL;
 
 	int x, y, z;
 	x = y = z = 0;
@@ -512,3 +516,9 @@ static Blk *blk(Lvl *l, int x, int y, int z)
 	return &l->blks[z * l->w * l->h + y * l->w + x];
 }
 
+void lvluseshrine(Lvl *l, int x, int y)
+{
+	Blk *b = blk(l, x, y, l->z);
+	if(b->tile == 'o')
+		b->tile = 'O';
+}
