@@ -37,15 +37,47 @@ struct Tinfo {
 };
 
 static Tinfo *tiles[] = {
-	[' '] = &(Tinfo){ .bgfile = "anim/blank/anim", .flags = Tilereach },
-	['.'] = &(Tinfo){ .bgfile = "anim/blank/anim", },
-	['#'] = &(Tinfo){ .bgfile = "anim/land/anim", .flags = Tilecollide },
-	['w'] = &(Tinfo){ .bgfile = "anim/blank/anim", .mgfile = "anim/water/anim", .flags = Tilewater },
-	['W'] = &(Tinfo){ .bgfile = "anim/blank/anim", .mgfile = "anim/water/anim", .flags = Tilewater | Tilereach },
-	['>'] = &(Tinfo){ .bgfile = "anim/bdoor/anim", .flags = Tilebdoor | Tilereach},
-	[')'] = &(Tinfo){ .bgfile = "anim/bdoor/anim", .mgfile = "anim/water/anim", .flags = Tilebdoor | Tilewater | Tilereach },
-	['<'] = &(Tinfo){ .fgfile = "anim/fdoor/anim", .bgfile = "anim/blank/anim", .flags = Tilefdoor | Tilereach},
-	['('] = &(Tinfo){ .fgfile = "anim/fdoor/anim", .mgfile = "anim/water/anim", .bgfile = "anim/blank/anim", .flags = Tilefdoor | Tilewater | Tilereach },
+	[' '] = &(Tinfo){
+		.bgfile = "anim/blank/anim",
+		.flags = Tilereach
+	},
+	['.'] = &(Tinfo){
+		.bgfile = "anim/blank/anim",
+	},
+	['#'] = &(Tinfo){
+		.bgfile = "anim/land/anim",
+		.flags = Tilecollide
+	},
+	['w'] = &(Tinfo){
+		.bgfile = "anim/blank/anim",
+		.mgfile = "anim/water/anim",
+		.flags = Tilewater
+	},
+	['W'] = &(Tinfo){
+		.bgfile = "anim/blank/anim",
+		.mgfile = "anim/water/anim",
+		.flags = Tilewater | Tilereach
+	},
+	['>'] = &(Tinfo){
+		.bgfile = "anim/bdoor/anim",
+		.flags = Tilebdoor | Tilereach
+	},
+	[')'] = &(Tinfo){
+		.bgfile = "anim/bdoor/anim",
+		.mgfile = "anim/water/anim",
+		.flags = Tilebdoor | Tilewater | Tilereach
+	},
+	['<'] = &(Tinfo){
+		.fgfile = "anim/fdoor/anim",
+		.bgfile = "anim/blank/anim",
+		.flags = Tilefdoor | Tilereach
+	},
+	['('] = &(Tinfo){
+		.fgfile = "anim/fdoor/anim",
+		.mgfile = "anim/water/anim",
+		.bgfile = "anim/blank/anim",
+		.flags = Tilefdoor | Tilewater | Tilereach
+	},
 };
 
 int debugging = 0;
