@@ -26,7 +26,7 @@ Scrn *statscrnnew(Player *p, Lvl *l){
 	sup->p = p;
 	sup->lvl = l;
 
-	Txtinfo ti = { 12 };
+	Txtinfo ti = { 32 };
 	sup->txt = resrcacq(txt, "txt/retganon.ttf", &ti);
 	if(!sup->txt)
 		die("Failed to load stat screen font");
