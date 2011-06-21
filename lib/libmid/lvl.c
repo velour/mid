@@ -79,11 +79,13 @@ static Tinfo *tiles[] = {
 		.flags = Tilefdoor | Tilewater | Tilereach
 	},
 	['o'] = &(Tinfo){
-		.bgfile = "anim/shrine/empty.anim",
+		.bgfile = "anim/blank/anim",
+		.mgfile = "anim/shrine/empty.anim",
 		.flags = Tileshrempty,
 	},
 	['O'] = &(Tinfo){
-		.bgfile = "anim/shrine/used.anim",
+		.bgfile = "anim/blank/anim",
+		.mgfile = "anim/shrine/used.anim",
 		.flags = Tileshrused,
 	},
 };
