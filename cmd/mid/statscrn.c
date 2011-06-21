@@ -50,8 +50,12 @@ static void draw(Scrn *s, Gfx *g){
 	char buf[Bufsz];
 
 	snprintf(buf, Bufsz, "HP: %d", sup->p->hp);
-//	Point hploc = txtdims(sup->txt, buf);
+	Point hploc = txtdims(sup->txt, buf);
 	txtdraw(g, sup->txt, (Point){1,1}, buf);
+
+	snprintf(buf, Bufsz, "Dexterity: %d", sup->p->dex);
+//	Point dexloc = txtdims(sup->txt, buf);
+	txtdraw(g, sup->txt, (Point){ 1, hploc.y }, buf);
 
 	gfxflip(g);
 }
