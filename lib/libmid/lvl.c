@@ -65,8 +65,8 @@ static Tinfo *tiles[] = {
 		.flags = Tilebdoor | Tilewater | Tilereach
 	},
 	['<'] = &(Tinfo){
-		.files = { [0] = "anim/fdoor/anim",
-			   [2] = "anim/blank/anim", },
+		.files = { [0] = "anim/blank/anim",
+			   [3] = "anim/fdoor/anim", },
 		.flags = Tilefdoor | Tilereach
 	},
 	['('] = &(Tinfo){
