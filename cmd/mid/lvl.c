@@ -1,6 +1,7 @@
 #include <assert.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
+#include "game.h"
 
 static const char *lvlgenbin = "cmd/lvlgen/lvlgen";
 

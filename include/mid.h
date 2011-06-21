@@ -215,7 +215,6 @@ struct Lvl {
 	Blk blks[];
 };
 
-Lvl *lvlgen(int w, int h, int d, int sd);
 Lvl *lvlnew(int d, int w, int h);
 Lvl *lvlload(const char *path);
 Lvl *lvlread(FILE *f);
