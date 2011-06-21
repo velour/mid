@@ -1,3 +1,7 @@
+* Use rectcontains in the inventory screen.
+
+* Better handling of orb of power recepticals (make them not a level block).
+
 * Different sized bodies... currently only 32x32.
 
 * Inventory
