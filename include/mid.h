@@ -15,6 +15,8 @@ struct Point{
 	double x, y;
 };
 
+Point vecadd(Point, Point);
+
 typedef struct Line1d Line1d;
 struct Line1d{
 	double a, b;
@@ -37,6 +39,8 @@ void rectmv(Rect *, double dx, double dy);
 /* Makes point a the min,min and point b the max,max. */
 Rect rectnorm(Rect r);
 void ptmv(Point *, double dx, double dy);
+
+_Bool rectcontains(Rect, Point);
 
 typedef struct Isect Isect;
 struct Isect{

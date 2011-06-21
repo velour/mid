@@ -2,6 +2,10 @@
 #include <assert.h>
 #include <math.h>
 
+Point vecadd(Point a, Point b){
+	return (Point){ a.x + b.x, a.y + b.y };
+}
+
 static int between(double min, double max, double n){
 	return n >= min && n <= max;
 }
@@ -37,6 +41,10 @@ Line1d rectprojy(Rect r){
 void ptmv(Point *p, double dx, double dy) {
 	p->x += dx;
 	p->y += dy;
+}
+
+_Bool rectcontains(Rect r, Point p){
+	return between(r.a.x, r.b.x, p.x) && between(r.a.y, r.b.y, p.y);
 }
 
 void rectmv(Rect *r, double dx, double dy){
