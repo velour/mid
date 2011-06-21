@@ -16,7 +16,7 @@ enum {
 	Width = Itemw * Invcols + Pad * (Invcols - 1),
 	Height = Itemh * Invrows + Pad * (Invrows - 1),
 };
-enum { Xmin = Scrnw - Width - 5, Ymin = 25 };
+enum { Xmin = Scrnw - Width - 5, Ymin = 40 };
 
 static const char *moneystr = "gold";
 
@@ -132,7 +132,7 @@ static void curdraw(Gfx *g, Item *inv)
 static Txt *gettxt(void)
 {
 	static Txt *invtxt;
-	static Txtinfo txtinfo = { 12, {0} };
+	static Txtinfo txtinfo = { 32, {0} };
 	if (!invtxt) {
 		invtxt = resrcacq(txt, "txt/retganon.ttf", &txtinfo);
 		if (!invtxt)
