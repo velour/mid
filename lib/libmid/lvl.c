@@ -9,9 +9,8 @@ enum { Blkvis = 1 << 1 };
 static const double Grav = 0.5;
 
 static bool tileread(FILE *f, Lvl *l, int x, int y, int z);
-static void bkgrnddraw(Gfx *g, int t, Point pt);
-static void mgrnddraw(Gfx *g, int t, Point pt);
-static void fgrnddraw(Gfx *g, int t, Point pt);
+static void tiledraw(Gfx *g, int t, Point pt, int l);
+static void tiledrawlyrs(Gfx *g, int t, Point pt, int mn, int mx);
 static bool isshaded(Lvl *l, int t, int x, int y);
 static bool isvis(Lvl *l, int x, int y);
 static void shade(Gfx *g, Point p);
@@ -25,65 +24,65 @@ static Blk *blk(Lvl *l, int x, int y, int z);
 
 static Img *shdimg;
 
+enum { Tlayers = 4 };
+
 typedef struct Tinfo Tinfo;
 struct Tinfo {
-	char *bgfile, *mgfile, *fgfile;
-	Anim *bganim;
-	/* Player and enemies draw on top of bganim but behind mganim
-	 * and fganim. */
-	Anim *mganim; 		/* mid ground (water) */
-	Anim *fganim;		/* foreground (z-- door) */
+	char *files[Tlayers];
+	Anim *anims[Tlayers];
 	unsigned int flags;
 };
 
 static Tinfo *tiles[] = {
 	[' '] = &(Tinfo){
-		.bgfile = "anim/blank/anim",
+		.files = { [0] = "anim/blank/anim" },
 		.flags = Tilereach
 	},
 	['.'] = &(Tinfo){
-		.bgfile = "anim/blank/anim",
+		.files = { [0] = "anim/blank/anim" },
 	},
 	['#'] = &(Tinfo){
-		.bgfile = "anim/land/anim",
+		.files = { [0] = "anim/land/anim" },
 		.flags = Tilecollide
 	},
 	['w'] = &(Tinfo){
-		.bgfile = "anim/blank/anim",
-		.mgfile = "anim/water/anim",
+		.files = { [0] = "anim/blank/anim",
+			   [2] = "anim/water/anim", },
 		.flags = Tilewater
 	},
 	['W'] = &(Tinfo){
-		.bgfile = "anim/blank/anim",
-		.mgfile = "anim/water/anim",
+		.files = { [0] = "anim/blank/anim",
+			   [2] = "anim/water/anim", },
 		.flags = Tilewater | Tilereach
 	},
 	['>'] = &(Tinfo){
-		.bgfile = "anim/bdoor/anim",
+		.files = { [0] = "anim/bdoor/anim" },
 		.flags = Tilebdoor | Tilereach
 	},
 	[')'] = &(Tinfo){
-		.bgfile = "anim/bdoor/anim",
-		.mgfile = "anim/water/anim",
+		.files = { [0] = "anim/bdoor/anim",
+			   [2] = "anim/water/anim", },
 		.flags = Tilebdoor | Tilewater | Tilereach
 	},
 	['<'] = &(Tinfo){
-		.fgfile = "anim/fdoor/anim",
-		.bgfile = "anim/blank/anim",
+		.files = { [0] = "anim/blank/anim",
+			   [3] = "anim/fdoor/anim", },
 		.flags = Tilefdoor | Tilereach
 	},
 	['('] = &(Tinfo){
-		.fgfile = "anim/fdoor/anim",
-		.mgfile = "anim/water/anim",
-		.bgfile = "anim/blank/anim",
+		.files = { [0] = "anim/blank/anim",
+			   [2] = "anim/water/anim",
+			   [3] = "anim/fdoor/anim", },
 		.flags = Tilefdoor | Tilewater | Tilereach
 	},
 	['o'] = &(Tinfo){
-		.bgfile = "anim/shrine/empty.anim",
+		.files = { [0] = "anim/blank/anim",
+			   [1] = "anim/shrine/empty.anim", },
 		.flags = Tileshrempty,
 	},
 	['O'] = &(Tinfo){
-		.bgfile = "anim/shrine/used.anim",
+		.files = { [0] = "anim/blank/anim",
+			   [1] = "anim/shrine/used.anim", },
 		.flags = Tileshrused,
 	},
 };
@@ -191,41 +190,6 @@ static bool tileread(FILE *f, Lvl *l, int x, int y, int z)
 	return true;
 }
 
-static void bkgrnddraw(Gfx *g, int t, Point pt)
-{
-	assert(tiles[t] != NULL);
-	if (!tiles[t]->bgfile) {
-		Rect r = (Rect){{pt.x, pt.y}, {pt.x + Twidth, pt.y + Theight}};
-		gfxfillrect(g, r, (Color){255,255,255,255});
-		return;
-	}
-	if (!tiles[t]->bganim)
-		tiles[t]->bganim = resrcacq(anims, tiles[t]->bgfile, NULL);
-	assert(tiles[t]->bganim);
-	animdraw(g, tiles[t]->bganim, pt);
-}
-
-static void mgrnddraw(Gfx *g, int t, Point pt)
-{
-	assert(tiles[t] != NULL);
-	if (!tiles[t]->mgfile)
-		return;
-	if (!tiles[t]->mganim)
-		tiles[t]->mganim = resrcacq(anims, tiles[t]->mgfile, NULL);
-	assert(tiles[t]->mganim);
-	animdraw(g, tiles[t]->mganim, pt);
-}
-static void fgrnddraw(Gfx *g, int t, Point pt)
-{
-	assert(tiles[t] != NULL);
-	if (!tiles[t]->fgfile)
-		return;
-	if (!tiles[t]->fganim)
-		tiles[t]->fganim = resrcacq(anims, tiles[t]->fgfile, NULL);
-	assert(tiles[t]->fganim);
-	animdraw(g, tiles[t]->fganim, pt);
-}
-
 static Rect tilebbox(int x, int y)
 {
 	Point a = (Point) {x * Twidth, y * Theight};
@@ -243,13 +207,12 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 			if (!(b->flags & Blkvis) && debugging < 2)
 				continue;
 			int t = b->tile;
+			int mn = bkgrnd ? 0 : (Tlayers-1) / 2 + 1;
+			int mx = bkgrnd ? (Tlayers-1) / 2 : Tlayers-1;
 			Point pt = (Point){ pxx, offs.y + y * Theight };
 
-			if (bkgrnd)
-				bkgrnddraw(g, t, pt);
-			else {
-				mgrnddraw(g, t, pt);
-				fgrnddraw(g, t, pt);
+			tiledrawlyrs(g, t, pt, mn, mx);
+			if (!bkgrnd) {
 				if (isshaded(l, t, x, y))
 					shade(g, pt);
 				if(debugging >= 2){
@@ -260,6 +223,23 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 			}
 		}
 	}
+}
+
+static void tiledraw(Gfx *g, int t, Point pt, int l)
+{
+	assert(tiles[t] != NULL);
+	if (!tiles[t]->files[l])
+		return;
+	if (!tiles[t]->anims[l])
+		tiles[t]->anims[l] = resrcacq(anims, tiles[t]->files[l], NULL);
+	assert(tiles[t]->anims[l]);
+	animdraw(g, tiles[t]->anims[l], pt);
+}
+
+static void tiledrawlyrs(Gfx *g, int t, Point pt, int mn, int mx)
+{
+	for (int l = mn; l <= mx; l++)
+		tiledraw(g, t, pt, l);
 }
 
 static bool isshaded(Lvl *l, int t, int x, int y)
@@ -320,14 +300,12 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale)
 void lvlupdate(Lvl *l)
 {
 	for (int i = 0; i < sizeof(tiles) / sizeof(tiles[0]); i++) {
+	for (int l = 0; l < Tlayers; l++) {
 		if (!tiles[i])
 			continue;
-		if (tiles[i]->fganim)
-			animupdate(tiles[i]->fganim, 1);
-		if (tiles[i]->mganim)
-			animupdate(tiles[i]->mganim, 1);
-		if (tiles[i]->bganim)
-			animupdate(tiles[i]->bganim, 1);
+		if (tiles[i]->anims[l])
+			animupdate(tiles[i]->anims[l], 1);
+	}
 	}
 }
 
