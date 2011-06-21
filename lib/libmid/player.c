@@ -30,6 +30,7 @@ Player *playernew(int x, int y)
 	p->bi.x = p->bi.y = p->bi.z = -1;
 	p->hp = 10;
 	p->dex = 8;
+	p->curhp = p->hp;
 	return p;
 }
 
@@ -166,10 +167,10 @@ void playerdmg(Player *p, int x){
 		return;
 fprintf(stderr, "ow\n");
 	p->iframes = 1000.0 / Ticktm; // 1s
-	p->hp -= x;
-	if(p->hp < 0){
+	p->curhp -= x;
+	if(p->curhp <= 0){
 		puts("You loser, loser!");
-		p->hp = 0;
+		p->curhp = 0;
 	}
 }
 

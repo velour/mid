@@ -323,6 +323,7 @@ struct Player {
 	int hp;
 	int dex;
 
+	int curhp;
 	int money;
 	Item *inv[Maxinv];
 };

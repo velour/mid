@@ -114,6 +114,14 @@ void gamedraw(Scrn *s, Gfx *g)
 		e[i].mt->draw(&e[i], g, gm->transl);
 
 	lvldraw(g, gm->lvl, false, gm->transl);
+
+	Rect hp = { { 1, 1 }, { gm->player->hp * 5, 16 } };
+	Rect curhp = hp;
+	curhp.b.x = gm->player->curhp * 5;
+	gfxfillrect(g, hp, (Color){ 200 });
+	gfxfillrect(g, curhp, (Color){ 0, 200, 200 });
+	gfxdrawrect(g, hp, (Color){0});
+
 	gfxflip(g);
 }
 
