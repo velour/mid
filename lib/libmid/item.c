@@ -10,9 +10,11 @@ struct ItemOps{
 };
 
 static void statupupdate(Item*,Player*,Lvl*);
+static void copperupdate(Item*,Player*,Lvl*);
 
 static ItemOps ops[] = {
 	[ItemStatup] = { "Orb of Power", "anim/item/statup", statupupdate },
+	[ItemCopper] = { "c", "anim/item/statup", copperupdate },
 };
 
 _Bool iteminit(Item *i, ItemID id, Point p){
@@ -59,4 +61,13 @@ static void statupupdate(Item *i, Player *p, Lvl *l){
 
 	if(isect(i->bod.bbox, playerbox(p)) && playertake(p, i))
 		i->gotit = 1;
+}
+
+static void copperupdate(Item *i, Player *p, Lvl *l){
+	bodyupdate(&i->bod, l);
+
+	if(isect(i->bod.bbox, playerbox(p))){
+		p->money++;
+		i->gotit = 1;
+	}
 }

@@ -7,7 +7,7 @@
 
 enum {
 	Maxenms = 32,
-	Maxitms = 1, //TODO: more than 1
+	Maxitms = 32,
 };
 
 typedef struct Enms Enms;
@@ -53,6 +53,9 @@ Game *gamenew(void)
 		goto oops;
 	}
 
+	for(int j = 1; j < 11; j++)
+		iteminit(&gm->itms[j], ItemCopper, (Point){j,1});
+
 	return gm;
 
 oops:
@@ -88,7 +91,8 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 	playerupdate(gm->player, gm->lvl, &gm->transl);
 
 	for(size_t i = 0; i < Maxitms; i++)
-		itemupdate(&gm->itms[i], gm->player, gm->lvl);
+		if(gm->itms[i].id)
+			itemupdate(&gm->itms[i], gm->player, gm->lvl);
 
 	Enms es = gm->enms[gm->lvl->z];
 	Enemy *e = es.es;
@@ -105,7 +109,8 @@ void gamedraw(Scrn *s, Gfx *g)
 	playerdraw(g, gm->player, gm->transl);
 
 	for(size_t i = 0; i < Maxitms; i++)
-		itemdraw(&gm->itms[i], g, gm->transl);
+		if(gm->itms[i].id)
+			itemdraw(&gm->itms[i], g, gm->transl);
 
 	Enms es = gm->enms[gm->lvl->z];
 	Enemy *e = es.es;

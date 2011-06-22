@@ -357,7 +357,9 @@ _Bool enemyinit(Enemy *, unsigned char id, int x, int y);
 
 typedef enum ItemID ItemID;
 enum ItemID{
+	ItemNone,
 	ItemStatup,
+	ItemCopper,
 	ItemMax
 };
 
