@@ -1,5 +1,8 @@
 * Use rectcontains in the inventory screen.
 
+* Add enemy/item/env/etc. file format that can be appended to the
+  level format.  Create a pipeline to add these things to levels.
+
 * Better handling of orb of power recepticals (make them not a level block).
 
 * Different sized bodies... currently only 32x32.
