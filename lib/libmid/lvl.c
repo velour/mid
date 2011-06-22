@@ -208,12 +208,14 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 			if (!vis && !bkgrnd && debugging < 2)
 				continue;
 			int t = b->tile;
-			int mn = bkgrnd ? 0 : (Tlayers-1) / 2 + 1;
-			int mx = bkgrnd ? (Tlayers-1) / 2 : Tlayers-1;
-			Point pt = (Point){ pxx, offs.y + y * Theight };
+			Point pt;
 
-			if (vis)
+			if (vis) {
+				int mn = bkgrnd ? 0 : (Tlayers-1) / 2 + 1;
+				int mx = bkgrnd ? (Tlayers-1) / 2 : Tlayers-1;
+				pt = (Point){ pxx, offs.y + y * Theight };
 				tiledrawlyrs(g, t, pt, mn, mx);
+			}
 			if (!bkgrnd) {
 				if(debugging >= 2){
 					Rect r = tilebbox(x, y);
@@ -225,7 +227,7 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 					Rect r = tilebbox(x, y);
 					rectmv(&r, offs.x, offs.y);
 					gfxfillrect(g, r, (Color){0,0,0,255});
-				} else if (isshaded(l, t, x, y)) {
+				} else if (vis && isshaded(l, t, x, y)) {
 					shade(g, pt);
 				}
 			}
