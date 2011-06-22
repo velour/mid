@@ -219,8 +219,9 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 					Rect r = tilebbox(x, y);
 					rectmv(&r, offs.x, offs.y);
 					gfxdrawrect(g, r, (Color){0,0,0,255});
+					continue;
 				}
-				if (!vis && debugging < 2) {
+				if (!vis) {
 					Rect r = tilebbox(x, y);
 					rectmv(&r, offs.x, offs.y);
 					gfxfillrect(g, r, (Color){0,0,0,255});
