@@ -1,5 +1,8 @@
 * Use rectcontains in the inventory screen.
 
+* Keep current level in memory.  Non-current levels stored on disk in
+  same format used by the lvlgen pipeline.
+
 * Add enemy/item/env/etc. file format that can be appended to the
   level format.  Create a pipeline to add these things to levels.
 
