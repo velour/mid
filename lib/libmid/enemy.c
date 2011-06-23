@@ -32,7 +32,7 @@ static _Bool untiinit(Enemy *e, int x, int y){
 
 	Unti *u = xalloc(1, sizeof(*u));
 	u->c = (Color){ 255, 55, 55, 255 };
-	u->orb = resrcacq(imgs, "img/orb.png", 0);
+	u->orb = resrcacq(imgs, "img/unti.png", 0);
 
 	e->mt = &untimt;
 	e->data = u;
