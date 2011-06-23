@@ -5,7 +5,7 @@
 typedef struct Statup Statup;
 struct Statup{
 	Player *p;
-	Lvl *lvl;
+	Env *shrine;
 	Txt *txt;
 	int norbs, uorbs;
 	Point mouse;
@@ -24,19 +24,21 @@ static Scrnmt statupmt = {
 	statupfree
 };
 
-Scrn *statscrnnew(Player *p, Lvl *l){
+Scrn *statscrnnew(Player *p, Env *sh){
 	Statup *sup = xalloc(1, sizeof(*sup));
 	sup->p = p;
-	sup->lvl = l;
+	sup->shrine = sh;
 
 	Txtinfo ti = { 32 };
 	sup->txt = resrcacq(txt, "txt/retganon.ttf", &ti);
 	if(!sup->txt)
 		die("Failed to load stat screen font");
 
-	for(size_t i = i; i < Maxinv; i++)
-		if(p->inv[i] && p->inv[i]->id == ItemStatup)
+	for(size_t i = 0; i < Maxinv; i++)
+		if(p->inv[i] && p->inv[i]->id == ItemStatup){
+fputs("orb", stderr);
 			sup->norbs++;
+}
 
 	Scrn *s = xalloc(1, sizeof(*s));
 	s->mt = &statupmt;
@@ -107,7 +109,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 		return;
 	}
 
-	if(e->type == Mousebt){
+	if(e->type == Mousebt && sup->uorbs == 0){
 		if(sup->norbs == 0)
 			return;
 		sup->mouse = (Point){ e->x, e->y };
@@ -133,6 +135,10 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 }
 
 static void statupfree(Scrn *s){
+	Statup *sup = s->data;
+	if(sup->uorbs > 0)
+		sup->shrine->id = EnvShrused;
+	sup->p->statup = 0;
 	xfree(s->data);
 }
 

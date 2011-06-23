@@ -242,8 +242,6 @@ enum {
 	Tilewater = 1<<2,
 	Tilefdoor = 1<<3,
 	Tilebdoor = 1<<4,
-	Tileshrempty = 1 << 5,
-	Tileshrused = 1 << 6,
 };
 
 void lvluseshrine(Lvl *, int x, int y);
@@ -313,7 +311,10 @@ struct Player {
 	Point imgloc;
 
 	Body body;
+
 	_Bool door;
+	_Bool statup;
+
 	int jframes;
 	int iframes; // invulnerability after damage;
 
@@ -375,3 +376,25 @@ void itemupdate(Item*, Player*, Lvl*);
 void itemdraw(Item*, Gfx*, Point tr);
 void iteminvdraw(Item*, Gfx*, Point p);
 char *itemname(Item*);
+
+typedef enum EnvID EnvID;
+enum EnvID{
+	EnvNone,
+	EnvShrempty,
+	EnvShrused,
+	EnvMax
+};
+
+typedef struct Env Env;
+struct Env{
+	EnvID id;
+	Body body;
+	_Bool gotit;
+};
+
+_Bool envinit(Env*, EnvID, Point);
+void envupdateanims(void);
+void envupdate(Env*, Lvl*);
+void envdraw(Env*,  Gfx*, Point tr);
+void envact(Env*, Player*, Lvl*);
+

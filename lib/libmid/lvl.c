@@ -75,16 +75,6 @@ static Tinfo *tiles[] = {
 			   [3] = "anim/fdoor/anim", },
 		.flags = Tilefdoor | Tilewater | Tilereach
 	},
-	['o'] = &(Tinfo){
-		.files = { [0] = "anim/blank/anim",
-			   [1] = "anim/shrine/empty.anim", },
-		.flags = Tileshrempty,
-	},
-	['O'] = &(Tinfo){
-		.files = { [0] = "anim/blank/anim",
-			   [1] = "anim/shrine/used.anim", },
-		.flags = Tileshrused,
-	},
 };
 
 int debugging = 0;

@@ -8,6 +8,7 @@
 enum {
 	Maxenms = 32,
 	Maxitms = 32,
+	Maxenvs = 16,
 };
 
 typedef struct Enms Enms;
@@ -21,6 +22,7 @@ struct Game {
 	Lvl *lvl;
 	Player *player;
 	Item itms[Maxitms];
+	Env envs[Maxenvs];
 	Enms enms[];
 };
 
@@ -31,9 +33,6 @@ Game *gamenew(void)
 	Lvl *lvl = lvlgen(50, 50, 5, seed);
 	if (!lvl)
 		fatal("Failed to load level lvl/0.lvl: %s", miderrstr());
-
-	//TODO: replace this horrible hack with functionality in lvlgen
-	lvl->blks[101].tile = 'o';
 
 	Game *gm = calloc(1, sizeof(*gm) + sizeof(Enms[lvl->d]));
 	if (!gm){
@@ -55,6 +54,8 @@ Game *gamenew(void)
 
 	for(int j = 1; j < 11; j++)
 		iteminit(&gm->itms[j], ItemCopper, (Point){j,1});
+
+	envinit(gm->envs, EnvShrempty, (Point){5,2});
 
 	return gm;
 
@@ -96,6 +97,12 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 		if(gm->itms[i].id)
 			itemupdate(&gm->itms[i], gm->player, gm->lvl);
 
+	envupdateanims();
+
+	Env *en = gm->envs;
+	for(size_t i = 0; i < Maxenvs; i++)
+		if(en[i].id) envupdate(&en[i], gm->lvl);
+
 	Enms es = gm->enms[gm->lvl->z];
 	Enemy *e = es.es;
 	int n = es.n;
@@ -108,6 +115,11 @@ void gamedraw(Scrn *s, Gfx *g)
 	Game *gm = s->data;
 	gfxclear(g, (Color){ 0, 0, 0, 0 });
 	lvldraw(g, gm->lvl, true, gm->transl);
+
+	Env *en = gm->envs;
+	for(size_t i = 0; i < Maxenvs; i++)
+		if(en[i].id) envdraw(&en[i], g, gm->transl);
+
 	playerdraw(g, gm->player, gm->transl);
 
 	for(size_t i = 0; i < Maxitms; i++)
@@ -142,13 +154,22 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 	if(e->down && e->key == kmap[Mvinv]){
 		scrnstkpush(stk, invscrnnew(gm->player, gm->lvl));
 		return;
-	}else if(e->down && e->key == kmap[Mvdoor] &&
-		gm->player->bi.flags & Tileshrempty){
-		scrnstkpush(stk, statscrnnew(gm->player, gm->lvl));
-		return;
 	}
 
 	playerhandle(gm->player, e);
+
+	if(gm->player->door){
+		for(Env *ev = gm->envs; ev != gm->envs + Maxenvs; ev++){
+			if(!ev->id)
+				continue;
+
+			envact(ev, gm->player, gm->lvl);
+			if(gm->player->statup){
+				scrnstkpush(stk, statscrnnew(gm->player, ev));
+				return;
+			}
+		}
+	}
 }
 
 Scrnmt gamemt = {
