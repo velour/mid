@@ -41,16 +41,16 @@ void playerfree(Player *p)
 
 static void trydoor(Player *p, Lvl *l, Blkinfo bi)
 {
-	if (!p->door)
+	if (!p->acting)
 		return;
 
 	int oldz = l->z;
-	if (p->door && bi.flags & Tilebdoor)
+	if (p->acting && bi.flags & Tilebdoor)
 		l->z += 1;
-	else if (p->door && bi.flags & Tilefdoor)
+	else if (p->acting && bi.flags & Tilefdoor)
 		l->z -= 1;
 
-	p->door = false;
+	p->acting = false;
 
 	if (oldz == l->z)
 		return;
@@ -147,8 +147,8 @@ void playerhandle(Player *p, Event *e)
 			p->body.fall = 1;
 			p->jframes = 8;
 		}
-	}else if(k == kmap[Mvdoor] && e->down){
-		p->door = true;
+	}else if(k == kmap[Mvact] && e->down){
+		p->acting = true;
 	}
 }
 

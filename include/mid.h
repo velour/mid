@@ -262,7 +262,7 @@ void lvlvis(Lvl *l, int x, int y);
 enum Action{
 	Mvleft,
 	Mvright,
-	Mvdoor,
+	Mvact,
 	Mvjump,
 	Mvinv,
 	Nactions,
@@ -312,7 +312,7 @@ struct Player {
 
 	Body body;
 
-	_Bool door;
+	_Bool acting;
 	_Bool statup;
 
 	int jframes;

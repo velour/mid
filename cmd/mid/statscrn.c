@@ -119,7 +119,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	if(e->type != Keychng || e->repeat)
 		return;
 
-	if(e->down && e->key == kmap[Mvdoor]){
+	if(e->down && e->key == kmap[Mvact]){
 		Player *p = sup->p;
 		for(Item **i = p->inv; i != p->inv + Maxinv && sup->uorbs > 0; i++){
 			if(*i && (*i)->id == ItemStatup){

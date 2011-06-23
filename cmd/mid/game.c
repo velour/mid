@@ -158,7 +158,7 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 
 	playerhandle(gm->player, e);
 
-	if(gm->player->door){
+	if(gm->player->acting){
 		for(Env *ev = gm->envs; ev != gm->envs + Maxenvs; ev++){
 			if(!ev->id)
 				continue;

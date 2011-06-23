@@ -15,8 +15,8 @@ _Bool keymapread(char km[], char *fname){
 			km[Mvright] = k;
 		else if(strcmp(act, "jump") == 0)
 			km[Mvjump] = k;
-		else if(strcmp(act, "door") == 0)
-			km[Mvdoor] = k;
+		else if(strcmp(act, "act") == 0)
+			km[Mvact] = k;
 		else if(strcmp(act, "inv") == 0)
 			km[Mvinv] = k;
 	}
@@ -32,7 +32,7 @@ _Bool keymapread(char km[], char *fname){
 char kmap[] = {
 	[Mvleft] = 's',
 	[Mvright] = 'f',
-	[Mvdoor] = 'u',
+	[Mvact] = 'u',
 	[Mvjump] = 'e',
 	[Mvinv] = 'n',
 };
