@@ -14,7 +14,7 @@ static void copperupdate(Item*,Player*,Lvl*);
 
 static ItemOps ops[] = {
 	[ItemStatup] = { "Orb of Power", "anim/item/statup", statupupdate },
-	[ItemCopper] = { "c", "anim/item/statup", copperupdate },
+	[ItemCopper] = { "c", "anim/coin/coin1.anim", copperupdate },
 };
 
 _Bool iteminit(Item *i, ItemID id, Point p){
@@ -33,6 +33,12 @@ _Bool iteminit(Item *i, ItemID id, Point p){
 
 	ops[id].anim = a;
 	return 1;
+}
+
+void itemupdateanims(void){
+	for(size_t i = 0; i < sizeof(ops)/sizeof(ops[0]); i++)
+		if(ops[i].anim)
+			animupdate(ops[i].anim, 1);
 }
 
 void itemupdate(Item *i, Player *p, Lvl *l){

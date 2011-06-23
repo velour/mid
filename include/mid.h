@@ -370,6 +370,7 @@ struct Item{
 };
 
 _Bool iteminit(Item*, ItemID id, Point p);
+void itemupdateanims(void);
 void itemupdate(Item*, Player*, Lvl*);
 void itemdraw(Item*, Gfx*, Point tr);
 void iteminvdraw(Item*, Gfx*, Point p);

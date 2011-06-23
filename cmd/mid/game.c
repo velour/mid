@@ -90,6 +90,8 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 	lvlupdate(gm->lvl);
 	playerupdate(gm->player, gm->lvl, &gm->transl);
 
+	itemupdateanims();
+
 	for(size_t i = 0; i < Maxitms; i++)
 		if(gm->itms[i].id)
 			itemupdate(&gm->itms[i], gm->player, gm->lvl);
