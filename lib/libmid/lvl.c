@@ -195,12 +195,12 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 		for (int y = 0; y < h; y++) {
 			Blk *b = blk(l, x, y, l->z);
 			int vis = b->flags & Blkvis;
-			if (!vis && !bkgrnd && debugging < 2)
+			if (!vis && bkgrnd && debugging < 2)
 				continue;
 			int t = b->tile;
 			Point pt;
 
-			if (vis) {
+			if (vis || debugging >= 2) {
 				int mn = bkgrnd ? 0 : (Tlayers-1) / 2 + 1;
 				int mx = bkgrnd ? (Tlayers-1) / 2 : Tlayers-1;
 				pt = (Point){ pxx, offs.y + y * Theight };
