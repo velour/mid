@@ -32,7 +32,7 @@ _Bool keymapread(char km[], char *fname){
 char kmap[] = {
 	[Mvleft] = 's',
 	[Mvright] = 'f',
-	[Mvdoor] = 'r',
+	[Mvdoor] = 'u',
 	[Mvjump] = 'e',
 	[Mvinv] = 'n',
 };
