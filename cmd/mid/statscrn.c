@@ -35,10 +35,8 @@ Scrn *statscrnnew(Player *p, Env *sh){
 		die("Failed to load stat screen font");
 
 	for(size_t i = 0; i < Maxinv; i++)
-		if(p->inv[i] && p->inv[i]->id == ItemStatup){
-fputs("orb", stderr);
+		if(p->inv[i] && p->inv[i]->id == ItemStatup)
 			sup->norbs++;
-}
 
 	Scrn *s = xalloc(1, sizeof(*s));
 	s->mt = &statupmt;
