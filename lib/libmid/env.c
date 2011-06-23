@@ -59,7 +59,8 @@ void envact(Env *e, Player *p, Lvl *l){
 }
 
 static void shremptyact(Env *e, Player *p, Lvl *l){
-	p->statup = 1;
+	if(isect(e->body.bbox, p->body.bbox))
+		p->statup = 1;
 }
 
 static void shrusedact(Env *e, Player *p, Lvl *l){
