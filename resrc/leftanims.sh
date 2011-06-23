@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 #
 # Convert an animations facing right to animations facing left.
 #

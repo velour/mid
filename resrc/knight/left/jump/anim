@@ -1,4 +1,2 @@
-3
-150 1 knight/left/jump/0.png
-150 2 knight/left/jump/1.png
-0 -1 knight/left/jump/2.png
+1
+150 -1 knight/left/stand/0.png
