@@ -55,7 +55,7 @@ Game *gamenew(void)
 	for(int j = 1; j < 11; j++)
 		iteminit(&gm->itms[j], ItemCopper, (Point){j,1});
 
-	envinit(gm->envs, EnvShrempty, (Point){5,2});
+	envinit(gm->envs, EnvShrempty, (Point){2,1});
 
 	return gm;
 
