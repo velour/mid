@@ -67,6 +67,7 @@ static void draw(Scrn *s, Gfx *g){
 		gfxfillrect(g, r, hilit);
 		if(sup->inc){
 			sup->p->hp += 5;
+			sup->p->curhp += 5;
 			sup->norbs--;
 			sup->uorbs++;
 			sup->inc = 0;
