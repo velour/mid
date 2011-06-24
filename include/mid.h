@@ -274,7 +274,7 @@ extern char kmap[Nactions];
 enum { Scrnw = 1024, Scrnh = 576 };
 
 /* Buffer from side of screen at which to begin scrolling. */
-enum { Scrlbuf = 192 };
+enum { Scrlbuf = 384 };
 
 enum { Tall = 32, Wide = 32 };
 
