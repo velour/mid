@@ -9,6 +9,7 @@ enum {
 	Maxenms = 32,
 	Maxitms = 32,
 	Maxenvs = 16,
+	Maxz = 5,
 };
 
 typedef struct Enms Enms;
@@ -21,8 +22,8 @@ struct Game {
 	Point transl;
 	Lvl *lvl;
 	Player *player;
-	Item itms[Maxitms];
-	Env envs[Maxenvs];
+	Item itms[Maxz][Maxitms];
+	Env envs[Maxz][Maxenvs];
 	Enms enms[];
 };
 
@@ -30,7 +31,7 @@ Game *gamenew(void)
 {
 	lvlinit();
 	int seed = rand();
-	Lvl *lvl = lvlgen(50, 50, 5, seed);
+	Lvl *lvl = lvlgen(50, 50, Maxz, seed);
 	if (!lvl)
 		fatal("Failed to load level lvl/0.lvl: %s", miderrstr());
 
@@ -47,15 +48,15 @@ Game *gamenew(void)
 	if(!enemyinit(&gm->enms[0].es[0], 'u', 4, 2))
 		goto oops;
 
-	if(!iteminit(gm->itms, ItemStatup, (Point){3,1})){
+	if(!iteminit(gm->itms[0], ItemStatup, (Point){3,1})){
 		gm->enms[0].es[0].mt->free(&gm->enms[0].es[0]);
 		goto oops;
 	}
 
 	for(int j = 5; j < 11; j++)
-		iteminit(&gm->itms[j], ItemCopper, (Point){j,1});
+		iteminit(&gm->itms[0][j], ItemCopper, (Point){j,1});
 
-	envinit(gm->envs, EnvShrempty, (Point){2,1});
+	envinit(&gm->envs[0][0], EnvShrempty, (Point){2,1});
 
 	return gm;
 
@@ -93,13 +94,14 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 
 	itemupdateanims();
 
+	Item *itms = gm->itms[gm->lvl->z];
 	for(size_t i = 0; i < Maxitms; i++)
-		if(gm->itms[i].id)
-			itemupdate(&gm->itms[i], gm->player, gm->lvl);
+		if(itms[i].id)
+			itemupdate(&itms[i], gm->player, gm->lvl);
 
 	envupdateanims();
 
-	Env *en = gm->envs;
+	Env *en = gm->envs[gm->lvl->z];
 	for(size_t i = 0; i < Maxenvs; i++)
 		if(en[i].id) envupdate(&en[i], gm->lvl);
 
@@ -113,20 +115,23 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 void gamedraw(Scrn *s, Gfx *g)
 {
 	Game *gm = s->data;
+	int z = gm->lvl->z;
+
 	gfxclear(g, (Color){ 0, 0, 0, 0 });
 	lvldraw(g, gm->lvl, true, gm->transl);
 
-	Env *en = gm->envs;
+	Env *en = gm->envs[z];
 	for(size_t i = 0; i < Maxenvs; i++)
 		if(en[i].id) envdraw(&en[i], g, gm->transl);
 
 	playerdraw(g, gm->player, gm->transl);
 
+	Item *itms = gm->itms[z];
 	for(size_t i = 0; i < Maxitms; i++)
-		if(gm->itms[i].id)
-			itemdraw(&gm->itms[i], g, gm->transl);
+		if(itms[i].id)
+			itemdraw(&itms[i], g, gm->transl);
 
-	Enms es = gm->enms[gm->lvl->z];
+	Enms es = gm->enms[z];
 	Enemy *e = es.es;
 	int n = es.n;
 	for(size_t i = 0; i < n; i++)
@@ -159,7 +164,8 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 	playerhandle(gm->player, e);
 
 	if(gm->player->acting){
-		for(Env *ev = gm->envs; ev != gm->envs + Maxenvs; ev++){
+		int z = gm->lvl->z;
+		for(Env *ev = gm->envs[z]; ev != gm->envs[z] + Maxenvs; ev++){
 			if(!ev->id)
 				continue;
 
