@@ -329,8 +329,7 @@ struct Player {
 	Item *inv[Maxinv];
 };
 
-Player *playernew(int x, int y);
-void playerfree(Player *);
+void playerinit(Player *p, int x, int y);
 void playerupdate(Player *, Lvl *l, Point *tr);
 void playerdraw(Gfx *, Player *, Point tr);
 void playerhandle(Player *, Event *);

@@ -10,10 +10,8 @@ static Point scroll(Player*, Point delta, Point transl);
 static double run(Player *);
 static double jmp(Player *);
 
-Player *playernew(int x, int y)
+void playerinit(Player *p, int x, int y)
 {
-	Player *p = xalloc(1, sizeof(*p));
-
 	bodyinit(&p->body, x * Twidth, y * Theight);
 
 	loadanim(&p->leftas[Stand], "knight", "left", "stand");
@@ -31,12 +29,6 @@ Player *playernew(int x, int y)
 	p->hp = 10;
 	p->dex = 8;
 	p->curhp = p->hp;
-	return p;
-}
-
-void playerfree(Player *p)
-{
-	xfree(p);
 }
 
 static void trydoor(Player *p, Lvl *l, Blkinfo bi)

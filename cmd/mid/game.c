@@ -6,7 +6,7 @@
 #include "game.h"
 
 struct Game {
-	Player *player;
+	Player player;
 	Point transl;
 	Zone *zone;
 };
@@ -22,7 +22,7 @@ Game *gamenew(void)
 	if (!gm->zone)
 		fatal("Failed to load zone: %s", miderrstr());
 
-	gm->player = playernew(2, 2);
+	playerinit(&gm->player, 2, 2);
 	if(!enemyinit(&gm->zone->enms[0][0], 'u', 4, 2))
 		goto oops;
 
@@ -40,7 +40,6 @@ Game *gamenew(void)
 
 oops:
 	zonefree(gm->zone);
-	playerfree(gm->player);
 	free(gm);
 	return NULL;
 }
@@ -48,7 +47,6 @@ oops:
 void gamefree(Scrn *s)
 {
 	Game *gm = s->data;
-	playerfree(gm->player);
 
 	for (int z = 0; z < gm->zone->lvl->d; z++) {
 		Enemy *e = gm->zone->enms[z];
@@ -66,14 +64,14 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 	int z = gm->zone->lvl->z;
 
 	lvlupdate(gm->zone->lvl);
-	playerupdate(gm->player, gm->zone->lvl, &gm->transl);
+	playerupdate(&gm->player, gm->zone->lvl, &gm->transl);
 
 	itemupdateanims();
 
 	Item *itms = gm->zone->itms[z];
 	for(size_t i = 0; i < Maxitms; i++)
 		if(itms[i].id)
-			itemupdate(&itms[i], gm->player, gm->zone->lvl);
+			itemupdate(&itms[i], &gm->player, gm->zone->lvl);
 
 	envupdateanims();
 
@@ -83,10 +81,10 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 
 	Enemy *e = gm->zone->enms[z];
 	for(size_t i = 0; i < Maxenms; i++)
-		if(e[i].mt) e[i].mt->update(&e[i], gm->player, gm->zone->lvl);
+		if(e[i].mt) e[i].mt->update(&e[i], &gm->player, gm->zone->lvl);
 
-	if(gm->player->curhp <= 0)
-		scrnstkpush(stk, goverscrnnew(gm->player));
+	if(gm->player.curhp <= 0)
+		scrnstkpush(stk, goverscrnnew(&gm->player));
 }
 
 void gamedraw(Scrn *s, Gfx *g)
@@ -101,7 +99,7 @@ void gamedraw(Scrn *s, Gfx *g)
 	for(size_t i = 0; i < Maxenvs; i++)
 		if(en[i].id) envdraw(&en[i], g, gm->transl);
 
-	playerdraw(g, gm->player, gm->transl);
+	playerdraw(g, &gm->player, gm->transl);
 
 	Item *itms = gm->zone->itms[z];
 	for(size_t i = 0; i < Maxitms; i++)
@@ -114,9 +112,9 @@ void gamedraw(Scrn *s, Gfx *g)
 
 	lvldraw(g, gm->zone->lvl, false, gm->transl);
 
-	Rect hp = { { 1, 1 }, { gm->player->hp * 5, 16 } };
+	Rect hp = { { 1, 1 }, { gm->player.hp * 5, 16 } };
 	Rect curhp = hp;
-	curhp.b.x = gm->player->curhp * 5;
+	curhp.b.x = gm->player.curhp * 5;
 	gfxfillrect(g, hp, (Color){ 200 });
 	gfxfillrect(g, curhp, (Color){ 0, 200, 200 });
 	gfxdrawrect(g, hp, (Color){0});
@@ -132,21 +130,21 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 	Game *gm = s->data;
 
 	if(e->down && e->key == kmap[Mvinv]){
-		scrnstkpush(stk, invscrnnew(gm->player, gm->zone->lvl));
+		scrnstkpush(stk, invscrnnew(&gm->player, gm->zone->lvl));
 		return;
 	}
 
-	playerhandle(gm->player, e);
+	playerhandle(&gm->player, e);
 
-	if(gm->player->acting){
+	if(gm->player.acting){
 		int z = gm->zone->lvl->z;
 		for(Env *ev = gm->zone->envs[z]; ev != gm->zone->envs[z] + Maxenvs; ev++){
 			if(!ev->id)
 				continue;
 
-			envact(ev, gm->player, gm->zone->lvl);
-			if(gm->player->statup){
-				scrnstkpush(stk, statscrnnew(gm->player, ev));
+			envact(ev, &gm->player, gm->zone->lvl);
+			if(gm->player.statup){
+				scrnstkpush(stk, statscrnnew(&gm->player, ev));
 				return;
 			}
 		}
