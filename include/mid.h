@@ -77,7 +77,6 @@ void gfxdrawrect(Gfx *, Rect, Color);
 
 typedef struct Img Img;
 
-_Bool lvlinit();
 Img *imgnew(const char *path);
 void imgfree(Img *);
 /* Returns negative dimensions on failure. */
@@ -219,9 +218,11 @@ struct Lvl {
 	Blk blks[];
 };
 
-Lvl *lvlnew(int d, int w, int h);
-Lvl *lvlload(const char *path);
-void lvlfree(Lvl *l);
+Lvl *lvlnew(int, int, int);
+Lvl *lvlread(FILE *);
+void lvlwrite(FILE *, Lvl *);
+void lvlfree(Lvl *);
+_Bool lvlinit();
 void lvlupdate(Lvl *l);
 void lvldraw(Gfx *g, Lvl *l, _Bool bkgrnd, Point offs);
 void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale);
@@ -413,4 +414,5 @@ struct Zone {
 };
 
 Zone *zoneread(FILE *);
-Zone *zonewrite(FILE *);
+void zonewrite(FILE *, Zone *z);
+void zonefree(Zone *z);

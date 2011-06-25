@@ -91,6 +91,15 @@ void lvlfree(Lvl *l)
 	xfree(l);
 }
 
+Lvl *lvlnew(int d, int w, int h)
+{
+	Lvl *l = xalloc(1, sizeof(*l) + sizeof(Blk[d * w * h]));
+	l->d = d;
+	l->w = w;
+	l->h = h;
+	return l;
+}
+
 bool lvlinit()
 {
 	if (!shdimg)
@@ -156,15 +165,6 @@ Lvl *lvlload(const char *path)
 	fclose(f);
 	errno = err;
 	return  l;
-}
-
-Lvl *lvlnew(int d, int w, int h)
-{
-	Lvl *l = xalloc(1, sizeof(*l) + sizeof(Blk[d * w * h]));
-	l->d = d;
-	l->w = w;
-	l->h = h;
-	return l;
 }
 
 static bool tileread(FILE *f, Lvl *l, int x, int y, int z)
