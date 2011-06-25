@@ -20,7 +20,6 @@ static Rect hitzone(Rect a, Point v);
 static void visline(Lvl *l, int x0, int y0, int x1, int y1);
 static bool edge(Lvl *l, int x, int y);
 static bool blkd(Lvl *l, int x, int y);
-static Blk *blk(Lvl *l, int x, int y, int z);
 
 static Img *shdimg;
 
@@ -501,11 +500,6 @@ float blkdrag(int flags)
 		return 0.7f;
 	else
 		return 1.0f;
-}
-
-static Blk *blk(Lvl *l, int x, int y, int z)
-{
-	return &l->blks[z * l->w * l->h + y * l->w + x];
 }
 
 void lvluseshrine(Lvl *l, int x, int y)

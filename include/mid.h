@@ -252,6 +252,12 @@ Blkinfo blkinfo(Lvl *l, int x, int y);
 /* Get the information on the dominant block that r is overlapping. */
 Blkinfo lvlmajorblk(Lvl *l, Rect r);
 
+static inline Blk *blk(Lvl *l, int x, int y, int z)
+{
+	return &l->blks[z * l->w * l->h + y * l->w + x];
+}
+
+
 float blkgrav(int flags);
 float blkdrag(int flags);
 
