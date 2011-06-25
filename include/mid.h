@@ -39,6 +39,7 @@ void rectmv(Rect *, double dx, double dy);
 /* Makes point a the min,min and point b the max,max. */
 Rect rectnorm(Rect r);
 void ptmv(Point *, double dx, double dy);
+double ptsqdist(Point a, Point b);
 
 _Bool rectcontains(Rect, Point);
 
@@ -375,6 +376,7 @@ struct Item{
 	_Bool gotit;
 };
 
+_Bool itemldresrc();
 _Bool iteminit(Item*, ItemID id, Point p);
 void itemupdateanims(void);
 void itemupdate(Item*, Player*, Lvl*);
@@ -413,15 +415,44 @@ enum {
 typedef struct Zone Zone;
 struct Zone {
 	Lvl *lvl;
+
+	int nitm[Maxz];
 	Item itms[Maxz][Maxitms];
+
+	int nenv[Maxz];
 	Env envs[Maxz][Maxenvs];
+
+	int nenm[Maxz];
 	Enemy enms[Maxz][Maxenms];
 };
 
 Zone *zoneread(FILE *);
 void zonewrite(FILE *, Zone *z);
-void zonefree(Zone *z);
+void zonefree(Zone *);
+/* Fills the array with locations that pass the given predicate. */
+int zonelocs(Zone *, int z, _Bool (*)(Zone *, int, Point), Point [], int);
+void zoneadditem(Zone *zn, int z, Item it);
+void zonedraw(Gfx *g, Zone *zn, Player *p, Point tr);
+void zoneupdate(Zone *zn, Player *p, Point *tr);
 
 
-_Bool scanbuf(char *buf, char *fmt, ...);
-_Bool printbuf(char *buf, size_t sz, char *fmt, ...);
+/* Scan a set of fields from a string with the given format.  The
+ * format is specified as a string of characters with the following
+ * meanings:
+ *
+ * d - int
+ * f - double
+ * b - _Bool
+ * p - Point
+ * r - Rect
+ * y - Body
+ *
+ * The return value is true if all items in the format were scanned
+ * and false if not.
+ */
+_Bool scangeom(char *buf, char *fmt, ...);
+
+/* Prints a structure to a string buffer using the same type of format
+ * specified as is used by scanbuf.  The return value is true if the
+ * output was not truncated and false if the output was truncated. */
+_Bool printgeom(char *buf, size_t sz, char *fmt, ...);

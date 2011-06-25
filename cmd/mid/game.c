@@ -26,15 +26,9 @@ Game *gamenew(void)
 	if(!enemyinit(&gm->zone->enms[0][0], 'u', 4, 2))
 		goto oops;
 
-	if(!iteminit(gm->zone->itms[0], ItemStatup, (Point){3,1})){
-		gm->zone->enms[0][0].mt->free(&gm->zone->enms[0][0]);
-		goto oops;
-	}
-
-	for(int j = 5; j < 11; j++)
-		iteminit(&gm->zone->itms[0][j], ItemCopper, (Point){j,1});
-
-	envinit(&gm->zone->envs[0][0], EnvShrempty, (Point){2,1});
+	_Bool ok = itemldresrc();
+	if (!ok)
+		fatal("Failed to load item resources: %s", miderrstr());
 
 	return gm;
 
@@ -61,56 +55,17 @@ void gamefree(Scrn *s)
 void gameupdate(Scrn *s, Scrnstk *stk)
 {
 	Game *gm = s->data;
-	int z = gm->zone->lvl->z;
 
-	lvlupdate(gm->zone->lvl);
-	playerupdate(&gm->player, gm->zone->lvl, &gm->transl);
-
-	itemupdateanims();
-
-	Item *itms = gm->zone->itms[z];
-	for(size_t i = 0; i < Maxitms; i++)
-		if(itms[i].id)
-			itemupdate(&itms[i], &gm->player, gm->zone->lvl);
-
-	envupdateanims();
-
-	Env *en = gm->zone->envs[z];
-	for(size_t i = 0; i < Maxenvs; i++)
-		if(en[i].id) envupdate(&en[i], gm->zone->lvl);
-
-	Enemy *e = gm->zone->enms[z];
-	for(size_t i = 0; i < Maxenms; i++)
-		if(e[i].mt) e[i].mt->update(&e[i], &gm->player, gm->zone->lvl);
-
-	if(gm->player.curhp <= 0)
-		scrnstkpush(stk, goverscrnnew(&gm->player));
+	zoneupdate(gm->zone, &gm->player, &gm->transl);
 }
 
 void gamedraw(Scrn *s, Gfx *g)
 {
 	Game *gm = s->data;
-	int z = gm->zone->lvl->z;
 
 	gfxclear(g, (Color){ 0, 0, 0, 0 });
-	lvldraw(g, gm->zone->lvl, true, gm->transl);
 
-	Env *en = gm->zone->envs[z];
-	for(size_t i = 0; i < Maxenvs; i++)
-		if(en[i].id) envdraw(&en[i], g, gm->transl);
-
-	playerdraw(g, &gm->player, gm->transl);
-
-	Item *itms = gm->zone->itms[z];
-	for(size_t i = 0; i < Maxitms; i++)
-		if(itms[i].id)
-			itemdraw(&itms[i], g, gm->transl);
-
-	Enemy *e = gm->zone->enms[z];
-	for(size_t i = 0; i < Maxenms; i++)
-		if(e[i].mt) e[i].mt->draw(&e[i], g, gm->transl);
-
-	lvldraw(g, gm->zone->lvl, false, gm->transl);
+	zonedraw(g, gm->zone, &gm->player, gm->transl);
 
 	Rect hp = { { 1, 1 }, { gm->player.hp * 5, 16 } };
 	Rect curhp = hp;

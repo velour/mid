@@ -95,3 +95,11 @@ Rect rectnorm(Rect r)
 	}
 	return r;
 }
+
+double ptsqdist(Point a, Point b)
+{
+	double dx = a.x - b.x;
+	double dy = a.y - b.y;
+
+	return dx * dx + dy * dy;
+}
