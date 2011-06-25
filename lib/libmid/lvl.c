@@ -154,18 +154,6 @@ void lvlwrite(FILE *f, Lvl *l)
 	}
 }
 
-Lvl *lvlload(const char *path)
-{
-	FILE *f = fopen(path, "r");
-	if (!f)
-		return NULL;
-	Lvl *l = lvlread(f);
-	int err = errno;
-	fclose(f);
-	errno = err;
-	return  l;
-}
-
 static bool tileread(FILE *f, Lvl *l, int x, int y, int z)
 {
 	int c = fgetc(f);
