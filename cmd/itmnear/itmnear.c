@@ -47,8 +47,11 @@ static _Bool empty(Zone *zn, int z, Point pt)
 
 static _Bool hasitm(Zone *zn, int z, Point pt)
 {
-	for (int i = 0; i < zn->nitm[z]; i++) {
-		Point a = zn->itms[z][i].bod.bbox.a;
+	Item *itms = zn->itms[z];
+	for (int i = 0; i < Maxitms; i++) {
+		if (!itms[i].id)
+			continue;
+		Point a = itms[i].bod.bbox.a;
 		if (a.x == pt.x * Twidth && a.y == pt.y * Theight)
 			return 1;
 	}

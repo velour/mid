@@ -432,13 +432,8 @@ typedef struct Zone Zone;
 struct Zone {
 	Lvl *lvl;
 
-	int nitm[Maxz];
 	Item itms[Maxz][Maxitms];
-
-	int nenv[Maxz];
 	Env envs[Maxz][Maxenvs];
-
-	int nenm[Maxz];
 	Enemy enms[Maxz][Maxenms];
 };
 

@@ -84,7 +84,9 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 	if(gm->player.acting){
 		int z = gm->zone->lvl->z;
 		Env *ev = gm->zone->envs[z];
-		for(int i = 0; i < gm->zone->nenv[z]; i++) {
+		for(int i = 0; i < Maxenvs; i++) {
+			if (!ev[i].id)
+				continue;
 			envact(&ev[i], &gm->player, gm->zone->lvl);
 			if(gm->player.statup){
 				scrnstkpush(stk, statscrnnew(&gm->player, &ev[i]));

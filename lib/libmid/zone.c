@@ -53,14 +53,11 @@ static void readitem(char *buf, Zone *zn)
 	if (sscanf(buf, "%d%n", &z, &n) != 1)
 		fatal("Failed to scan item's z layer");
 
-	if (zn->nitm[z] >= Maxitms)
-		fatal("Too many items");
-
-	_Bool ok = itemscan(buf+n, &zn->itms[z][zn->nitm[z]]);
+	Item it;
+	_Bool ok = itemscan(buf+n, &it);
 	if (!ok)
 		fatal("Failed to scan item [%s]", buf);
-
-	zn->nitm[z]++;
+	zoneadditem(zn, z, it);
 }
 
 static _Bool readl(char *buf, int sz, FILE *f)
@@ -83,9 +80,12 @@ void zonewrite(FILE *f, Zone *zn)
 	lvlwrite(f, zn->lvl);
 
 	for (int z = 0; z < Maxz; z++) {
-		for (int i = 0; i < zn->nitm[z]; i++) {
+		Item *itms = zn->itms[z];
+		for (int i = 0; i < Maxitms; i++) {
+			if (!itms[i].id)
+				continue;
 			char buf[Bufsz];
-			itemprint(buf, Bufsz, &zn->itms[z][i]);
+			itemprint(buf, Bufsz, &itms[i]);
 			fprintf(f, "i %d %s\n", z, buf);
 		}
 	}
@@ -93,11 +93,15 @@ void zonewrite(FILE *f, Zone *zn)
 
 void zoneadditem(Zone *zn, int z, Item it)
 {
-	if (zn->nitm[z] >= Maxitms)
+	int i;
+	Item *itms = zn->itms[z];
+
+	for (i = 0; i < Maxitms && itms[i].id; i++)
+		;
+	if (i == Maxitms)
 		fatal("Too many items");
 
-	zn->itms[z][zn->nitm[z]] = it;
-	zn->nitm[z]++;
+	zn->itms[z][i] = it;
 }
 
 void zonefree(Zone *z)
@@ -133,23 +137,23 @@ void zoneupdate(Zone *zn, Player *p, Point *tr)
 	itemupdateanims();
 
 	Item *itms = zn->itms[z];
-	for(size_t i = 0; i < zn->nitm[z]; i++)
+	for(size_t i = 0; i < Maxitms; i++)
 		if (itms[i].id) itemupdate(&itms[i], p, zn->lvl);
 
 	envupdateanims();
 
 	Env *en = zn->envs[z];
-	for(size_t i = 0; i < zn->nenv[z]; i++)
+	for(size_t i = 0; i < Maxenvs; i++)
 		if (en[i].id) envupdate(&en[i], zn->lvl);
 
 	Enemy *e = zn->enms[z];
-	for(size_t i = 0; i < zn->nenm[z]; i++) {
-		if (e[i].mt) {
-			e[i].mt->update(&e[i], p, zn->lvl);
-			if(e[i].hp <= 0){
-				e[i].mt->free(&e[i]);
-				e[i].mt = 0;
-			}
+	for(size_t i = 0; i < Maxenms; i++) {
+		if (!e[i].mt)
+			continue;
+		e[i].mt->update(&e[i], p, zn->lvl);
+		if(e[i].hp <= 0){
+			e[i].mt->free(&e[i]);
+			e[i].mt = 0;
 		}
 	}
 }
@@ -161,17 +165,17 @@ void zonedraw(Gfx *g, Zone *zn, Player *p, Point tr)
 	lvldraw(g, zn->lvl, true, tr);
 
 	Env *en = zn->envs[z];
-	for(size_t i = 0; i < zn->nenm[z]; i++)
+	for(size_t i = 0; i < Maxenvs; i++)
 		if (en[i].id) envdraw(&en[i], g, tr);
 
 	playerdraw(g, p, tr);
 
 	Item *itms = zn->itms[z];
-	for(size_t i = 0; i < zn->nitm[z]; i++)
+	for(size_t i = 0; i < Maxitms; i++)
 		if (itms[i].id) itemdraw(&itms[i], g, tr);
 
 	Enemy *e = zn->enms[z];
-	for(size_t i = 0; i < zn->nenm[z]; i++)
+	for(size_t i = 0; i < Maxenms; i++)
 		if (e[i].mt) e[i].mt->draw(&e[i], g, tr);
 
 	lvldraw(g, zn->lvl, false, tr);
