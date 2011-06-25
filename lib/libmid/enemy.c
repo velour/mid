@@ -29,6 +29,7 @@ _Bool enemyinit(Enemy *e, unsigned char id, int x, int y){
 
 static _Bool untiinit(Enemy *e, int x, int y){
 	bodyinit(&e->b, x * Twidth, y * Theight);
+	e->hp = 1;
 
 	Unti *u = xalloc(1, sizeof(*u));
 	u->c = (Color){ 255, 55, 55, 255 };
@@ -55,6 +56,10 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 		playerdmg(p, 3);
 	}else
 		u->c.b = 55;
+
+	if(isect(e->b.bbox, p->sw.loc[p->sw.cur]))
+		e->hp--;
+
 	u->c.r++;
 }
 

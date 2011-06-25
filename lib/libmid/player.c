@@ -39,7 +39,7 @@ void playerinit(Player *p, int x, int y)
 		{ p->body.bbox.a.x + 20, p->body.bbox.a.y },
 		{ p->body.bbox.b.x + 20, p->body.bbox.b.y }
 	};
-	p->sw.cur = 0;
+	p->sw.cur = -1;
 	p->sw.pow = 1;
 }
 
@@ -115,6 +115,15 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 		p->jframes--;
 	if(p->iframes > 0)
 		p->iframes--;
+
+	if(p->sframes > 10){
+		p->sframes--;
+		p->sw.cur = 0;
+	}else if(p->sframes > 0){
+		p->sframes--;
+		p->sw.cur = 1;
+	}else
+		p->sw.cur = -1;
 }
 
 void playerdraw(Gfx *g, Player *p, Point tr)
@@ -165,6 +174,8 @@ void playerhandle(Player *p, Event *e)
 		}
 	}else if(k == kmap[Mvact] && e->down){
 		p->acting = true;
+	}else if(k == kmap[Mvsword] && e->down && p->sw.cur < 0){
+		p->sframes = 20;
 	}
 }
 
@@ -181,13 +192,11 @@ Rect playerbox(Player *p)
 void playerdmg(Player *p, int x){
 	if(p->iframes > 0)
 		return;
-fprintf(stderr, "ow\n");
+
 	p->iframes = 1000.0 / Ticktm; // 1s
 	p->curhp -= x;
-	if(p->curhp <= 0){
-		puts("You loser, loser!");
+	if(p->curhp <= 0)
 		p->curhp = 0;
-	}
 }
 
 _Bool playertake(Player *p, Item *i){

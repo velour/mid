@@ -81,7 +81,13 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 
 	Enemy *e = gm->zone->enms[z];
 	for(size_t i = 0; i < Maxenms; i++)
-		if(e[i].mt) e[i].mt->update(&e[i], &gm->player, gm->zone->lvl);
+		if(e[i].mt){
+			e[i].mt->update(&e[i], &gm->player, gm->zone->lvl);
+			if(e[i].hp <= 0){
+				e[i].mt->free(&e[i]);
+				e[i].mt = 0;
+			}
+		}
 
 	if(gm->player.curhp <= 0)
 		scrnstkpush(stk, goverscrnnew(&gm->player));

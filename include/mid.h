@@ -271,6 +271,7 @@ enum Action{
 	Mvact,
 	Mvjump,
 	Mvinv,
+	Mvsword,
 	Nactions,
 };
 
@@ -334,6 +335,7 @@ struct Player {
 
 	int jframes;
 	int iframes; // invulnerability after damage;
+	int sframes;
 
 	/* if changed, update visibility. */
 	Blkinfo bi;
@@ -369,6 +371,7 @@ struct Enemymt{
 struct Enemy{
 	Enemymt *mt;
 	Body b;
+	int hp;
 	void *data;
 };
 
