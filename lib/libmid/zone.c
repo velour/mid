@@ -143,8 +143,15 @@ void zoneupdate(Zone *zn, Player *p, Point *tr)
 		envupdate(&en[i], zn->lvl);
 
 	Enemy *e = zn->enms[z];
-	for(size_t i = 0; i < zn->nenm[z]; i++)
-		e[i].mt->update(&e[i], p, zn->lvl);
+	for(size_t i = 0; i < zn->nenm[z]; i++) {
+		if (e[i].mt) {
+			e[i].mt->update(&e[i], p, zn->lvl);
+			if(e[i].hp <= 0){
+				e[i].mt->free(&e[i]);
+				e[i].mt = 0;
+			}
+		}
+	}
 }
 
 void zonedraw(Gfx *g, Zone *zn, Player *p, Point tr)
@@ -165,7 +172,7 @@ void zonedraw(Gfx *g, Zone *zn, Player *p, Point tr)
 
 	Enemy *e = zn->enms[z];
 	for(size_t i = 0; i < zn->nenm[z]; i++)
-		e[i].mt->draw(&e[i], g, tr);
+		if (e[i].mt) e[i].mt->draw(&e[i], g, tr);
 
 	lvldraw(g, zn->lvl, false, tr);
 
