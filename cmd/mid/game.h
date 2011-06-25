@@ -1,4 +1,4 @@
-Lvl *lvlgen(int w, int h, int d, int sd);
+Zone *zonegen(int w, int h, int d, int sd);
 
 typedef struct Game Game;
 Game *gamenew(void);

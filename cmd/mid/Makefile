@@ -9,7 +9,7 @@ OFILES := main.o\
 	game.o\
 	invscr.o\
 	title.o\
-	lvl.o\
+	zone.o\
 	statscrn.o\
 	death.o\
 

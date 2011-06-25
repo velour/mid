@@ -14,18 +14,14 @@ struct Game {
 Game *gamenew(void)
 {
 	lvlinit();
-	int seed = rand();
-	Lvl *lvl = lvlgen(50, 50, Maxz, seed);
-	if (!lvl)
-		fatal("Failed to load level lvl/0.lvl: %s", miderrstr());
-
 	Game *gm = xalloc(1, sizeof(*gm));
 
 
-	/* for now */
-	gm->zone = xalloc(1, sizeof(*gm->zone));
+	int seed = rand();
+	gm->zone= zonegen(50, 50, Maxz, seed);
+	if (!gm->zone)
+		fatal("Failed to load zone: %s", miderrstr());
 
-	gm->zone->lvl = lvl;
 	gm->player = playernew(2, 2);
 	if(!enemyinit(&gm->zone->enms[0][0], 'u', 4, 2))
 		goto oops;
