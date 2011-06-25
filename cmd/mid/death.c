@@ -57,7 +57,7 @@ static void draw(Scrn *s, Gfx *g){
 }
 
 static void handle(Scrn *s, Scrnstk *stk, Event *e){
-	if(e->type != Keychng || !e->down)
+	if(e->type != Keychng || !e->down || e->repeat || e->key != kmap[Mvinv])
 		return;
 
 	scrnstkpop(stk); // this
