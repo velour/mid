@@ -2,6 +2,7 @@ include ../../Make.inc
 
 TESTS :=\
 	fs\
+	serial\
 
 HFILES :=\
 	../../include/mid.h\

@@ -421,3 +421,7 @@ struct Zone {
 Zone *zoneread(FILE *);
 void zonewrite(FILE *, Zone *z);
 void zonefree(Zone *z);
+
+
+_Bool scanbuf(char *buf, char *fmt, ...);
+_Bool printbuf(char *buf, size_t sz, char *fmt, ...);

@@ -20,6 +20,7 @@ OFILES :=\
 	item.o\
 	env.o\
 	zone.o\
+	serial.o\
 
 HFILES :=\
 	../../include/mid.h\
