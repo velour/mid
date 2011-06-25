@@ -29,6 +29,18 @@ void playerinit(Player *p, int x, int y)
 	p->hp = 10;
 	p->dex = 8;
 	p->curhp = p->hp;
+	p->sw.img[0] = resrcacq(imgs, "img/silversword-up.png", NULL);
+	p->sw.img[1] = resrcacq(imgs, "img/silversword-down.png", NULL);
+	p->sw.loc[0] = (Rect){
+		{ p->body.bbox.a.x, p->body.bbox.a.y - 32 },
+		{ p->body.bbox.b.x, p->body.bbox.b.y - 32 }
+	};
+	p->sw.loc[1] = (Rect){
+		{ p->body.bbox.a.x + 20, p->body.bbox.a.y },
+		{ p->body.bbox.b.x + 20, p->body.bbox.b.y }
+	};
+	p->sw.cur = 0;
+	p->sw.pow = 1;
 }
 
 static void trydoor(Player *p, Lvl *l, Blkinfo bi)
@@ -79,6 +91,15 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 	p->body.vel.x = olddx;
 	p->body.a.y = oldddy;
 
+	p->sw.loc[0] = (Rect){
+		{ p->body.bbox.a.x, p->body.bbox.a.y - 32 },
+		{ p->body.bbox.b.x, p->body.bbox.b.y - 32 }
+	};
+	p->sw.loc[1] = (Rect){
+		{ p->body.bbox.a.x + 20, p->body.bbox.a.y },
+		{ p->body.bbox.b.x + 20, p->body.bbox.b.y }
+	};
+
 	Anim **prevanim = p->anim;
 	chngdir(p);
 	chngact(p);
@@ -108,6 +129,9 @@ void playerdraw(Gfx *g, Player *p, Point tr)
 		Point pt = { p->imgloc.x + tr.x, p->imgloc.y + tr.y };
 		animdraw(g, p->anim[p->act], pt);
 	}
+
+	if(p->sw.cur >= 0)
+		sworddraw(g, &p->sw, tr);
 }
 
 void playerhandle(Player *p, Event *e)

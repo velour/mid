@@ -21,6 +21,7 @@ OFILES :=\
 	env.o\
 	zone.o\
 	serial.o\
+	sword.o\
 
 HFILES :=\
 	../../include/mid.h\

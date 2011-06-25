@@ -297,6 +297,17 @@ struct Body {
 void bodyinit(Body *, int x, int y);
 void bodyupdate(Body *b, Lvl *l);
 
+typedef struct Sword Sword;
+struct Sword{
+	Img *img[2];
+	Rect loc[2];
+	int cur;
+
+	int pow;
+};
+
+void sworddraw(Gfx*, Sword*, Point tr);
+
 typedef enum Act Act;
 enum Act {
 	Stand,
@@ -333,6 +344,8 @@ struct Player {
 	int curhp;
 	int money;
 	Item *inv[Maxinv];
+
+	Sword sw;
 };
 
 void playerinit(Player *p, int x, int y);
