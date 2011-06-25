@@ -134,13 +134,13 @@ void zoneupdate(Zone *zn, Player *p, Point *tr)
 
 	Item *itms = zn->itms[z];
 	for(size_t i = 0; i < zn->nitm[z]; i++)
-		itemupdate(&itms[i], p, zn->lvl);
+		if (itms[i].id) itemupdate(&itms[i], p, zn->lvl);
 
 	envupdateanims();
 
 	Env *en = zn->envs[z];
 	for(size_t i = 0; i < zn->nenv[z]; i++)
-		envupdate(&en[i], zn->lvl);
+		if (en[i].id) envupdate(&en[i], zn->lvl);
 
 	Enemy *e = zn->enms[z];
 	for(size_t i = 0; i < zn->nenm[z]; i++) {
@@ -162,13 +162,13 @@ void zonedraw(Gfx *g, Zone *zn, Player *p, Point tr)
 
 	Env *en = zn->envs[z];
 	for(size_t i = 0; i < zn->nenm[z]; i++)
-		envdraw(&en[i], g, tr);
+		if (en[i].id) envdraw(&en[i], g, tr);
 
 	playerdraw(g, p, tr);
 
 	Item *itms = zn->itms[z];
 	for(size_t i = 0; i < zn->nitm[z]; i++)
-		itemdraw(&itms[i], g, tr);
+		if (itms[i].id) itemdraw(&itms[i], g, tr);
 
 	Enemy *e = zn->enms[z];
 	for(size_t i = 0; i < zn->nenm[z]; i++)
