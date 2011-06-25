@@ -116,10 +116,3 @@ unsigned int rnd(int min, int max)
 
 	return r % (max - min) + min;
 }
-
-Blk *blk(struct Lvl *l, int x, int y, int z)
-{
-	int i = z * l->w * l->h + y * l->w + x;
-	return &l->blks[i];
-}
-
