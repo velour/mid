@@ -221,7 +221,6 @@ struct Lvl {
 
 Lvl *lvlnew(int d, int w, int h);
 Lvl *lvlload(const char *path);
-Lvl *lvlread(FILE *f);
 void lvlfree(Lvl *l);
 void lvlupdate(Lvl *l);
 void lvldraw(Gfx *g, Lvl *l, _Bool bkgrnd, Point offs);
@@ -398,3 +397,20 @@ void envupdate(Env*, Lvl*);
 void envdraw(Env*,  Gfx*, Point tr);
 void envact(Env*, Player*, Lvl*);
 
+enum {
+	Maxenms = 32,
+	Maxitms = 32,
+	Maxenvs = 16,
+	Maxz = 5,
+};
+
+typedef struct Zone Zone;
+struct Zone {
+	Lvl *lvl;
+	Item itms[Maxz][Maxitms];
+	Env envs[Maxz][Maxenvs];
+	Enemy enms[Maxz][Maxenms];
+};
+
+Zone *zoneread(FILE *);
+Zone *zonewrite(FILE *);

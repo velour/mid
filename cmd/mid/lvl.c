@@ -9,6 +9,7 @@ enum { Bufsz = 128 };
 
 Lvl *lvlgen(int w, int h, int d, int sd)
 {
+	extern Lvl *lvlread(FILE *);
 	char cmd[Bufsz];
 
 	int n = snprintf(cmd, Bufsz, "%s %d %d %d %d", lvlgenbin, w, h, d, sd);

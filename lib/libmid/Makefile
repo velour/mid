@@ -19,6 +19,7 @@ OFILES :=\
 	mem.o\
 	item.o\
 	env.o\
+	zone.o\
 
 HFILES :=\
 	../../include/mid.h\

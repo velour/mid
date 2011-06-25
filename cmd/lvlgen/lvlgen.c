@@ -10,7 +10,7 @@
 
 static void doseed(int argc, char *argv[]);
 static void init(Lvl *l);
-static void output(Lvl *l);
+extern void lvlwrite(FILE *, Lvl *);
 /* Fill in a z-layer and return a Loc for a good door placement to the
  * next zlayer. */
 static Loc zlayer(Loc loc, Lvl *lvl);
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	output(lvl);
+	lvlwrite(stdout, lvl);
 	lvlfree(lvl);
 
 	return 0;
@@ -75,20 +75,6 @@ static void init(Lvl *l)
 			blk(l, x, y, z)->tile = c;
 	}
 	}
-	}
-}
-
-static void output(Lvl *l)
-{
-	printf("%d %d %d\n", l->d, l->w, l->h);
-	for (int z = 0; z < l->d; z++) {
-		for (int y = 0; y < l->h; y++) {
-			for (int x = 0; x < l->w; x++) {
-				fputc(blk(l, x, y, z)->tile, stdout);
-			}
-			fputc('\n', stdout);
-		}
-		fputc('\n', stdout);
 	}
 }
 

@@ -101,27 +101,6 @@ bool lvlinit()
 	return true;
 }
 
-Lvl *lvlload(const char *path)
-{
-	FILE *f = fopen(path, "r");
-	if (!f)
-		return NULL;
-	Lvl *l = lvlread(f);
-	int err = errno;
-	fclose(f);
-	errno = err;
-	return  l;
-}
-
-Lvl *lvlnew(int d, int w, int h)
-{
-	Lvl *l = xalloc(1, sizeof(*l) + sizeof(Blk[d * w * h]));
-	l->d = d;
-	l->w = w;
-	l->h = h;
-	return l;
-}
-
 Lvl *lvlread(FILE *f)
 {
 	int w, h, d;
@@ -151,6 +130,41 @@ errnl:
 err:
 	xfree(l);
 	return NULL;
+}
+
+void lvlwrite(FILE *f, Lvl *l)
+{
+	fprintf(f, "%d %d %d\n", l->d, l->w, l->h);
+	for (int z = 0; z < l->d; z++) {
+		for (int y = 0; y < l->h; y++) {
+			for (int x = 0; x < l->w; x++) {
+				fputc(blk(l, x, y, z)->tile, f);
+			}
+			fputc('\n', f);
+		}
+		fputc('\n', f);
+	}
+}
+
+Lvl *lvlload(const char *path)
+{
+	FILE *f = fopen(path, "r");
+	if (!f)
+		return NULL;
+	Lvl *l = lvlread(f);
+	int err = errno;
+	fclose(f);
+	errno = err;
+	return  l;
+}
+
+Lvl *lvlnew(int d, int w, int h)
+{
+	Lvl *l = xalloc(1, sizeof(*l) + sizeof(Blk[d * w * h]));
+	l->d = d;
+	l->w = w;
+	l->h = h;
+	return l;
 }
 
 static bool tileread(FILE *f, Lvl *l, int x, int y, int z)
