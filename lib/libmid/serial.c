@@ -1,8 +1,10 @@
 #include "../../include/mid.h"
+#include "../../include/log.h"
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
 
 typedef struct Toks Toks;
 struct Toks {
@@ -21,21 +23,7 @@ static int printpt(char *buf, size_t sz, Point p);
 static int printrect(char *buf, size_t sz, Rect r);
 static int printbody(char *buf, size_t sz, Body b);
 
-/* Scan a set of fields from a string with the given format.  The
- * format is specified as a string of characters with the following
- * meanings:
- *
- * d - int
- * f - double
- * b - _Bool
- * p - Point
- * r - Rect
- * y - Body
- *
- * The return value is true if all items in the format were scanned
- * and false if not.
- */
-_Bool scanbuf(char *buf, char *fmt, ...)
+_Bool scangeom(char *buf, char *fmt, ...)
 {
 	va_list ap;
 	char *f = fmt;
@@ -62,6 +50,8 @@ static void scanint(Toks *toks, int *d)
 {
 	char *t = nxt(toks);
 	long l = strtol(t, NULL, 10);
+	if (l == LONG_MAX || l == LONG_MIN)
+		fatal("Over/under-flow reading integer");
 	*d = l;
 }
 
@@ -108,10 +98,7 @@ static char *nxt(Toks *toks)
 	return t;
 }
 
-/* Prints a structure to a string buffer using the same type of format
- * specified as is used by scanbuf.  The return value is true if the
- * output was not truncated and false if the output was truncated. */
-_Bool printbuf(char *buf, size_t sz, char *fmt, ...)
+_Bool printgeom(char *buf, size_t sz, char *fmt, ...)
 {
 	va_list ap;
 	char *f = fmt;
@@ -158,7 +145,7 @@ static int printpt(char *buf, size_t sz, Point p)
 static int printrect(char *buf, size_t sz, Rect r)
 {
 	int n = printpt(buf, sz, r.a);
-	return n + printpt(buf+n, sz-n, r.a);
+	return n + printpt(buf+n, sz-n, r.b);
 }
 
 static int printbody(char *buf, size_t sz, Body b)

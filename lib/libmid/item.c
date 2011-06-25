@@ -22,16 +22,23 @@ _Bool iteminit(Item *i, ItemID id, Point p){
 
 	i->id = id;
 	bodyinit(&i->bod, p.x * Twidth, p.y * Theight);
+	i->gotit = 0;
 
-	if(ops[id].anim)
-		return 1;
+	return 1;
+}
 
-	char *n = ops[id].animname;
-	Anim *a = resrcacq(anims, n, NULL);
-	if(!a)
-		return 0;
+_Bool itemldresrc()
+{
+	for (int id = 0; id < sizeof(ops)/sizeof(ops[0]); id++) {
+		char *n = ops[id].animname;
+		if (!n)
+			continue;
+		Anim *a = resrcacq(anims, n, NULL);
+		if(!a)
+			return 0;
 
-	ops[id].anim = a;
+		ops[id].anim = a;
+	}
 	return 1;
 }
 
@@ -76,4 +83,14 @@ static void copperupdate(Item *i, Player *p, Lvl *l){
 		p->money++;
 		i->gotit = 1;
 	}
+}
+
+_Bool itemscan(char *buf, Item *it)
+{
+	return scangeom(buf, "dyb", &it->id, &it->bod, &it->gotit);
+}
+
+_Bool itemprint(char *buf, size_t sz, Item *it)
+{
+	return printgeom(buf, sz, "dyb", it->id, it->bod, it->gotit);
 }

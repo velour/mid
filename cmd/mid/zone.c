@@ -3,16 +3,20 @@
 #include "../../include/log.h"
 #include "game.h"
 
-static const char *lvlgenbin = "cmd/lvlgen/lvlgen";
-
 enum { Bufsz = 128 };
+
+static const char *lvlpipe =
+	"cmd/lvlgen/lvlgen %d %d %d %d | cmd/itmnear/itmnear 1 1\
+ | cmd/itmnear/itmnear 2 5";
 
 Zone *zonegen(int w, int h, int d, int sd)
 {
 	char cmd[Bufsz];
 
-	int n = snprintf(cmd, Bufsz, "%s %d %d %d %d", lvlgenbin, w, h, d, sd);
+	int n = snprintf(cmd, Bufsz, lvlpipe, w, h, d, sd);
 	assert(n < Bufsz);
+	if (debugging)
+		pr("lvlgen pipeline: [%s]", cmd);
 
 	FILE *fin = popen(cmd, "r");
 	if (!fin)

@@ -23,18 +23,10 @@ Game *gamenew(void)
 		fatal("Failed to load zone: %s", miderrstr());
 
 	playerinit(&gm->player, 2, 2);
-	if(!enemyinit(&gm->zone->enms[0][0], 'u', 4, 2))
-		goto oops;
 
-	if(!iteminit(gm->zone->itms[0], ItemStatup, (Point){3,1})){
-		gm->zone->enms[0][0].mt->free(&gm->zone->enms[0][0]);
-		goto oops;
-	}
-
-	for(int j = 5; j < 11; j++)
-		iteminit(&gm->zone->itms[0][j], ItemCopper, (Point){j,1});
-
-	envinit(&gm->zone->envs[0][0], EnvShrempty, (Point){2,1});
+	_Bool ok = itemldresrc();
+	if (!ok)
+		fatal("Failed to load item resources: %s", miderrstr());
 
 	return gm;
 
@@ -47,13 +39,6 @@ oops:
 void gamefree(Scrn *s)
 {
 	Game *gm = s->data;
-
-	for (int z = 0; z < gm->zone->lvl->d; z++) {
-		Enemy *e = gm->zone->enms[z];
-		for(size_t i = 0; i < Maxenms; i++)
-			if(e[i].mt) e[i].mt->free(&e[i]);
-	}
-
 	zonefree(gm->zone);
 	free(gm);
 }
@@ -61,62 +46,16 @@ void gamefree(Scrn *s)
 void gameupdate(Scrn *s, Scrnstk *stk)
 {
 	Game *gm = s->data;
-	int z = gm->zone->lvl->z;
-
-	lvlupdate(gm->zone->lvl);
-	playerupdate(&gm->player, gm->zone->lvl, &gm->transl);
-
-	itemupdateanims();
-
-	Item *itms = gm->zone->itms[z];
-	for(size_t i = 0; i < Maxitms; i++)
-		if(itms[i].id)
-			itemupdate(&itms[i], &gm->player, gm->zone->lvl);
-
-	envupdateanims();
-
-	Env *en = gm->zone->envs[z];
-	for(size_t i = 0; i < Maxenvs; i++)
-		if(en[i].id) envupdate(&en[i], gm->zone->lvl);
-
-	Enemy *e = gm->zone->enms[z];
-	for(size_t i = 0; i < Maxenms; i++)
-		if(e[i].mt){
-			e[i].mt->update(&e[i], &gm->player, gm->zone->lvl);
-			if(e[i].hp <= 0){
-				e[i].mt->free(&e[i]);
-				e[i].mt = 0;
-			}
-		}
-
-	if(gm->player.curhp <= 0)
-		scrnstkpush(stk, goverscrnnew(&gm->player));
+	zoneupdate(gm->zone, &gm->player, &gm->transl);
 }
 
 void gamedraw(Scrn *s, Gfx *g)
 {
 	Game *gm = s->data;
-	int z = gm->zone->lvl->z;
 
 	gfxclear(g, (Color){ 0, 0, 0, 0 });
-	lvldraw(g, gm->zone->lvl, true, gm->transl);
 
-	Env *en = gm->zone->envs[z];
-	for(size_t i = 0; i < Maxenvs; i++)
-		if(en[i].id) envdraw(&en[i], g, gm->transl);
-
-	playerdraw(g, &gm->player, gm->transl);
-
-	Item *itms = gm->zone->itms[z];
-	for(size_t i = 0; i < Maxitms; i++)
-		if(itms[i].id)
-			itemdraw(&itms[i], g, gm->transl);
-
-	Enemy *e = gm->zone->enms[z];
-	for(size_t i = 0; i < Maxenms; i++)
-		if(e[i].mt) e[i].mt->draw(&e[i], g, gm->transl);
-
-	lvldraw(g, gm->zone->lvl, false, gm->transl);
+	zonedraw(g, gm->zone, &gm->player, gm->transl);
 
 	Rect hp = { { 1, 1 }, { gm->player.hp * 5, 16 } };
 	Rect curhp = hp;
@@ -144,13 +83,11 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 
 	if(gm->player.acting){
 		int z = gm->zone->lvl->z;
-		for(Env *ev = gm->zone->envs[z]; ev != gm->zone->envs[z] + Maxenvs; ev++){
-			if(!ev->id)
-				continue;
-
-			envact(ev, &gm->player, gm->zone->lvl);
+		Env *ev = gm->zone->envs[z];
+		for(int i = 0; i < gm->zone->nenv[z]; i++) {
+			envact(&ev[i], &gm->player, gm->zone->lvl);
 			if(gm->player.statup){
-				scrnstkpush(stk, statscrnnew(&gm->player, ev));
+				scrnstkpush(stk, statscrnnew(&gm->player, &ev[i]));
 				return;
 			}
 		}
