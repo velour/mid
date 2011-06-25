@@ -13,3 +13,4 @@ enum { Invrows = 5, Invcols = 3 };
 Scrn *invscrnnew(Player *, Lvl *);
 Scrn *titlescrnnew(Gfx *);
 Scrn *statscrnnew(Player *, Env *);
+Scrn *goverscrnnew(Player *);

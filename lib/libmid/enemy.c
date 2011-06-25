@@ -40,7 +40,7 @@ static _Bool untiinit(Enemy *e, int x, int y){
 }
 
 static void untifree(Enemy *e){
-	resrcrel(imgs, "img/orb.png", 0);
+	resrcrel(imgs, "img/unti.png", 0);
 	xfree(e->data);
 }
 

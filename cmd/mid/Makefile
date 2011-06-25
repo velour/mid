@@ -11,6 +11,7 @@ OFILES := main.o\
 	title.o\
 	lvl.o\
 	statscrn.o\
+	death.o\
 
 HFILES := ../../include/mid.h\
 	../../include/log.h\

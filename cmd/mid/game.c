@@ -88,6 +88,9 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 	Enemy *e = gm->zone->enms[z];
 	for(size_t i = 0; i < Maxenms; i++)
 		if(e[i].mt) e[i].mt->update(&e[i], gm->player, gm->zone->lvl);
+
+	if(gm->player->curhp <= 0)
+		scrnstkpush(stk, goverscrnnew(gm->player));
 }
 
 void gamedraw(Scrn *s, Gfx *g)
