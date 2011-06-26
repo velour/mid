@@ -5,7 +5,6 @@
 
 enum { Startx = 2, Starty = 2 };
 
-static _Bool empty(Zone *, int, Point);
 static _Bool fits(Zone *zn, int z, Point pt);
 static void use(Lvl *l, int z, Point pt);
 static int cmp(const void*, const void*);
@@ -25,11 +24,13 @@ int main(int argc, char *argv[])
 
 	initresrc();
 	size = envsize(id);
+	size.x /= Twidth;
+	size.y /= Theight;
 
 	Zone *zn = zoneread(stdin);
 	int sz = zn->lvl->w * zn->lvl->h;
 	Point pts[sz];
-	int n = zonelocs(zn, 0, empty, pts, sz);
+	int n = zonelocs(zn, 0, fits, pts, sz);
 	qsort(pts, n, sizeof(*pts), cmp);
 
 	for (int i = 0; i < num; i++) {
@@ -45,21 +46,16 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-static _Bool empty(Zone *zn, int z, Point pt)
-{
-	return (pt.x != Startx || pt.y != Starty) && fits(zn, z, pt);
-}
-
 static _Bool fits(Zone *zn, int z, Point pt)
 {
-	for (int x = pt.x; x < pt.x + size.x / Twidth; x++) {
+	for (int x = pt.x; x < pt.x + size.x; x++) {
 		if (x >= zn->lvl->w)
 			return 0;
 		int y;
-		for (y = pt.y; y < pt.y + size.y / Theight; y++) {
-			if (y >= zn->lvl->h)
-				return 0;
-			if (blk(zn->lvl, x, y, z)->tile != ' ')
+		for (y = pt.y; y < pt.y + size.y; y++) {
+			if ((x == Startx && y == Starty)
+			    || y >= zn->lvl->h
+			    || blk(zn->lvl, x, y, z)->tile != ' ')
 				return 0;
 		}
 		if (y >= zn->lvl->h)
