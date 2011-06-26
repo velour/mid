@@ -22,7 +22,6 @@ int main(int argc, char *argv[])
 	if (argc == 3)
 		num = strtol(argv[2], NULL, 10);
 
-	initresrc();
 	size = envsize(id);
 	size.x /= Twidth;
 	size.y /= Theight;

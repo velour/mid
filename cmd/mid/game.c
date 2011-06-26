@@ -27,6 +27,9 @@ Game *gamenew(void)
 	_Bool ok = itemldresrc();
 	if (!ok)
 		fatal("Failed to load item resources: %s", miderrstr());
+	ok = envldresrc();
+	if (!ok)
+		fatal("Failed to load env resources: %s", miderrstr());
 
 	return gm;
 

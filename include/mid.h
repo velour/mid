@@ -415,6 +415,7 @@ struct Env{
 	_Bool gotit;
 };
 
+_Bool envldresrc();
 _Bool envinit(Env*, EnvID, Point);
 void envupdateanims(void);
 void envupdate(Env*, Lvl*);

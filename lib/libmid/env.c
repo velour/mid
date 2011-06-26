@@ -25,15 +25,20 @@ _Bool envinit(Env *e, EnvID id, Point p){
 	e->body.bbox.b.x = e->body.bbox.a.x + ops[id].wh.x;
 	e->body.bbox.b.y = e->body.bbox.a.y + ops[id].wh.y;
 
-	if(ops[id].anim)
-		return 1;
+	return 1;
+}
 
-	char *n = ops[id].animname;
-	Anim *a = resrcacq(anims, n, NULL);
-	if(!a)
-		return 0;
-
-	ops[id].anim = a;
+_Bool envldresrc()
+{
+	for (int id = 0; id < sizeof(ops)/sizeof(ops[0]); id++) {
+		char *n = ops[id].animname;
+		if (!n)
+			continue;
+		Anim *a = resrcacq(anims, n, NULL);
+		if(!a)
+			return 0;
+		ops[id].anim = a;
+	}
 	return 1;
 }
 
