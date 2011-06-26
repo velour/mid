@@ -36,7 +36,6 @@ int main(int argc, char *argv[])
 	for (int i = 0; i < num; i++) {
 		Env env;
 		envinit(&env, id, pts[i]);
-		blk(zn->lvl, pts[i].x, pts[i].y, 0)->tile = '.';
 		use(zn->lvl, 0, pts[i]);
 		zoneaddenv(zn, 0, env);
 	}
@@ -68,9 +67,9 @@ static _Bool fits(Zone *zn, int z, Point pt)
 
 static void use(Lvl *l, int z, Point pt)
 {
-	for (int x = 0; x < size.x / Twidth; x++) {
+	for (int x = pt.x; x < pt.x + size.x / Twidth; x++) {
 		assert(x < l->w);
-		for (int y = 0; y < size.y / Theight; y++) {
+		for (int y = pt.y; y < pt.y + size.y / Theight; y++) {
 			assert(y < l->h);
 			blk(l, x, y, z)->tile = '.';
 		}
