@@ -1,22 +1,30 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
+#include <assert.h>
 #include <stdlib.h>
 
 enum { Startx = 2, Starty = 2 };
 
 static _Bool empty(Zone *, int, Point);
+static _Bool fits(Zone *zn, int z, Point pt);
+static void use(Lvl *l, int z, Point pt);
 static int cmp(const void*, const void*);
+
+Point size;
 
 int main(int argc, char *argv[])
 {
 	int id, num = 1;
 
 	if (argc < 2 || argc > 3)
-		fatal("usage: itmnear <item ID> [<num>]");
+		fatal("usage: envnear <env ID> [<num>]");
 
 	id = strtol(argv[1], NULL, 10);
 	if (argc == 3)
 		num = strtol(argv[2], NULL, 10);
+
+	initresrc();
+	size = envsize(id);
 
 	Zone *zn = zoneread(stdin);
 	int sz = zn->lvl->w * zn->lvl->h;
@@ -25,10 +33,11 @@ int main(int argc, char *argv[])
 	qsort(pts, n, sizeof(*pts), cmp);
 
 	for (int i = 0; i < num; i++) {
-		Item it;
-		iteminit(&it, id, pts[i]);
+		Env env;
+		envinit(&env, id, pts[i]);
 		blk(zn->lvl, pts[i].x, pts[i].y, 0)->tile = '.';
-		zoneadditem(zn, 0, it);
+		use(zn->lvl, 0, pts[i]);
+		zoneaddenv(zn, 0, env);
 	}
 
 	zonewrite(stdout, zn);
@@ -38,10 +47,38 @@ int main(int argc, char *argv[])
 
 static _Bool empty(Zone *zn, int z, Point pt)
 {
-	return (pt.x != Startx || pt.y != Starty)
-		&& blk(zn->lvl, pt.x, pt.y, z)->tile == ' '
-		&& pt.y < zn->lvl->h - 1
-		&& blk(zn->lvl, pt.x, pt.y+1, z)->tile == '#';
+	return (pt.x != Startx || pt.y != Starty) && fits(zn, z, pt);
+}
+
+static _Bool fits(Zone *zn, int z, Point pt)
+{
+	for (int x = pt.x; x < pt.x + size.x / Twidth; x++) {
+		if (x >= zn->lvl->w)
+			return 0;
+		int y;
+		for (y = pt.y; y < pt.y + size.y / Theight; y++) {
+			if (y >= zn->lvl->h)
+				return 0;
+			if (blk(zn->lvl, x, y, z)->tile != ' ')
+				return 0;
+		}
+		if (y >= zn->lvl->h)
+			return 0;
+		if (blk(zn->lvl, x, y, z)->tile != '#')
+			return 0;
+	}
+	return 1;
+}
+
+static void use(Lvl *l, int z, Point pt)
+{
+	for (int x = 0; x < size.x / Twidth; x++) {
+		assert(x < l->w);
+		for (int y = 0; y < size.y / Theight; y++) {
+			assert(y < l->h);
+			blk(l, x, y, z)->tile = '.';
+		}
+	}
 }
 
 static int cmp(const void *_a, const void *_b)

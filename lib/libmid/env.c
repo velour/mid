@@ -37,6 +37,11 @@ _Bool envinit(Env *e, EnvID id, Point p){
 	return 1;
 }
 
+Point envsize(EnvID id)
+{
+	return ops[id].wh;
+}
+
 void envupdateanims(void){
 	for(size_t i = 1; i < EnvMax; i++){
 		if(!ops[i].anim)
@@ -65,4 +70,14 @@ static void shremptyact(Env *e, Player *p, Lvl *l){
 
 static void shrusedact(Env *e, Player *p, Lvl *l){
 	// nothing
+}
+
+void envprint(char *buf, size_t sz, Env *env)
+{
+	printgeom(buf, sz, "dyb", env->id, env->body, env->gotit);
+}
+
+void envscan(char *buf, Env *env)
+{
+	scangeom(buf, "dyb", &env->id, &env->body, &env->gotit);
 }

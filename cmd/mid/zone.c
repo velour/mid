@@ -6,8 +6,10 @@
 enum { Bufsz = 128 };
 
 static const char *lvlpipe =
-	"cmd/lvlgen/lvlgen %d %d %d %d | cmd/itmnear/itmnear 1 1\
- | cmd/itmnear/itmnear 2 5";
+"cmd/lvlgen/lvlgen %d %d %d %d\
+ | cmd/itmnear/itmnear 1 1\
+ | cmd/itmnear/itmnear 2 5\
+ | cmd/envnear/envnear 1";
 
 Zone *zonegen(int w, int h, int d, int sd)
 {

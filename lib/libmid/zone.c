@@ -5,10 +5,13 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
 
-_Bool itemscan(char *buf, Item *it);
-_Bool itemprint(char *buf, size_t sz, Item *it);
+_Bool itemscan(char *, Item *);
+_Bool itemprint(char *, size_t, Item *);
+_Bool envscan(char *, Env *);
+_Bool envprint(char *, size_t, Env *);
 
 static void readitem(char *buf, Zone *zn);
+static void readenv(char *buf, Zone *zn);
 static char *getzlayer(char *buf, int *z);
 static _Bool readl(char *buf, int sz, FILE *f);
 
@@ -17,7 +20,7 @@ enum { Bufsz = 256 };
 Zone *zoneread(FILE *f)
 {
 	char buf[Bufsz];
-	int itms = 0;
+	int itms = 0, envs = 0;
 
 	Zone *zn = xalloc(1, sizeof(*zn));
 	zn->lvl = lvlread(f);
@@ -33,7 +36,9 @@ Zone *zoneread(FILE *f)
 			itms++;
 			break;
 		case 'e':
-			fatal("Reading envs is not yet implemented");
+			readenv(buf+1, zn);
+			envs++;
+			break;
 		case 'n':
 			fatal("Reading enemies is not yet implemented");
 		default:
@@ -41,8 +46,10 @@ Zone *zoneread(FILE *f)
 		}
 	}
 
-	if (debugging)
+	if (debugging) {
 		pr("Loaded %d items", itms);
+		pr("Loaded %d envs", envs);
+	}
 
 	return zn;
 }
@@ -58,6 +65,19 @@ static void readitem(char *buf, Zone *zn)
 	if (!ok)
 		fatal("Failed to scan item [%s]", buf);
 	zoneadditem(zn, z, it);
+}
+
+static void readenv(char *buf, Zone *zn)
+{
+	int z, n;
+	if (sscanf(buf, "%d%n", &z, &n) != 1)
+		fatal("Failed to scan env's z layer");
+
+	Env env;
+	_Bool ok = envscan(buf+n, &env);
+	if (!ok)
+		fatal("Failed to scan env [%s]", buf);
+	zoneaddenv(zn, z, env);
 }
 
 static _Bool readl(char *buf, int sz, FILE *f)
@@ -88,6 +108,14 @@ void zonewrite(FILE *f, Zone *zn)
 			itemprint(buf, Bufsz, &itms[i]);
 			fprintf(f, "i %d %s\n", z, buf);
 		}
+		Env *envs = zn->envs[z];
+		for (int i = 0; i < Maxenvs; i++) {
+			if (!envs[i].id)
+				continue;
+			char buf[Bufsz];
+			envprint(buf, Bufsz, &envs[i]);
+			fprintf(f, "e %d %s\n", z, buf);
+		}
 	}
 }
 
@@ -102,6 +130,32 @@ void zoneadditem(Zone *zn, int z, Item it)
 		fatal("Too many items");
 
 	zn->itms[z][i] = it;
+}
+
+void zoneaddenv(Zone *zn, int z, Env env)
+{
+	int i;
+	Env *envs = zn->envs[z];
+
+	for (i = 0; i < Maxenvs && envs[i].id; i++)
+		;
+	if (i == Maxenvs)
+		fatal("Too many envs");
+
+	zn->envs[z][i] = env;
+}
+
+void zoneaddenemy(Zone *zn, int z, Enemy enm)
+{
+	int i;
+	Enemy *enms = zn->enms[z];
+
+	for (i = 0; i < Maxenms && enms[i].mt; i++)
+		;
+	if (i == Maxenms)
+		fatal("Too many enemies");
+
+	zn->enms[z][i] = enm;
 }
 
 void zonefree(Zone *z)

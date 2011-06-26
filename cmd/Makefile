@@ -3,5 +3,7 @@ DIRS :=\
 	rectview\
 	lvlgen\
 	itmnear\
+	envnear\
+	enmnear\
 
 include ../Make.dir

@@ -12,11 +12,13 @@ int main(int argc, char *argv[])
 	int id, num = 1;
 
 	if (argc < 2 || argc > 3)
-		fatal("usage: itmnear <item ID> [<num>]");
+		fatal("usage: enmnear <enemy ID> [<num>]");
 
-	id = strtol(argv[1], NULL, 10);
+	id = argv[1][0];
 	if (argc == 3)
 		num = strtol(argv[2], NULL, 10);
+
+	initresrc();
 
 	Zone *zn = zoneread(stdin);
 	int sz = zn->lvl->w * zn->lvl->h;
@@ -25,10 +27,10 @@ int main(int argc, char *argv[])
 	qsort(pts, n, sizeof(*pts), cmp);
 
 	for (int i = 0; i < num; i++) {
-		Item it;
-		iteminit(&it, id, pts[i]);
+		Enemy enm;
+		enemyinit(&enm, id, pts[i].x, pts[i].y);
 		blk(zn->lvl, pts[i].x, pts[i].y, 0)->tile = '.';
-		zoneadditem(zn, 0, it);
+		zoneaddenemy(zn, 0, enm);
 	}
 
 	zonewrite(stdout, zn);

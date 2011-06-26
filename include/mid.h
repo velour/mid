@@ -420,6 +420,7 @@ void envupdateanims(void);
 void envupdate(Env*, Lvl*);
 void envdraw(Env*,  Gfx*, Point tr);
 void envact(Env*, Player*, Lvl*);
+Point envsize(EnvID);
 
 enum {
 	Maxenms = 32,
@@ -443,6 +444,8 @@ void zonefree(Zone *);
 /* Fills the array with locations that pass the given predicate. */
 int zonelocs(Zone *, int z, _Bool (*)(Zone *, int, Point), Point [], int);
 void zoneadditem(Zone *zn, int z, Item it);
+void zoneaddenv(Zone *zn, int z, Env env);
+void zoneaddenemy(Zone *zn, int z, Enemy enm);
 void zonedraw(Gfx *g, Zone *zn, Player *p, Point tr);
 void zoneupdate(Zone *zn, Player *p, Point *tr);
 
