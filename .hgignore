@@ -2,6 +2,9 @@ syntax: glob
 cmd/mid/mid
 cmd/rectview/rectview
 cmd/lvlgen/lvlgen
+cmd/envnear/envnear
+cmd/enmnear/enmnear
+cmd/itmnear/itmnear
 *.o
 *.swp
 *.a
