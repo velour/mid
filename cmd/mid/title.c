@@ -5,6 +5,7 @@
 typedef struct Tit Tit;
 struct Tit{
 	Img *title;
+	Point titlepos;
 };
 
 static void update(Scrn*,Scrnstk*);
@@ -34,6 +35,11 @@ Scrn *titlescrnnew(Gfx *g){
 		return NULL;
 	}
 
+	t->titlepos = (Point){
+		gfxdims(g).x / 2 - imgdims(t->title).x / 2,
+		imgdims(t->title).y
+	};
+
 	Scrn *s = xalloc(1, sizeof(*s));
 	s->mt = &titmt;
 	s->data = t;
@@ -46,7 +52,7 @@ static void update(Scrn *s, Scrnstk *stk){
 static void draw(Scrn *s, Gfx *g){
 	gfxclear(g, (Color){ 240, 240, 240 });
 	Tit *t = s->data;
-	imgdraw(g, t->title, (Point){0});
+	imgdraw(g, t->title, t->titlepos);
 	gfxflip(g);
 }
 
