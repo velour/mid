@@ -318,6 +318,14 @@ enum Act {
 	Nacts
 };
 
+typedef enum Stat Stat;
+enum Stat{
+	StatHp,
+	StatDex,
+	StatStr,
+	StatMax
+};
+
 typedef struct Item Item;
 enum { Maxinv = 15 };
 
@@ -341,10 +349,9 @@ struct Player {
 	/* if changed, update visibility. */
 	Blkinfo bi;
 
-	int hp;
-	int dex;
+	int stats[StatMax];
+	int eqp[StatMax];
 
-	int curhp;
 	int money;
 	Item *inv[Maxinv];
 

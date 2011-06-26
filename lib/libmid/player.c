@@ -27,9 +27,10 @@ void playerinit(Player *p, int x, int y)
 	p->imgloc = (Point){ x * Twidth, y * Theight };
 
 	p->bi.x = p->bi.y = p->bi.z = -1;
-	p->hp = 10;
-	p->dex = 8;
-	p->curhp = p->hp;
+	p->stats[StatHp] = 10;
+	p->stats[StatDex] = 8;
+	p->stats[StatStr] = 5;
+	p->eqp[StatHp] = p->stats[StatHp];
 
 	p->sw.img[0] = resrcacq(imgs, "img/silversword-up.png", NULL);
 	p->sw.img[1] = resrcacq(imgs, "img/silversword-down.png", NULL);
@@ -104,7 +105,7 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 	if(p->iframes > 0)
 		p->iframes--;
 
-	if(p->sframes > 10){
+	if(p->sframes > 8){
 		p->sframes--;
 		p->sw.cur = 0;
 	}else if(p->sframes > 0){
@@ -163,7 +164,7 @@ void playerhandle(Player *p, Event *e)
 	}else if(k == kmap[Mvact] && e->down){
 		p->acting = true;
 	}else if(k == kmap[Mvsword] && e->down && p->sw.cur < 0){
-		p->sframes = 20;
+		p->sframes = 16;
 	}
 }
 
@@ -182,9 +183,9 @@ void playerdmg(Player *p, int x){
 		return;
 
 	p->iframes = 1000.0 / Ticktm; // 1s
-	p->curhp -= x;
-	if(p->curhp <= 0)
-		p->curhp = 0;
+	p->eqp[StatHp] -= x;
+	if(p->eqp[StatHp] <= 0)
+		p->eqp[StatHp] = 0;
 }
 
 _Bool playertake(Player *p, Item *i){
@@ -245,11 +246,11 @@ static Point scroll(Player *p, Point delta, Point tr){
 }
 
 static double run(Player *p){
-	return p->dex / 2 - 1;
+	return (p->stats[StatDex] + p->eqp[StatDex]) / 2 - 1;
 }
 
 static double jmp(Player *p){
-	return p->dex;
+	return (p->stats[StatDex] + p->eqp[StatDex]);
 }
 
 static void mvsw(Player *p){

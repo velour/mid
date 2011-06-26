@@ -60,9 +60,9 @@ void gamedraw(Scrn *s, Gfx *g)
 
 	zonedraw(g, gm->zone, &gm->player, gm->transl);
 
-	Rect hp = { { 1, 1 }, { gm->player.hp * 5, 16 } };
+	Rect hp = { { 1, 1 }, { gm->player.stats[StatHp] * 5, 16 } };
 	Rect curhp = hp;
-	curhp.b.x = gm->player.curhp * 5;
+	curhp.b.x = gm->player.eqp[StatHp] * 5;
 	gfxfillrect(g, hp, (Color){ 200 });
 	gfxfillrect(g, curhp, (Color){ 0, 200, 200 });
 	gfxdrawrect(g, hp, (Color){0});

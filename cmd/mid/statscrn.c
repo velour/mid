@@ -49,6 +49,12 @@ static void update(Scrn *s, Scrnstk *stk){
 }
 
 static void draw(Scrn *s, Gfx *g){
+	static char *names[] = {
+		[StatHp] = "HP",
+		[StatDex] = "Dexterity",
+		[StatStr] = "Strength",
+	};
+
 	Statup *sup = s->data;
 
 	gfxclear(g, (Color){ 127, 200, 255 });
@@ -57,17 +63,17 @@ static void draw(Scrn *s, Gfx *g){
 	enum { Bufsz = 256 };
 	char buf[Bufsz];
 
-	snprintf(buf, Bufsz, "HP: %d", sup->p->hp);
+	snprintf(buf, Bufsz, "HP: %d", sup->p->stats[StatHp]);
 	Point hploc = txtdims(sup->txt, buf);
 
 	Rect r = { { 1, 1 } };
 	r.b = vecadd(r.a, hploc);
 
-	if(rectcontains(r, sup->mouse)){ //TODO: generalize this for all stats
+	if(rectcontains(r, sup->mouse)){
 		gfxfillrect(g, r, hilit);
 		if(sup->inc){
-			sup->p->hp += 5;
-			sup->p->curhp += 5;
+			sup->p->stats[StatHp] += 5;
+			sup->p->eqp[StatHp] += 5;
 			sup->norbs--;
 			sup->uorbs++;
 			sup->inc = 0;
@@ -75,22 +81,25 @@ static void draw(Scrn *s, Gfx *g){
 	}
 	txtdraw(g, sup->txt, (Point){1,1}, buf);
 
-	snprintf(buf, Bufsz, "Dexterity: %d", sup->p->dex);
-	Point dexloc = txtdims(sup->txt, buf);
+	Point prevloc = { 1, r.b.y };
+	for(size_t i = StatDex; i < StatMax; i++){
+		snprintf(buf, Bufsz, "%s: %d", names[i], sup->p->stats[i]);
+		Point loc = txtdims(sup->txt, buf);
+		Rect hover = { { 1, 1 + prevloc.y } };
+		hover.b = vecadd(hover.a, loc);
 
-	r.a = (Point){ 1, hploc.y };
-	r.b = vecadd(r.a, dexloc);
-
-	if(rectcontains(r, sup->mouse)){ //TODO: generalize this for all stats
-		gfxfillrect(g, r, hilit);
-		if(sup->inc){
-			sup->p->dex++;
-			sup->norbs--;
-			sup->uorbs++;
-			sup->inc = 0;
+		if(rectcontains(hover, sup->mouse)){
+			gfxfillrect(g, hover, hilit);
+			if(sup->inc){
+				sup->p->stats[i]++;
+				sup->norbs--;
+				sup->uorbs++;
+				sup->inc = 0;
+			}
 		}
+		txtdraw(g, sup->txt, hover.a, buf);
+		prevloc.y = hover.b.y;
 	}
-	txtdraw(g, sup->txt, (Point){ 1, hploc.y }, buf);
 
 	snprintf(buf, Bufsz, "Orbs: %d", sup->norbs);
 	Point o = txtdims(sup->txt, buf);
