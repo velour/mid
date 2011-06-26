@@ -9,6 +9,7 @@ static void chngact(Player *b);
 static Point scroll(Player*, Point delta, Point transl);
 static double run(Player *);
 static double jmp(Player *);
+static void mvsw(Player *);
 
 void playerinit(Player *p, int x, int y)
 {
@@ -29,16 +30,10 @@ void playerinit(Player *p, int x, int y)
 	p->hp = 10;
 	p->dex = 8;
 	p->curhp = p->hp;
+
 	p->sw.img[0] = resrcacq(imgs, "img/silversword-up.png", NULL);
 	p->sw.img[1] = resrcacq(imgs, "img/silversword-down.png", NULL);
-	p->sw.loc[0] = (Rect){
-		{ p->body.bbox.a.x, p->body.bbox.a.y - 32 },
-		{ p->body.bbox.b.x, p->body.bbox.b.y - 32 }
-	};
-	p->sw.loc[1] = (Rect){
-		{ p->body.bbox.a.x + 20, p->body.bbox.a.y },
-		{ p->body.bbox.b.x + 20, p->body.bbox.b.y }
-	};
+	mvsw(p);
 	p->sw.cur = -1;
 	p->sw.pow = 1;
 }
@@ -91,14 +86,7 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 	p->body.vel.x = olddx;
 	p->body.a.y = oldddy;
 
-	p->sw.loc[0] = (Rect){
-		{ p->body.bbox.a.x, p->body.bbox.a.y - 32 },
-		{ p->body.bbox.b.x, p->body.bbox.b.y - 32 }
-	};
-	p->sw.loc[1] = (Rect){
-		{ p->body.bbox.a.x + 20, p->body.bbox.a.y },
-		{ p->body.bbox.b.x + 20, p->body.bbox.b.y }
-	};
+	mvsw(p);
 
 	Anim **prevanim = p->anim;
 	chngdir(p);
@@ -262,4 +250,15 @@ static double run(Player *p){
 
 static double jmp(Player *p){
 	return p->dex;
+}
+
+static void mvsw(Player *p){
+	p->sw.loc[0] = (Rect){
+		{ p->body.bbox.a.x - 11, p->body.bbox.a.y - 32 },
+		{ p->body.bbox.b.x - 11, p->body.bbox.b.y - 32 }
+	};
+	p->sw.loc[1] = (Rect){
+		{ p->body.bbox.a.x + 20, p->body.bbox.a.y },
+		{ p->body.bbox.b.x + 20, p->body.bbox.b.y }
+	};
 }
