@@ -1,5 +1,11 @@
 #include "../../include/mid.h"
 
+struct Enemymt{
+	void (*free)(Enemy*);
+	void (*update)(Enemy*, Player*, Lvl*);
+	void (*draw)(Enemy*, Gfx*, Point tr);
+};
+
 static _Bool untiinit(Enemy *, int, int);
 static void untifree(Enemy*);
 static void untiupdate(Enemy*,Player*,Lvl*);
@@ -25,6 +31,18 @@ _Bool enemyinit(Enemy *e, unsigned char id, int x, int y){
 		return 0;
 
 	return spawns[id](e, x, y);
+}
+
+void enemyfree(Enemy *e){
+	if(e->mt) e->mt->free(e);
+}
+
+void enemyupdate(Enemy *e, Player *p, Lvl *l){
+	if(e->mt) e->mt->update(e, p, l);
+}
+
+void enemydraw(Enemy *e, Gfx *g, Point tr){
+	if(e->mt) e->mt->draw(e, g, tr);
 }
 
 static _Bool untiinit(Enemy *e, int x, int y){

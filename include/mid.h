@@ -370,12 +370,6 @@ _Bool playertake(Player *, Item *);
 typedef struct Enemy Enemy;
 typedef struct Enemymt Enemymt;
 
-struct Enemymt{
-	void (*free)(Enemy*);
-	void (*update)(Enemy*, Player*, Lvl*);
-	void (*draw)(Enemy*, Gfx*, Point tr);
-};
-
 struct Enemy{
 	Enemymt *mt;
 	Body b;
@@ -384,6 +378,9 @@ struct Enemy{
 };
 
 _Bool enemyinit(Enemy *, unsigned char id, int x, int y);
+void enemyfree(Enemy*);
+void enemyupdate(Enemy*, Player*, Lvl*);
+void enemydraw(Enemy*, Gfx*, Point);
 
 typedef enum ItemID ItemID;
 enum ItemID{
