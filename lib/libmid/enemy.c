@@ -34,7 +34,11 @@ _Bool enemyinit(Enemy *e, unsigned char id, int x, int y){
 }
 
 void enemyfree(Enemy *e){
-	if(e->mt) e->mt->free(e);
+	if(!e->mt)
+		return;
+	e->mt->free(e);
+	e->mt = 0;
+	e->hp = 0;
 }
 
 void enemyupdate(Enemy *e, Player *p, Lvl *l){

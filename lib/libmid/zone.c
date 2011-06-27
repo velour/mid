@@ -205,10 +205,8 @@ void zoneupdate(Zone *zn, Player *p, Point *tr)
 		if (!e[i].mt)
 			continue;
 		enemyupdate(&e[i], p, zn->lvl);
-		if(e[i].hp <= 0){
+		if(e[i].hp <= 0)
 			enemyfree(&e[i]);
-			e[i].mt = 0;
-		}
 	}
 }
 
