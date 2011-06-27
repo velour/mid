@@ -367,17 +367,22 @@ Rect playerbox(Player *);
 void playerdmg(Player *, int x);
 _Bool playertake(Player *, Item *);
 
-typedef struct Enemy Enemy;
-typedef struct Enemymt Enemymt;
+typedef enum EnemyID EnemyID;
+enum EnemyID{
+	EnemyNone,
+	EnemyUnti,
+	EnemyMax
+};
 
+typedef struct Enemy Enemy;
 struct Enemy{
-	Enemymt *mt;
+	EnemyID id;
 	Body b;
 	int hp;
 	void *data;
 };
 
-_Bool enemyinit(Enemy *, unsigned char id, int x, int y);
+_Bool enemyinit(Enemy *, EnemyID id, int x, int y);
 void enemyfree(Enemy*);
 void enemyupdate(Enemy*, Player*, Lvl*);
 void enemydraw(Enemy*, Gfx*, Point);

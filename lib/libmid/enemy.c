@@ -1,6 +1,8 @@
 #include "../../include/mid.h"
 
+typedef struct Enemymt Enemymt;
 struct Enemymt{
+	_Bool (*init)(Enemy*,int,int);
 	void (*free)(Enemy*);
 	void (*update)(Enemy*, Player*, Lvl*);
 	void (*draw)(Enemy*, Gfx*, Point tr);
@@ -10,44 +12,41 @@ static _Bool untiinit(Enemy *, int, int);
 static void untifree(Enemy*);
 static void untiupdate(Enemy*,Player*,Lvl*);
 static void untidraw(Enemy*,Gfx*,Point);
-static Enemymt untimt = {
-	untifree,
-	untiupdate,
-	untidraw,
+
+static Enemymt mt[] = {
+	[EnemyUnti] = { untiinit, untifree, untiupdate, untidraw },
 };
+
+_Bool enemyinit(Enemy *e, EnemyID id, int x, int y){
+	if(id >= 0 && id < EnemyMax)
+		return 0;
+
+	e->id = id;
+	return mt[id].init(e, x, y);
+}
+
+void enemyfree(Enemy *e){
+	if(!e->id)
+		return;
+	mt[e->id].free(e);
+	e->id = 0;
+	e->hp = 0;
+}
+
+void enemyupdate(Enemy *e, Player *p, Lvl *l){
+	if(e->id) mt[e->id].update(e, p, l);
+}
+
+void enemydraw(Enemy *e, Gfx *g, Point tr){
+	if(e->id) mt[e->id].draw(e, g, tr);
+}
+
 
 typedef struct Unti Unti;
 struct Unti{
 	Color c;
 	Img *img;
 };
-
-static _Bool (*spawns[])(Enemy*, int, int) = {
-	['u'] = untiinit,
-};
-
-_Bool enemyinit(Enemy *e, unsigned char id, int x, int y){
-	if(id >= sizeof(spawns)/sizeof(spawns[0]))
-		return 0;
-
-	return spawns[id](e, x, y);
-}
-
-void enemyfree(Enemy *e){
-	if(!e->mt)
-		return;
-	e->mt->free(e);
-	e->mt = 0;
-	e->hp = 0;
-}
-
-void enemyupdate(Enemy *e, Player *p, Lvl *l){
-	if(e->mt) e->mt->update(e, p, l);
-}
-
-void enemydraw(Enemy *e, Gfx *g, Point tr){
-	if(e->mt) e->mt->draw(e, g, tr);
-}
 
 static _Bool untiinit(Enemy *e, int x, int y){
 	bodyinit(&e->b, x * Twidth, y * Theight);
@@ -57,7 +56,6 @@ static _Bool untiinit(Enemy *e, int x, int y){
 	u->c = (Color){ 255, 55, 55, 255 };
 	u->img = resrcacq(imgs, "img/unti.png", 0);
 
-	e->mt = &untimt;
 	e->data = u;
 	return 1;
 }

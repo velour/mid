@@ -150,7 +150,7 @@ void zoneaddenemy(Zone *zn, int z, Enemy enm)
 	int i;
 	Enemy *enms = zn->enms[z];
 
-	for (i = 0; i < Maxenms && enms[i].mt; i++)
+	for (i = 0; i < Maxenms && enms[i].id; i++)
 		;
 	if (i == Maxenms)
 		fatal("Too many enemies");
@@ -202,7 +202,7 @@ void zoneupdate(Zone *zn, Player *p, Point *tr)
 
 	Enemy *e = zn->enms[z];
 	for(size_t i = 0; i < Maxenms; i++) {
-		if (!e[i].mt)
+		if (!e[i].id)
 			continue;
 		enemyupdate(&e[i], p, zn->lvl);
 		if(e[i].hp <= 0)
