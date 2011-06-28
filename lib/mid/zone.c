@@ -12,7 +12,6 @@ _Bool envprint(char *, size_t, Env *);
 
 static void readitem(char *buf, Zone *zn);
 static void readenv(char *buf, Zone *zn);
-static char *getzlayer(char *buf, int *z);
 static _Bool readl(char *buf, int sz, FILE *f);
 
 enum { Bufsz = 256 };
@@ -179,6 +178,56 @@ int zonelocs(Zone *zn, int z, _Bool (*p)(Zone *, int, Point), Point pts[], int s
 	}
 
 	return n;
+}
+
+_Bool zonefits(Zone *zn, int z, Point loc, Point wh)
+{
+	wh.x /= Twidth;
+	wh.y /= Theight;
+	for (int x = loc.x; x < (int) (loc.x + wh.x + 0.5); x++) {
+	for (int y = loc.y; y < (int) (loc.y + wh.y + 0.5); y++) {
+		int t = blk(zn->lvl, x, y, z)->tile;
+		if (t != ' ' && t != '.')
+			return false;
+	}
+	}
+	return true;
+}
+
+_Bool zoneonground(Zone *zn, int z, Point loc, Point wh)
+{
+	wh.x /= Twidth;
+	int y =	loc.y + wh.y / Theight;
+	for (int x = loc.x; x < (int) (loc.x + wh.x + 0.5); x++) {
+		if (blk(zn->lvl, x, y, z)->tile != '#')
+			return false;
+	}
+	return true;
+}
+
+_Bool zoneoverlap(Zone *zn, int z, Point loc, Point wh)
+{
+	loc.x *= Twidth;
+	loc.y *= Theight;
+	Rect r = (Rect) { loc, (Point) { loc.x + wh.x, loc.y + wh.y } };
+
+	for (int i = 0; i < Maxitms; i++) {
+		Item *it = &zn->itms[z][i];
+		if (it->id && isect(r, it->bod.bbox))
+			return true;
+	}
+	for (int i = 0; i < Maxenvs; i++) {
+		Env *en = &zn->envs[z][i];
+		if (en->id && isect(r, en->body.bbox))
+			return true;
+	}
+	for (int i = 0; i < Maxenms; i++) {
+		Enemy *en = &zn->enms[z][i];
+		if (en->id && isect(r, en->b.bbox))
+			return true;
+	}
+
+	return false;
 }
 
 void zoneupdate(Zone *zn, Player *p, Point *tr)
