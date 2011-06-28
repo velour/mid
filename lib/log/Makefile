@@ -1,6 +1,6 @@
 include ../../Make.inc
 
-LIB := liblog.a
+LIB := log.a
 OFILES :=\
 	log.o\
 

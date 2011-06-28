@@ -1,13 +1,15 @@
 include ../../Make.inc
 
 TARG := envnear
-LIB := ../../lib/libmid/libmid.a\
-	../../lib/liblog/liblog.a\
+LIB :=\
+	../../lib/mid/mid.a\
+	../../lib/log/log.a\
 
 OFILES :=\
 	envnear.o\
 
-HFILES := ../../include/mid.h\
+HFILES :=\
+	../../include/mid.h\
 	../../include/log.h\
 
 include ../../Make.cmd

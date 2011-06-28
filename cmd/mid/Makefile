@@ -2,10 +2,11 @@ include ../../Make.inc
 
 TARG := mid
 LIB :=\
-	../../lib/libmid/libmid.a\
-	../../lib/liblog/liblog.a\
+	../../lib/mid/mid.a\
+	../../lib/log/log.a\
 
-OFILES := main.o\
+OFILES :=\
+	main.o\
 	game.o\
 	invscr.o\
 	title.o\
@@ -13,7 +14,8 @@ OFILES := main.o\
 	statscrn.o\
 	death.o\
 
-HFILES := ../../include/mid.h\
+HFILES :=\
+	../../include/mid.h\
 	../../include/log.h\
 	game.h\
 

@@ -1,9 +1,10 @@
 include ../../Make.inc
 
 TARG := lvlgen
-LIB := ../../lib/libmid/libmid.a\
-	../../lib/liblog/liblog.a\
-	../../lib/librng/librng.a\
+LIB :=\
+	../../lib/mid/mid.a\
+	../../lib/log/log.a\
+	../../lib/rng/rng.a\
 
 OFILES :=\
 	lvlgen.o\
@@ -12,7 +13,8 @@ OFILES :=\
 	door.o\
 	water.o\
 
-HFILES := ../../include/mid.h\
+HFILES :=\
+	../../include/mid.h\
 	../../include/log.h\
 	../../include/rng.h\
 	lvlgen.h\

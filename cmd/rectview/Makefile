@@ -1,8 +1,9 @@
 include ../../Make.inc
 
 TARG := rectview
-LIB := ../../lib/libmid/libmid.a\
-	../../lib/liblog/liblog.a\
+LIB :=\
+	../../lib/mid/mid.a\
+	../../lib/log/log.a\
 
 OFILES :=\
 	main.o\

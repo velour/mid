@@ -1,6 +1,6 @@
 DIRS :=\
-	libmid\
-	liblog\
-	librng\
+	mid\
+	log\
+	rng\
 
 include ../Make.dir

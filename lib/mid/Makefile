@@ -1,6 +1,6 @@
 include ../../Make.inc
 
-LIB := libmid.a
+LIB := mid.a
 OFILES :=\
 	errstr.o\
 	event.o\

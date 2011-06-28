@@ -1,6 +1,6 @@
 include ../../Make.inc
 
-LIB := librng.a
+LIB := rng.a
 OFILES :=\
 	rng.o\
 
