@@ -107,12 +107,5 @@ static void buildpath(Lvl *lvl, Path *p, Loc loc)
 
 unsigned int rnd(int min, int max)
 {
-	assert (min >= 0);
-	assert (max > min);
-	unsigned int r = rngint(&rng);
-
-	if (min == 0)
-		return r % max;
-
-	return r % (max - min) + min;
+	return rngintincl(&rng, min, max);
 }
