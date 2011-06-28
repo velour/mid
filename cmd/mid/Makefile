@@ -1,9 +1,6 @@
 include ../../Make.inc
 
 TARG := mid
-LIB :=\
-	../../lib/mid/mid.a\
-	../../lib/log/log.a\
 
 OFILES :=\
 	main.o\

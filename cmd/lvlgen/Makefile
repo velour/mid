@@ -1,10 +1,6 @@
 include ../../Make.inc
 
 TARG := lvlgen
-LIB :=\
-	../../lib/mid/mid.a\
-	../../lib/log/log.a\
-	../../lib/rng/rng.a\
 
 OFILES :=\
 	lvlgen.o\

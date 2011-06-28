@@ -1,3 +1,7 @@
+LIB := $(LIB) $(shell echo $(HFILES) | \
+	sed -En 's|include/([a-z]+)\.h|lib/\1/\1\.a|gp' | \
+	sed -E 's|[a-z]+\.h||g')
+
 $(TARG): $(OFILES)
 	@echo ld -o $@ $^ $(LDFLAGS)
 	@$(LD) -o $@ $(MANDLDFLAGS) $(LDFLAGS) $^ $(LIB)

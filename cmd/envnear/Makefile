@@ -1,9 +1,6 @@
 include ../../Make.inc
 
 TARG := envnear
-LIB :=\
-	../../lib/mid/mid.a\
-	../../lib/log/log.a\
 
 OFILES :=\
 	envnear.o\
