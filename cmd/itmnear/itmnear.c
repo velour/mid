@@ -4,26 +4,30 @@
 
 enum { Startx = 2, Starty = 2 };
 
-static _Bool empty(Zone *, int, Point);
+static _Bool goodloc(Zone *, int, Point);
 static int cmp(const void*, const void*);
 
 int main(int argc, char *argv[])
 {
 	int id, num = 1;
 
+	loginit(NULL);
+
 	if (argc < 2 || argc > 3)
 		fatal("usage: itmnear <item ID> [<num>]");
-
 	id = strtol(argv[1], NULL, 10);
 	if (argc == 3)
 		num = strtol(argv[2], NULL, 10);
 
 	Zone *zn = zoneread(stdin);
+
 	int sz = zn->lvl->w * zn->lvl->h;
 	Point pts[sz];
-	int n = zonelocs(zn, 0, empty, pts, sz);
-	qsort(pts, n, sizeof(*pts), cmp);
+	int n = zonelocs(zn, 0, goodloc, pts, sz);
+	if (!n)
+		fatal("No available locations for item ID %d", id);
 
+	qsort(pts, n, sizeof(*pts), cmp);
 	for (int i = 0; i < num; i++) {
 		Item it;
 		iteminit(&it, id, pts[i]);
@@ -36,12 +40,12 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-static _Bool empty(Zone *zn, int z, Point pt)
+static _Bool goodloc(Zone *zn, int z, Point pt)
 {
 	return (pt.x != Startx || pt.y != Starty)
-		&& blk(zn->lvl, pt.x, pt.y, z)->tile == ' '
-		&& pt.y < zn->lvl->h - 1
-		&& blk(zn->lvl, pt.x, pt.y+1, z)->tile == '#';
+		&& zonefits(zn, z, pt, (Point) { Twidth, Theight })
+		&& zoneonground(zn, z, pt, (Point) { Twidth, Theight })
+		&& !zoneoverlap(zn, z, pt, (Point) { Twidth, Theight });
 }
 
 static int cmp(const void *_a, const void *_b)
