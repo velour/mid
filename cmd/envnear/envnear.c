@@ -5,15 +5,18 @@
 
 enum { Startx = 2, Starty = 2 };
 
-static _Bool fits(Zone *zn, int z, Point pt);
+static _Bool goodloc(Zone *zn, int z, Point pt);
 static void use(Lvl *l, int z, Point pt);
 static int cmp(const void*, const void*);
 
-Point size;
+Point wh;
+Rect start;
 
 int main(int argc, char *argv[])
 {
 	int id, num = 1;
+
+	loginit(NULL);
 
 	if (argc < 2 || argc > 3)
 		fatal("usage: envnear <env ID> [<num>]");
@@ -22,20 +25,22 @@ int main(int argc, char *argv[])
 	if (argc == 3)
 		num = strtol(argv[2], NULL, 10);
 
-	size = envsize(id);
-	size.x /= Twidth;
-	size.y /= Theight;
-
 	Zone *zn = zoneread(stdin);
+
+	wh = envsize(id);
+	start = (Rect) { (Point) { Startx * Twidth, Starty * Theight },
+		(Point) { (Startx+1) * Twidth, (Starty+1) * Theight } };
+
 	int sz = zn->lvl->w * zn->lvl->h;
 	Point pts[sz];
-	int n = zonelocs(zn, 0, fits, pts, sz);
-	qsort(pts, n, sizeof(*pts), cmp);
+	int n = zonelocs(zn, 0, goodloc, pts, sz);
+	if (!n)
+		fatal("No locations available to place env ID: %d\n", id);
 
+	qsort(pts, n, sizeof(*pts), cmp);
 	for (int i = 0; i < num; i++) {
 		Env env;
 		envinit(&env, id, pts[i]);
-		use(zn->lvl, 0, pts[i]);
 		zoneaddenv(zn, 0, env);
 	}
 
@@ -44,35 +49,14 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-static _Bool fits(Zone *zn, int z, Point pt)
+static _Bool goodloc(Zone *zn, int z, Point pt)
 {
-	for (int x = pt.x; x < pt.x + size.x; x++) {
-		if (x >= zn->lvl->w)
-			return 0;
-		int y;
-		for (y = pt.y; y < pt.y + size.y; y++) {
-			if ((x == Startx && y == Starty)
-			    || y >= zn->lvl->h
-			    || blk(zn->lvl, x, y, z)->tile != ' ')
-				return 0;
-		}
-		if (y >= zn->lvl->h)
-			return 0;
-		if (blk(zn->lvl, x, y, z)->tile != '#')
-			return 0;
-	}
-	return 1;
-}
-
-static void use(Lvl *l, int z, Point pt)
-{
-	for (int x = pt.x; x < pt.x + size.x / Twidth; x++) {
-		assert(x < l->w);
-		for (int y = pt.y; y < pt.y + size.y / Theight; y++) {
-			assert(y < l->h);
-			blk(l, x, y, z)->tile = '.';
-		}
-	}
+	Rect r = (Rect) { (Point) { pt.x * Twidth, pt.y * Theight },
+		(Point) { pt.x * Twidth + wh.x, pt.y * Theight + wh.y } };
+	return !isect(start, r)
+		&& zonefits(zn, z, pt, wh)
+		&& zoneonground(zn, z, pt, wh)
+		&& !zoneoverlap(zn, z, pt, wh);
 }
 
 static int cmp(const void *_a, const void *_b)
