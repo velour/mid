@@ -1,6 +1,6 @@
 $(TARG): $(OFILES)
 	@echo ld -o $@ $^ $(LDFLAGS)
-	@lod $(LD) -o $@ $(MANDLDFLAGS) $(LDFLAGS) $^ $(LIB)
+	@$(LD) -o $@ $(MANDLDFLAGS) $(LDFLAGS) $^ $(LIB)
 
 $(OFILES): $(HFILES) $(LIB)
 
