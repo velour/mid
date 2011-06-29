@@ -249,7 +249,7 @@ void lvluseshrine(Lvl *, int x, int y);
 
 enum { Theight = 32, Twidth = 32 };
 
-Blkinfo blkinfo(Lvl *l, int x, int y);
+Blkinfo blkinfo(Lvl *l, int x, int y, int z);
 /* Get the information on the dominant block that r is overlapping. */
 Blkinfo lvlmajorblk(Lvl *l, Rect r);
 

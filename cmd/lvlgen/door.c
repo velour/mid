@@ -35,7 +35,7 @@ static int doorlocs(Lvl *lvl, Path *p, Loc ls[], int sz)
 
 	for (int x = 0; x < lvl->w; x++) {
 	for (int y = 0; y < lvl->h - 1; y++) {
-		Blkinfo bi = blkinfo(lvl, x, y+1);
+		Blkinfo bi = blkinfo(lvl, x, y+1, lvl->z);
 		if (used(lvl, (Loc) {x, y}) && bi.flags & Tilecollide) {
 			if (i == sz)
 				fatal("Door loc array is too small");
