@@ -31,7 +31,6 @@ int main(int argc, char *argv[])
 	for (int i = 0; i < num; i++) {
 		Item it;
 		iteminit(&it, id, pts[i]);
-		blk(zn->lvl, pts[i].x, pts[i].y, 0)->tile = '.';
 		zoneadditem(zn, 0, it);
 	}
 
