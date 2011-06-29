@@ -10,7 +10,7 @@ ALLO += $(OFILES)
 
 LIBHFILES := $(LIBDEPS:%=include/%.h)
 
-LIBDEPS := $(shell echo $(LIBDEPS) | 9 sed 's|([a-z]+)|lib/\1/\1\.a|g')
+LIBDEPS := $(shell echo $(LIBDEPS) | awk '{ for(i = 1; i <= NF; i++) printf("lib/%s/%s.a ", $$i, $$i) }')
 
 HFILES := $(HFILES:%=lib/$(T)/%) $(LIBHFILES) include/$(T).h
 
