@@ -1,6 +1,7 @@
-include ../../Make.inc
+include Make.inc
 
-LIB := mid.a
+TARG := mid.a
+
 OFILES :=\
 	errstr.o\
 	event.o\
@@ -24,7 +25,6 @@ OFILES :=\
 	sword.o\
 
 HFILES :=\
-	../../include/mid.h\
 	fs.h\
 
-include ../../Make.lib
+include Make.lib

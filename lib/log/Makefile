@@ -1,10 +1,8 @@
-include ../../Make.inc
+include Make.inc
 
-LIB := log.a
+TARG := log.a
+
 OFILES :=\
 	log.o\
 
-HFILES :=\
-	../../include/mid.h\
-
-include ../../Make.lib
+include Make.lib

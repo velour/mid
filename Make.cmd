@@ -1,21 +1,21 @@
-LIB := $(LIB) $(shell echo $(HFILES) | \
-	sed -En 's|include/([a-z]+)\.h|lib/\1/\1\.a|gp' | \
-	sed -E 's|[a-z]+\.h||g')
+T := $(TARG)
 
-$(TARG): $(OFILES)
+TARG := cmd/$(T)/$(T)
+
+ALL += $(TARG)
+
+OFILES := $(OFILES:%=cmd/$(T)/%)
+
+ALLO += $(OFILES)
+
+LIBHFILES := $(LIBDEPS:%=include/%.h)
+
+LIBDEPS := $(shell echo $(LIBDEPS) | 9 sed 's|([a-z]+)|lib/\1/\1\.a|g')
+
+HFILES := $(HFILES:%=cmd/$(T)/%) $(LIBHFILES)
+
+$(TARG): $(OFILES) $(LIBDEPS)
 	@echo ld -o $@ $^ $(LDFLAGS)
-	@$(LD) -o $@ $(MANDLDFLAGS) $(LDFLAGS) $^ $(LIB)
+	$(LD) -o $@ $(MANDLDFLAGS) $(LDFLAGS) $^
 
-$(OFILES): $(HFILES) $(LIB)
-
-%.o: %.c
-	@echo cc $< $(CFLAGS)
-	@$(CC) -c $(MANDCFLAGS) $(CFLAGS) $<
-
-.PHONY: clean install
-
-clean:
-	rm -f *.o $(TARG)
-
-install: $(TARG)
-	cp $(TARG) /usr/local/bin
+$(OFILES): $(HFILES) $(LIBHFILES)

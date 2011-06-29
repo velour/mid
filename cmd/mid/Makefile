@@ -1,4 +1,4 @@
-include ../../Make.inc
+include Make.inc
 
 TARG := mid
 
@@ -12,8 +12,10 @@ OFILES :=\
 	death.o\
 
 HFILES :=\
-	../../include/mid.h\
-	../../include/log.h\
 	game.h\
 
-include ../../Make.cmd
+LIBDEPS :=\
+	mid\
+	log\
+
+include Make.cmd

@@ -1,10 +1,8 @@
-include ../../Make.inc
+include Make.inc
 
-LIB := rng.a
+TARG := rng.a
+
 OFILES :=\
 	rng.o\
 
-HFILES :=\
-	../../include/rng.h\
-
-include ../../Make.lib
+include Make.lib

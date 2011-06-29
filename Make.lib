@@ -1,15 +1,22 @@
-all: $(LIB)
+T := $(TARG:%.a=%)
 
-$(LIB): $(OFILES)
-	ar rsc $(LIB) $(OFILES)
+TARG := lib/$(T)/$(T).a
 
-%.o: %.c
-	@echo cc $< $(CFLAGS)
-	@$(CC) -c $(MANDCFLAGS) $(CFLAGS) $<
+ALL += $(TARG)
 
-$(OFILES): $(HFILES)
+OFILES := $(OFILES:%=lib/$(T)/%)
 
-.PHONY: clean
+ALLO += $(OFILES)
 
-clean:
-	rm -f *.o $(LIB)
+LIBHFILES := $(LIBDEPS:%=include/%.h)
+
+LIBDEPS := $(shell echo $(LIBDEPS) | 9 sed 's|([a-z]+)|lib/\1/\1\.a|g')
+
+HFILES := $(HFILES:%=lib/$(T)/%) $(LIBHFILES) include/$(T).h
+
+$(TARG): $(OFILES) $(LIBDEPS)
+	@echo OFILES: $(OFILES)
+	@echo LIBDEPS: $(LIBDEPS)
+	$(AR) rsc $@ $(OFILES)
+
+$(OFILES): $(HFILES) $(LIBHFILES)
