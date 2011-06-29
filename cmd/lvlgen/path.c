@@ -89,7 +89,7 @@ static bool segclr(Lvl *l, Seg s)
 		Loc blk = (Loc) { bp->x + s.l0.x, bp->y + s.l0.y };
 		if (blk.x < 0 || blk.x >= l->w || blk.y < 0 || blk.y >= l->h)
 			return false;
-		Blkinfo b = blkinfo(l, blk.x, blk.y);
+		Blkinfo b = blkinfo(l, blk.x, blk.y, l->z);
 		if (b.flags & Tilecollide)
 			return false;
 	}

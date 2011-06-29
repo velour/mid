@@ -186,8 +186,8 @@ _Bool zonefits(Zone *zn, int z, Point loc, Point wh)
 	wh.y /= Theight;
 	for (int x = loc.x; x < (int) (loc.x + wh.x + 0.5); x++) {
 	for (int y = loc.y; y < (int) (loc.y + wh.y + 0.5); y++) {
-		int t = blk(zn->lvl, x, y, z)->tile;
-		if (t != ' ' && t != '.')
+		Blkinfo bi = blkinfo(zn->lvl, x, y, z);
+		if (bi.flags & Tilecollide)
 			return false;
 	}
 	}

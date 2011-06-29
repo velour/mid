@@ -386,14 +386,14 @@ Blkinfo lvlmajorblk(Lvl *l, Rect r)
 	r = rectnorm(r);
 	double xmid = (r.b.x + r.a.x) / 2;
 	double ymid = (r.b.y + r.a.y) / 2;
-	return blkinfo(l, xmid / Twidth, ymid / Theight);
+	return blkinfo(l, xmid / Twidth, ymid / Theight, l->z);
 }
 
-Blkinfo blkinfo(Lvl *l, int x, int y)
+Blkinfo blkinfo(Lvl *l, int x, int y, int z)
 {
 	int t = blk(l, x, y, l->z)->tile;
 	assert (tiles[t]);
-	return (Blkinfo) { .x = x, .y = y, .z = l->z, .flags = tiles[t]->flags };
+	return (Blkinfo) { .x = x, .y = y, .z = z, .flags = tiles[t]->flags };
 }
 
 static void swap(int *a, int *b)
