@@ -20,3 +20,8 @@
 * Add enemies to level description?
 
 * Death. When you die, lose a random item and a stat point. 3 strikes and you're permadead.
+
+* Separate Tilecollide from some future flag Tilevisible.  This will easily allow us to add things like grates or windows.
+
+* Add small rooms with doors. lvlgen can add these rooms (marking entry with 'd') and itmgen must make sure to add the keys.
+	Maybe doors could be an env?
