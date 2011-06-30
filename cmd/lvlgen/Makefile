@@ -1,4 +1,4 @@
-include ../../Make.inc
+include Make.inc
 
 TARG := lvlgen
 
@@ -10,9 +10,11 @@ OFILES :=\
 	water.o\
 
 HFILES :=\
-	../../include/mid.h\
-	../../include/log.h\
-	../../include/rng.h\
 	lvlgen.h\
 
-include ../../Make.cmd
+LIBDEPS :=\
+	mid\
+	log\
+	rng\
+
+include Make.cmd

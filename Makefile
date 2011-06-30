@@ -1,5 +1,10 @@
 CMDS :=\
 	mid\
+	enmnear\
+	envnear\
+	itmnear\
+	lvlgen\
+	rectview\
 
 LIBS :=\
 	mid\

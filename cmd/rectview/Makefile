@@ -1,11 +1,11 @@
-include ../../Make.inc
+include Make.inc
 
 TARG := rectview
 
 OFILES :=\
 	main.o\
 
-HFILES :=\
-	../../include/mid.h\
+LIBDEPS :=\
+	mid\
 
-include ../../Make.cmd
+include Make.cmd

@@ -1,12 +1,12 @@
-include ../../Make.inc
+include Make.inc
 
 TARG := itmnear
 
 OFILES :=\
 	itmnear.o\
 
-HFILES :=\
-	../../include/mid.h\
-	../../include/log.h\
+LIBDEPS :=\
+	mid\
+	log\
 
-include ../../Make.cmd
+include Make.cmd
