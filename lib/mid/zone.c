@@ -9,9 +9,13 @@ _Bool itemscan(char *, Item *);
 _Bool itemprint(char *, size_t, Item *);
 _Bool envscan(char *, Env *);
 _Bool envprint(char *, size_t, Env *);
+_Bool enemyscan(char *, Enemy *);
+_Bool enemyprint(char *, size_t, Enemy *);
+
 
 static void readitem(char *buf, Zone *zn);
 static void readenv(char *buf, Zone *zn);
+static void readenemy(char *buf, Zone *zn);
 static _Bool readl(char *buf, int sz, FILE *f);
 
 enum { Bufsz = 256 };
@@ -19,7 +23,7 @@ enum { Bufsz = 256 };
 Zone *zoneread(FILE *f)
 {
 	char buf[Bufsz];
-	int itms = 0, envs = 0;
+	int itms = 0, envs = 0, enms = 0;
 
 	Zone *zn = xalloc(1, sizeof(*zn));
 	zn->lvl = lvlread(f);
@@ -39,7 +43,9 @@ Zone *zoneread(FILE *f)
 			envs++;
 			break;
 		case 'n':
-			fatal("Reading enemies is not yet implemented");
+			readenemy(buf+1, zn);
+			enms++;
+			break;
 		default:
 			fatal("Unexpected input line: [%s]", buf);
 		}
@@ -48,6 +54,7 @@ Zone *zoneread(FILE *f)
 	if (debugging) {
 		pr("Loaded %d items", itms);
 		pr("Loaded %d envs", envs);
+		pr("Loaded %d enemies", enms);
 	}
 
 	return zn;
@@ -77,6 +84,19 @@ static void readenv(char *buf, Zone *zn)
 	if (!ok)
 		fatal("Failed to scan env [%s]", buf);
 	zoneaddenv(zn, z, env);
+}
+
+static void readenemy(char *buf, Zone *zn)
+{
+	int z, n;
+	if (sscanf(buf, "%d%n", &z, &n) != 1)
+		fatal("Failed to scan enemy's z layer");
+
+	Enemy en;
+	_Bool ok = enemyscan(buf+n, &en);
+	if (!ok)
+		fatal("Failed to scan item [%s]", buf);
+	zoneaddenemy(zn, z, en);
 }
 
 static _Bool readl(char *buf, int sz, FILE *f)
@@ -114,6 +134,14 @@ void zonewrite(FILE *f, Zone *zn)
 			char buf[Bufsz];
 			envprint(buf, Bufsz, &envs[i]);
 			fprintf(f, "e %d %s\n", z, buf);
+		}
+		Enemy *enms = zn->enms[z];
+		for (int i = 0; i < Maxenms; i++) {
+			if (!enms[i].id)
+				continue;
+			char buf[Bufsz];
+			enemyprint(buf, Bufsz, &enms[i]);
+			fprintf(f, "n %d %s\n", z, buf);
 		}
 	}
 }

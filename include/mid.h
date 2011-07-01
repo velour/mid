@@ -382,7 +382,6 @@ struct Enemy{
 	void *data;
 };
 
-_Bool enemyinit(Enemy *, EnemyID id, int x, int y);
 void enemyfree(Enemy*);
 void enemyupdate(Enemy*, Player*, Lvl*);
 void enemydraw(Enemy*, Gfx*, Point);

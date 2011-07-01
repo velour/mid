@@ -3,13 +3,14 @@
 #include "../../include/log.h"
 #include "game.h"
 
-enum { Bufsz = 128 };
+enum { Bufsz = 256 };
 
 static const char *lvlpipe =
 "cmd/lvlgen/lvlgen %d %d %d %d\
  | cmd/itmnear/itmnear 1 1\
  | cmd/itmnear/itmnear 2 5\
- | cmd/envnear/envnear 1";
+ | cmd/envnear/envnear 1\
+ | cmd/enmnear/enmnear 1";
 
 Zone *zonegen(int w, int h, int d, int sd)
 {

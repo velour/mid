@@ -77,12 +77,12 @@ static void shrusedact(Env *e, Player *p, Lvl *l){
 	// nothing
 }
 
-void envprint(char *buf, size_t sz, Env *env)
+_Bool envprint(char *buf, size_t sz, Env *env)
 {
-	printgeom(buf, sz, "dyb", env->id, env->body, env->gotit);
+	return printgeom(buf, sz, "dyb", env->id, env->body, env->gotit);
 }
 
-void envscan(char *buf, Env *env)
+_Bool envscan(char *buf, Env *env)
 {
-	scangeom(buf, "dyb", &env->id, &env->body, &env->gotit);
+	return scangeom(buf, "dyb", &env->id, &env->body, &env->gotit);
 }
