@@ -3,6 +3,7 @@ CMDS :=\
 	enmnear\
 	envnear\
 	itmnear\
+	itmgen\
 	lvlgen\
 	rectview\
 

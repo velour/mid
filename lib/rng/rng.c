@@ -26,8 +26,11 @@ uint64_t rngint(Rng *r)
 
 uint64_t rngintincl(Rng *r, uint64_t min, uint64_t max)
 {
+	if (min == max)
+		return min;
+
 	assert(min >= 0);
-	assert(min < max);
+	assert(min <= max);
 
 	return rngint(r) % (max - min) + min;
 }

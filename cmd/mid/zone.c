@@ -7,8 +7,8 @@ enum { Bufsz = 256 };
 
 static const char *lvlpipe =
 "cmd/lvlgen/lvlgen %d %d %d %d\
- | cmd/itmnear/itmnear 1 1\
- | cmd/itmnear/itmnear 2 5\
+ | cmd/itmgen/itmgen %d 1\
+ | cmd/itmgen/itmgen %d 50\
  | cmd/envnear/envnear 1\
  | cmd/enmnear/enmnear 1";
 
@@ -16,7 +16,7 @@ Zone *zonegen(int w, int h, int d, int sd)
 {
 	char cmd[Bufsz];
 
-	int n = snprintf(cmd, Bufsz, lvlpipe, w, h, d, sd);
+	int n = snprintf(cmd, Bufsz, lvlpipe, w, h, d, sd, ItemStatup, ItemCopper);
 	assert(n < Bufsz);
 	if (debugging)
 		pr("lvlgen pipeline: [%s]", cmd);
