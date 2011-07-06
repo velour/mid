@@ -1,27 +1,30 @@
+* Items may not be placed if they are in a 'full' z-layer.  Fix this so that
+itmgen fails if an item can''t be placed.
+
 * Use rectcontains in the inventory screen.
 
 * Keep current level in memory.  Non-current levels stored on disk in
-  same format used by the lvlgen pipeline.
+same format used by the lvlgen pipeline.
 
 * Different sized bodies... currently only 32x32.
 
-* Inventory
-  Probably need a bunch of code for displaying the inventory:
-  - selecting items
-  - scrolling?
-  - viewing item descriptions?
+* Inventory Probably need a bunch of code for displaying the inventory:
+** selecting items - scrolling?  - viewing item descriptions?
 
-* Stats, exp, etc.
-  - very small number of stats... only ones that make sense
+* Stats, exp, etc.  - very small number of stats... only ones that
+make sense
 
-* Hard-coded resource path gets in the way if you want to run mid from its
-  subdir, or ever install it…  (Just need to add to the roots array).
+* Hard-coded resource path gets in the way if you want to run mid from
+its subdir, or ever install it…  (Just need to add to the roots array).
 
 * Add enemies to level description?
 
-* Death. When you die, lose a random item and a stat point. 3 strikes and you're permadead.
+* Death. When you die, lose a random item and a stat point. 3 strikes
+and you're permadead.
 
-* Separate Tilecollide from some future flag Tilevisible.  This will easily allow us to add things like grates or windows.
+* Separate Tilecollide from some future flag Tilevisible.  This will
+easily allow us to add things like grates or windows.
 
-* Add small rooms with doors. lvlgen can add these rooms (marking entry with 'd') and itmgen must make sure to add the keys.
-	Maybe doors could be an env?
+* Add small rooms with doors. lvlgen can add these rooms (marking entry
+with 'd') and itmgen must make sure to add the keys.  Maybe doors could
+be an env?
