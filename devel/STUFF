@@ -8,12 +8,6 @@ same format used by the lvlgen pipeline.
 
 * Different sized bodies... currently only 32x32.
 
-* Inventory Probably need a bunch of code for displaying the inventory:
-** selecting items - scrolling?  - viewing item descriptions?
-
-* Stats, exp, etc.  - very small number of stats... only ones that
-make sense
-
 * Hard-coded resource path gets in the way if you want to run mid from
 its subdir, or ever install it…  (Just need to add to the roots array).
 
