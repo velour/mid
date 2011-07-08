@@ -58,7 +58,9 @@ void gamedraw(Scrn *s, Gfx *g)
 
 	gfxclear(g, (Color){ 0, 0, 0, 0 });
 
-	zonedraw(g, gm->zone, &gm->player, gm->transl);
+	cammove(g, gm->transl.x, gm->transl.y);
+
+	zonedraw(g, gm->zone, &gm->player);
 
 	Rect hp = { { 1, 1 }, { gm->player.stats[StatHp] * 5, 16 } };
 	Rect curhp = hp;

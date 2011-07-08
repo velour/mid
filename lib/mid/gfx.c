@@ -8,6 +8,7 @@
 struct Gfx{
 	SDL_Window *win;
 	SDL_Renderer *rend;
+	Point tr;
 };
 
 static Gfx gfx;
@@ -224,3 +225,34 @@ static Img *vtxt2img(Gfx *g, Txt *t, const char *fmt, va_list ap)
 	return i;
 }
 
+void cammove(Gfx *g, double dx, double dy){
+	g->tr.x += dx;
+	g->tr.y += dy;
+}
+
+void camdrawrect(Gfx *g, Rect r, Color c){
+	r.a = vecadd(r.a, g->tr);
+	r.b = vecadd(r.b, g->tr);
+	gfxdrawrect(g, r, c);
+}
+
+void camfillrect(Gfx *g, Rect r, Color c){
+	r.a = vecadd(r.a, g->tr);
+	r.b = vecadd(r.b, g->tr);
+	gfxfillrect(g, r, c);
+}
+
+void camdrawimg(Gfx *g, Img *i, Point p){
+	p = vecadd(p, g->tr);
+	imgdraw(g, i, p);
+}
+
+void camdrawreg(Gfx *g, Img *i, Rect c, Point p){
+	p = vecadd(p, g->tr);
+	imgdrawreg(g, i, c, p);
+}
+
+void camdrawanim(Gfx *g, Anim *a, Point p){
+	p = vecadd(p, g->tr);
+	animdraw(g, a, p);
+}

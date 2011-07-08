@@ -1,5 +1,5 @@
 #include "../../include/mid.h"
 
-void sworddraw(Gfx *g, Sword *s, Point tr){
-	imgdraw(g, s->img[s->cur], vecadd(s->loc[s->cur].a, tr));
+void sworddraw(Gfx *g, Sword *s){
+	camdrawimg(g, s->img[s->cur], s->loc[s->cur].a);
 }

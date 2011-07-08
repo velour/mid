@@ -94,6 +94,15 @@ Img *txt2img(Gfx *, Txt *, const char *fmt, ...);
 // Prefer txt2img to this for static text
 Point txtdraw(Gfx *, Txt *, Point, const char *fmt, ...);
 
+typedef struct Anim Anim;
+
+void cammove(Gfx *, double dx, double dy);
+void camdrawrect(Gfx *, Rect, Color);
+void camfillrect(Gfx *, Rect, Color);
+void camdrawimg(Gfx *, Img *, Point);
+void camdrawreg(Gfx *, Img *, Rect, Point);
+void camdrawanim(Gfx *, Anim *, Point);
+
 _Bool sndinit(void);
 void sndfree(void);
 
@@ -200,7 +209,6 @@ extern Rtab *sfx;
 void initresrc(void);
 void freeresrc(void);
 
-typedef struct Anim Anim;
 struct Anim{
 	Img *sheet;
 	int row, len;
@@ -232,7 +240,7 @@ void lvlwrite(FILE *, Lvl *);
 void lvlfree(Lvl *);
 _Bool lvlinit();
 void lvlupdate(Lvl *l);
-void lvldraw(Gfx *g, Lvl *l, _Bool bkgrnd, Point offs);
+void lvldraw(Gfx *g, Lvl *l, _Bool bkgrnd);
 void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale);
 /* Returns the reverse vector that must be added to v in order to
  * respect collisions. */
@@ -315,7 +323,7 @@ struct Sword{
 	int pow;
 };
 
-void sworddraw(Gfx*, Sword*, Point tr);
+void sworddraw(Gfx*, Sword*);
 
 typedef enum Act Act;
 enum Act {
@@ -367,7 +375,7 @@ struct Player {
 
 void playerinit(Player *p, int x, int y);
 void playerupdate(Player *, Lvl *l, Point *tr);
-void playerdraw(Gfx *, Player *, Point tr);
+void playerdraw(Gfx *, Player *);
 void playerhandle(Player *, Event *);
 Point playerpos(Player *);
 Rect playerbox(Player *);
@@ -391,7 +399,7 @@ struct Enemy{
 
 void enemyfree(Enemy*);
 void enemyupdate(Enemy*, Player*, Lvl*);
-void enemydraw(Enemy*, Gfx*, Point);
+void enemydraw(Enemy*, Gfx*);
 
 typedef enum ItemID ItemID;
 enum ItemID{
@@ -411,7 +419,7 @@ _Bool itemldresrc();
 _Bool iteminit(Item*, ItemID id, Point p);
 void itemupdateanims(void);
 void itemupdate(Item*, Player*, Lvl*);
-void itemdraw(Item*, Gfx*, Point tr);
+void itemdraw(Item*, Gfx*);
 void iteminvdraw(Item*, Gfx*, Point p);
 char *itemname(Item*);
 
@@ -434,7 +442,7 @@ _Bool envldresrc();
 _Bool envinit(Env*, EnvID, Point);
 void envupdateanims(void);
 void envupdate(Env*, Lvl*);
-void envdraw(Env*,  Gfx*, Point tr);
+void envdraw(Env*,  Gfx*);
 void envact(Env*, Player*, Lvl*);
 Point envsize(EnvID);
 
@@ -460,7 +468,7 @@ void zonefree(Zone *);
 void zoneadditem(Zone *zn, int z, Item it);
 void zoneaddenv(Zone *zn, int z, Env env);
 void zoneaddenemy(Zone *zn, int z, Enemy enm);
-void zonedraw(Gfx *g, Zone *zn, Player *p, Point tr);
+void zonedraw(Gfx *g, Zone *zn, Player *p);
 void zoneupdate(Zone *zn, Player *p, Point *tr);
 
 /* Fills the array with locations that pass the given predicate. */

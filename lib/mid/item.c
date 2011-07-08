@@ -71,11 +71,10 @@ void itemupdate(Item *i, Player *p, Lvl *l){
 	ops[i->id].update(i, p, l);
 }
 
-void itemdraw(Item *i, Gfx *g, Point tr){
+void itemdraw(Item *i, Gfx *g){
 	if(i->gotit)
 		return;
-	Point pt = { i->bod.bbox.a.x + tr.x, i->bod.bbox.a.y + tr.y };
-	animdraw(g, &ops[i->id].anim, pt);
+	camdrawanim(g, &ops[i->id].anim, i->bod.bbox.a);
 }
 
 void iteminvdraw(Item *i, Gfx *g, Point p){

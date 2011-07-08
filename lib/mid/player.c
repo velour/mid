@@ -121,21 +121,16 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 		p->sw.cur = -1;
 }
 
-void playerdraw(Gfx *g, Player *p, Point tr)
+void playerdraw(Gfx *g, Player *p)
 {
-	if(debugging){
-		Rect bbox = p->body.bbox;
-		rectmv(&bbox, tr.x, tr.y);
-		gfxfillrect(g, bbox, (Color){255,0,0,255});
-	}
+	if(debugging)
+		camfillrect(g, p->body.bbox, (Color){255,0,0,255});
 
-	if(p->iframes % 4 == 0){
-		Point pt = { p->imgloc.x + tr.x, p->imgloc.y + tr.y };
-		animdraw(g, &p->anim[p->act], pt);
-	}
+	if(p->iframes % 4 == 0)
+		camdrawanim(g, &p->anim[p->act], p->imgloc);
 
 	if(p->sw.cur >= 0)
-		sworddraw(g, &p->sw, tr);
+		sworddraw(g, &p->sw);
 }
 
 void playerhandle(Player *p, Event *e)
@@ -236,22 +231,23 @@ static void chngact(Player *p)
 }
 
 static Point scroll(Player *p, Point delta, Point tr){
+	Point ntr = {0};
 	double dx = delta.x;
 	double dy = delta.y;
 
 	p->imgloc.x += dx;
 	p->imgloc.y += dy;
 
-	double imgx = p->imgloc.x + tr.x;
-	double imgy = p->imgloc.y + tr.y;
+	double imgx = p->imgloc.x;
+	double imgy = p->imgloc.y;
 
 	if((dx < 0 && imgx < Scrlbuf) || (dx > 0 && imgx > Scrnw - Scrlbuf))
-		tr.x -= dx;
+		ntr.x = -dx;
 
 	if((dy > 0 && imgy > Scrnh - Scrlbuf) || (dy < 0 && imgy < Scrlbuf))
-		tr.y -= dy;
+		ntr.y = -dy;
 
-	return tr;
+	return ntr;
 }
 
 static double run(Player *p){

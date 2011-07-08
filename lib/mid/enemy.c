@@ -5,7 +5,7 @@ struct Enemymt{
 	_Bool (*init)(Enemy *, int, int);
 	void (*free)(Enemy*);
 	void (*update)(Enemy*, Player*, Lvl*);
-	void (*draw)(Enemy*, Gfx*, Point tr);
+	void (*draw)(Enemy*, Gfx*);
 	_Bool (*scan)(char *, Enemy *);
 	_Bool (*print)(char *, size_t, Enemy *);
 };
@@ -13,7 +13,7 @@ struct Enemymt{
 static _Bool untiinit(Enemy *e, int x, int y);
 static void untifree(Enemy*);
 static void untiupdate(Enemy*,Player*,Lvl*);
-static void untidraw(Enemy*,Gfx*,Point);
+static void untidraw(Enemy*,Gfx*);
 static _Bool untiscan(char *buf, Enemy *e);
 static _Bool untiprint(char *buf, size_t sz, Enemy *e);
 
@@ -47,8 +47,8 @@ void enemyupdate(Enemy *e, Player *p, Lvl *l){
 	if(e->id) mt[e->id].update(e, p, l);
 }
 
-void enemydraw(Enemy *e, Gfx *g, Point tr){
-	if(e->id) mt[e->id].draw(e, g, tr);
+void enemydraw(Enemy *e, Gfx *g){
+	if(e->id) mt[e->id].draw(e, g);
 }
 
 
@@ -92,15 +92,11 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 	u->c.r++;
 }
 
-static void untidraw(Enemy *e, Gfx *g, Point tr){
+static void untidraw(Enemy *e, Gfx *g){
 	Unti *u = e->data;
 
-	Rect r = {
-		{e->b.bbox.a.x + tr.x, e->b.bbox.a.y + tr.y},
-		{e->b.bbox.b.x + tr.x, e->b.bbox.b.y + tr.y}
-	};
 	//gfxfillrect(g, r, u->c);
-	imgdraw(g, u->img, (Point){r.a.x, r.a.y});
+	camdrawimg(g, u->img, e->b.bbox.a);
 }
 
 static _Bool untiscan(char *buf, Enemy *e)

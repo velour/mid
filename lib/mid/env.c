@@ -72,9 +72,8 @@ void envupdate(Env *e, Lvl *l){
 	bodyupdate(&e->body, l);
 }
 
-void envdraw(Env *e, Gfx *g, Point tr){
-	Point pt = { e->body.bbox.a.x + tr.x, e->body.bbox.a.y + tr.y };
-	animdraw(g, &ops[e->id].anim, pt);
+void envdraw(Env *e, Gfx *g){
+	camdrawanim(g, &ops[e->id].anim, e->body.bbox.a);
 }
 
 void envact(Env *e, Player *p, Lvl *l){

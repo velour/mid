@@ -205,11 +205,11 @@ static Rect tilebbox(int x, int y)
 	return (Rect){ .a = a, .b = b };
 }
 
-void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
+void lvldraw(Gfx *g, Lvl *l, bool bkgrnd)
 {
 	int w = l->w, h = l->h;
 	for (int x = 0; x < w; x++){
-		int pxx = offs.x + x * Twidth;
+		int pxx = x * Twidth;
 		for (int y = 0; y < h; y++) {
 			Blk *b = blk(l, x, y, l->z);
 			int vis = b->flags & Blkvis;
@@ -221,20 +221,18 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 			if (vis || debugging >= 2) {
 				int mn = bkgrnd ? 0 : (Tlayers-1) / 2 + 1;
 				int mx = bkgrnd ? (Tlayers-1) / 2 : Tlayers-1;
-				pt = (Point){ pxx, offs.y + y * Theight };
+				pt = (Point){ pxx, y * Theight };
 				tiledrawlyrs(g, t, pt, mn, mx);
 			}
 			if (!bkgrnd) {
 				if(debugging >= 2){
 					Rect r = tilebbox(x, y);
-					rectmv(&r, offs.x, offs.y);
-					gfxdrawrect(g, r, (Color){0,0,0,255});
+					camdrawrect(g, r, (Color){0,0,0,255});
 					continue;
 				}
 				if (!vis) {
 					Rect r = tilebbox(x, y);
-					rectmv(&r, offs.x, offs.y);
-					gfxfillrect(g, r, (Color){0,0,0,255});
+					camfillrect(g, r, (Color){0,0,0,255});
 				} else if (vis && isshaded(l, t, x, y)) {
 					shade(g, pt);
 				}
@@ -250,7 +248,7 @@ static void tiledraw(Gfx *g, int t, Point pt, int l)
 	if (!tiles[t]->anims[l].sheet)
 		tiles[t]->anims[l].sheet = tisht;
 	assert(tiles[t]->anims[l].sheet != NULL);
-	animdraw(g, &tiles[t]->anims[l], pt);
+	camdrawanim(g, &tiles[t]->anims[l], pt);
 }
 
 static void tiledrawlyrs(Gfx *g, int t, Point pt, int mn, int mx)
@@ -279,7 +277,7 @@ static bool isvis(Lvl *l, int x, int y)
 
 static void shade(Gfx *g, Point pt)
 {
-	imgdraw(g, shdimg, pt);
+	camdrawimg(g, shdimg, pt);
 }
 
 void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale)

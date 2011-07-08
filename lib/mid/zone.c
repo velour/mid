@@ -287,27 +287,27 @@ void zoneupdate(Zone *zn, Player *p, Point *tr)
 	}
 }
 
-void zonedraw(Gfx *g, Zone *zn, Player *p, Point tr)
+void zonedraw(Gfx *g, Zone *zn, Player *p)
 {
 	int z = zn->lvl->z;
 
-	lvldraw(g, zn->lvl, true, tr);
+	lvldraw(g, zn->lvl, true);
 
 	Env *en = zn->envs[z];
 	for(size_t i = 0; i < Maxenvs; i++)
-		if (en[i].id) envdraw(&en[i], g, tr);
+		if (en[i].id) envdraw(&en[i], g);
 
-	playerdraw(g, p, tr);
+	playerdraw(g, p);
 
 	Item *itms = zn->itms[z];
 	for(size_t i = 0; i < Maxitms; i++)
-		if (itms[i].id) itemdraw(&itms[i], g, tr);
+		if (itms[i].id) itemdraw(&itms[i], g);
 
 	Enemy *e = zn->enms[z];
 	for(size_t i = 0; i < Maxenms; i++)
-		enemydraw(&e[i], g, tr);
+		enemydraw(&e[i], g);
 
-	lvldraw(g, zn->lvl, false, tr);
+	lvldraw(g, zn->lvl, false);
 
 }
 
