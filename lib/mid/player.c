@@ -9,7 +9,7 @@ static Img *plsh;
 static void loadanim(Anim *a, int, int, int);
 static void chngdir(Player *b);
 static void chngact(Player *b);
-static Point scroll(Player*, Point delta, Point transl);
+static Point scroll(Player*, Point delta);
 static double run(Player *);
 static double jmp(Player *);
 static void mvsw(Player *);
@@ -104,7 +104,7 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 		animupdate(&p->anim[p->act]);
 
 	Point del = { playerpos(p).x - ppos.x, playerpos(p).y - ppos.y };
-	*tr = scroll(p, del, *tr);
+	*tr = scroll(p, del);
 
 	if(p->jframes > 0)
 		p->jframes--;
@@ -230,7 +230,7 @@ static void chngact(Player *p)
 		p->act = Stand;
 }
 
-static Point scroll(Player *p, Point delta, Point tr){
+static Point scroll(Player *p, Point delta){
 	Point ntr = {0};
 	double dx = delta.x;
 	double dy = delta.y;
