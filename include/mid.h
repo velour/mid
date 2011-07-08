@@ -266,8 +266,8 @@ static inline Blk *blk(Lvl *l, int x, int y, int z)
 }
 
 
-float blkgrav(int flags);
-float blkdrag(int flags);
+double blkgrav(int flags);
+double blkdrag(int flags);
 
 /* Update the visibility of the level given that the player is viewing
  * the level from location (x, y). */

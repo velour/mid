@@ -236,8 +236,8 @@ static void chngact(Player *p)
 }
 
 static Point scroll(Player *p, Point delta, Point tr){
-	float dx = delta.x;
-	float dy = delta.y;
+	double dx = delta.x;
+	double dy = delta.y;
 
 	p->imgloc.x += dx;
 	p->imgloc.y += dy;

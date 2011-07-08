@@ -490,20 +490,20 @@ static bool blkd(Lvl *l, int x, int y)
 	return tiles[t]->flags & Tilecollide;
 }
 
-float blkgrav(int flags)
+double blkgrav(int flags)
 {
 	if(flags & Tilewater)
-		return 0.5f * Grav;
+		return 0.5 * Grav;
 	else
 		return Grav;
 }
 
-float blkdrag(int flags)
+double blkdrag(int flags)
 {
 	if(flags & Tilewater)
-		return 0.7f;
+		return 0.7;
 	else
-		return 1.0f;
+		return 1.0;
 }
 
 void lvluseshrine(Lvl *l, int x, int y)
