@@ -419,11 +419,6 @@ static void swap(int *a, int *b)
 	*b = t;
 }
 
-/*
- * Based on Bresenham's line algorithm: Rasterize a line from the
- * location (x0, y0) to (x1, y1).  Set rasterized blocks to visible,
- * stop when the line is finished or when a collidable block was hit.
- */
 /* Update the visibility of the level given that the player is viewing
  * the level from location (x, y).  This works by rasterizing
  * 'visibility lines' from (x,y) to each block on the convex hull of
@@ -443,6 +438,11 @@ void lvlvis(Lvl *l, int x, int y)
 	}
 }
 
+/*
+ * Based on Bresenham's line algorithm: Rasterize a line from the
+ * location (x0, y0) to (x1, y1).  Set rasterized blocks to visible,
+ * stop when the line is finished or when a collidable block was hit.
+ */
 static void visline(Lvl *l, int x0, int y0, int x1, int y1)
 {
 	bool steep = abs(y1 - y0) > abs(x1 - x0);
