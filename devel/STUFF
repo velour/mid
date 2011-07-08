@@ -1,6 +1,3 @@
-* Items may not be placed if they are in a 'full' z-layer.  Fix this so that
-itmgen fails if an item can''t be placed.
-
 * Use rectcontains in the inventory screen.
 
 * Keep current level in memory.  Non-current levels stored on disk in

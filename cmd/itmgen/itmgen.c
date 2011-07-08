@@ -7,7 +7,14 @@
 
 enum { Startx = 2, Starty = 2 };
 
+typedef struct Loc {
+	Point p;
+	int z;
+} Loc;
+
+static Rng rnginit(void);
 static int idargs(int argc, char *argv[], int **ids);
+static int locs(Zone *, Loc []);
 static _Bool goodloc(Zone *, int, Point);
 
 int main(int argc, char *argv[])
@@ -24,51 +31,42 @@ int main(int argc, char *argv[])
 	if (num == LLONG_MIN || num == LLONG_MAX)
 			fatal("Invalid number: %s", argv[argc-1]);
 
-	Rng r;
-	struct tms tm;
-	clock_t seed = times(&tm);
-	pr("itmgen seed = %lu", (unsigned long) seed);
-	rngini(&r, seed);
-
+	Rng r = rnginit();
 	Zone *zn = zoneread(stdin);
+	Loc ls[zn->lvl->d * zn->lvl->w * zn->lvl->h];
+	int nls = locs(zn, ls);
 
-	/* Find all valid locations. */
-	int sz = zn->lvl->w * zn->lvl->h;
-	Point pts[zn->lvl->d][sz];
-	int npts[zn->lvl->d];
-	for (int z = 0; z < zn->lvl->d; z++) {
-		npts[z] = zonelocs(zn, z, goodloc, pts[z], sz);
-		if (!npts[z])
-			fatal("No available locations at layer %d", z);
-	}
-
-	/* Scramble locations */
-	for (int z = 0; z < zn->lvl->d; z++) {
-	for (int i = 0; i < npts[z]; i++) {
-		if (npts[z] == 0)
-			continue;
-		int j = rngintincl(&r, 0, npts[z]-1);
-		Point t = pts[z][i];
-		pts[z][i] = pts[z][j];
-		pts[z][j] = t;
-	}
-	}
-
-	/* Place items */
-	for (long i = 0; i < num; i++) {
-		int z = rngintincl(&r, 0, zn->lvl->d - 1);
+	int i;
+	for (i = 0; i < num && nls > 0; i++) {
 		int idind = rngintincl(&r, 0, n);
+		int lind = rngintincl(&r, 0, nls);
+		Loc l = ls[lind];
+		if (nls > 1)
+			ls[lind] = ls[nls-1];
+		nls--;
 		Item it;
-		iteminit(&it, ids[idind], pts[z][npts[z]-1]);
-		npts[z]--;
-		zoneadditem(zn, z, it);
+		iteminit(&it, ids[idind], l.p);
+		zoneadditem(zn, l.z, it);
 	}
+
+	if (i < num)
+		fatal("Failed to place all items");
 
 	zonewrite(stdout, zn);
 	zonefree(zn);
 	xfree(ids);
 
 	return 0;
+}
+
+static Rng rnginit(void)
+{
+	Rng r;
+	struct tms tm;
+	clock_t seed = times(&tm);
+	pr("itmgen seed = %lu", (unsigned long) seed);
+	rngini(&r, seed);
+	return r;
 }
 
 static int idargs(int argc, char *argv[], int *ids[])
@@ -84,6 +82,23 @@ static int idargs(int argc, char *argv[], int *ids[])
 	}
 
 	return i-1;
+}
+
+static int locs(Zone *zn, Loc locs[])
+{
+	int nxt = 0;
+	for (int z = 0; z < zn->lvl->d; z++) {
+		int sz = zn->lvl->w * zn->lvl->h;
+		Point pts[sz];
+		int npts = zonelocs(zn, z, goodloc, pts, sz);
+		if (!npts)
+			fatal("No available locations at layer %d", z);
+		for (int i = 0; i < npts; i++) {
+			locs[nxt] = (Loc) { pts[i], z };
+			nxt++;
+		}
+	}
+	return nxt;
 }
 
 static _Bool goodloc(Zone *zn, int z, Point pt)
