@@ -236,23 +236,6 @@ static Resrcops imgtype = {
 	.unload = imgunload,
 };
 
-Rtab *anims;
-
-void *animload(const char *path, void *_ignrd)
-{
-	return animnew(path);
-}
-
-void animunload(const char *path, void *anim, void *_info)
-{
-	animfree(anim);
-}
-
-static Resrcops animtype = {
-	.load = animload,
-	.unload = animunload,
-};
-
 Rtab *txt;
 
 void *txtload(const char *path, void *_info)
@@ -331,8 +314,6 @@ void initresrc(void)
 {
 	imgs = rtabnew(&imgtype);
 	assert(imgs != NULL);
-	anims = rtabnew(&animtype);
-	assert(anims != NULL);
 	txt = rtabnew(&txttype);
 	assert(txt != NULL);
 	music = rtabnew(&musictype);
@@ -346,6 +327,5 @@ void freeresrc(void)
 	rtabfree(sfx);
 	rtabfree(music);
 	rtabfree(txt);
-	rtabfree(anims);
 	rtabfree(imgs);
 }

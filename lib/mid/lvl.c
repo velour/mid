@@ -22,56 +22,70 @@ static bool edge(Lvl *l, int x, int y);
 static bool blkd(Lvl *l, int x, int y);
 
 static Img *shdimg;
+static Img *tisht;
 
 enum { Tlayers = 4 };
 
 typedef struct Tinfo Tinfo;
 struct Tinfo {
-	char *files[Tlayers];
-	Anim *anims[Tlayers];
+	Anim anims[Tlayers];
 	unsigned int flags;
 };
 
 static Tinfo *tiles[] = {
 	[' '] = &(Tinfo){
-		.files = { [0] = "anim/blank/anim" },
+		.anims = { [0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 } },
 		.flags = Tilereach
 	},
 	['.'] = &(Tinfo){
-		.files = { [0] = "anim/blank/anim" },
+		.anims = { [0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 } },
 	},
 	['#'] = &(Tinfo){
-		.files = { [0] = "anim/land/anim" },
+		.anims = { [0] = { .row = 1, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 } },
 		.flags = Tilecollide
 	},
 	['w'] = &(Tinfo){
-		.files = { [0] = "anim/blank/anim",
-			   [2] = "anim/water/anim", },
+		.anims = {
+			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[2] = { .row = 2, .len = 11, .delay = 300, .w = 32, .h = 32, .d = 300 },
+		},
 		.flags = Tilewater
 	},
 	['W'] = &(Tinfo){
-		.files = { [0] = "anim/blank/anim",
-			   [2] = "anim/water/anim", },
+		.anims = {
+			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[2] = { .row = 2, .len = 11, .delay = 300, .w = 32, .h = 32, .d = 300 },
+		},
 		.flags = Tilewater | Tilereach
 	},
 	['>'] = &(Tinfo){
-		.files = { [0] = "anim/bdoor/anim" },
+		.anims = {
+			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[2] = { .row = 3, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+		},
 		.flags = Tilebdoor | Tilereach
 	},
 	[')'] = &(Tinfo){
-		.files = { [0] = "anim/bdoor/anim",
-			   [2] = "anim/water/anim", },
+		.anims = {
+			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[2] = { .row = 3, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[3] = { .row = 2, .len = 11, .delay = 300, .w = 32, .h = 32, .d = 300 },
+		},
 		.flags = Tilebdoor | Tilewater | Tilereach
 	},
 	['<'] = &(Tinfo){
-		.files = { [0] = "anim/blank/anim",
-			   [3] = "anim/fdoor/anim", },
+		.anims = {
+			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[2] = { .row = 4, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+		},
 		.flags = Tilefdoor | Tilereach
 	},
 	['('] = &(Tinfo){
-		.files = { [0] = "anim/blank/anim",
-			   [2] = "anim/water/anim",
-			   [3] = "anim/fdoor/anim", },
+		.anims = {
+			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[2] = { .row = 4, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[3] = { .row = 2, .len = 11, .delay = 300, .w = 32, .h = 32, .d = 300 },
+		},
 		.flags = Tilefdoor | Tilewater | Tilereach
 	},
 };
@@ -101,6 +115,9 @@ Lvl *lvlnew(int d, int w, int h)
 
 bool lvlinit()
 {
+	tisht = resrcacq(imgs, "img/tiles.png", NULL);
+	assert(tisht != NULL);
+
 	if (!shdimg)
 		shdimg = resrcacq(imgs, "img/alph128.png", NULL);
 	if (!shdimg)
@@ -229,12 +246,11 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd, Point offs)
 static void tiledraw(Gfx *g, int t, Point pt, int l)
 {
 	assert(tiles[t] != NULL);
-	if (!tiles[t]->files[l])
-		return;
-	if (!tiles[t]->anims[l])
-		tiles[t]->anims[l] = resrcacq(anims, tiles[t]->files[l], NULL);
-	assert(tiles[t]->anims[l]);
-	animdraw(g, tiles[t]->anims[l], pt);
+	assert(tisht != NULL);
+	if (!tiles[t]->anims[l].sheet)
+		tiles[t]->anims[l].sheet = tisht;
+	assert(tiles[t]->anims[l].sheet != NULL);
+	animdraw(g, &tiles[t]->anims[l], pt);
 }
 
 static void tiledrawlyrs(Gfx *g, int t, Point pt, int mn, int mx)
@@ -304,8 +320,8 @@ void lvlupdate(Lvl *l)
 	for (int l = 0; l < Tlayers; l++) {
 		if (!tiles[i])
 			continue;
-		if (tiles[i]->anims[l])
-			animupdate(tiles[i]->anims[l], 1);
+		if (tiles[i]->anims[l].sheet)
+			animupdate(&tiles[i]->anims[l]);
 	}
 	}
 }

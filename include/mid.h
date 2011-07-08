@@ -83,6 +83,7 @@ void imgfree(Img *);
 /* Returns negative dimensions on failure. */
 Point imgdims(const Img *);
 void imgdraw(Gfx *, Img *, Point);
+void imgdrawreg(Gfx *, Img *, Rect, Point);
 
 typedef struct Txt Txt;
 
@@ -193,7 +194,6 @@ struct Txtinfo {
 };
 
 extern Rtab *imgs;
-extern Rtab *anims;
 extern Rtab *txt;
 extern Rtab *music;
 extern Rtab *sfx;
@@ -201,9 +201,16 @@ void initresrc(void);
 void freeresrc(void);
 
 typedef struct Anim Anim;
-Anim *animnew(const char *);
-void animfree(Anim *);
-void animupdate(Anim *, int);
+struct Anim{
+	Img *sheet;
+	int row, len;
+	int delay;
+	int w, h;
+	int f, d;
+};
+
+void animupdate(Anim *
+);
 void animdraw(Gfx *, Anim *, Point);
 void animreset(Anim *a);
 
@@ -331,9 +338,9 @@ enum { Maxinv = 15 };
 
 typedef struct Player Player;
 struct Player {
-	Anim *leftas[Nacts];
-	Anim *rightas[Nacts];
-	Anim **anim;
+	Anim leftas[Nacts];
+	Anim rightas[Nacts];
+	Anim *anim;
 	Act act;
 	Point imgloc;
 

@@ -6,15 +6,25 @@ struct EnvOps{
 	char *animname;
 	void (*act)(Env*,Player*,Lvl*);
 	Point wh;
-	Anim *anim;
+	Anim anim;
 };
 
 static void shremptyact(Env*,Player*,Lvl*);
 static void shrusedact(Env*,Player*,Lvl*);
 
 static EnvOps ops[] = {
-	[EnvShrempty] = { "anim/shrine/empty.anim", shremptyact, { 32, 64 } },
-	[EnvShrused] = { "anim/shrine/used.anim", shrusedact, { 32, 64 } },
+	[EnvShrempty] = {
+		"img/shrine.png",
+		shremptyact,
+		{ 32, 64 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 64, .d = 1}
+	},
+	[EnvShrused] = {
+		"img/shrine.png",
+		shrusedact,
+		{ 32, 64 },
+		{ .row = 1, .len = 1, .delay = 1, .w = 32, .h = 64, .d = 1 }
+	},
 };
 
 _Bool envinit(Env *e, EnvID id, Point p){
@@ -28,31 +38,34 @@ _Bool envinit(Env *e, EnvID id, Point p){
 	return 1;
 }
 
-_Bool envldresrc()
-{
-	for (int id = 0; id < sizeof(ops)/sizeof(ops[0]); id++) {
+_Bool envldresrc(){
+	for (int id = 1; id < sizeof(ops)/sizeof(ops[0]); id++) {
 		char *n = ops[id].animname;
-		if (!n)
-			continue;
-		Anim *a = resrcacq(anims, n, NULL);
-		if(!a)
+		assert(n != NULL);
+
+		Img *i = resrcacq(imgs, n, NULL);
+		if(!i)
 			return 0;
-		ops[id].anim = a;
+		ops[id].anim.sheet = i;
 	}
 	return 1;
 }
 
-Point envsize(EnvID id)
-{
+_Bool envprint(char *buf, size_t sz, Env *env){
+	return printgeom(buf, sz, "dyb", env->id, env->body, env->gotit);
+}
+
+_Bool envscan(char *buf, Env *env){
+	return scangeom(buf, "dyb", &env->id, &env->body, &env->gotit);
+}
+
+Point envsize(EnvID id){
 	return ops[id].wh;
 }
 
 void envupdateanims(void){
-	for(size_t i = 1; i < EnvMax; i++){
-		if(!ops[i].anim)
-			ops[i].anim = resrcacq(anims, ops[i].animname, NULL);
-		animupdate(ops[i].anim, 1);
-	}
+	for(size_t i = 1; i < EnvMax; i++)
+		animupdate(&ops[i].anim);
 }
 
 void envupdate(Env *e, Lvl *l){
@@ -61,7 +74,7 @@ void envupdate(Env *e, Lvl *l){
 
 void envdraw(Env *e, Gfx *g, Point tr){
 	Point pt = { e->body.bbox.a.x + tr.x, e->body.bbox.a.y + tr.y };
-	animdraw(g, ops[e->id].anim, pt);
+	animdraw(g, &ops[e->id].anim, pt);
 }
 
 void envact(Env *e, Player *p, Lvl *l){
@@ -75,14 +88,4 @@ static void shremptyact(Env *e, Player *p, Lvl *l){
 
 static void shrusedact(Env *e, Player *p, Lvl *l){
 	// nothing
-}
-
-_Bool envprint(char *buf, size_t sz, Env *env)
-{
-	return printgeom(buf, sz, "dyb", env->id, env->body, env->gotit);
-}
-
-_Bool envscan(char *buf, Env *env)
-{
-	return scangeom(buf, "dyb", &env->id, &env->body, &env->gotit);
 }

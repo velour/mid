@@ -127,6 +127,14 @@ void imgdraw(Gfx *g, Img *img, Point p){
 	SDL_RenderCopy(g->rend, img->tex, 0, &r);
 }
 
+void imgdrawreg(Gfx *g, Img *img, Rect clip, Point p){
+	double w = clip.b.x - clip.a.x;
+	double h = clip.b.y - clip.a.y;
+	SDL_Rect src = { clip.a.x, clip.a.y, w, h };
+	SDL_Rect dst = { p.x, p.y, w, h };
+	SDL_RenderCopy(g->rend, img->tex, &src, &dst);
+}
+
 struct Txt{
 	TTF_Font *font;
 	Color color;

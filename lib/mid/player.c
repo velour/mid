@@ -1,9 +1,12 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
+#include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
 
-static void loadanim(Anim **a, const char *name, const char *dir, const char *act);
+static Img *plsh;
+
+static void loadanim(Anim *a, int, int, int);
 static void chngdir(Player *b);
 static void chngact(Player *b);
 static Point scroll(Player*, Point delta, Point transl);
@@ -15,12 +18,15 @@ void playerinit(Player *p, int x, int y)
 {
 	bodyinit(&p->body, x * Twidth, y * Theight);
 
-	loadanim(&p->leftas[Stand], "knight", "left", "stand");
-	loadanim(&p->leftas[Walk], "knight", "left", "walk");
-	loadanim(&p->leftas[Jump], "knight", "left", "jump");
-	loadanim(&p->rightas[Stand], "knight", "right", "stand");
-	loadanim(&p->rightas[Walk], "knight", "right", "walk");
-	loadanim(&p->rightas[Jump], "knight", "right", "jump");
+	plsh = resrcacq(imgs, "img/knight.png", NULL);
+	assert(plsh != NULL);
+
+	loadanim(&p->leftas[Stand], 0, 1, 1);
+	loadanim(&p->leftas[Walk], 1, 4, 100);
+	loadanim(&p->leftas[Jump], 2, 1, 1);
+	loadanim(&p->rightas[Stand], 3, 1, 1);
+	loadanim(&p->rightas[Walk], 4, 4, 100);
+	loadanim(&p->rightas[Jump], 5, 1, 1);
 
 	p->anim = p->rightas;
 	p->act = Stand;
@@ -89,13 +95,13 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 
 	mvsw(p);
 
-	Anim **prevanim = p->anim;
+	Anim *prevanim = p->anim;
 	chngdir(p);
 	chngact(p);
 	if(p->anim != prevanim)
-		animreset(p->anim[p->act]);
+		animreset(&p->anim[p->act]);
 	else
-		animupdate(p->anim[p->act], 1);
+		animupdate(&p->anim[p->act]);
 
 	Point del = { playerpos(p).x - ppos.x, playerpos(p).y - ppos.y };
 	*tr = scroll(p, del, *tr);
@@ -125,7 +131,7 @@ void playerdraw(Gfx *g, Player *p, Point tr)
 
 	if(p->iframes % 4 == 0){
 		Point pt = { p->imgloc.x + tr.x, p->imgloc.y + tr.y };
-		animdraw(g, p->anim[p->act], pt);
+		animdraw(g, &p->anim[p->act], pt);
 	}
 
 	if(p->sw.cur >= 0)
@@ -198,14 +204,17 @@ _Bool playertake(Player *p, Item *i){
 	return 0;
 }
 
-static void loadanim(Anim **a, const char *name, const char *dir, const char *act)
+static void loadanim(Anim *a, int row, int len, int delay)
 {
-	enum { Buflen = 256 };
-	char buf[Buflen];
-	snprintf(buf, Buflen, "%s/%s/%s/anim", name, dir, act);
-	*a = resrcacq(anims, buf, NULL);
-	if (!*a)
-		fatal("Failed to load %s: %s", buf, miderrstr());
+	*a = (Anim){
+		.sheet = plsh,
+		.row = row,
+		.len = len,
+		.delay = delay/Ticktm,
+		.w = Twidth,
+		.h = Theight,
+		.d = delay/Ticktm
+	};
 }
 
 static void chngdir(Player *p)
