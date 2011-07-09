@@ -18,8 +18,10 @@ Zone *zonegen(int w, int h, int d, int sd)
 
 	int n = snprintf(cmd, Bufsz, lvlpipe, w, h, d, sd, ItemStatup, ItemCopper);
 	assert(n < Bufsz);
-	if (debugging)
+	if (debugging) {
+		n -= snprintf(cmd + n, Bufsz - n, " | tee cur.lvl");
 		pr("lvlgen pipeline: [%s]", cmd);
+	}
 
 	FILE *fin = popen(cmd, "r");
 	if (!fin)
