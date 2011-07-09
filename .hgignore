@@ -9,3 +9,4 @@ cmd/itmgen/itmgen
 *.o
 *.swp
 *.a
+cmd/envgen/envgen
