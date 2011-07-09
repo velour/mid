@@ -28,44 +28,52 @@ enum { Tlayers = 4 };
 
 typedef struct Tinfo Tinfo;
 struct Tinfo {
+	_Bool ok;
 	Anim anims[Tlayers];
 	unsigned int flags;
 };
 
-static Tinfo *tiles[] = {
-	[' '] = &(Tinfo){
+static Tinfo tiles[] = {
+	[' '] = {
+		.ok = true,
 		.anims = { [0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 } },
 		.flags = Tilereach
 	},
-	['.'] = &(Tinfo){
+	['.'] = {
+		.ok = true,
 		.anims = { [0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 } },
 	},
-	['#'] = &(Tinfo){
+	['#'] = {
+		.ok = true,
 		.anims = { [0] = { .row = 1, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 } },
 		.flags = Tilecollide
 	},
-	['w'] = &(Tinfo){
+	['w'] = {
+		.ok = true,
 		.anims = {
 			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[2] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
 		},
 		.flags = Tilewater
 	},
-	['W'] = &(Tinfo){
+	['W'] = {
+		.ok = true,
 		.anims = {
 			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[2] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
 		},
 		.flags = Tilewater | Tilereach
 	},
-	['>'] = &(Tinfo){
+	['>'] = {
+		.ok = true,
 		.anims = {
 			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[2] = { .row = 3, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 		},
 		.flags = Tilebdoor | Tilereach
 	},
-	[')'] = &(Tinfo){
+	[')'] = {
+		.ok = true,
 		.anims = {
 			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[2] = { .row = 3, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
@@ -73,14 +81,16 @@ static Tinfo *tiles[] = {
 		},
 		.flags = Tilebdoor | Tilewater | Tilereach
 	},
-	['<'] = &(Tinfo){
+	['<'] = {
+		.ok = true,
 		.anims = {
 			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[2] = { .row = 4, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 		},
 		.flags = Tilefdoor | Tilereach
 	},
-	['('] = &(Tinfo){
+	['('] = {
+		.ok = true,
 		.anims = {
 			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[2] = { .row = 4, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
@@ -96,7 +106,7 @@ enum { Ntiles = sizeof(tiles) / sizeof(tiles[0]) };
 
 static bool istile(int t)
 {
-	return t >= 0 && t < Ntiles && tiles[t];
+	return t >= 0 && t < Ntiles && tiles[t].ok;
 }
 
 void lvlfree(Lvl *l)
@@ -184,11 +194,11 @@ static bool tileread(FILE *f, Lvl *l, int x, int y, int z)
 		return false;
 	}
 
-	if (z == 0 && tiles[c]->flags & Tilefdoor) {
+	if (z == 0 && tiles[c].flags & Tilefdoor) {
 		seterrstr("Front door on x=%d, y=%d, z=0", x, y);
 		return false;
 	}
-	if (z == l->d - 1 && tiles[c]->flags & Tilebdoor) {
+	if (z == l->d - 1 && tiles[c].flags & Tilebdoor) {
 		seterrstr("Back door on x=%d, y=%d, z=max", x, y);
 		return false;
 	}
@@ -243,12 +253,12 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd)
 
 static void tiledraw(Gfx *g, int t, Point pt, int l)
 {
-	assert(tiles[t] != NULL);
+	assert(tiles[t].ok);
 	assert(tisht != NULL);
-	if (!tiles[t]->anims[l].sheet)
-		tiles[t]->anims[l].sheet = tisht;
-	assert(tiles[t]->anims[l].sheet != NULL);
-	camdrawanim(g, &tiles[t]->anims[l], pt);
+	if (!tiles[t].anims[l].sheet)
+		tiles[t].anims[l].sheet = tisht;
+	assert(tiles[t].anims[l].sheet != NULL);
+	camdrawanim(g, &tiles[t].anims[l], pt);
 }
 
 static void tiledrawlyrs(Gfx *g, int t, Point pt, int mn, int mx)
@@ -259,8 +269,8 @@ static void tiledrawlyrs(Gfx *g, int t, Point pt, int mn, int mx)
 
 static bool isshaded(Lvl *l, int t, int x, int y)
 {
-	assert(tiles[t]);
-	if (tiles[t]->flags & Tilecollide)
+	assert(tiles[t].ok);
+	if (tiles[t].flags & Tilecollide)
 		return false;
 
 	return !isvis(l, x-1, y) || !isvis(l, x+1, y)
@@ -293,7 +303,7 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale)
 			Point pt = (Point){ pxx, offs.y + y };
 
 			Color c = (Color){ 255, 255, 255, 255 };
-			unsigned int flags = tiles[t]->flags;
+			unsigned int flags = tiles[t].flags;
 			if(flags & Tilecollide)
 				c = (Color){ 0, 0, 0, 255 };
 			else if(flags & Tilebdoor)
@@ -316,10 +326,10 @@ void lvlupdate(Lvl *l)
 {
 	for (int i = 0; i < sizeof(tiles) / sizeof(tiles[0]); i++) {
 	for (int l = 0; l < Tlayers; l++) {
-		if (!tiles[i])
+		if (!tiles[i].ok)
 			continue;
-		if (tiles[i]->anims[l].sheet)
-			animupdate(&tiles[i]->anims[l]);
+		if (tiles[i].anims[l].sheet)
+			animupdate(&tiles[i].anims[l]);
 	}
 	}
 }
@@ -365,10 +375,10 @@ Isect lvlisect(Lvl *l, Rect r, Point v)
 
 static Isect tileisect(int t, int x, int y, Rect r)
 {
-	if (!tiles[t])
+	if (!tiles[t].ok)
 		printf("t=[%c]", t);
-	assert(tiles[t]);
-	if (!(tiles[t]->flags & Tilecollide))
+	assert(tiles[t].ok);
+	if (!(tiles[t].flags & Tilecollide))
 		return (Isect){ .is = 0 };
 	return isection(r, tilebbox(x, y));
 }
@@ -406,8 +416,8 @@ Blkinfo lvlmajorblk(Lvl *l, Rect r)
 Blkinfo blkinfo(Lvl *l, int x, int y, int z)
 {
 	int t = blk(l, x, y, l->z)->tile;
-	assert (tiles[t]);
-	return (Blkinfo) { .x = x, .y = y, .z = z, .flags = tiles[t]->flags };
+	assert(tiles[t].ok);
+	return (Blkinfo) { .x = x, .y = y, .z = z, .flags = tiles[t].flags };
 }
 
 static void swap(int *a, int *b)
@@ -485,7 +495,7 @@ static bool edge(Lvl *l, int x, int y)
 static bool blkd(Lvl *l, int x, int y)
 {
 	int t = blk(l, x, y, l->z)->tile;
-	return tiles[t]->flags & Tilecollide;
+	return tiles[t].flags & Tilecollide;
 }
 
 double blkgrav(int flags)
