@@ -513,10 +513,3 @@ double blkdrag(int flags)
 	else
 		return 1.0;
 }
-
-void lvluseshrine(Lvl *l, int x, int y)
-{
-	Blk *b = blk(l, x, y, l->z);
-	if(b->tile == 'o')
-		b->tile = 'O';
-}
