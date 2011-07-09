@@ -1,5 +1,6 @@
 #include "../../include/mid.h"
 #include <assert.h>
+#include <string.h>
 
 typedef struct ItemOps ItemOps;
 struct ItemOps{
@@ -7,6 +8,8 @@ struct ItemOps{
 	char *animname;
 	void (*update)(Item*,Player*,Lvl*);
 	Anim anim;
+	int stats[StatMax];
+	EqpLoc loc;
 };
 
 static void statupupdate(Item*,Player*,Lvl*);
@@ -77,12 +80,22 @@ void itemdraw(Item *i, Gfx *g){
 	camdrawanim(g, &ops[i->id].anim, i->bod.bbox.a);
 }
 
-void iteminvdraw(Item *i, Gfx *g, Point p){
-	animdraw(g, &ops[i->id].anim, p);
+char *itemname(ItemID id){
+	return ops[id].name;
 }
 
-char *itemname(Item *i){
-	return ops[i->id].name;
+EqpLoc itemeqploc(ItemID id){
+	return ops[id].loc;
+}
+
+void invitinit(Invit *it, ItemID id){
+	it->id = id;
+	//TODO: randomize stats
+	memcpy(it->stats, ops[id].stats, sizeof(ops[id].stats));
+}
+
+void invitdraw(Invit *it, Gfx *g, Point p){
+	animdraw(g, &ops[it->id].anim, p);
 }
 
 static void statupupdate(Item *i, Player *p, Lvl *l){

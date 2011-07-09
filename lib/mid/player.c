@@ -191,9 +191,9 @@ void playerdmg(Player *p, int x){
 
 _Bool playertake(Player *p, Item *i){
 	for(size_t j = 0; j < Maxinv; j++){
-		if(p->inv[j] != NULL)
+		if(p->inv[j].id > 0)
 			continue;
-		p->inv[j] = i;
+		invitinit(&p->inv[j], i->id);
 		return 1;
 	}
 	return 0;

@@ -7,14 +7,14 @@ typedef struct Invscr Invscr;
 struct Invscr{
 	Player *p;
 	Lvl *lvl;
-	Item *curitem;
+	Invit *curitem;
 };
 
-enum { Itemw = 32, Itemh = 32 };
+enum { Invitw = 32, Invith = 32 };
 enum { Pad = 4 };
 enum {
-	Width = Itemw * Invcols + Pad * (Invcols - 1),
-	Height = Itemh * Invrows + Pad * (Invrows - 1),
+	Width = Invitw * Invcols + Pad * (Invcols - 1),
+	Height = Invith * Invrows + Pad * (Invrows - 1),
 };
 enum { Xmin = Scrnw - Width - 5, Ymin = 40 };
 
@@ -23,12 +23,12 @@ static const char *moneystr = "gold";
 static void update(Scrn*,Scrnstk*);
 static void draw(Scrn*,Gfx*);
 static void handle(Scrn*,Scrnstk*,Event*);
-static Item *invat(Item *inv[], int x, int y);
+static Invit *invat(Invit inv[], int x, int y);
 static void invfree(Scrn*);
-static void curdraw(Gfx *g, Item *inv);
+static void curdraw(Gfx *g, Invit *inv);
 static void moneydraw(Gfx *g, int m);
-static void entrydraw(Gfx *g, Item *inv[], Item *cur, int r, int c);
-static void griddraw(Gfx *g, Item *inv[], Item *cur);
+static void entrydraw(Gfx *g, Invit inv[], Invit *cur, int r, int c);
+static void griddraw(Gfx *g, Invit inv[], Invit *cur);
 static Txt *gettxt(void);
 
 static Scrnmt invmt = {
@@ -51,13 +51,7 @@ Scrn *invscrnnew(Player *p, Lvl *lvl){
 }
 
 static void update(Scrn *s, Scrnstk *stk){
-	Invscr *i = s->data;
-	for (int j = 0; j < Invcols * Invrows; j++) {
-		Item *it = i->p->inv[j];
-		if (!it)
-			continue;
-		itemupdate(it, i->p, i->lvl);
-	}
+
 }
 
 enum { Scale = 6 };
@@ -79,7 +73,7 @@ static void draw(Scrn *s, Gfx *g){
 
 	moneydraw(g, i->p->money);
 	griddraw(g, i->p->inv, i->curitem);
-	if (i->curitem)
+	if (i->curitem && i->curitem->id > 0)
 		curdraw(g, i->curitem);
 
 	gfxflip(g);
@@ -94,7 +88,7 @@ static void moneydraw(Gfx *g, int m)
 	txtdraw(g, invtxt, (Point) { Scrnw - d.x , 1 }, "%d ", m);
 }
 
-static void griddraw(Gfx *g, Item *inv[], Item *cur)
+static void griddraw(Gfx *g, Invit inv[], Invit *cur)
 {
 	for (int r = 0; r < Invrows; r++) {
 	for (int c = 0; c < Invcols; c++) {
@@ -103,30 +97,30 @@ static void griddraw(Gfx *g, Item *inv[], Item *cur)
 	}
 }
 
-static void entrydraw(Gfx *g, Item *inv[], Item *cur, int r, int c)
+static void entrydraw(Gfx *g, Invit inv[], Invit *cur, int r, int c)
 {
 	int x0 = Xmin + c * Pad;
 	int y0 = Ymin + r * Pad;
-	Point a = { c * Itemw + x0, r * Itemh + y0 };
+	Point a = { c * Invitw + x0, r * Invith + y0 };
 	Rect rect = {
 		{ a.x - 1, a.y - 1 },
-		{ (c + 1) * Itemw + x0 + 1, (r + 1) * Itemh + y0 + 1 }
+		{ (c + 1) * Invitw + x0 + 1, (r + 1) * Invith + y0 + 1 }
 	};
-	Item *it = inv[r * Invcols + c];
+	Invit *it = &inv[r * Invcols + c];
 	if (cur && it == cur)
 		gfxfillrect(g, rect, (Color){0x99,0x66,0,0xFF});
 	gfxdrawrect(g, rect, (Color){0});
 
-	if (it)
-		iteminvdraw(it, g, a);
+	if (it->id > 0)
+		invitdraw(it, g, a);
 }
 
-static void curdraw(Gfx *g, Item *inv)
+static void curdraw(Gfx *g, Invit *inv)
 {
 	Txt *invtxt = gettxt();
-	Point d = txtdims(invtxt, itemname(inv));
+	Point d = txtdims(invtxt, itemname(inv->id));
 	Point p = (Point) { .x = Scrnw - d.x, .y = Height + Ymin + Pad};
-	txtdraw(g, invtxt, p, itemname(inv));
+	txtdraw(g, invtxt, p, itemname(inv->id));
 }
 
 static Txt *gettxt(void)
@@ -156,19 +150,19 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	}
 }
 
-static Item *invat(Item *inv[], int x, int y)
+static Invit *invat(Invit inv[], int x, int y)
 {
 	if (x < Xmin || x > Xmin + Width || y < Ymin || y > Ymin + Height)
 		return NULL;
 
-	int i = (x - Xmin) / (Itemw + Pad);
-	int j = (y - Ymin) / (Itemh + Pad);
+	int i = (x - Xmin) / (Invitw + Pad);
+	int j = (y - Ymin) / (Invith + Pad);
 
-	if (x > Xmin + i * (Itemw + Pad) + Itemw
-	    || y > Ymin + j * (Itemh + Pad) + Itemh)
+	if (x > Xmin + i * (Invitw + Pad) + Invitw
+	    || y > Ymin + j * (Invith + Pad) + Invith)
 		return NULL;	/* In padding */
 
-	return inv[i * Invcols + j];
+	return &inv[j * Invcols + i];
 }
 
 static void invfree(Scrn *s){

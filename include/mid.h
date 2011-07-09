@@ -340,9 +340,51 @@ enum Stat{
 };
 
 typedef struct Item Item;
+typedef struct Invit Invit;
+typedef enum ItemID ItemID;
+typedef enum EqpLoc EqpLoc;
+typedef struct Player Player;
+
 enum { Maxinv = 15 };
 
-typedef struct Player Player;
+enum EqpLoc{
+	EqpNone,
+	EqpHead,
+	EqpBody,
+	EqpWep,
+	EqpAcc,
+	EqpMax,
+};
+
+enum ItemID{
+	ItemNone,
+	ItemStatup,
+	ItemCopper,
+	ItemMax
+};
+
+struct Item{
+	ItemID id;
+	Body bod;
+	_Bool gotit;
+};
+
+_Bool itemldresrc();
+_Bool iteminit(Item*, ItemID id, Point p);
+void itemupdateanims(void);
+void itemupdate(Item*, Player*, Lvl*);
+void itemdraw(Item*, Gfx*);
+char *itemname(ItemID);
+EqpLoc itemeqploc(ItemID);
+
+struct Invit{
+	ItemID id;
+	int stats[StatMax];
+};
+
+void invitinit(Invit*, ItemID);
+void invitdraw(Invit*, Gfx*, Point p);
+
 struct Player {
 	Anim leftas[Nacts];
 	Anim rightas[Nacts];
@@ -366,7 +408,8 @@ struct Player {
 	int eqp[StatMax];
 
 	int money;
-	Item *inv[Maxinv];
+	Invit inv[Maxinv];
+	Invit wear[EqpMax];
 
 	Sword sw;
 };
@@ -398,28 +441,6 @@ struct Enemy{
 void enemyfree(Enemy*);
 void enemyupdate(Enemy*, Player*, Lvl*);
 void enemydraw(Enemy*, Gfx*);
-
-typedef enum ItemID ItemID;
-enum ItemID{
-	ItemNone,
-	ItemStatup,
-	ItemCopper,
-	ItemMax
-};
-
-struct Item{
-	ItemID id;
-	Body bod;
-	_Bool gotit;
-};
-
-_Bool itemldresrc();
-_Bool iteminit(Item*, ItemID id, Point p);
-void itemupdateanims(void);
-void itemupdate(Item*, Player*, Lvl*);
-void itemdraw(Item*, Gfx*);
-void iteminvdraw(Item*, Gfx*, Point p);
-char *itemname(Item*);
 
 typedef enum EnvID EnvID;
 enum EnvID{
