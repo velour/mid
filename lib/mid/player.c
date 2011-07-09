@@ -127,7 +127,7 @@ void playerdraw(Gfx *g, Player *p)
 		camfillrect(g, p->body.bbox, (Color){255,0,0,255});
 
 	if(p->iframes % 4 == 0)
-		camdrawanim(g, &p->anim[p->act], p->imgloc);
+		animdraw(g, &p->anim[p->act], p->imgloc);
 
 	if(p->sw.cur >= 0)
 		sworddraw(g, &p->sw);
@@ -241,11 +241,15 @@ static Point scroll(Player *p, Point delta){
 	double imgx = p->imgloc.x;
 	double imgy = p->imgloc.y;
 
-	if((dx < 0 && imgx < Scrlbuf) || (dx > 0 && imgx > Scrnw - Scrlbuf))
+	if((dx < 0 && imgx < Scrlbuf) || (dx > 0 && imgx > Scrnw - Scrlbuf)) {
+		p->imgloc.x -= dx;
 		ntr.x = -dx;
+	}
 
-	if((dy > 0 && imgy > Scrnh - Scrlbuf) || (dy < 0 && imgy < Scrlbuf))
+	if((dy > 0 && imgy > Scrnh - Scrlbuf) || (dy < 0 && imgy < Scrlbuf)) {
+		p->imgloc.y -= dy;
 		ntr.y = -dy;
+	}
 
 	return ntr;
 }
