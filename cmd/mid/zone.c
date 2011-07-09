@@ -9,7 +9,7 @@ static const char *lvlpipe =
 "cmd/lvlgen/lvlgen %d %d %d %d\
  | cmd/itmgen/itmgen %d 1\
  | cmd/itmgen/itmgen %d 50\
- | cmd/envnear/envnear 1\
+ | cmd/envgen/envgen 1 1\
  | cmd/enmnear/enmnear 1";
 
 Zone *zonegen(int w, int h, int d, int sd)

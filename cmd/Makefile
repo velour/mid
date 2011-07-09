@@ -3,6 +3,7 @@ DIRS :=\
 	rectview\
 	lvlgen\
 	itmnear\
+	envgen\
 	envnear\
 	enmnear\
 
