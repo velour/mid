@@ -50,6 +50,8 @@ int main(int argc, char *argv[])
 		i++;
 	}else if(ARGIS('d')){
 		debugging++;
+	}else if (ARGIS('p')){
+		zonestdin();
 	}
 	}
 

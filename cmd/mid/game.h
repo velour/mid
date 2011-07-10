@@ -1,4 +1,6 @@
-Zone *zonegen(int w, int h, int d, int sd);
+/* Notify zone loader to use stdin for the next zone. */
+void zonestdin();
+Zone *zonegen(int sd);
 
 typedef struct Game Game;
 Game *gamenew(void);
