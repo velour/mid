@@ -19,3 +19,36 @@ easily allow us to add things like grates or windows.
 * Add small rooms with doors. lvlgen can add these rooms (marking entry
 with 'd') and itmgen must make sure to add the keys.  Maybe doors could
 be an env?
+
+* Better lvlgen reachability.
+
+* Try filling in the unreach blocks.  This will give us a well-defined
+path throughout the level that we can then split with doors and secret
+walls.
+
+* Enemies drop equiptment.
+
+* Swords stuck in a stone.  Different stats req. to pull them.
+Different stone color for different stat requirement.
+
+* Background things: torches, waterfalls, leaky drains, etc.
+
+* Multiple doors.
+
+* Lvlgen: water 'pours' out from one spot instead of being uniform.
+
+* Set of water-only moves.  If cur path loc is in water, then try the
+water only moves 1st then, if none can place, use normal moves.
+
+* Different animations for different player body parts so that the anim
+can reflect the equipt. on the given body part.
+
+* Enemy AI:
+
+	- dump just walk in one dir and fall.
+
+	- platform aware:  trymove(), check fall flag, maybe turn around.
+
+	- flying, swimming, etc.
+
+	- player aware: move left if player is to left, else right.
