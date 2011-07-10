@@ -38,11 +38,11 @@ static FILE *zfile(int sd)
 static FILE *zpipe(int sd)
 {
 	static const char *lvlpipe =
-		"cmd/lvlgen/lvlgen 50 50 5 %d"
-		" | cmd/itmgen/itmgen 1 1" /* ItemStatup */
-		" | cmd/itmgen/itmgen 2 50" /* ItemCopper */
-		" | cmd/envgen/envgen 1 1" /* EnvShrempty */
-		" | cmd/enmnear/enmnear 1" /* EnemyUnti */
+		"./cmd/lvlgen/lvlgen 50 50 5 %d"
+		" | ./cmd/itmgen/itmgen 1 1" /* ItemStatup */
+		" | ./cmd/itmgen/itmgen 2 50" /* ItemCopper */
+		" | ./cmd/envgen/envgen 1 1" /* EnvShrempty */
+		" | ./cmd/enmnear/enmnear 1" /* EnemyUnti */
 		;
 	char cmd[Bufsz];
 

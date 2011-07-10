@@ -8,6 +8,7 @@ OFILES :=\
 	move.o\
 	door.o\
 	water.o\
+	reach.o\
 
 HFILES :=\
 	lvlgen.h\

@@ -63,3 +63,5 @@ _Bool used(struct Lvl *l, Loc loc);
 Loc doorloc(struct Lvl *lvl, Path *p, Loc loc);
 
 void water(struct Lvl *lvl);
+
+void morereach(struct Lvl *lvl);
