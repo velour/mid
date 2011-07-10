@@ -18,7 +18,7 @@ Game *gamenew(void)
 
 
 	int seed = rand();
-	gm->zone= zonegen(50, 50, Maxz, seed);
+	gm->zone= zonegen(seed);
 	if (!gm->zone)
 		fatal("Failed to load zone: %s", miderrstr());
 
