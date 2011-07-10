@@ -1,30 +1,15 @@
-* Use rectcontains in the inventory screen.
-
-* Keep current level in memory.  Non-current levels stored on disk in
-same format used by the lvlgen pipeline.
-
-* Different sized bodies... currently only 32x32.
-
-* Hard-coded resource path gets in the way if you want to run mid from
-its subdir, or ever install it…  (Just need to add to the roots array).
-
-* Add enemies to level description?
-
-* Death. When you die, lose a random item and a stat point. 3 strikes
-and you're permadead.
-
-* Separate Tilecollide from some future flag Tilevisible.  This will
-easily allow us to add things like grates or windows.
-
-* Add small rooms with doors. lvlgen can add these rooms (marking entry
-with 'd') and itmgen must make sure to add the keys.  Maybe doors could
-be an env?
-
 * Better lvlgen reachability.
 
 * Try filling in the unreach blocks.  This will give us a well-defined
 path throughout the level that we can then split with doors and secret
 walls.
+
+* Add small rooms with doors. lvlgen can add these rooms (marking entry
+with 'd') and itmgen must make sure to add the keys.  Maybe doors could
+be an env?
+
+* Separate Tilecollide from some future flag Tilevisible.  This will
+easily allow us to add things like grates or windows.
 
 * Enemies drop equiptment.
 
@@ -52,3 +37,17 @@ can reflect the equipt. on the given body part.
 	- flying, swimming, etc.
 
 	- player aware: move left if player is to left, else right.
+
+* Keep current level in memory.  Non-current levels stored on disk in
+same format used by the lvlgen pipeline.
+
+* Different sized bodies... currently only 32x32.
+
+* Hard-coded resource path gets in the way if you want to run mid from
+its subdir, or ever install it…  (Just need to add to the roots array).
+
+* Add enemies to level description?
+
+* Death. When you die, lose a random item and a stat point. 3 strikes
+and you're permadead.
+
