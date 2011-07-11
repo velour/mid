@@ -1,5 +1,6 @@
 struct Blk;
 struct Lvl;
+struct Rng;
 
 unsigned int rnd(int min, int max);
 
@@ -53,15 +54,16 @@ struct Path {
 	Seg *segs;
 };
 
-Path *pathnew(struct Lvl *l);
-void pathfree(Path *p);
-_Bool pathadd(struct Lvl *l, Path *p, Seg s);
-void pathpr(struct Lvl *l, Path *p);
+Path *pathnew(struct Lvl *);
+void pathfree(Path *);
+_Bool pathadd(struct Lvl *, Path *, Seg);
+void pathpr(struct Lvl *, Path *);
 
-_Bool used(struct Lvl *l, Loc loc);
+_Bool used(struct Lvl *, Loc);
 
-Loc doorloc(struct Lvl *lvl, Path *p, Loc loc);
+Loc doorloc(struct Lvl *, Path *, Loc);
+void extradoors(struct Rng *, struct Lvl *);
 
-void water(struct Lvl *lvl);
+void water(struct Lvl *);
 
-void morereach(struct Lvl *lvl);
+void morereach(struct Lvl *);
