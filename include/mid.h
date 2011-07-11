@@ -217,8 +217,7 @@ struct Anim{
 	int f, d;
 };
 
-void animupdate(Anim *
-);
+void animupdate(Anim *);
 void animdraw(Gfx *, Anim *, Point);
 void animreset(Anim *a);
 
@@ -314,8 +313,14 @@ void bodyupdate(Body *b, Lvl *l);
 
 typedef struct Sword Sword;
 struct Sword{
-	Img *img[2];
-	Rect loc[2];
+	Img *rightimg[2];
+	Img *leftimg[2];
+	Img **img;
+
+	Rect rightloc[2];
+	Rect leftloc[2];
+	Rect *loc;
+
 	int cur;
 
 	int pow;

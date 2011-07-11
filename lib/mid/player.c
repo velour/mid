@@ -38,8 +38,13 @@ void playerinit(Player *p, int x, int y)
 	p->stats[StatStr] = 5;
 	p->eqp[StatHp] = p->stats[StatHp];
 
-	p->sw.img[0] = resrcacq(imgs, "img/silversword-up.png", NULL);
-	p->sw.img[1] = resrcacq(imgs, "img/silversword-down.png", NULL);
+	p->sw.img = p->sw.rightimg;
+	p->sw.loc = p->sw.rightloc;
+
+	p->sw.rightimg[0] = resrcacq(imgs, "img/silversword-up.png", NULL);
+	p->sw.rightimg[1] = resrcacq(imgs, "img/silversword-down.png", NULL);
+	p->sw.leftimg[0] = resrcacq(imgs, "img/silversword-up.png", NULL);
+	p->sw.leftimg[1] = resrcacq(imgs, "img/silversword-down.png", NULL);
 	mvsw(p);
 	p->sw.cur = -1;
 	p->sw.pow = 1;
@@ -214,10 +219,15 @@ static void loadanim(Anim *a, int row, int len, int delay)
 
 static void chngdir(Player *p)
 {
-	if (p->body.vel.x < 0)
+	if (p->body.vel.x < 0){
 		p->anim = p->leftas;
-	else if (p->body.vel.x > 0)
+		p->sw.img = p->sw.leftimg;
+		p->sw.loc = p->sw.leftloc;
+	}else if (p->body.vel.x > 0){
 		p->anim = p->rightas;
+		p->sw.img = p->sw.rightimg;
+		p->sw.loc = p->sw.rightloc;
+	}
 }
 
 static void chngact(Player *p)
@@ -263,12 +273,20 @@ static double jmp(Player *p){
 }
 
 static void mvsw(Player *p){
-	p->sw.loc[0] = (Rect){
+	p->sw.rightloc[0] = (Rect){
 		{ p->body.bbox.a.x - 11, p->body.bbox.a.y - 32 },
 		{ p->body.bbox.b.x - 11, p->body.bbox.b.y - 32 }
 	};
-	p->sw.loc[1] = (Rect){
+	p->sw.rightloc[1] = (Rect){
 		{ p->body.bbox.a.x + 20, p->body.bbox.a.y },
 		{ p->body.bbox.b.x + 20, p->body.bbox.b.y }
+	};
+	p->sw.leftloc[0] = (Rect){
+		{ p->body.bbox.a.x + 11, p->body.bbox.a.y - 32 },
+		{ p->body.bbox.b.x + 11, p->body.bbox.b.y - 32 }
+	};
+	p->sw.leftloc[1] = (Rect){
+		{ p->body.bbox.a.x - 20, p->body.bbox.a.y },
+		{ p->body.bbox.b.x - 20, p->body.bbox.b.y }
 	};
 }
