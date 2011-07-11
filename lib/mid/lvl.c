@@ -415,7 +415,7 @@ Blkinfo lvlmajorblk(Lvl *l, Rect r)
 
 Blkinfo blkinfo(Lvl *l, int x, int y, int z)
 {
-	int t = blk(l, x, y, l->z)->tile;
+	int t = blk(l, x, y, z)->tile;
 	assert(tiles[t].ok);
 	return (Blkinfo) { .x = x, .y = y, .z = z, .flags = tiles[t].flags };
 }
