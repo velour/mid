@@ -44,8 +44,6 @@ same format used by the lvlgen pipeline.
 * Hard-coded resource path gets in the way if you want to run mid from
 its subdir, or ever install it…  (Just need to add to the roots array).
 
-* Add enemies to level description?
-
 * Death. When you die, lose a random item and a stat point. 3 strikes
 and you're permadead.
 
