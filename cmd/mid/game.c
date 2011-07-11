@@ -20,7 +20,9 @@ Game *gamenew(void)
 	unsigned int seed = rand();
 	Rng r;
 	rnginit(&r, seed);
-	pr("Mid seed: %u", seed);
+	if (debugging)
+		pr("mid seed: %u", seed);
+
 	gm->zone= zonegen(&r);
 	if (!gm->zone)
 		fatal("Failed to load zone: %s", miderrstr());

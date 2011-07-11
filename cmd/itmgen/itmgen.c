@@ -75,9 +75,8 @@ static int rng(Rng *r, int argc, char *argv[])
 	} else {
 		struct tms tm;
 		seed = times(&tm);
+		pr("itmgen seed = %lu", (unsigned long) seed);
 	}
-
-	pr("itmgen seed = %lu", (unsigned long) seed);
 	rnginit(r, seed);
 
 	return args;

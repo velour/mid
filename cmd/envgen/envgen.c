@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 static int rng(Rng *r, int argc, char *argv[])
 {
 	int args = 0;
-	clock_t seed;
+	clock_t seed = 0;
 
 	if (argv[1][0] == '-' && argv[1][1] == 's') {
 		seed = strtol(argv[2], NULL, 10);
@@ -85,9 +85,8 @@ static int rng(Rng *r, int argc, char *argv[])
 	} else {
 		struct tms tm;
 		seed = times(&tm);
+		pr("itmgen seed = %lu", (unsigned long) seed);
 	}
-
-	pr("itmgen seed = %lu", (unsigned long) seed);
 	rnginit(r, seed);
 
 	return args;
