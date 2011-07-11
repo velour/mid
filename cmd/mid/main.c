@@ -37,11 +37,6 @@ void deinit()
 
 int main(int argc, char *argv[])
 {
-
-
-	if (!init())
-		fatal("Failed to initialize: %s", miderrstr());
-
 	char *kmname = NULL;
 
 #	define ARGIS(a) argv[i][0] == '-' && argv[i][1] == a
@@ -60,6 +55,10 @@ int main(int argc, char *argv[])
 		mute = 1;
 	}
 	}
+
+	if (!init())
+		fatal("Failed to initialize: %s", miderrstr());
+
 
 	if(kmname && keymapread(kmap, kmname))
 		die("failed to read %s", kmname);
