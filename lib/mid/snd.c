@@ -94,5 +94,5 @@ void sfxfree(Sfx *s)
 void sfxplay(Sfx *s)
 {
 	if (Mix_Playing(-1) < NCHAN)
-		Mix_PlayChannel(-1, s->c, 1);
+		Mix_PlayChannel(-1, s->c, 0);
 }
