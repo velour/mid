@@ -15,6 +15,7 @@ struct ItemOps{
 static void statupupdate(Item*,Player*,Lvl*);
 static void copperupdate(Item*,Player*,Lvl*);
 
+static Sfx *goldgrab;
 static Sfx *gengrab;
 
 static ItemOps ops[] = {
@@ -44,7 +45,11 @@ _Bool iteminit(Item *i, ItemID id, Point p){
 
 _Bool itemldresrc()
 {
-	gengrab = resrcacq(sfx, "sfx/gold.wav", NULL);
+	goldgrab = resrcacq(sfx, "sfx/gold.wav", NULL);
+	if(!goldgrab)
+		return 0;
+
+	gengrab = resrcacq(sfx, "sfx/yum.wav", NULL);
 	if(!gengrab)
 		return 0;
 
@@ -117,7 +122,7 @@ static void copperupdate(Item *i, Player *p, Lvl *l){
 	bodyupdate(&i->bod, l);
 
 	if(isect(i->bod.bbox, playerbox(p))){
-		sfxplay(gengrab);
+		sfxplay(goldgrab);
 		p->money++;
 		i->gotit = 1;
 	}
