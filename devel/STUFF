@@ -16,8 +16,6 @@ Different stone color for different stat requirement.
 
 * Background things: torches, waterfalls, leaky drains, etc.
 
-* Multiple doors.
-
 * Lvlgen: water 'pours' out from one spot instead of being uniform.
 
 * Set of water-only moves.  If cur path loc is in water, then try the
