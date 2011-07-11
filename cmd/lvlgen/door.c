@@ -4,11 +4,14 @@
 #include <math.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
+#include "../../include/rng.h"
 #include "lvlgen.h"
 
 static int doorlocs(Lvl *lvl, Path *p, Loc ls[], int sz);
 static void sortbydist(Loc ls[], int sz, Loc l0);
 static double dist(Loc l0, Loc l1);
+static void extdoor(Lvl *lvl, int x, int y, int z);
+static int extdoorlocs(Lvl *lvl, Loc ls[], int sz);
 
 /* This algorithm is technically not even guaranteed to ever
  * terminate, but its OK for now. */
@@ -72,4 +75,58 @@ static double dist(Loc l0, Loc l1)
 	int dx = l1.x - l0.x;
 	int dy = l1.y - l0.y;
 	return sqrt(dx * dx + dy * dy);
+}
+
+enum { Nextra = 2 };
+
+void extradoors(Rng *r, Lvl *lvl)
+{
+	int sz = lvl->w * lvl->h;
+	Loc ls[sz];
+
+	for (lvl->z = 0; lvl->z < lvl->d - 1; lvl->z++) {
+		int n = extdoorlocs(lvl, ls, sz);
+		for (int i = 0; i < Nextra && i < n; i++) {
+			int j = rngintincl(r, 0, n);
+			extdoor(lvl, ls[j].x, ls[j].y, lvl->z);
+			ls[j] = ls[n-1];
+			n--;
+		}
+	}
+}
+
+static void extdoor(Lvl *lvl, int x, int y, int z)
+{
+	Blkinfo bi0 = blkinfo(lvl, x, y, z);
+	if (bi0.flags & Tilewater)
+		blk(lvl, x, y, z)->tile = ')';
+	else
+		blk(lvl, x, y, z)->tile = '>';
+
+	Blkinfo bi1 = blkinfo(lvl, x, y, z+1);
+	if (bi1.flags & Tilewater)
+		blk(lvl, x, y, z+1)->tile = '(';
+	else
+		blk(lvl, x, y, z+1)->tile = '<';
+}
+
+static int extdoorlocs(Lvl *lvl, Loc ls[], int sz)
+{
+	int i = 0;
+
+	for (int x = 0; x < lvl->w; x++) {
+	for (int y = 0; y < lvl->h - 1; y++) {
+		if (blkinfo(lvl, x, y, lvl->z).flags & Tilereach
+			&& blkinfo(lvl, x, y, lvl->z+1).flags & Tilereach
+			&& blkinfo(lvl, x, y+1, lvl->z).flags & Tilecollide
+			&& blkinfo(lvl, x, y+1, lvl->z+1).flags & Tilecollide) {
+			if (i == sz)
+				fatal("Door loc array is too small");
+			ls[i] = (Loc) {x, y};
+			i++;
+		}
+	}
+	}
+
+	return i;
 }

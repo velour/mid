@@ -45,6 +45,8 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	extradoors(&rng, lvl);
+
 	lvlwrite(stdout, lvl);
 	lvlfree(lvl);
 
