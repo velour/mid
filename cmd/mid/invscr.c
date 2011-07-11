@@ -16,9 +16,16 @@ enum {
 	Width = Invitw * Invcols + Pad * (Invcols - 1),
 	Height = Invith * Invrows + Pad * (Invrows - 1),
 };
-enum { Xmin = Scrnw - Width - 5, Ymin = 40 };
+enum { EqpXmin = Scrnw - Invitw * 3 };
+enum { Xmin = EqpXmin - Width, Ymin = 40 };
 
 static const char *moneystr = "gold";
+static char *locname[] = {
+	[EqpHead] = "Head",
+	[EqpBody] = "Body",
+	[EqpWep] = "Wep.",
+	[EqpAcc] = "Acc.",
+};
 
 static void update(Scrn*,Scrnstk*);
 static void draw(Scrn*,Gfx*);
@@ -75,6 +82,19 @@ static void draw(Scrn *s, Gfx *g){
 	griddraw(g, i->p->inv, i->curitem);
 	if (i->curitem && i->curitem->id > 0)
 		curdraw(g, i->curitem);
+
+	for (int j = 1; j < EqpMax; j++){
+		Point a = { EqpXmin + Pad*3, Ymin + (j-1) * (Invith + Pad) };
+		Rect er = {
+			{ a.x - 1, a.y - 1 },
+			{ a.x + Invitw + 1, a.y + Invith + 1}
+		};
+		gfxdrawrect(g, er, (Color){0});
+		Txt *txt = gettxt();
+		txtdraw(g, txt, (Point){ er.b.x + Pad, er.a.y }, locname[j]);
+		if(i->p->inv[j].id)
+			invitdraw(&i->p->wear[j], g, a);
+	}
 
 	gfxflip(g);
 }
