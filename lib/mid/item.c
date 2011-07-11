@@ -15,6 +15,8 @@ struct ItemOps{
 static void statupupdate(Item*,Player*,Lvl*);
 static void copperupdate(Item*,Player*,Lvl*);
 
+static Sfx *gengrab;
+
 static ItemOps ops[] = {
 	[ItemStatup] = {
 		"Orb of Power",
@@ -42,6 +44,10 @@ _Bool iteminit(Item *i, ItemID id, Point p){
 
 _Bool itemldresrc()
 {
+	gengrab = resrcacq(sfx, "sfx/gold.wav", NULL);
+	if(!gengrab)
+		return 0;
+
 	for (int id = 1; id < sizeof(ops)/sizeof(ops[0]); id++) {
 		char *n = ops[id].animname;
 		assert(n != NULL);
@@ -101,14 +107,17 @@ void invitdraw(Invit *it, Gfx *g, Point p){
 static void statupupdate(Item *i, Player *p, Lvl *l){
 	bodyupdate(&i->bod, l);
 
-	if(isect(i->bod.bbox, playerbox(p)) && playertake(p, i))
+	if(isect(i->bod.bbox, playerbox(p)) && playertake(p, i)){
+		sfxplay(gengrab);
 		i->gotit = 1;
+	}
 }
 
 static void copperupdate(Item *i, Player *p, Lvl *l){
 	bodyupdate(&i->bod, l);
 
 	if(isect(i->bod.bbox, playerbox(p))){
+		sfxplay(gengrab);
 		p->money++;
 		i->gotit = 1;
 	}
