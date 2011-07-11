@@ -50,10 +50,10 @@ static FILE *zpipe(Rng *r)
 	Pipe p;
 	pipeinit(&p);
 	pipeadd(&p, "./cmd/lvlgen/lvlgen -s %u 50 50 5", rngint(r));
-	pipeadd(&p, "| ./cmd/itmgen/itmgen -s %u 1 1", rngint(r));
-	pipeadd(&p, "| ./cmd/itmgen/itmgen -s %u 2 50", rngint(r));
-	pipeadd(&p, "| ./cmd/envgen/envgen -s %u 1 1", rngint(r));
-	pipeadd(&p, "| ./cmd/enmnear/enmnear 1");
+	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 1 1", rngint(r));
+	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 2 50", rngint(r));
+	pipeadd(&p, " | ./cmd/envgen/envgen -s %u 1 1", rngint(r));
+	pipeadd(&p, " | ./cmd/enmnear/enmnear 1");
 
 	if (debugging) {
 		pipeadd(&p, "| tee cur.lvl");
