@@ -114,8 +114,8 @@ static int extdoorlocs(Lvl *lvl, Loc ls[], int sz)
 {
 	int i = 0;
 
-	for (int x = 0; x < lvl->w; x++) {
-	for (int y = 0; y < lvl->h - 1; y++) {
+	for (int x = 1; x < lvl->w; x++) {
+	for (int y = 1; y < lvl->h - 1; y++) {
 		if (blkinfo(lvl, x, y, lvl->z).flags & Tilereach
 			&& blkinfo(lvl, x, y, lvl->z+1).flags & Tilereach
 			&& blkinfo(lvl, x, y+1, lvl->z).flags & Tilecollide
