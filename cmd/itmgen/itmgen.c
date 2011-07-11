@@ -12,7 +12,7 @@ typedef struct Loc {
 	int z;
 } Loc;
 
-static Rng rnginit(void);
+static int rng(Rng *, int, char *[]);
 static int idargs(int argc, char *argv[], int **ids);
 static int locs(Zone *, Loc []);
 static _Bool goodloc(Zone *, int, Point);
@@ -20,18 +20,23 @@ static _Bool goodloc(Zone *, int, Point);
 int main(int argc, char *argv[])
 {
 	int *ids;
-	int n = idargs(argc, argv, &ids);
 
 	loginit(NULL);
 
+	Rng r;
+	int usdargs = rng(&r, argc, argv);
+	argc -= usdargs;
+	argv += usdargs;
+
+	int n = idargs(argc, argv, &ids);
+
 	if (argc < 3)
-		fatal("usage: itmgen <ID>+ <num>");
+		fatal("usage: itmgen [-s <seed>] <ID>+ <num>");
 
 	long num = strtol(argv[argc-1], NULL, 10);
 	if (num == LLONG_MIN || num == LLONG_MAX)
 			fatal("Invalid number: %s", argv[argc-1]);
 
-	Rng r = rnginit();
 	Zone *zn = zoneread(stdin);
 	Loc ls[zn->lvl->d * zn->lvl->w * zn->lvl->h];
 	int nls = locs(zn, ls);
@@ -59,14 +64,23 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-static Rng rnginit(void)
+static int rng(Rng *r, int argc, char *argv[])
 {
-	Rng r;
-	struct tms tm;
-	clock_t seed = times(&tm);
+	int args = 0;
+	clock_t seed = 0;
+
+	if (argv[1][0] == '-' && argv[1][1] == 's') {
+		seed = strtol(argv[2], NULL, 10);
+		args = 2;
+	} else {
+		struct tms tm;
+		seed = times(&tm);
+	}
+
 	pr("itmgen seed = %lu", (unsigned long) seed);
-	rngini(&r, seed);
-	return r;
+	rnginit(r, seed);
+
+	return args;
 }
 
 static int idargs(int argc, char *argv[], int *ids[])

@@ -8,7 +8,7 @@
 #include "../../include/rng.h"
 #include "lvlgen.h"
 
-static void doseed(int argc, char *argv[]);
+static int rng(Rng *, int, char *[]);
 static void init(Lvl *l);
 extern void lvlwrite(FILE *, Lvl *);
 /* Fill in a z-layer and return a Loc for a good door placement to the
@@ -16,19 +16,23 @@ extern void lvlwrite(FILE *, Lvl *);
 static Loc zlayer(Loc loc, Lvl *lvl);
 static void buildpath(Lvl *lvl, Path *p, Loc loc);
 
-Rng rng;
+Rng r;
 
 int main(int argc, char *argv[])
 {
 	loginit(NULL);
-	if (argc != 4 && argc != 5)
+
+	if (argc != 4 && argc != 6)
 		return 1;
+
+	int usdargs = rng(&r, argc, argv);
+	argc -= usdargs;
+	argv += usdargs;
 
 	int w = strtol(argv[1], NULL, 10);
 	int h = strtol(argv[2], NULL, 10);
 	int d = strtol(argv[3], NULL, 10);
 	Lvl *lvl = lvlnew(d, w, h);
-	doseed(argc, argv);
 
 	mvini();
 	init(lvl);
@@ -45,7 +49,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	extradoors(&rng, lvl);
+	extradoors(&r, lvl);
 
 	lvlwrite(stdout, lvl);
 	lvlfree(lvl);
@@ -53,17 +57,23 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-static void doseed(int argc, char *argv[])
+static int rng(Rng *r, int argc, char *argv[])
 {
-	int seed;
-	struct tms tm;
+	int args = 0;
+	clock_t seed = 0;
 
-	if (argc == 5)
-		seed = strtol(argv[4], NULL, 10);
-	else
-		seed =  times(&tm);
-	pr("Level seed: %d", seed);
-	rngini(&rng, seed);
+	if (argv[1][0] == '-' && argv[1][1] == 's') {
+		seed = strtol(argv[2], NULL, 10);
+		args = 2;
+	} else {
+		struct tms tm;
+		seed = times(&tm);
+	}
+
+	pr("itmgen seed = %lu", (unsigned long) seed);
+	rnginit(r, seed);
+
+	return args;
 }
 
 static void init(Lvl *l)
@@ -110,5 +120,5 @@ static void buildpath(Lvl *lvl, Path *p, Loc loc)
 
 unsigned int rnd(int min, int max)
 {
-	return rngintincl(&rng, min, max);
+	return rngintincl(&r, min, max);
 }

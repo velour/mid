@@ -1,5 +1,6 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
+#include "../../include/rng.h"
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -16,9 +17,11 @@ Game *gamenew(void)
 	lvlinit();
 	Game *gm = xalloc(1, sizeof(*gm));
 
-
-	int seed = rand();
-	gm->zone= zonegen(seed);
+	unsigned int seed = rand();
+	Rng r;
+	rnginit(&r, seed);
+	pr("Mid seed: %u", seed);
+	gm->zone= zonegen(&r);
 	if (!gm->zone)
 		fatal("Failed to load zone: %s", miderrstr());
 

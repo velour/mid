@@ -5,7 +5,7 @@ struct Rng {
 	uint64_t v;
 };
 
-void rngini(Rng *r, uint64_t seed);
+void rnginit(Rng *r, uint64_t seed);
 uint64_t rngint(Rng *r);
 uint64_t rngintincl(Rng*, uint64_t min, uint64_t max);
 double rngdbl(Rng *r);

@@ -1,22 +1,35 @@
 #include <assert.h>
+#include <stdarg.h>
+#include <string.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
+#include "../../include/rng.h"
 #include "game.h"
+
+enum { Bufsz = 256 };
+
+typedef struct Pipe {
+	int n;
+	char cmd[Bufsz];
+} Pipe;
 
 static FILE *inzone = NULL;
 
-static FILE *zfile(int sd);
-static FILE *zpipe(int sd);
+static FILE *zfile(Rng *r);
+static FILE *zpipe(Rng *r);
 static void zclose(FILE *f);
+static void pipeinit(struct Pipe *);
+static void pipeadd(struct Pipe *, char *, ...);
+static int sncatf(char *dst, size_t sz, char *fmt, ...);
 
 void zonestdin()
 {
 	inzone = stdin;
 }
 
-Zone *zonegen(int sd)
+Zone *zonegen(Rng *r)
 {
-	FILE *fin = zfile(sd);
+	FILE *fin = zfile(r);
 	Zone *z = zoneread(fin);
 	if (!z)
 		fatal("Failed to load the zone: %s", miderrstr());
@@ -25,35 +38,29 @@ Zone *zonegen(int sd)
 	return z;
 }
 
-enum { Bufsz = 256 };
-
-static FILE *zfile(int sd)
+static FILE *zfile(Rng *r)
 {
 	if (inzone)
 		return inzone;
-	return zpipe(sd);
+	return zpipe(r);
 }
 
-
-static FILE *zpipe(int sd)
+static FILE *zpipe(Rng *r)
 {
-	static const char *lvlpipe =
-		"./cmd/lvlgen/lvlgen 50 50 5 %d"
-		" | ./cmd/itmgen/itmgen 1 1" /* ItemStatup */
-		" | ./cmd/itmgen/itmgen 2 50" /* ItemCopper */
-		" | ./cmd/envgen/envgen 1 1" /* EnvShrempty */
-		" | ./cmd/enmnear/enmnear 1" /* EnemyUnti */
-		;
-	char cmd[Bufsz];
+	Pipe p;
+	pipeinit(&p);
+	pipeadd(&p, "./cmd/lvlgen/lvlgen -s %u 50 50 5", rngint(r));
+	pipeadd(&p, "| ./cmd/itmgen/itmgen -s %u 1 1", rngint(r));
+	pipeadd(&p, "| ./cmd/itmgen/itmgen -s %u 2 50", rngint(r));
+	pipeadd(&p, "| ./cmd/envgen/envgen -s %u 1 1", rngint(r));
+	pipeadd(&p, "| ./cmd/enmnear/enmnear 1");
 
-	int n = snprintf(cmd, Bufsz, lvlpipe, sd, ItemStatup, ItemCopper);
-	assert(n < Bufsz);
 	if (debugging) {
-		n -= snprintf(cmd + n, Bufsz - n, " | tee cur.lvl");
-		pr("lvlgen pipeline: [%s]", cmd);
+		pipeadd(&p, "| tee cur.lvl");
+		pr("lvlgen pipeline: [%s]", p.cmd);
 	}
 
-	FILE *fin = popen(cmd, "r");
+	FILE *fin = popen(p.cmd, "r");
 	if (!fin)
 		fatal("Unable to execute zone gen pipeline: %s", miderrstr());
 
@@ -71,4 +78,25 @@ static void zclose(FILE *f)
 	int ret = pclose(f);
 	if (ret == -1)
 		fatal("Zone gen pipeline exited with failure: %s", miderrstr());
+}
+
+static void pipeinit(Pipe *p)
+{	
+	memset(p, 0, sizeof(p));
+}
+
+static void pipeadd(Pipe *p, char *fmt, ...)
+{
+	char buf[Bufsz];
+	va_list ap;
+
+	va_start(ap, fmt);
+	int n = vsnprintf(buf, Bufsz, fmt, ap);
+	va_end(ap);
+
+	if (n > Bufsz - p->n)
+		fatal("Buffer is too small");
+
+	strncat(p->cmd + p->n, buf, n);
+	p->n += n;
 }

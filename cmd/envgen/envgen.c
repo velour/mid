@@ -15,7 +15,7 @@ typedef struct Loc {
 Point wh;
 Rect start;
 
-static Rng rnginit(void);
+static int rng(Rng *, int, char *[]);
 static int idargs(int argc, char *argv[], int **ids);
 static int locs(Zone *, Loc []);
 static _Bool goodloc(Zone *, int, Point);
@@ -23,9 +23,15 @@ static _Bool goodloc(Zone *, int, Point);
 int main(int argc, char *argv[])
 {
 	int *ids;
-	int n = idargs(argc, argv, &ids);
 
 	loginit(NULL);
+
+	Rng r;
+	int usdargs = rng(&r, argc, argv);
+	argc -= usdargs;
+	argv += usdargs;
+
+	int n = idargs(argc, argv, &ids);
 
 	if (argc < 3)
 		fatal("%d  usage: envgen <ID>+ <num>", argc);
@@ -37,7 +43,6 @@ int main(int argc, char *argv[])
 	start = (Rect) { (Point) { Startx * Twidth, Starty * Theight },
 		(Point) { (Startx+1) * Twidth, (Starty+1) * Theight } };
 
-	Rng r = rnginit();
 	Zone *zn = zoneread(stdin);
 	Loc ls[zn->lvl->d * zn->lvl->w * zn->lvl->h];
 
@@ -69,14 +74,23 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-static Rng rnginit(void)
+static int rng(Rng *r, int argc, char *argv[])
 {
-	Rng r;
-	struct tms tm;
-	clock_t seed = times(&tm);
-	pr("envgen seed = %lu", (unsigned long) seed);
-	rngini(&r, seed);
-	return r;
+	int args = 0;
+	clock_t seed;
+
+	if (argv[1][0] == '-' && argv[1][1] == 's') {
+		seed = strtol(argv[2], NULL, 10);
+		args = 2;
+	} else {
+		struct tms tm;
+		seed = times(&tm);
+	}
+
+	pr("itmgen seed = %lu", (unsigned long) seed);
+	rnginit(r, seed);
+
+	return args;
 }
 
 static int idargs(int argc, char *argv[], int *ids[])
