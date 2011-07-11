@@ -3,6 +3,7 @@
 /* Mean frame time.  May be useful for comparing computation effort. */
 extern double meanftime;
 extern int debugging;
+extern _Bool mute;
 
 void *xalloc(unsigned long n, unsigned long sz);
 void xfree(void*);

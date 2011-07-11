@@ -56,6 +56,8 @@ int main(int argc, char *argv[])
 		debugging++;
 	}else if (ARGIS('p')){
 		zonestdin();
+	}else if(ARGIS('m')){
+		mute = 1;
 	}
 	}
 
