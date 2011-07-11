@@ -1,3 +1,5 @@
+* Draw z+1 as the background for z.
+
 * Try filling in the unreach blocks.  This will give us a well-defined
 path throughout the level that we can then split with doors and secret
 walls.
