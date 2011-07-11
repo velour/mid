@@ -10,6 +10,7 @@ struct Enemymt{
 	_Bool (*print)(char *, size_t, Enemy *);
 };
 
+static Sfx *untihit;
 static _Bool untiinit(Enemy *e, int x, int y);
 static void untifree(Enemy*);
 static void untiupdate(Enemy*,Player*,Lvl*);
@@ -75,6 +76,9 @@ static void untifree(Enemy *e){
 }
 
 static void untiupdate(Enemy *e, Player *p, Lvl *l){
+	if(!untihit)
+		untihit = resrcacq(sfx, "sfx/hit.wav", 0);
+
 	// Real enemies will do AI
 	Unti *u = e->data;
 
@@ -86,8 +90,10 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 	}else
 		u->c.b = 55;
 
-	if(isect(e->b.bbox, p->sw.loc[p->sw.cur]))
+	if(isect(e->b.bbox, p->sw.loc[p->sw.cur])){
+		sfxplay(untihit);
 		e->hp--;
+	}
 
 	u->c.r++;
 }

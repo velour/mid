@@ -20,6 +20,9 @@ bool init()
 	if(!gfx)
 		return false;
 
+	if(!sndinit())
+		return false;
+
 	initresrc();
 
 	return true;
@@ -28,6 +31,7 @@ bool init()
 void deinit()
 {
 	freeresrc();
+	sndfree();
 	gfxfree(gfx);
 }
 
