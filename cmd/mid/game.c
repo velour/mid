@@ -37,11 +37,6 @@ Game *gamenew(void)
 		fatal("Failed to load env resources: %s", miderrstr());
 
 	return gm;
-
-oops:
-	zonefree(gm->zone);
-	free(gm);
-	return NULL;
 }
 
 void gamefree(Scrn *s)

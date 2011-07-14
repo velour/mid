@@ -6,7 +6,6 @@
 enum { Startx = 2, Starty = 2 };
 
 static _Bool goodloc(Zone *zn, int z, Point pt);
-static void use(Lvl *l, int z, Point pt);
 static int cmp(const void*, const void*);
 
 Point wh;
