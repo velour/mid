@@ -20,7 +20,6 @@ static FILE *zpipe(Rng *r);
 static void zclose(FILE *f);
 static void pipeinit(struct Pipe *);
 static void pipeadd(struct Pipe *, char *, ...);
-static int sncatf(char *dst, size_t sz, char *fmt, ...);
 
 void zonestdin()
 {

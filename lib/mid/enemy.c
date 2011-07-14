@@ -29,7 +29,7 @@ static Enemymt mt[] = {
 // NOTE: this function should only be called by the zone gen pipeline.
 // It doesn't initialize any of the resources.
 _Bool enemyinit(Enemy *e, EnemyID id, int x, int y){
-	if(id >= 0 && id >= EnemyMax)
+	if(id == 0 || id >= EnemyMax)
 		return 0;
 
 	e->id = id;
