@@ -14,8 +14,9 @@ struct Game {
 
 Game *gamenew(void)
 {
+	static Game gm = {0};
+
 	lvlinit();
-	Game *gm = xalloc(1, sizeof(*gm));
 
 	unsigned int seed = rand();
 	Rng r;
@@ -23,11 +24,11 @@ Game *gamenew(void)
 	if (debugging)
 		pr("mid seed: %u", seed);
 
-	gm->zone= zonegen(&r);
-	if (!gm->zone)
+	gm.zone = zonegen(&r);
+	if (!gm.zone)
 		fatal("Failed to load zone: %s", miderrstr());
 
-	playerinit(&gm->player, 2, 2);
+	playerinit(&gm.player, 2, 2);
 
 	_Bool ok = itemldresrc();
 	if (!ok)
@@ -36,20 +37,23 @@ Game *gamenew(void)
 	if (!ok)
 		fatal("Failed to load env resources: %s", miderrstr());
 
-	return gm;
+	return &gm;
 }
 
 void gamefree(Scrn *s)
 {
 	Game *gm = s->data;
 	zonefree(gm->zone);
-	free(gm);
+	gm->player = (Player){0};
+	gm->transl = (Point){0};
 }
 
 void gameupdate(Scrn *s, Scrnstk *stk)
 {
 	Game *gm = s->data;
 	zoneupdate(gm->zone, &gm->player, &gm->transl);
+	if(gm->player.eqp[StatHp] <= 0 && debugging < 2)
+		scrnstkpush(stk, goverscrnnew(&gm->player));
 }
 
 void gamedraw(Scrn *s, Gfx *g)

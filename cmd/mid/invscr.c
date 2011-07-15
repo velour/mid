@@ -46,15 +46,16 @@ static Scrnmt invmt = {
 };
 
 Scrn *invscrnnew(Player *p, Lvl *lvl){
-	Invscr *inv = xalloc(1, sizeof(*inv));
-	inv->p = p;
-	inv->lvl = lvl;
-	inv->curitem = NULL;
+	static Invscr inv = {0};
+	static Scrn s = {0};
 
-	Scrn *s = xalloc(1, sizeof(*s));
-	s->mt = &invmt;
-	s->data = inv;
-	return s;
+	inv.p = p;
+	inv.lvl = lvl;
+	inv.curitem = NULL;
+
+	s.mt = &invmt;
+	s.data = &inv;
+	return &s;
 }
 
 static void update(Scrn *s, Scrnstk *stk){
@@ -186,6 +187,5 @@ static Invit *invat(Invit inv[], int x, int y)
 }
 
 static void invfree(Scrn *s){
-	free(s->data);
-	free(s);
+	// nothing
 }

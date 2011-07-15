@@ -25,23 +25,24 @@ static Scrnmt statupmt = {
 };
 
 Scrn *statscrnnew(Player *p, Env *sh){
-	Statup *sup = xalloc(1, sizeof(*sup));
-	sup->p = p;
-	sup->shrine = sh;
+	static Statup sup  = {0};
+	static Scrn s  = {0};
+
+	sup.p = p;
+	sup.shrine = sh;
 
 	Txtinfo ti = { 32 };
-	sup->txt = resrcacq(txt, "txt/retganon.ttf", &ti);
-	if(!sup->txt)
+	sup.txt = resrcacq(txt, "txt/retganon.ttf", &ti);
+	if(!sup.txt)
 		die("Failed to load stat screen font");
 
 	for(size_t i = 0; i < Maxinv; i++)
 		if(p->inv[i].id == ItemStatup)
-			sup->norbs++;
+			sup.norbs++;
 
-	Scrn *s = xalloc(1, sizeof(*s));
-	s->mt = &statupmt;
-	s->data = sup;
-	return s;
+	s.mt = &statupmt;
+	s.data = &sup;
+	return &s;
 }
 
 static void update(Scrn *s, Scrnstk *stk){
@@ -147,6 +148,6 @@ static void statupfree(Scrn *s){
 	if(sup->uorbs > 0)
 		sup->shrine->id = EnvShrused;
 	sup->p->statup = 0;
-	xfree(s->data);
+	*sup = (Statup){0};
 }
 

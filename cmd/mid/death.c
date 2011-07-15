@@ -21,16 +21,17 @@ static Scrnmt govermt = {
 };
 
 Scrn *goverscrnnew(Player *p){
-	Gover *go = xalloc(1, sizeof(*go));
-	go->p = p;
+	static Gover go = {0};
+	static Scrn s = {0};
+
+	go.p = p;
 
 	Txtinfo ti = { 32, { 255, 255, 255 } };
-	go->txt = resrcacq(txt, "txt/retganon.ttf", &ti);
+	go.txt = resrcacq(txt, "txt/retganon.ttf", &ti);
 
-	Scrn *s = xalloc(1, sizeof(*s));
-	s->mt = &govermt;
-	s->data = go;
-	return s;
+	s.mt = &govermt;
+	s.data = &go;
+	return &s;
 }
 
 static void update(Scrn *s, Scrnstk *stk){
@@ -65,7 +66,6 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 }
 
 static void goverfree(Scrn *s){
-	xfree(s->data);
 }
 
 static char *praise(int m){
