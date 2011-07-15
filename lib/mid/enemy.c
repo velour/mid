@@ -90,7 +90,7 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 	}else
 		u->c.b = 55;
 
-	if(isect(e->b.bbox, p->sw.loc[p->sw.cur])){
+	if(p->sframes > 0 && isect(e->b.bbox, p->sw.loc[p->sw.cur])){
 		sfxplay(untihit);
 		e->hp--;
 	}

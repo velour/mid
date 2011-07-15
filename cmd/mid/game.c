@@ -14,7 +14,7 @@ struct Game {
 
 Game *gamenew(void)
 {
-	static Game gm = {0};
+	static Game gm = {};
 
 	lvlinit();
 
@@ -44,8 +44,7 @@ void gamefree(Scrn *s)
 {
 	Game *gm = s->data;
 	zonefree(gm->zone);
-	gm->player = (Player){0};
-	gm->transl = (Point){0};
+	*gm = (Game){};
 }
 
 void gameupdate(Scrn *s, Scrnstk *stk)
