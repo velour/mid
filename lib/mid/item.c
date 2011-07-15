@@ -37,7 +37,7 @@ _Bool iteminit(Item *i, ItemID id, Point p){
 	assert(id >= 0 && id < ItemMax);
 
 	i->id = id;
-	bodyinit(&i->bod, p.x * Twidth, p.y * Theight);
+	bodyinit(&i->body, p.x * Twidth, p.y * Theight);
 	i->gotit = 0;
 
 	return 1;
@@ -67,11 +67,11 @@ _Bool itemldresrc()
 }
 
 _Bool itemscan(char *buf, Item *it){
-	return scangeom(buf, "dyb", &it->id, &it->bod, &it->gotit);
+	return scangeom(buf, "dyb", &it->id, &it->body, &it->gotit);
 }
 
 _Bool itemprint(char *buf, size_t sz, Item *it){
-	return printgeom(buf, sz, "dyb", it->id, it->bod, it->gotit);
+	return printgeom(buf, sz, "dyb", it->id, it->body, it->gotit);
 }
 
 void itemupdateanims(void){
@@ -88,7 +88,7 @@ void itemupdate(Item *i, Player *p, Lvl *l){
 void itemdraw(Item *i, Gfx *g){
 	if(i->gotit)
 		return;
-	camdrawanim(g, &ops[i->id].anim, i->bod.bbox.a);
+	camdrawanim(g, &ops[i->id].anim, i->body.bbox.a);
 }
 
 char *itemname(ItemID id){
@@ -110,18 +110,18 @@ void invitdraw(Invit *it, Gfx *g, Point p){
 }
 
 static void statupupdate(Item *i, Player *p, Lvl *l){
-	bodyupdate(&i->bod, l);
+	bodyupdate(&i->body, l);
 
-	if(isect(i->bod.bbox, playerbox(p)) && playertake(p, i)){
+	if(isect(i->body.bbox, playerbox(p)) && playertake(p, i)){
 		sfxplay(gengrab);
 		i->gotit = 1;
 	}
 }
 
 static void copperupdate(Item *i, Player *p, Lvl *l){
-	bodyupdate(&i->bod, l);
+	bodyupdate(&i->body, l);
 
-	if(isect(i->bod.bbox, playerbox(p))){
+	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(goldgrab);
 		p->money++;
 		i->gotit = 1;

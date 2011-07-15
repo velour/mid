@@ -371,7 +371,7 @@ enum ItemID{
 
 struct Item{
 	ItemID id;
-	Body bod;
+	Body body;
 	_Bool gotit;
 };
 

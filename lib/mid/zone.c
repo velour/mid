@@ -241,7 +241,7 @@ _Bool zoneoverlap(Zone *zn, int z, Point loc, Point wh)
 
 	for (int i = 0; i < Maxitms; i++) {
 		Item *it = &zn->itms[z][i];
-		if (it->id && isect(r, it->bod.bbox))
+		if (it->id && isect(r, it->body.bbox))
 			return true;
 	}
 	for (int i = 0; i < Maxenvs; i++) {
