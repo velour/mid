@@ -139,7 +139,10 @@ bool lvlinit()
 Lvl *lvlread(FILE *f)
 {
 	int w, h, d;
-	fscanf(f, " %d %d %d",&d, &w, &h);
+	if (fscanf(f, " %d %d %d",&d, &w, &h) != 3) {
+		seterrstr("Invalid lvl header");
+		return NULL;
+	}
 	Lvl *l = lvlnew(d, w, h);
 
 	int x, y, z;
@@ -226,7 +229,7 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd)
 			if (!vis && bkgrnd && debugging < 2)
 				continue;
 			int t = b->tile;
-			Point pt;
+			Point pt = {0};
 
 			if (vis || debugging >= 2) {
 				int mn = bkgrnd ? 0 : (Tlayers-1) / 2 + 1;

@@ -1,3 +1,7 @@
+* Why is SDL 1.2 very slow?
+
+* Don't account for lvlgen in the frame rate computation.
+
 * Draw z+1 as the background for z.
 
 * Try filling in the unreach blocks.  This will give us a well-defined
