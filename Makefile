@@ -25,6 +25,10 @@ ifndef AR
 AR := ar
 endif
 
+ifndef SDLVER
+SDLVER := 13
+endif
+
 MANDCFLAGS := -g -O2 -Wall -Werror -std=c99 -D_POSIX_SOURCE -D_POSIX_C_SOURCE=200112L
 MANDLDFLAGS := -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf
 

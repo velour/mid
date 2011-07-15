@@ -4,12 +4,7 @@
 #include <SDL/SDL_ttf.h>
 #include <assert.h>
 #include <stdarg.h>
-
-struct Gfx{
-	SDL_Window *win;
-	SDL_Renderer *rend;
-	Point tr;
-};
+#include "gfx.h"
 
 static Gfx gfx;
 
@@ -256,3 +251,4 @@ void camdrawanim(Gfx *g, Anim *a, Point p){
 	p = vecadd(p, g->tr);
 	animdraw(g, a, p);
 }
+

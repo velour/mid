@@ -6,7 +6,7 @@ OFILES :=\
 	errstr.o\
 	event.o\
 	geom.o\
-	gfx.o\
+	gfx_sdl$(SDLVER).o\
 	fs.o\
 	resrc.o\
 	scrn.o\
