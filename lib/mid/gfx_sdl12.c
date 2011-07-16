@@ -2,6 +2,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
+#include <stdio.h>
 #include <assert.h>
 #include <stdarg.h>
 
@@ -16,6 +17,7 @@ enum { Bufsize = 256 };
 
 static Img *vtxt2img(Gfx *g, Txt *t, const char *fmt, va_list ap);
 static Point vtxtdims(const Txt *t, const char *fmt, va_list ap);
+static void prvidinfo(void);
 
 Gfx *gfxinit(int w, int h, const char *title){
 	if(TTF_Init() < 0)
@@ -28,6 +30,9 @@ Gfx *gfxinit(int w, int h, const char *title){
 		if(SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
 			return NULL;
 	}
+
+	if (debugging >= 2)
+		prvidinfo();
 
 	gfx.scrn = SDL_SetVideoMode(w, h, 0, SDL_HWSURFACE|SDL_DOUBLEBUF);
 	if (!gfx.scrn)
@@ -228,4 +233,21 @@ void camdrawreg(Gfx *g, Img *i, Rect c, Point p){
 void camdrawanim(Gfx *g, Anim *a, Point p){
 	p = vecadd(p, g->tr);
 	animdraw(g, a, p);
+}
+
+static void prvidinfo(void)
+{
+	const SDL_VideoInfo *vi = SDL_GetVideoInfo();
+
+#define PR(str, b) printf(str ":	%s\n", b ? "yes" : "no")
+	PR("Hardware surfaces available", vi->hw_available);
+	PR("Window manage available", vi->wm_available);
+	PR("Hardware blits accelerated", vi->blit_hw);
+	PR("Hardware to hardware color key blits accelerated", vi->blit_hw_CC);
+	PR("Hardware to hardware alpha blits accelerated", vi->blit_hw_A);
+	PR("Software blits accelerated", vi->blit_sw);
+	PR("Software to hardware color key blits accelerated", vi->blit_sw_CC);
+	PR("Software to hardware alpha blits accelerated", vi->blit_sw_A);
+	PR("Color fills accelerated", vi->blit_fill);
+	printf("Total video memory (KB):	%u\n", vi->video_mem);
 }
