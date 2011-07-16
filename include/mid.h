@@ -490,9 +490,9 @@ struct Zone {
 Zone *zoneread(FILE *);
 void zonewrite(FILE *, Zone *z);
 void zonefree(Zone *);
-void zoneadditem(Zone *zn, int z, Item it);
-void zoneaddenv(Zone *zn, int z, Env env);
-void zoneaddenemy(Zone *zn, int z, Enemy enm);
+_Bool zoneadditem(Zone *zn, int z, Item it);
+_Bool zoneaddenv(Zone *zn, int z, Env env);
+_Bool zoneaddenemy(Zone *zn, int z, Enemy enm);
 void zonedraw(Gfx *g, Zone *zn, Player *p);
 void zoneupdate(Zone *zn, Player *p, Point *tr);
 

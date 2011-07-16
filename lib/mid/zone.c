@@ -70,7 +70,8 @@ static void readitem(char *buf, Zone *zn)
 	_Bool ok = itemscan(buf+n, &it);
 	if (!ok)
 		fatal("Failed to scan item [%s]", buf);
-	zoneadditem(zn, z, it);
+	if (!zoneadditem(zn, z, it))
+		fatal("Failed to add item [%s]: too many items", buf);
 }
 
 static void readenv(char *buf, Zone *zn)
@@ -83,7 +84,8 @@ static void readenv(char *buf, Zone *zn)
 	_Bool ok = envscan(buf+n, &env);
 	if (!ok)
 		fatal("Failed to scan env [%s]", buf);
-	zoneaddenv(zn, z, env);
+	if (!zoneaddenv(zn, z, env))
+		fatal("Failed to add env [%s]: too many envs", buf);
 }
 
 static void readenemy(char *buf, Zone *zn)
@@ -96,7 +98,8 @@ static void readenemy(char *buf, Zone *zn)
 	_Bool ok = enemyscan(buf+n, &en);
 	if (!ok)
 		fatal("Failed to scan item [%s]", buf);
-	zoneaddenemy(zn, z, en);
+	if (!zoneaddenemy(zn, z, en))
+		fatal("Failed to add enemy [%s]: too many enemies", buf);
 }
 
 static _Bool readl(char *buf, int sz, FILE *f)
@@ -146,7 +149,7 @@ void zonewrite(FILE *f, Zone *zn)
 	}
 }
 
-void zoneadditem(Zone *zn, int z, Item it)
+_Bool zoneadditem(Zone *zn, int z, Item it)
 {
 	int i;
 	Item *itms = zn->itms[z];
@@ -154,12 +157,13 @@ void zoneadditem(Zone *zn, int z, Item it)
 	for (i = 0; i < Maxitms && itms[i].id; i++)
 		;
 	if (i == Maxitms)
-		fatal("Too many items");
+		return false;
 
 	zn->itms[z][i] = it;
+	return true;
 }
 
-void zoneaddenv(Zone *zn, int z, Env env)
+_Bool zoneaddenv(Zone *zn, int z, Env env)
 {
 	int i;
 	Env *envs = zn->envs[z];
@@ -167,12 +171,13 @@ void zoneaddenv(Zone *zn, int z, Env env)
 	for (i = 0; i < Maxenvs && envs[i].id; i++)
 		;
 	if (i == Maxenvs)
-		fatal("Too many envs");
+		return false;
 
 	zn->envs[z][i] = env;
+	return true;
 }
 
-void zoneaddenemy(Zone *zn, int z, Enemy enm)
+_Bool zoneaddenemy(Zone *zn, int z, Enemy enm)
 {
 	int i;
 	Enemy *enms = zn->enms[z];
@@ -180,9 +185,10 @@ void zoneaddenemy(Zone *zn, int z, Enemy enm)
 	for (i = 0; i < Maxenms && enms[i].id; i++)
 		;
 	if (i == Maxenms)
-		fatal("Too many enemies");
+		return false;
 
 	zn->enms[z][i] = enm;
+	return true;
 }
 
 void zonefree(Zone *z)
