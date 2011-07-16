@@ -1,3 +1,5 @@
+// Copyright © 2011 Steve McCoy and Ethan Burns
+// Licensed under the MIT License. See LICENSE for details.
 #include <stdbool.h>
 #include "lvlgen.h"
 #include "../../include/mid.h"

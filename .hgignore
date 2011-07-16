@@ -4,6 +4,7 @@ cmd/rectview/rectview
 cmd/lvlgen/lvlgen
 cmd/envnear/envnear
 cmd/enmnear/enmnear
+cmd/enmgen/enmgen
 cmd/itmnear/itmnear
 cmd/itmgen/itmgen
 *.o

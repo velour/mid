@@ -1,3 +1,5 @@
+// Copyright © 2011 Steve McCoy and Ethan Burns
+// Licensed under the MIT License. See LICENSE for details.
 #include <stdio.h> // FILE
 
 /* Mean frame time.  May be useful for comparing computation effort. */
@@ -437,16 +439,30 @@ enum EnemyID{
 };
 
 typedef struct Enemy Enemy;
+typedef struct Ai Ai;
+struct Ai{
+	void (*update)(Enemy*,Player*,Lvl*);
+	Point mv;
+	double awdst; // awareness distance
+};
+
 struct Enemy{
 	EnemyID id;
 	Body b;
 	int hp;
 	void *data;
+	Ai ai;
 };
 
 void enemyfree(Enemy*);
 void enemyupdate(Enemy*, Player*, Lvl*);
 void enemydraw(Enemy*, Gfx*);
+
+void aijumper(Ai*, double jv);
+void aiwalker(Ai*, double wv);
+void aipatroller(Ai*, double wv);
+void aichaser(Ai*, double wv, double awdst);
+void aihunter(Ai*, double jv, double wv, double awdst);
 
 typedef enum EnvID EnvID;
 enum EnvID{

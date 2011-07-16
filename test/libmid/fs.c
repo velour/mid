@@ -1,3 +1,5 @@
+// Copyright © 2011 Steve McCoy and Ethan Burns
+// Licensed under the MIT License. See LICENSE for details.
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <stdlib.h>

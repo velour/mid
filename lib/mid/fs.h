@@ -1,3 +1,5 @@
+// Copyright © 2011 Steve McCoy and Ethan Burns
+// Licensed under the MIT License. See LICENSE for details.
 #if !defined(_FS_H_)
 #define _FS_H_
 
