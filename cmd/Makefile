@@ -5,6 +5,7 @@ DIRS :=\
 	itmnear\
 	envgen\
 	envnear\
+	enmgen\
 	enmnear\
 
 include ../Make.dir

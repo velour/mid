@@ -1,5 +1,6 @@
 CMDS :=\
 	mid\
+	enmgen\
 	enmnear\
 	envgen\
 	envnear\

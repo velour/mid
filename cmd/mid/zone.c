@@ -52,7 +52,7 @@ static FILE *zpipe(Rng *r)
 	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 1 1", rngint(r));
 	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 2 50", rngint(r));
 	pipeadd(&p, " | ./cmd/envgen/envgen -s %u 1 1", rngint(r));
-	pipeadd(&p, " | ./cmd/enmnear/enmnear 1");
+	pipeadd(&p, " | ./cmd/enmgen/enmgen -s %u 1 50", rngint(r));
 
 	if (debugging) {
 		pipeadd(&p, "| tee cur.lvl");
