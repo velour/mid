@@ -1,4 +1,5 @@
 #include "../../include/mid.h"
+#include <stdio.h>
 
 typedef struct Enemymt Enemymt;
 struct Enemymt{
@@ -33,6 +34,8 @@ _Bool enemyinit(Enemy *e, EnemyID id, int x, int y){
 		return 0;
 
 	e->id = id;
+	bodyinit(&e->b, x * Twidth, y * Theight);
+
 	return mt[id].init(e, x, y);
 }
 
@@ -60,7 +63,7 @@ struct Unti{
 };
 
 static _Bool untiinit(Enemy *e, int x, int y){
-	bodyinit(&e->b, x * Twidth, y * Theight);
+	aijumper(&e->ai, 4);
 	e->hp = 1;
 
 	Unti *u = xalloc(1, sizeof(*u));
@@ -79,9 +82,11 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 	if(!untihit)
 		untihit = resrcacq(sfx, "sfx/hit.wav", 0);
 
-	// Real enemies will do AI
 	Unti *u = e->data;
 
+fprintf(stderr, "cal ai.update = %p on %p\n", e->ai.update, &e->ai);
+
+//TODO: fix initialization	e->ai.update(e, p, l);
 	bodyupdate(&e->b, l);
 
 	if(isect(e->b.bbox, playerbox(p))){

@@ -23,6 +23,7 @@ OFILES :=\
 	zone.o\
 	serial.o\
 	sword.o\
+	ai.o\
 
 HFILES :=\
 	fs.h\
