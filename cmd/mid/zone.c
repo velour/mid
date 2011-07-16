@@ -31,7 +31,8 @@ Zone *zonegen(Rng *r)
 	FILE *fin = zfile(r);
 	Zone *z = zoneread(fin);
 	if (!z)
-		fatal("Failed to load the zone: %s", miderrstr());
+		fatal("Failed to read the zone: %s", miderrstr());
+
 	zclose(fin);
 
 	return z;

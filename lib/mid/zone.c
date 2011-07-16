@@ -1,9 +1,9 @@
+#include <assert.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
 #include <stdbool.h>
 #include "../../include/mid.h"
-#include "../../include/log.h"
 
 _Bool itemscan(char *, Item *);
 _Bool itemprint(char *, size_t, Item *);
@@ -13,9 +13,9 @@ _Bool enemyscan(char *, Enemy *);
 _Bool enemyprint(char *, size_t, Enemy *);
 
 
-static void readitem(char *buf, Zone *zn);
-static void readenv(char *buf, Zone *zn);
-static void readenemy(char *buf, Zone *zn);
+static bool readitem(char *buf, Zone *zn);
+static bool readenv(char *buf, Zone *zn);
+static bool readenemy(char *buf, Zone *zn);
 static _Bool readl(char *buf, int sz, FILE *f);
 
 enum { Bufsz = 256 };
@@ -28,78 +28,100 @@ Zone *zoneread(FILE *f)
 	Zone *zn = xalloc(1, sizeof(*zn));
 	zn->lvl = lvlread(f);
 	if (!zn->lvl)
-		fatal("Failed to read the level: %s", miderrstr());
+		return NULL;
 
 	while (readl(buf, Bufsz, f)) {
 		if (buf[0] == '\0')
 			continue;
 		switch (buf[0]) {
 		case 'i':
-			readitem(buf+1, zn);
+			if (!readitem(buf+1, zn))
+				return NULL;
 			itms++;
 			break;
 		case 'e':
-			readenv(buf+1, zn);
+			if (!readenv(buf+1, zn))
+				return NULL;
 			envs++;
 			break;
 		case 'n':
-			readenemy(buf+1, zn);
+			if (!readenemy(buf+1, zn))
+				return NULL;
 			enms++;
 			break;
 		default:
-			fatal("Unexpected input line: [%s]", buf);
+			seterrstr("Unexpected input line: [%s]", buf);
+			return NULL;
 		}
-	}
-
-	if (debugging) {
-		pr("Loaded %d items", itms);
-		pr("Loaded %d envs", envs);
-		pr("Loaded %d enemies", enms);
 	}
 
 	return zn;
 }
 
-static void readitem(char *buf, Zone *zn)
+static bool readitem(char *buf, Zone *zn)
 {
 	int z, n;
-	if (sscanf(buf, "%d%n", &z, &n) != 1)
-		fatal("Failed to scan item's z layer");
+	if (sscanf(buf, "%d%n", &z, &n) != 1) {
+		seterrstr("Failed to scan item's z layer");
+		return false;
+	}
 
 	Item it;
 	_Bool ok = itemscan(buf+n, &it);
-	if (!ok)
-		fatal("Failed to scan item [%s]", buf);
-	if (!zoneadditem(zn, z, it))
-		fatal("Failed to add item [%s]: too many items", buf);
+	if (!ok) {
+		seterrstr("Failed to scan item [%s]", buf);
+		return false;
+	}
+	if (!zoneadditem(zn, z, it)) {
+		seterrstr("Failed to add item [%s]: too many items", buf);
+		return false;
+	}
+
+	return true;
 }
 
-static void readenv(char *buf, Zone *zn)
+static bool readenv(char *buf, Zone *zn)
 {
 	int z, n;
-	if (sscanf(buf, "%d%n", &z, &n) != 1)
-		fatal("Failed to scan env's z layer");
+	if (sscanf(buf, "%d%n", &z, &n) != 1) {
+		seterrstr("Failed to scan env's z layer");
+		return false;
+	}
 
 	Env env;
 	_Bool ok = envscan(buf+n, &env);
-	if (!ok)
-		fatal("Failed to scan env [%s]", buf);
-	if (!zoneaddenv(zn, z, env))
-		fatal("Failed to add env [%s]: too many envs", buf);
+	if (!ok) {
+		seterrstr("Failed to scan env [%s]", buf);
+		return false;
+	}
+	if (!zoneaddenv(zn, z, env)) {
+		seterrstr("Failed to add env [%s]: too many envs", buf);
+		return false;
+	}
+
+	return true;
 }
 
-static void readenemy(char *buf, Zone *zn)
+static bool readenemy(char *buf, Zone *zn)
 {
 	int z, n;
-	if (sscanf(buf, "%d%n", &z, &n) != 1)
-		fatal("Failed to scan enemy's z layer");
+	if (sscanf(buf, "%d%n", &z, &n) != 1) {
+		seterrstr("Failed to scan enemy's z layer");
+		return false;
+	}
 
 	Enemy en;
 	_Bool ok = enemyscan(buf+n, &en);
-	if (!ok)
-		fatal("Failed to scan item [%s]", buf);
-	if (!zoneaddenemy(zn, z, en))
-		fatal("Failed to add enemy [%s]: too many enemies", buf);
+	if (!ok) {
+		seterrstr("Failed to scan item [%s]", buf);
+		return false;
+	}
+	if (!zoneaddenemy(zn, z, en)) {
+		seterrstr("Failed to add enemy [%s]: too many enemies", buf);
+		return false;
+	}
+
+	return true;
 }
 
 static _Bool readl(char *buf, int sz, FILE *f)
@@ -109,8 +131,7 @@ static _Bool readl(char *buf, int sz, FILE *f)
 		return 0;
 
 	int l = strlen(buf);
-	if (buf[l-1] != '\n')
-		fatal("Line buffer is too small");
+	assert (buf[l-1] == '\n');
 
 	buf[l-1] = '\0';
 

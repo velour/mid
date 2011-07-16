@@ -1,5 +1,4 @@
 #include "../../include/mid.h"
-#include "../../include/log.h"
 #include <assert.h>
 
 void animupdate(Anim *a)

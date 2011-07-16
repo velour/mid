@@ -45,6 +45,9 @@ int main(int argc, char *argv[])
 		(Point) { (Startx+1) * Twidth, (Starty+1) * Theight } };
 
 	Zone *zn = zoneread(stdin);
+	if (!zn)
+		fatal("Failed to read the zone: %s", miderrstr());
+
 	Loc ls[zn->lvl->d * zn->lvl->w * zn->lvl->h];
 
 	int i;

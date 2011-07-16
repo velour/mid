@@ -39,6 +39,9 @@ int main(int argc, char *argv[])
 			fatal("Invalid number: %s", argv[argc-1]);
 
 	Zone *zn = zoneread(stdin);
+	if (!zn)
+		fatal("Failed to read the zone: %s", miderrstr());
+
 	Loc ls[zn->lvl->d * zn->lvl->w * zn->lvl->h];
 	int nls = locs(zn, ls);
 

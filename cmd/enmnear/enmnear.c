@@ -22,6 +22,8 @@ int main(int argc, char *argv[])
 		num = strtol(argv[2], NULL, 10);
 
 	Zone *zn = zoneread(stdin);
+	if (!zn)
+		fatal("Failed to read the zone: %s", miderrstr());
 
 	int sz = zn->lvl->w * zn->lvl->h;
 	Point pts[sz];

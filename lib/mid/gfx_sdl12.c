@@ -249,5 +249,5 @@ static void prvidinfo(void)
 	PR("Software to hardware color key blits accelerated", vi->blit_sw_CC);
 	PR("Software to hardware alpha blits accelerated", vi->blit_sw_A);
 	PR("Color fills accelerated", vi->blit_fill);
-	printf("Total video memory (KB):	%u\n", vi->video_mem);
+	printf("Total video memory (KB):a	%u\n", vi->video_mem);
 }
