@@ -8,7 +8,6 @@ static void chase(Enemy*,Player*,Lvl*);
 static void hunt(Enemy*,Player*,Lvl*);
 
 void aijumper(Ai *ai, double jv){
-fprintf(stderr, "assign dojump = %p on %p\n", dojump, ai);
 	ai->update = dojump;
 	ai->mv = (Point){0, jv};
 	ai->awdst = 0;

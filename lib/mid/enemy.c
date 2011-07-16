@@ -84,8 +84,6 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 
 	Unti *u = e->data;
 
-fprintf(stderr, "cal ai.update = %p on %p\n", e->ai.update, &e->ai);
-
 //TODO: fix initialization	e->ai.update(e, p, l);
 	bodyupdate(&e->b, l);
 
