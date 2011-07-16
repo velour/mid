@@ -14,6 +14,7 @@ typedef struct Loc {
 
 extern _Bool enemyinit(Enemy *, EnemyID id, int x, int y);
 static int rng(Rng *, int, char *[]);
+static int rmz(Loc [], int nls, int z);
 static int idargs(int argc, char *argv[], int **ids);
 static int locs(Zone *, Loc []);
 static _Bool goodloc(Zone *, int, Point);
@@ -52,7 +53,10 @@ int main(int argc, char *argv[])
 		nls--;
 		Enemy enm;
 		enemyinit(&enm, ids[idind], l.p.x, l.p.y);
-		zoneaddenemy(zn, l.z, enm);
+		if (!zoneaddenemy(zn, l.z, enm)) {
+			nls = rmz(ls, nls, l.z);
+			num--;
+		}
 	}
 
 	if (i < num)
@@ -121,4 +125,16 @@ static _Bool goodloc(Zone *zn, int z, Point pt)
 		&& zonefits(zn, z, pt, (Point) { Twidth, Theight })
 		&& zoneonground(zn, z, pt, (Point) { Twidth, Theight })
 		&& !zoneoverlap(zn, z, pt, (Point) { Twidth, Theight });
+}
+
+static int rmz(Loc ls[], int nls, int z)
+{
+	for (int i = 0; i < nls; i++) {
+		if (ls[i].z != z)
+			continue;
+		ls[i] = ls[nls-1];
+		nls--;
+	}
+
+	return nls;
 }

@@ -16,6 +16,7 @@ Point wh;
 Rect start;
 
 static int rng(Rng *, int, char *[]);
+static int rmz(Loc [], int nls, int z);
 static int idargs(int argc, char *argv[], int **ids);
 static int locs(Zone *, Loc []);
 static _Bool goodloc(Zone *, int, Point);
@@ -61,7 +62,10 @@ int main(int argc, char *argv[])
 		nls--;
 		Env env;
 		envinit(&env, id, l.p);
-		zoneaddenv(zn, l.z, env);
+		if (!zoneaddenv(zn, l.z, env)) {
+			nls = rmz(ls, nls, l.z);
+			num--;
+		}
 	}
 
 	if (i < num)
@@ -132,4 +136,16 @@ static _Bool goodloc(Zone *zn, int z, Point pt)
 		&& zonefits(zn, z, pt, wh)
 		&& zoneonground(zn, z, pt, wh)
 		&& !zoneoverlap(zn, z, pt, wh);
+}
+
+static int rmz(Loc ls[], int nls, int z)
+{
+	for (int i = 0; i < nls; i++) {
+		if (ls[i].z != z)
+			continue;
+		ls[i] = ls[nls-1];
+		nls--;
+	}
+
+	return nls;
 }

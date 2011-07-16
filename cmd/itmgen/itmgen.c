@@ -13,6 +13,7 @@ typedef struct Loc {
 } Loc;
 
 static int rng(Rng *, int, char *[]);
+static int rmz(Loc [], int nls, int z);
 static int idargs(int argc, char *argv[], int **ids);
 static int locs(Zone *, Loc []);
 static _Bool goodloc(Zone *, int, Point);
@@ -51,7 +52,11 @@ int main(int argc, char *argv[])
 		nls--;
 		Item it;
 		iteminit(&it, ids[idind], l.p);
-		zoneadditem(zn, l.z, it);
+		if (!zoneadditem(zn, l.z, it)) {
+			/* oops, this z-layer is full. */
+			nls = rmz(ls, nls, l.z);
+			num--;
+		}
 	}
 
 	if (i < num)
@@ -120,4 +125,16 @@ static _Bool goodloc(Zone *zn, int z, Point pt)
 		&& zonefits(zn, z, pt, (Point) { Twidth, Theight })
 		&& zoneonground(zn, z, pt, (Point) { Twidth, Theight })
 		&& !zoneoverlap(zn, z, pt, (Point) { Twidth, Theight });
+}
+
+static int rmz(Loc ls[], int nls, int z)
+{
+	for (int i = 0; i < nls; i++) {
+		if (ls[i].z != z)
+			continue;
+		ls[i] = ls[nls-1];
+		nls--;
+	}
+
+	return nls;
 }
