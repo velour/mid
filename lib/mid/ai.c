@@ -39,8 +39,10 @@ void aihunter(Ai *ai, double jv, double wv, double awdst){
 }
 
 static void dojump(Enemy *e, Player *p, Lvl *lvl){
-	if(!e->b.fall)
+	if(!e->b.fall){
 		e->b.vel.y = -e->ai.mv.y;
+		e->b.fall = 1;
+	}
 }
 
 static void walk(Enemy *e, Player *p, Lvl *lvl){
