@@ -16,6 +16,7 @@ struct ItemOps{
 
 static void statupupdate(Item*,Player*,Lvl*);
 static void copperupdate(Item*,Player*,Lvl*);
+static void healthupdate(Item *, Player *, Lvl *);
 
 static Sfx *goldgrab;
 static Sfx *gengrab;
@@ -32,6 +33,12 @@ static ItemOps ops[] = {
 		"img/items.png",
 		copperupdate,
 		{ .row = 1, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
+	},
+	[ItemHealth] = {
+		"Tacos!",
+		"img/items.png",
+		healthupdate,
+		{ .row = 1, .len = 1, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
 	},
 };
 
@@ -126,6 +133,16 @@ static void copperupdate(Item *i, Player *p, Lvl *l){
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(goldgrab);
 		p->money++;
+		i->gotit = 1;
+	}
+}
+
+static void healthupdate(Item *i, Player *p, Lvl *l){
+	bodyupdate(&i->body, l);
+
+	if(isect(i->body.bbox, playerbox(p))){
+		sfxplay(goldgrab);
+		playerheal(p, 1);
 		i->gotit = 1;
 	}
 }

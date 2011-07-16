@@ -195,6 +195,13 @@ void playerdmg(Player *p, int x){
 		p->eqp[StatHp] = 0;
 }
 
+void playerheal(Player *p, int x)
+{
+	p->eqp[StatHp] += x;
+	if (p->eqp[StatHp] > p->stats[StatHp])
+		p->eqp[StatHp] = p->stats[StatHp];
+}
+
 _Bool playertake(Player *p, Item *i){
 	for(size_t j = 0; j < Maxinv; j++){
 		if(p->inv[j].id > 0)

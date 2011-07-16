@@ -368,6 +368,7 @@ enum ItemID{
 	ItemNone,
 	ItemStatup,
 	ItemCopper,
+	ItemHealth,
 	ItemMax
 };
 
@@ -428,7 +429,8 @@ void playerdraw(Gfx *, Player *);
 void playerhandle(Player *, Event *);
 Point playerpos(Player *);
 Rect playerbox(Player *);
-void playerdmg(Player *, int x);
+void playerdmg(Player *, int);
+void playerheal(Player *, int);
 _Bool playertake(Player *, Item *);
 
 typedef enum EnemyID EnemyID;
