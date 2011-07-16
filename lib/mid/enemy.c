@@ -65,7 +65,6 @@ struct Unti{
 };
 
 static _Bool untiinit(Enemy *e, int x, int y){
-	aijumper(&e->ai, 4);
 	e->hp = 1;
 
 	Unti *u = xalloc(1, sizeof(*u));
@@ -86,7 +85,7 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 
 	Unti *u = e->data;
 
-//TODO: fix initialization	e->ai.update(e, p, l);
+	e->ai.update(e, p, l);
 	bodyupdate(&e->b, l);
 
 	if(isect(e->b.bbox, playerbox(p))){
@@ -121,6 +120,7 @@ static _Bool untiscan(char *buf, Enemy *e)
 	u->c = (Color){ r, g, b, a };
 	u->img = resrcacq(imgs, "img/unti.png", 0);
 	e->data = u;
+	aijumper(&e->ai, 8);
 
 	return 1;
 }
