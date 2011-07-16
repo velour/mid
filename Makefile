@@ -17,11 +17,11 @@ LIBS :=\
 	rng\
 
 ifndef CC
-CC := clang
+CC := clang -fno-color-diagnostics
 endif
 
 ifndef LD
-LD := clang
+LD := clang -fno-color-diagnostics
 endif
 
 ifndef AR
