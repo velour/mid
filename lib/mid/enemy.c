@@ -109,8 +109,7 @@ static void untidraw(Enemy *e, Gfx *g){
 	camdrawimg(g, u->img, e->b.bbox.a);
 }
 
-static _Bool untiscan(char *buf, Enemy *e)
-{
+static _Bool untiscan(char *buf, Enemy *e){
 	int r, g, b, a;
 
 	if (!scangeom(buf, "dyddddd", &e->id, &e->b, &e->hp, &r, &g, &b, &a))
@@ -125,25 +124,21 @@ static _Bool untiscan(char *buf, Enemy *e)
 	return 1;
 }
 
-static _Bool untiprint(char *buf, size_t sz, Enemy *e)
-{
+static _Bool untiprint(char *buf, size_t sz, Enemy *e){
 	Unti *u = e->data;
 	Color c = u->c;
 	return printgeom(buf, sz, "dyddddd", e->id, e->b, e->hp, c.r, c.g, c.b, c.a);
 }
 
-static _Bool defaultscan(char *buf, Enemy *e)
-{
+static _Bool defaultscan(char *buf, Enemy *e){
 	return scangeom(buf, "dyd", &e->id, &e->b, &e->hp);
 }
 
-static _Bool defaultprint(char *buf, size_t sz, Enemy *e)
-{
+static _Bool defaultprint(char *buf, size_t sz, Enemy *e){
 	return printgeom(buf, sz, "dyd", e->id, e->b, e->hp);
 }
 
-_Bool enemyscan(char *buf, Enemy *e)
-{
+_Bool enemyscan(char *buf, Enemy *e){
 	int id;
 	// need to take a peek at the ID to dispatch the correct scan method.
 	if (sscanf(buf, " %d", &id) != 1)
@@ -153,8 +148,7 @@ _Bool enemyscan(char *buf, Enemy *e)
 	return mt[id].scan(buf, e);
 }
 
-_Bool enemyprint(char *buf, size_t s, Enemy *e)
-{
+_Bool enemyprint(char *buf, size_t s, Enemy *e){
 	if (!mt[e->id].print)
 		return defaultprint(buf, s, e); 
 	return mt[e->id].print(buf, s, e);
