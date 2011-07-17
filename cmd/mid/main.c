@@ -70,6 +70,7 @@ int main(int argc, char *argv[])
 
 	scrnrun(stk, gfx);
 	pr("Mean frame time: %g ms", meanftime);
+	scrnstkfree(stk);
 
 	deinit();
 	return 0;
