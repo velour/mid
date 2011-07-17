@@ -24,7 +24,7 @@ Game *gamenew(void)
 
 	unsigned int seed = rand();
 	rnginit(&gm.rng, seed);
-	pr("mid seed: %u", seed);
+	pr("game seed: %u", seed);
 
 	gm.zone = zonegen(&gm.rng);
 	if (!gm.zone)
