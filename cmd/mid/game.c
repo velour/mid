@@ -23,7 +23,6 @@ Game *gamenew(void)
 	lvlinit();
 
 	unsigned int seed = rand();
-	seed = 404320562;
 	rnginit(&gm.rng, seed);
 	pr("game seed: %u", seed);
 
