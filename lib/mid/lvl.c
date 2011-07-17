@@ -336,7 +336,7 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale)
 		int pxx = offs.x + x;
 		for (int y = 0; y < h; y++) {
 			Blk *b = blk(l, x, y, l->z);
-			if (!(b->flags & Blkvis) && debugging)
+			if (!(b->flags & Blkvis) && !debugging)
 				continue;
 			int t = b->tile;
 			Point pt = (Point){ pxx, offs.y + y };
