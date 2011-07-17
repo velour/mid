@@ -48,7 +48,7 @@ Zone *zonegen(Rng *r)
 Zone *zoneget(int znum)
 {
 	char zfile[Bufsz];
-	snprintf(zfile, Bufsz, "%s/%d.zone", zonedi
+	snprintf(zfile, Bufsz, "%s/%d.zone", zonedir, znum);
 
 	FILE *f = fopen(zfile, "r");
 	if (!f)
