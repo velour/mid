@@ -3,6 +3,7 @@
 #include "../../include/mid.h"
 #include <SDL/SDL_events.h>
 #include <SDL/SDL_timer.h>
+#include <stdbool.h>
 
 // This will probably never change in SDL, but just in case...
 enum { assert_keychar_eq = 1/!!('a' == SDLK_a) };
@@ -11,17 +12,26 @@ static int prevtm = 0;
 
 double meanftime = 0.0;
 static unsigned int nframes = 0;
+static bool ignframe = false;
 
 void framestart(void){
 	prevtm = SDL_GetTicks();
+}
+
+void ignframetime(void)
+{
+	ignframe = true;
 }
 
 void framefinish(void){
 	int time = SDL_GetTicks();
 	int delay = prevtm + Ticktm - time;
 	int ftime = time - prevtm;
-	nframes++;
-	meanftime = meanftime + ((ftime - meanftime) / nframes);
+	if (!ignframe) {
+		ignframe = false;
+		nframes++;
+		meanftime = meanftime + ((ftime - meanftime) / nframes);
+	}
 	if(delay > 0)
 		SDL_Delay(delay);
 }

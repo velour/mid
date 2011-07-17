@@ -35,6 +35,7 @@ void zonestdin()
 
 Zone *zonegen(Rng *r)
 {
+	ignframetime();
 	FILE *fin = zfile(r);
 	Zone *z = zoneread(fin);
 	if (!z)
@@ -46,6 +47,7 @@ Zone *zonegen(Rng *r)
 
 Zone *zoneget(int znum)
 {
+	ignframetime();
 	char zfile[Bufsz];
 	snprintf(zfile, Bufsz, "%s/%d.zone", zonedir, znum);
 
@@ -63,6 +65,7 @@ Zone *zoneget(int znum)
 
 void zoneput(Zone *zn, int znum)
 {
+	ignframetime();
 	ensuredir();
 	
 	char zfile[Bufsz];

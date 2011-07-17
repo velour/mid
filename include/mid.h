@@ -2,8 +2,11 @@
 // Licensed under the MIT License. See LICENSE for details.
 #include <stdio.h> // FILE
 
-/* Mean frame time.  May be useful for comparing computation effort. */
+// Mean frame time
 extern double meanftime;
+// Ignore the time for this frame in the mean computation.
+void ignframetime(void);
+
 extern int debugging;
 extern _Bool mute;
 
