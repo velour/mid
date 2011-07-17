@@ -527,7 +527,6 @@ void zoneupdate(Zone *zn, Player *p, Point *tr);
 
 /* Fills the array with locations that pass the given predicate. */
 int zonelocs(Zone *, int z, _Bool (*)(Zone *, int, Point), Point [], int);
-_Bool zoneallflags(Zone *zn, int z, Point loc, Point wh, unsigned int f);
 _Bool zonehasflags(Zone *zn, int z, Point loc, Point wh, unsigned int f);
 _Bool zoneongrnd(Zone *zn, int z, Point loc, Point wh);
 _Bool zoneoverlap(Zone *zn, int z, Point loc, Point wh);
