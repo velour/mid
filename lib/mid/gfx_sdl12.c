@@ -33,7 +33,7 @@ Gfx *gfxinit(int w, int h, const char *title){
 			return NULL;
 	}
 
-	if (debugging >= 2)
+	if (debugging)
 		prvidinfo();
 
 	gfx.scrn = SDL_SetVideoMode(w, h, 0, SDL_HWSURFACE|SDL_DOUBLEBUF);

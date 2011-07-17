@@ -262,19 +262,19 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd)
 		for (int y = 0; y < h; y++) {
 			Blk *b = blk(l, x, y, l->z);
 			int vis = b->flags & Blkvis;
-			if (!vis && bkgrnd && debugging < 2)
+			if (!vis && bkgrnd && debugging)
 				continue;
 			int t = b->tile;
 			Point pt = {0};
 
-			if (vis || debugging >= 2) {
+			if (vis || debugging) {
 				int mn = bkgrnd ? 0 : (Tlayers-1) / 2 + 1;
 				int mx = bkgrnd ? (Tlayers-1) / 2 : Tlayers-1;
 				pt = (Point){ pxx, y * Theight };
 				tiledrawlyrs(g, t, pt, mn, mx);
 			}
 			if (!bkgrnd) {
-				if(debugging >= 2){
+				if(debugging){
 					Rect r = tilebbox(x, y);
 					camdrawrect(g, r, (Color){0,0,0,255});
 					continue;
@@ -336,7 +336,7 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale)
 		int pxx = offs.x + x;
 		for (int y = 0; y < h; y++) {
 			Blk *b = blk(l, x, y, l->z);
-			if (!(b->flags & Blkvis) && debugging < 2)
+			if (!(b->flags & Blkvis) && debugging)
 				continue;
 			int t = b->tile;
 			Point pt = (Point){ pxx, offs.y + y };

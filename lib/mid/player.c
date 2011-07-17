@@ -138,7 +138,7 @@ void playerupdate(Player *p, Zone *zn, Point *tr)
 
 void playerdraw(Gfx *g, Player *p)
 {
-	if(debugging > 1)
+	if(debugging)
 		camfillrect(g, p->body.bbox, (Color){255,0,0,255});
 
 	if(p->iframes % 4 == 0)

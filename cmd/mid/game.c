@@ -95,7 +95,7 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 
 	zoneupdate(gm->zone, &gm->player, &gm->transl);
 	trystairs(stk, gm);
-	if(gm->player.eqp[StatHp] <= 0 && debugging < 2)
+	if(gm->player.eqp[StatHp] <= 0 && debugging)
 		scrnstkpush(stk, goverscrnnew(&gm->player));
 }
 
