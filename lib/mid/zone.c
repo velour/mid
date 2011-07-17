@@ -260,9 +260,9 @@ _Bool zonefits(Zone *zn, int z, Point loc, Point wh)
 _Bool zoneonground(Zone *zn, int z, Point loc, Point wh)
 {
 	wh.x /= Twidth;
-	int y =	loc.y + wh.y / Theight;
+	int y = loc.y + wh.y / Theight;
 	for (int x = loc.x; x < (int) (loc.x + wh.x + 0.5); x++) {
-		if (blk(zn->lvl, x, y, z)->tile != '#')
+		if (blkinfo(zn->lvl, x, y, z).flags & Tilecollide)
 			return false;
 	}
 	return true;
