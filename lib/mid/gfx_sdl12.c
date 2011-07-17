@@ -205,6 +205,10 @@ static Img *vtxt2img(Gfx *g, Txt *t, const char *fmt, va_list ap)
 	return i;
 }
 
+void camreset(Gfx *g){
+	g->tr = (Point){0};
+}
+
 void cammove(Gfx *g, double dx, double dy){
 	g->tr.x += dx;
 	g->tr.y += dy;
