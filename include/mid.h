@@ -260,6 +260,8 @@ enum {
 	Tilewater = 1<<2,
 	Tilefdoor = 1<<3,
 	Tilebdoor = 1<<4,
+	Tiledown = 1 << 5,
+	Tileup = 1 << 6,
 };
 
 enum { Theight = 32, Twidth = 32 };

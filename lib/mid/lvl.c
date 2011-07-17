@@ -100,6 +100,40 @@ static Tinfo tiles[] = {
 		},
 		.flags = Tilefdoor | Tilewater | Tilereach
 	},
+	['d'] = {
+		.ok = true,
+		.anims = {
+			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[1] = { .row = 5, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+		},
+		.flags = Tiledown | Tilereach
+	},
+	['D'] = {
+		.ok = true,
+		.anims = {
+			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[1] = { .row = 5, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[3] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
+		},
+		.flags = Tiledown | Tilewater | Tilereach
+	},
+	['u'] = {
+		.ok = true,
+		.anims = {
+			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[1] = { .row = 6, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+		},
+		.flags = Tileup | Tilereach
+	},
+	['U'] = {
+		.ok = true,
+		.anims = {
+			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[1] = { .row = 6, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[3] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
+		},
+		.flags = Tileup | Tilewater | Tilereach
+	},
 };
 
 int debugging = 0;

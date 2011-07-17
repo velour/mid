@@ -17,8 +17,11 @@ extern void lvlwrite(FILE *, Lvl *);
  * next zlayer. */
 static Loc zlayer(Loc loc, Lvl *lvl);
 static void buildpath(Lvl *lvl, Path *p, Loc loc);
+static void stairs(Rng *, Lvl *);
+static int reachlocs(Lvl *, Loc [], int);
 
 Rng r;
+enum { Startx = 2, Starty = 2 };
 
 int main(int argc, char *argv[])
 {
@@ -39,7 +42,7 @@ int main(int argc, char *argv[])
 	mvini();
 	init(lvl);
 
-	Loc loc = (Loc) { 2, 2 };
+	Loc loc = (Loc) { Startx, Starty };
 	blk(lvl, loc.x, loc.y, 0)->tile = ' ';
 	for (int z = 0; z < d; z++) {
 		loc = zlayer(loc, lvl);
@@ -52,6 +55,7 @@ int main(int argc, char *argv[])
 	}
 
 	extradoors(&r, lvl);
+	stairs(&r, lvl);
 
 	lvlwrite(stdout, lvl);
 	lvlfree(lvl);
@@ -122,4 +126,35 @@ static void buildpath(Lvl *lvl, Path *p, Loc loc)
 unsigned int rnd(int min, int max)
 {
 	return rngintincl(&r, min, max);
+}
+
+static void stairs(Rng *r, Lvl *lvl)
+{
+	if (blkinfo(lvl, Startx, Starty, 0).flags & Tilewater)
+		blk(lvl, Startx, Starty, 0)->tile = 'U';
+	else
+		blk(lvl, Startx, Starty, 0)->tile = 'u';
+
+	int z = rnd(0, lvl->d - 1);
+	Loc ls[lvl->w * lvl->h];
+	int nls = reachlocs(lvl, ls, z);
+	int ind = rnd(0, nls -1);
+
+	if (blkinfo(lvl, ls[ind].x, ls[ind].y, 0).flags & Tilewater)
+		blk(lvl, ls[ind].x, ls[ind].y, 0)->tile = 'D';
+	else
+		blk(lvl, ls[ind].x, ls[ind].y, 0)->tile = 'd';
+}
+
+static int reachlocs(Lvl *lvl, Loc ls[], int z)
+{
+	int nls = 0;
+	for (int x = 1; x < lvl->w-1; x++)
+	for (int y = 1; y < lvl->h-1; y++) {
+		if (blkinfo(lvl, x, y, z).flags & Tilereach) {
+			ls[nls] = (Loc){ x, y };
+			nls++;
+		}
+	}
+	return nls;
 }
