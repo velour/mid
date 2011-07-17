@@ -36,9 +36,6 @@ void zonestdin()
 
 Zone *zonegen(Rng *r)
 {
-	if (debugging)
-		pr("Generating a new zone");
-
 	FILE *fin = zfile(r);
 	Zone *z = zoneread(fin);
 	if (!z)
@@ -51,10 +48,7 @@ Zone *zonegen(Rng *r)
 Zone *zoneget(int znum)
 {
 	char zfile[Bufsz];
-	snprintf(zfile, Bufsz, "%s/%d.zone", zonedir, znum);
-
-	if (debugging)
-		pr("Loading zone from [%s]", zfile);
+	snprintf(zfile, Bufsz, "%s/%d.zone", zonedi
 
 	FILE *f = fopen(zfile, "r");
 	if (!f)
@@ -74,9 +68,6 @@ void zoneput(Zone *zn, int znum)
 	
 	char zfile[Bufsz];
 	snprintf(zfile, Bufsz, "%s/%d.zone", zonedir, znum);
-
-	if (debugging)
-		pr("Storing zone to [%s]", zfile);
 
 	FILE *f = fopen(zfile, "w");
 	if (!f)
@@ -106,8 +97,6 @@ static void ensuredir()
 {
 	struct stat sb;
 	if (stat(zonedir, &sb) < 0) {
-		if (debugging)
-			pr("Making zone directory [%s]", zonedir);
 		if (mkdir(zonedir, 0700) < 0)
 			fatal("Failed to make the zone directory [%s]: %s", zonedir, miderrstr());
 	} else if (!S_ISDIR(sb.st_mode)) {
@@ -133,10 +122,8 @@ static FILE *zpipe(Rng *r)
 	pipeadd(&p, " | ./cmd/envgen/envgen -s %u 1 1", rngint(r));
 	pipeadd(&p, " | ./cmd/enmgen/enmgen -s %u 1 50", rngint(r));
 
-	if (debugging) {
-		pipeadd(&p, "| tee cur.lvl");
-		pr("lvlgen pipeline: [%s]", p.cmd);
-	}
+	pipeadd(&p, "| tee cur.lvl");
+	pr("lvlgen pipeline: [%s]", p.cmd);
 
 	FILE *fin = popen(p.cmd, "r");
 	if (!fin)
