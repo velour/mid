@@ -38,7 +38,7 @@ static ItemOps ops[] = {
 		"Heart",
 		"img/items.png",
 		healthupdate,
-		{ .row = 2, .len = 2, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
+		{ .row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
 	},
 };
 
@@ -141,7 +141,7 @@ static void healthupdate(Item *i, Player *p, Lvl *l){
 	bodyupdate(&i->body, l);
 
 	if(isect(i->body.bbox, playerbox(p))){
-		sfxplay(goldgrab);
+		sfxplay(gengrab);
 		playerheal(p, 1);
 		i->gotit = 1;
 	}
