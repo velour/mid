@@ -8,7 +8,7 @@
 #include "../../include/rng.h"
 #include "game.h"
 
-enum { Bufsz = 256 };
+enum { Bufsz = 1024 };
 
 typedef struct Pipe {
 	int n;
@@ -54,6 +54,7 @@ static FILE *zpipe(Rng *r)
 	pipeadd(&p, "./cmd/lvlgen/lvlgen -s %u 50 50 5", rngint(r));
 	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 1 1", rngint(r));
 	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 2 50", rngint(r));
+	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 3 10", rngint(r));
 	pipeadd(&p, " | ./cmd/envgen/envgen -s %u 1 1", rngint(r));
 	pipeadd(&p, " | ./cmd/enmgen/enmgen -s %u 1 50", rngint(r));
 

@@ -38,7 +38,7 @@ static ItemOps ops[] = {
 		"Tacos!",
 		"img/items.png",
 		healthupdate,
-		{ .row = 1, .len = 1, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
+		{ .row = 2, .len = 2, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
 	},
 };
 
