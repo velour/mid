@@ -19,7 +19,7 @@ static _Bool readenv(char *buf, Zone *zn);
 static _Bool readenemy(char *buf, Zone *zn);
 static _Bool readl(char *buf, int sz, FILE *f);
 static _Bool readblkflgs(char *, Lvl *);
-static _Bool blkflgszero(Lvl *l);
+static _Bool blkflgszero(Lvl *lvl, int y, int z);
 static void writeblkflgs(FILE *, Lvl *);
 
 enum { Bufsz = 256 };
@@ -298,7 +298,7 @@ void zoneupdate(Zone *zn, Player *p, Point *tr)
 	int z = zn->lvl->z;
 
 	lvlupdate(zn->lvl);
-	playerupdate(p, zn->lvl, tr);
+	playerupdate(p, zn, tr);
 
 	itemupdateanims();
 
@@ -348,33 +348,45 @@ void zonedraw(Gfx *g, Zone *zn, Player *p)
 
 static void writeblkflgs(FILE *f, Lvl *lvl)
 {
-	if (blkflgszero(lvl))
-		return;
+	for (int z = 0; z < lvl->d; z++) {
+	for (int y = 0; y < lvl->h; y++) {
+		if (blkflgszero(lvl, y, z))
+			return;
 
-	fputc('f', f);
-	for (int i = 0; i < lvl->d * lvl->w * lvl->h; i++)
-		fprintf(f, " %u", lvl->blks[i].flags);
-	fputc('\n', f);
+		fprintf(f, "f %u %u", z, y);
+		for (int x = 0; x < lvl->w; x++)
+			fprintf(f, " %u", blk(lvl, x, y, z)->flags);
+		fputc('\n', f);
+	}
+	}
 }
 
 static _Bool readblkflgs(char *buf, Lvl *lvl)
 {
-	int n;
+	int z, y, n;
 
-	for (int i = 0; i < lvl->d * lvl->w * lvl->h; i++) {
-		if (sscanf(buf, " %u%n", &lvl->blks[i].flags, &n) != 1) {
-			seterrstr("Failed to read flags for block %d", i);
+	if (sscanf(buf, " %u %u%n", &z, &y, &n) != 2) {
+		seterrstr("Failed to read flag row");
+		return false;
+	}
+	buf += n;
+
+	for (int x = 0; x < lvl->w; x++) {
+		unsigned int flgs = 0;
+		if (sscanf(buf, " %u%n", &flgs, &n) != 1) {
+			seterrstr("Failed to read flags for block %u, %u, %u", x, y, z);
 			return false;
 		}
+		blk(lvl, x, y, z)->flags = flgs;
 		buf += n;
 	}
 	return true;
 }
 
-static _Bool blkflgszero(Lvl *lvl)
+static _Bool blkflgszero(Lvl *lvl, int y, int z)
 {
-	for (int i = 0; i < lvl->d * lvl->w * lvl->h; i++) {
-		if (lvl->blks[i].flags != 0)
+	for (int x = 0; x < lvl->w; x++) {
+		if (blk(lvl, x, y, z)->flags != 0)
 			return false;
 	}
 

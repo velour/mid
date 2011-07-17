@@ -3,11 +3,15 @@
 #include <assert.h>
 #include <stdarg.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include "../../include/rng.h"
 #include "game.h"
 
+static const char *zonedir = "_zones";
 enum { Bufsz = 1024 };
 
 typedef struct Pipe {
@@ -17,6 +21,8 @@ typedef struct Pipe {
 
 static FILE *inzone = NULL;
 
+static void ensuredir();
+static Zone *zoneld(char *);
 static FILE *zfile(Rng *r);
 static FILE *zpipe(Rng *r);
 static void zclose(FILE *f);
@@ -30,14 +36,83 @@ void zonestdin()
 
 Zone *zonegen(Rng *r)
 {
+	if (debugging)
+		pr("Generating a new zone");
+
 	FILE *fin = zfile(r);
 	Zone *z = zoneread(fin);
 	if (!z)
 		fatal("Failed to read the zone: %s", miderrstr());
 
 	zclose(fin);
-
 	return z;
+}
+
+Zone *zoneget(int znum)
+{
+	char zfile[Bufsz];
+	snprintf(zfile, Bufsz, "%s/%d.zone", zonedir, znum);
+
+	if (debugging)
+		pr("Loading zone from [%s]", zfile);
+
+	FILE *f = fopen(zfile, "r");
+	if (!f)
+		fatal("Unable to open the zone file [%s]: %s", zfile, miderrstr());
+
+	Zone *zn = zoneread(f);
+	if (!zn)
+		fatal("Failed to read the zone file [%s]: %s", zfile, miderrstr());
+
+	fclose(f);
+	return zn;
+}
+
+void zoneput(Zone *zn, int znum)
+{
+	ensuredir();
+	
+	char zfile[Bufsz];
+	snprintf(zfile, Bufsz, "%s/%d.zone", zonedir, znum);
+
+	if (debugging)
+		pr("Storing zone to [%s]", zfile);
+
+	FILE *f = fopen(zfile, "w");
+	if (!f)
+		fatal("Failed to open zone file for writing [%s]: %s", zfile, miderrstr());
+
+	zonewrite(f, zn);
+	fclose(f);
+}
+
+Blkinfo zonedstairs(Zone *zn)
+{
+	Blkinfo bi;
+
+	for (int z = 0; z < zn->lvl->d; z++) {
+	for (int x = 0; x < zn->lvl->w; x++) {
+	for (int y = 0; y < zn->lvl->h; y++) {
+		bi = blkinfo(zn->lvl, x, y, z);
+		if (bi.flags & Tiledown)
+			return bi;
+	}
+	}
+	}
+	fatal("No down stairs found in this zone");
+}
+
+static void ensuredir()
+{
+	struct stat sb;
+	if (stat(zonedir, &sb) < 0) {
+		if (debugging)
+			pr("Making zone directory [%s]", zonedir);
+		if (mkdir(zonedir, 0700) < 0)
+			fatal("Failed to make the zone directory [%s]: %s", zonedir, miderrstr());
+	} else if (!S_ISDIR(sb.st_mode)) {
+		fatal("Zone directory [%s] is not a directory", zonedir);
+	}
 }
 
 static FILE *zfile(Rng *r)

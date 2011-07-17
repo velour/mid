@@ -100,6 +100,7 @@ Point txtdraw(Gfx *, Txt *, Point, const char *fmt, ...);
 typedef struct Anim Anim;
 
 void cammove(Gfx *, double dx, double dy);
+void camreset(Gfx *);
 void camdrawrect(Gfx *, Rect, Color);
 void camfillrect(Gfx *, Rect, Color);
 void camdrawimg(Gfx *, Img *, Point);
@@ -425,8 +426,11 @@ struct Player {
 	Sword sw;
 };
 
+typedef struct Zone Zone;
+
 void playerinit(Player *p, int x, int y);
-void playerupdate(Player *, Lvl *l, Point *tr);
+void playersetloc(Player *p, int x, int y);	// tile coords
+void playerupdate(Player *, Zone *, Point *tr);
 void playerdraw(Gfx *, Player *);
 void playerhandle(Player *, Event *);
 Point playerpos(Player *);
@@ -498,9 +502,11 @@ enum {
 	Maxz = 5,
 };
 
-typedef struct Zone Zone;
+enum { Gonone, Goup, Godown };
+
 struct Zone {
 	Lvl *lvl;
+	int updown;
 
 	Item itms[Maxz][Maxitms];
 	Env envs[Maxz][Maxenvs];

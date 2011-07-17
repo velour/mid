@@ -51,8 +51,9 @@ void playerinit(Player *p, int x, int y)
 	p->sw.pow = 1;
 }
 
-static void trydoor(Player *p, Lvl *l, Blkinfo bi)
+static void trydoorstairs(Player *p, Zone *zn, Blkinfo bi)
 {
+	Lvl *l = zn->lvl;
 	if (!p->acting)
 		return;
 
@@ -61,23 +62,31 @@ static void trydoor(Player *p, Lvl *l, Blkinfo bi)
 		l->z += 1;
 	else if (p->acting && bi.flags & Tilefdoor)
 		l->z -= 1;
+	else if (p->acting && bi.flags & Tileup)
+		zn->updown = Goup;
+	else if (p->acting && bi.flags & Tiledown)
+		zn->updown = Godown;
 
 	p->acting = false;
 
 	if (oldz == l->z)
 		return;
 
-	/* center the player on the door to prevent a bug that colud
-	 * land the player in a wall (possibly pushing them out of the
-	 * level). */
-	Point dst = (Point) { bi.x * Twidth, bi.y * Theight };
+	/* center the player on the door */
+	playersetloc(p, bi.x, bi.y);
+}
+
+void playersetloc(Player *p, int x, int y)
+{
+	Point dst = (Point) { x * Twidth, y * Theight };
 	Point src = rectnorm(p->body.bbox).a;
 	double dx = dst.x - src.x, dy = dst.y - src.y;
 	rectmv(&p->body.bbox, dx, dy);
 }
 
-void playerupdate(Player *p, Lvl *l, Point *tr)
+void playerupdate(Player *p, Zone *zn, Point *tr)
 {
+	Lvl *l = zn->lvl;
 	Point ppos = playerpos(p);
 
 	Blkinfo bi = lvlmajorblk(l, p->body.bbox);
@@ -93,7 +102,7 @@ void playerupdate(Player *p, Lvl *l, Point *tr)
 	double oldddy = p->body.a.y;
 	p->body.a.y = blkgrav(bi.flags);
 
-	trydoor(p, l, bi);
+	trydoorstairs(p, zn, bi);
 
 	bodyupdate(&p->body, l);
 	p->body.vel.x = olddx;

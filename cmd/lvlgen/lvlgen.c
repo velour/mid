@@ -150,8 +150,9 @@ static int reachlocs(Lvl *lvl, Loc ls[], int z)
 {
 	int nls = 0;
 	for (int x = 1; x < lvl->w-1; x++)
-	for (int y = 1; y < lvl->h-1; y++) {
-		if (blkinfo(lvl, x, y, z).flags & Tilereach) {
+	for (int y = 1; y < lvl->h-2; y++) {
+		if (blkinfo(lvl, x, y, z).flags & Tilereach
+			&& blkinfo(lvl, x, y+1, z).flags & Tilecollide) {
 			ls[nls] = (Loc){ x, y };
 			nls++;
 		}

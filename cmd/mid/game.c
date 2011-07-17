@@ -11,7 +11,9 @@
 struct Game {
 	Player player;
 	Point transl;
+	int znum, zmax;
 	Zone *zone;
+	Rng rng;
 };
 
 Game *gamenew(void)
@@ -21,12 +23,11 @@ Game *gamenew(void)
 	lvlinit();
 
 	unsigned int seed = rand();
-	Rng r;
-	rnginit(&r, seed);
+	rnginit(&gm.rng, seed);
 	if (debugging)
 		pr("mid seed: %u", seed);
 
-	gm.zone = zonegen(&r);
+	gm.zone = zonegen(&gm.rng);
 	if (!gm.zone)
 		fatal("Failed to load zone: %s", miderrstr());
 
@@ -49,10 +50,52 @@ void gamefree(Scrn *s)
 	*gm = (Game){};
 }
 
+static void trystairs(Scrnstk *stk, Game *gm)
+{
+	if (gm->zone->updown == Gonone)
+		return;
+
+	Point loc0 = gm->player.body.bbox.a;
+	zoneput(gm->zone, gm->znum);
+
+	if (gm->zone->updown == Goup) {
+		gm->znum--;
+		if (gm->znum < 0) {
+			pr("You just left the dungeon");
+			scrnstkpush(stk, goverscrnnew(&gm->player));
+			return;
+		}
+		gm->zone = zoneget(gm->znum);
+
+		Blkinfo bi = zonedstairs(gm->zone);
+		gm->zone->lvl->z = bi.z;
+		playersetloc(&gm->player, bi.x, bi.y);
+	} else if (gm->zone->updown == Godown) {
+		zoneput(gm->zone, gm->znum);
+		gm->znum++;
+		if (gm->znum > gm->zmax) {
+			gm->zmax = gm->znum;
+			gm->zone = zonegen(&gm->rng);
+		} else {
+			gm->zone = zoneget(gm->znum);
+		}
+
+		playersetloc(&gm->player, 2, 2);
+	}
+
+	Point loc1 = gm->player.body.bbox.a;
+	gm->transl = (Point) {
+		gm->transl.x + loc0.x - loc1.x,
+		gm->transl.y + loc0.y - loc1.y
+	};
+}
+
 void gameupdate(Scrn *s, Scrnstk *stk)
 {
 	Game *gm = s->data;
+
 	zoneupdate(gm->zone, &gm->player, &gm->transl);
+	trystairs(stk, gm);
 	if(gm->player.eqp[StatHp] <= 0 && debugging < 2)
 		scrnstkpush(stk, goverscrnnew(&gm->player));
 }

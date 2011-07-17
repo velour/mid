@@ -4,7 +4,11 @@ struct Rng;
 
 /* Notify zone loader to use stdin for the next zone. */
 void zonestdin();
-Zone *zonegen(struct Rng *);
+Zone *zoneget(int);
+Zone *zonegen(struct Rng *r);
+void zoneput(Zone *, int);
+// Find the down stairs in this zone.
+Blkinfo zonedstairs(Zone *zn);
 
 typedef struct Game Game;
 Game *gamenew(void);

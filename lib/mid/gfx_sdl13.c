@@ -227,6 +227,11 @@ void cammove(Gfx *g, double dx, double dy){
 	g->tr.y += dy;
 }
 
+void camreset(Gfx *g)
+{
+	g->tr = (Point) { 0, 0 };
+}
+
 void camdrawrect(Gfx *g, Rect r, Color c){
 	r.a = vecadd(r.a, g->tr);
 	r.b = vecadd(r.b, g->tr);
