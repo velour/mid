@@ -22,7 +22,6 @@ typedef struct Pipe {
 static FILE *inzone = NULL;
 
 static void ensuredir();
-static Zone *zoneld(char *);
 static FILE *zfile(Rng *r);
 static FILE *zpipe(Rng *r);
 static void zclose(FILE *f);
