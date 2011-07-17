@@ -528,6 +528,7 @@ _Bool zonefits(Zone *zn, int z, Point loc, Point wh);
 _Bool zonereach(Zone *zn, int z, Point loc, Point wh);
 _Bool zoneongrnd(Zone *zn, int z, Point loc, Point wh);
 _Bool zoneoverlap(Zone *zn, int z, Point loc, Point wh);
+_Bool zoneondoor(Zone *zn, int z, Point loc, Point wh);
 
 /* Scan a set of fields from a string with the given format.  The
  * format is specified as a string of characters with the following

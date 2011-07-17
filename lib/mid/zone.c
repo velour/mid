@@ -295,6 +295,24 @@ _Bool zoneongrnd(Zone *zn, int z, Point loc, Point wh)
 	return false;
 }
 
+_Bool zoneondoor(Zone *zn, int z, Point loc, Point wh)
+{
+	wh.x /= Twidth;
+	wh.y /= Theight;
+	for (int x = loc.x; x < (int) (loc.x + wh.x + 0.5); x++) {
+		if (x < 0 || x >= zn->lvl->w)
+			continue;
+		for (int y = loc.y; y < (int) (loc.y + wh.y + 0.5); y++) {
+			if (y < 0 || y >= zn->lvl->h)
+				continue;
+			Blkinfo bi = blkinfo(zn->lvl, x, y, z);
+			if (bi.flags & Tilebdoor || bi.flags & Tilefdoor)
+				return true;
+		}
+	}
+	return false;
+}
+
 _Bool zoneoverlap(Zone *zn, int z, Point loc, Point wh)
 {
 	loc.x *= Twidth;
