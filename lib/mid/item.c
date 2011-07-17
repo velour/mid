@@ -35,7 +35,7 @@ static ItemOps ops[] = {
 		{ .row = 1, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
 	},
 	[ItemHealth] = {
-		"Tacos!",
+		"Heart",
 		"img/items.png",
 		healthupdate,
 		{ .row = 2, .len = 2, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
