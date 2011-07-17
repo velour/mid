@@ -126,7 +126,7 @@ static FILE *zpipe(Rng *r)
 {
 	Pipe p;
 	pipeinit(&p);
-	pipeadd(&p, "./cmd/lvlgen/lvlgen -s %u 50 50 5", rngint(r));
+	pipeadd(&p, "./cmd/lvlgen/lvlgen -s %u 25 25 3", rngint(r));
 	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 1 1", rngint(r));
 	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 2 50", rngint(r));
 	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 3 10", rngint(r));
