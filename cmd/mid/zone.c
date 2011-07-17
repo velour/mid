@@ -23,8 +23,8 @@ static FILE *inzone = NULL;
 
 static void ensuredir();
 static FILE *zfile(Rng *r);
+static char *zonefile(int);
 static FILE *zpipe(Rng *r);
-static void zclose(FILE *f);
 static void pipeinit(struct Pipe *);
 static void pipeadd(struct Pipe *, char *, ...);
 
@@ -36,21 +36,31 @@ void zonestdin()
 Zone *zonegen(Rng *r)
 {
 	ignframetime();
-	FILE *fin = zfile(r);
+	FILE *fin = inzone;
+
+	if (!fin)
+		fin = zpipe(r);
 	Zone *z = zoneread(fin);
 	if (!z)
 		fatal("Failed to read the zone: %s", miderrstr());
 
-	zclose(fin);
+	if (inzone) {
+		fclose(fin);
+		inzone = NULL;
+	} else {
+		int ret = pclose(fin);
+		if (ret == -1)
+			fatal("Zone gen pipeline exited with failure: %s", miderrstr());
+	}
+
 	return z;
 }
 
 Zone *zoneget(int znum)
 {
 	ignframetime();
-	char zfile[Bufsz];
-	snprintf(zfile, Bufsz, "%s/%d.zone", zonedir, znum);
 
+	char *zfile = zonefile(znum);
 	FILE *f = fopen(zfile, "r");
 	if (!f)
 		fatal("Unable to open the zone file [%s]: %s", zfile, miderrstr());
@@ -68,9 +78,7 @@ void zoneput(Zone *zn, int znum)
 	ignframetime();
 	ensuredir();
 	
-	char zfile[Bufsz];
-	snprintf(zfile, Bufsz, "%s/%d.zone", zonedir, znum);
-
+	char *zfile = zonefile(znum);
 	FILE *f = fopen(zfile, "w");
 	if (!f)
 		fatal("Failed to open zone file for writing [%s]: %s", zfile, miderrstr());
@@ -95,6 +103,25 @@ Blkinfo zonedstairs(Zone *zn)
 	fatal("No down stairs found in this zone");
 }
 
+void zonecleanup(int zmax)
+{
+	for (int i = 0; i < zmax; i++) {
+		char *zfile = zonefile(i);
+		if (!fsexists(zfile))
+			continue;
+		if (unlink(zfile) < 0)
+			pr("Failed to remove zone file [%s]: %s", zfile, miderrstr());
+	}
+}
+
+// Non re-entrant
+static char *zonefile(int znum)
+{
+	static char zfile[Bufsz];
+	snprintf(zfile, Bufsz, "%s/%d.zone", zonedir, znum);
+	return zfile;
+}
+
 static void ensuredir()
 {
 	struct stat sb;
@@ -104,13 +131,6 @@ static void ensuredir()
 	} else if (!S_ISDIR(sb.st_mode)) {
 		fatal("Zone directory [%s] is not a directory", zonedir);
 	}
-}
-
-static FILE *zfile(Rng *r)
-{
-	if (inzone)
-		return inzone;
-	return zpipe(r);
 }
 
 static FILE *zpipe(Rng *r)
@@ -132,19 +152,6 @@ static FILE *zpipe(Rng *r)
 		fatal("Unable to execute zone gen pipeline: %s", miderrstr());
 
 	return fin;
-}
-
-static void zclose(FILE *f)
-{
-	if (inzone) {
-		fclose(f);
-		inzone = NULL;
-		return;
-	}
-
-	int ret = pclose(f);
-	if (ret == -1)
-		fatal("Zone gen pipeline exited with failure: %s", miderrstr());
 }
 
 static void pipeinit(Pipe *p)

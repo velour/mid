@@ -7,6 +7,7 @@ void zonestdin();
 Zone *zoneget(int);
 Zone *zonegen(struct Rng *r);
 void zoneput(Zone *, int);
+void zonecleanup(int zmax);
 // Find the down stairs in this zone.
 Blkinfo zonedstairs(Zone *zn);
 

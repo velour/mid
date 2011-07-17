@@ -46,6 +46,7 @@ void gamefree(Scrn *s)
 {
 	Game *gm = s->data;
 	zonefree(gm->zone);
+	zonecleanup(gm->zmax);
 	*gm = (Game){};
 }
 

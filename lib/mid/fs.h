@@ -16,6 +16,5 @@
 /* Concatinate path names.  'cat' must be of size PATH_MAX + 1. */
 void fscat(const char *d, const char *f, char cat[]);
 
-_Bool fsexists(const char *path);
 
 #endif  // !_FS_H_

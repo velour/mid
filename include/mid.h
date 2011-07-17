@@ -553,3 +553,5 @@ _Bool scangeom(char *buf, char *fmt, ...);
  * specified as is used by scanbuf.  The return value is true if the
  * output was not truncated and false if the output was truncated. */
 _Bool printgeom(char *buf, size_t sz, char *fmt, ...);
+
+_Bool fsexists(const char *path);
