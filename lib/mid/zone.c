@@ -243,36 +243,20 @@ int zonelocs(Zone *zn, int z, _Bool (*p)(Zone *, int, Point), Point pts[], int s
 	return n;
 }
 
-_Bool zonefits(Zone *zn, int z, Point loc, Point wh)
+// Is there a block contained in the area from loc with width-height
+// wh that has any of the given flags?
+_Bool zonehasflags(Zone *zn, int z, Point loc, Point wh, unsigned int f)
 {
 	wh.x /= Twidth;
 	wh.y /= Theight;
 	for (int x = loc.x; x < (int) (loc.x + wh.x + 0.5); x++) {
 		if (x < 0 || x >= zn->lvl->w)
-			return false;
+			continue;
 		for (int y = loc.y; y < (int) (loc.y + wh.y + 0.5); y++) {
 			if (y < 0 || y >= zn->lvl->h)
-				return false;
+				continue;
 			Blkinfo bi = blkinfo(zn->lvl, x, y, z);
-			if (bi.flags & Tilecollide)
-				return false;
-		}
-	}
-	return true;
-}
-
-_Bool zonereach(Zone *zn, int z, Point loc, Point wh)
-{
-	wh.x /= Twidth;
-	wh.y /= Theight;
-	for (int x = loc.x; x < (int) (loc.x + wh.x + 0.5); x++) {
-		if (x < 0 || x >= zn->lvl->w)
-			return false;
-		for (int y = loc.y; y < (int) (loc.y + wh.y + 0.5); y++) {
-			if (y < 0 || y >= zn->lvl->h)
-				return false;
-			Blkinfo bi = blkinfo(zn->lvl, x, y, z);
-			if (bi.flags & Tilereach)
+			if (bi.flags & f)
 				return true;
 		}
 	}
@@ -291,24 +275,6 @@ _Bool zoneongrnd(Zone *zn, int z, Point loc, Point wh)
 			return false;
 		if (blkinfo(zn->lvl, x, y, z).flags & Tilecollide)
 			return true;
-	}
-	return false;
-}
-
-_Bool zoneondoor(Zone *zn, int z, Point loc, Point wh)
-{
-	wh.x /= Twidth;
-	wh.y /= Theight;
-	for (int x = loc.x; x < (int) (loc.x + wh.x + 0.5); x++) {
-		if (x < 0 || x >= zn->lvl->w)
-			continue;
-		for (int y = loc.y; y < (int) (loc.y + wh.y + 0.5); y++) {
-			if (y < 0 || y >= zn->lvl->h)
-				continue;
-			Blkinfo bi = blkinfo(zn->lvl, x, y, z);
-			if (bi.flags & Tilebdoor || bi.flags & Tilefdoor)
-				return true;
-		}
 	}
 	return false;
 }

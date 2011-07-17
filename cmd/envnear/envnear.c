@@ -57,9 +57,9 @@ static _Bool goodloc(Zone *zn, int z, Point pt)
 	Rect r = (Rect) { (Point) { pt.x * Twidth, pt.y * Theight },
 		(Point) { pt.x * Twidth + wh.x, pt.y * Theight + wh.y } };
 	return !isect(start, r)
-		&& zonefits(zn, z, pt, wh)
+		&& !zonehasflags(zn, z, pt, wh, Tilecollide)
+		&& zonehasflags(zn, z, pt, wh, Tilereach)
 		&& zoneongrnd(zn, z, pt, wh)
-		&& zonereach(zn, z, pt, wh)
 		&& !zoneoverlap(zn, z, pt, wh);
 }
 

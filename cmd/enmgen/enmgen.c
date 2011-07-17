@@ -128,9 +128,10 @@ static _Bool goodloc(Zone *zn, int z, Point pt)
 {
 	int doorrad = 2;
 	return (pt.x != Startx || pt.y != Starty)
-		&& zonefits(zn, z, pt, (Point) { Twidth, Theight })
-		&& !zoneondoor(zn, z, (Point) { pt.x - doorrad, pt.y },
-			(Point) { 2 * doorrad * Twidth, Theight })
+		&& !zonehasflags(zn, z, pt, (Point) { Twidth, Theight }, Tilecollide)
+		&& !zonehasflags(zn, z, (Point) { pt.x - doorrad, pt.y },
+			(Point) { 2 * doorrad * Twidth, Theight },
+			Tilefdoor | Tilebdoor )
 		&& zoneongrnd(zn, z, pt, (Point) { Twidth, Theight })
 		&& !zoneoverlap(zn, z, pt, (Point) { Twidth, Theight });
 }

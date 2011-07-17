@@ -527,11 +527,10 @@ void zoneupdate(Zone *zn, Player *p, Point *tr);
 
 /* Fills the array with locations that pass the given predicate. */
 int zonelocs(Zone *, int z, _Bool (*)(Zone *, int, Point), Point [], int);
-_Bool zonefits(Zone *zn, int z, Point loc, Point wh);
-_Bool zonereach(Zone *zn, int z, Point loc, Point wh);
+_Bool zoneallflags(Zone *zn, int z, Point loc, Point wh, unsigned int f);
+_Bool zonehasflags(Zone *zn, int z, Point loc, Point wh, unsigned int f);
 _Bool zoneongrnd(Zone *zn, int z, Point loc, Point wh);
 _Bool zoneoverlap(Zone *zn, int z, Point loc, Point wh);
-_Bool zoneondoor(Zone *zn, int z, Point loc, Point wh);
 
 /* Scan a set of fields from a string with the given format.  The
  * format is specified as a string of characters with the following

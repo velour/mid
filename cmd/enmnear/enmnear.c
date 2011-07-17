@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 static _Bool goodloc(Zone *zn, int z, Point pt)
 {
 	return (pt.x != Startx || pt.y != Starty)
-		&& zonefits(zn, z, pt, (Point) { Twidth, Theight })
+		&& !zonehasflags(zn, z, pt, (Point) { Twidth, Theight }, Tilecollide)
 		&& zoneongrnd(zn, z, pt, (Point) { Twidth, Theight })
 		&& !zoneoverlap(zn, z, pt, (Point) { Twidth, Theight });
 }
