@@ -524,16 +524,9 @@ void zoneupdate(Zone *zn, Player *p, Point *tr);
 
 /* Fills the array with locations that pass the given predicate. */
 int zonelocs(Zone *, int z, _Bool (*)(Zone *, int, Point), Point [], int);
-/* Test if the item/env/enemy with width and height 'wh' fits at
- * location 'loc' within the level.  Loc is a level block location and
- * wh is in pixels. */
 _Bool zonefits(Zone *zn, int z, Point loc, Point wh);
-/* Test if the item/env/enemy with width and height 'wh' is 'on the
- * ground'.  Loc is a level block location and wh is in pixels. */
-_Bool zoneonground(Zone *zn, int z, Point loc, Point wh);
-/* Test if the item/env/enemy overlaps with any other
- * items/envs/enemies.  Loc is a level block location and wh is in
- * pixels. */
+_Bool zonereach(Zone *zn, int z, Point loc, Point wh);
+_Bool zoneongrnd(Zone *zn, int z, Point loc, Point wh);
 _Bool zoneoverlap(Zone *zn, int z, Point loc, Point wh);
 
 /* Scan a set of fields from a string with the given format.  The

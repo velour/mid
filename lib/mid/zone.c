@@ -248,20 +248,47 @@ _Bool zonefits(Zone *zn, int z, Point loc, Point wh)
 	wh.x /= Twidth;
 	wh.y /= Theight;
 	for (int x = loc.x; x < (int) (loc.x + wh.x + 0.5); x++) {
-	for (int y = loc.y; y < (int) (loc.y + wh.y + 0.5); y++) {
-		Blkinfo bi = blkinfo(zn->lvl, x, y, z);
-		if (bi.flags & Tilecollide)
+		if (x < 0 || x >= zn->lvl->w)
 			return false;
-	}
+		for (int y = loc.y; y < (int) (loc.y + wh.y + 0.5); y++) {
+			if (y < 0 || y >= zn->lvl->h)
+				return false;
+			Blkinfo bi = blkinfo(zn->lvl, x, y, z);
+			if (bi.flags & Tilecollide)
+				return false;
+		}
 	}
 	return true;
 }
 
-_Bool zoneonground(Zone *zn, int z, Point loc, Point wh)
+_Bool zonereach(Zone *zn, int z, Point loc, Point wh)
+{
+	wh.x /= Twidth;
+	wh.y /= Theight;
+	for (int x = loc.x; x < (int) (loc.x + wh.x + 0.5); x++) {
+		if (x < 0 || x >= zn->lvl->w)
+			return false;
+		for (int y = loc.y; y < (int) (loc.y + wh.y + 0.5); y++) {
+			if (y < 0 || y >= zn->lvl->h)
+				return false;
+			Blkinfo bi = blkinfo(zn->lvl, x, y, z);
+			if (bi.flags & Tilereach)
+				return true;
+		}
+	}
+	return false;
+}
+
+_Bool zoneongrnd(Zone *zn, int z, Point loc, Point wh)
 {
 	wh.x /= Twidth;
 	int y = loc.y + wh.y / Theight;
+	if (y < 0 || y >= zn->lvl->h)
+		return false;
+
 	for (int x = loc.x; x < (int) (loc.x + wh.x + 0.5); x++) {
+		if (x < 0 || x >= zn->lvl->w)
+			return false;
 		if (blkinfo(zn->lvl, x, y, z).flags & Tilecollide)
 			return true;
 	}

@@ -139,7 +139,8 @@ static _Bool goodloc(Zone *zn, int z, Point pt)
 		(Point) { pt.x * Twidth + wh.x, pt.y * Theight + wh.y } };
 	return !isect(start, r)
 		&& zonefits(zn, z, pt, wh)
-		&& zoneonground(zn, z, pt, wh)
+		&& zoneongrnd(zn, z, pt, wh)
+		&& zonereach(zn, z, pt, wh)
 		&& !zoneoverlap(zn, z, pt, wh);
 }
 

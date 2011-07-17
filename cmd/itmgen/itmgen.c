@@ -127,8 +127,9 @@ static int locs(Zone *zn, Loc locs[])
 static _Bool goodloc(Zone *zn, int z, Point pt)
 {
 	return (pt.x != Startx || pt.y != Starty)
+		&& zoneongrnd(zn, z, pt, (Point) { Twidth, Theight })
 		&& zonefits(zn, z, pt, (Point) { Twidth, Theight })
-		&& zoneonground(zn, z, pt, (Point) { Twidth, Theight })
+		&& zonereach(zn, z, pt, (Point) { Twidth, Theight })
 		&& !zoneoverlap(zn, z, pt, (Point) { Twidth, Theight });
 }
 
