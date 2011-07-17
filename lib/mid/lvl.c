@@ -262,7 +262,7 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd)
 		for (int y = 0; y < h; y++) {
 			Blk *b = blk(l, x, y, l->z);
 			int vis = b->flags & Blkvis;
-			if (!vis && bkgrnd && debugging)
+			if (!vis && bkgrnd && !debugging)
 				continue;
 			int t = b->tile;
 			Point pt = {0};

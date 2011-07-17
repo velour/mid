@@ -23,6 +23,7 @@ Game *gamenew(void)
 	lvlinit();
 
 	unsigned int seed = rand();
+	seed = 404320562;
 	rnginit(&gm.rng, seed);
 	pr("game seed: %u", seed);
 
@@ -95,7 +96,7 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 
 	zoneupdate(gm->zone, &gm->player, &gm->transl);
 	trystairs(stk, gm);
-	if(gm->player.eqp[StatHp] <= 0 && debugging)
+	if(gm->player.eqp[StatHp] <= 0 && !debugging)
 		scrnstkpush(stk, goverscrnnew(&gm->player));
 }
 
