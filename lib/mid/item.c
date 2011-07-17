@@ -38,7 +38,7 @@ static ItemOps ops[] = {
 		"Heart",
 		"img/items.png",
 		healthupdate,
-		{ .row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+		{ .row = 2, .len = 2, .delay = 600/Ticktm, .w = 32, .h = 32, .d = 600/Ticktm }
 	},
 };
 
