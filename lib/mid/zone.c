@@ -295,12 +295,12 @@ _Bool zoneoverlap(Zone *zn, int z, Point loc, Point wh)
 
 void zoneupdate(Zone *zn, Player *p, Point *tr)
 {
-	int z = zn->lvl->z;
-
 	lvlupdate(zn->lvl);
 	playerupdate(p, zn, tr);
 
 	itemupdateanims();
+
+	int z = zn->lvl->z;
 
 	Item *itms = zn->itms[z];
 	for(size_t i = 0; i < Maxitms; i++)
