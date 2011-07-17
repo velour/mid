@@ -43,6 +43,7 @@ static void update(Scrn *s, Scrnstk *stk){
 static void draw(Scrn *s, Gfx *g){
 	Gover *go = s->data;
 
+	camreset(g);
 	gfxclear(g, (Color){ 200, 0, 0 });
 
 	int m = go->p->money;

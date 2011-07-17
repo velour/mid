@@ -99,8 +99,8 @@ Point txtdraw(Gfx *, Txt *, Point, const char *fmt, ...);
 
 typedef struct Anim Anim;
 
+void camreset(Gfx*);
 void cammove(Gfx *, double dx, double dy);
-void camreset(Gfx *);
 void camdrawrect(Gfx *, Rect, Color);
 void camfillrect(Gfx *, Rect, Color);
 void camdrawimg(Gfx *, Img *, Point);
