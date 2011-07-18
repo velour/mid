@@ -287,6 +287,7 @@ double blkdrag(int flags);
  * the level from location (x, y). */
 void lvlvis(Lvl *l, int x, int y);
 
+typedef enum Action Action;
 enum Action{
 	Mvleft,
 	Mvright,
@@ -322,19 +323,18 @@ void bodyupdate(Body *b, Lvl *l);
 
 typedef struct Sword Sword;
 struct Sword{
-	Img *rightimg[2];
-	Img *leftimg[2];
-	Img **img;
-
 	Rect rightloc[2];
 	Rect leftloc[2];
 	Rect *loc;
 
+	Action dir;
 	int cur;
 
+	int row;
 	int pow;
 };
 
+_Bool swordldresrc(void);
 void sworddraw(Gfx*, Sword*);
 
 typedef enum Act Act;

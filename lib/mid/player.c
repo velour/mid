@@ -39,16 +39,12 @@ void playerinit(Player *p, int x, int y)
 	p->stats[StatStr] = 5;
 	p->eqp[StatHp] = p->stats[StatHp];
 
-	p->sw.img = p->sw.rightimg;
+	p->sw.row = 0;
 	p->sw.loc = p->sw.rightloc;
-
-	p->sw.rightimg[0] = resrcacq(imgs, "img/silversword-up.png", NULL);
-	p->sw.rightimg[1] = resrcacq(imgs, "img/silversword-down.png", NULL);
-	p->sw.leftimg[0] = resrcacq(imgs, "img/silversword-up.png", NULL);
-	p->sw.leftimg[1] = resrcacq(imgs, "img/silversword-down.png", NULL);
-	mvsw(p);
+	p->sw.dir = Mvright;
 	p->sw.cur = -1;
 	p->sw.pow = 1;
+	mvsw(p);
 }
 
 static void trydoorstairs(Player *p, Zone *zn, Blkinfo bi)
@@ -238,11 +234,11 @@ static void chngdir(Player *p)
 {
 	if (p->body.vel.x < 0){
 		p->anim = p->leftas;
-		p->sw.img = p->sw.leftimg;
+		p->sw.dir = Mvleft;
 		p->sw.loc = p->sw.leftloc;
 	}else if (p->body.vel.x > 0){
 		p->anim = p->rightas;
-		p->sw.img = p->sw.rightimg;
+		p->sw.dir = Mvright;
 		p->sw.loc = p->sw.rightloc;
 	}
 }
