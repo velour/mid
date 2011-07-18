@@ -40,7 +40,6 @@ void playerinit(Player *p, int x, int y)
 	p->eqp[StatHp] = p->stats[StatHp];
 
 	p->sw.row = 0;
-	p->sw.loc = p->sw.rightloc;
 	p->sw.dir = Mvright;
 	p->sw.cur = -1;
 	p->sw.pow = 1;
@@ -235,11 +234,9 @@ static void chngdir(Player *p)
 	if (p->body.vel.x < 0){
 		p->anim = p->leftas;
 		p->sw.dir = Mvleft;
-		p->sw.loc = p->sw.leftloc;
 	}else if (p->body.vel.x > 0){
 		p->anim = p->rightas;
 		p->sw.dir = Mvright;
-		p->sw.loc = p->sw.rightloc;
 	}
 }
 

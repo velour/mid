@@ -33,3 +33,14 @@ void sworddraw(Gfx *g, Sword *s){
 
 	camdrawreg(g, swordsh, clip, loc[s->cur].a);
 }
+
+Rect swordbbox(Sword *s){
+	Rect *loc;
+	if(s->cur == 0)
+		loc = s->dir == Mvright? s->rightloc : s->leftloc;
+	else if(s->dir == Mvright)
+		loc = s->rightloc;
+	else
+		loc = s->leftloc;
+	return loc[s->cur];
+}

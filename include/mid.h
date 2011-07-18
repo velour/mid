@@ -325,7 +325,6 @@ typedef struct Sword Sword;
 struct Sword{
 	Rect rightloc[2];
 	Rect leftloc[2];
-	Rect *loc;
 
 	Action dir;
 	int cur;
@@ -336,6 +335,7 @@ struct Sword{
 
 _Bool swordldresrc(void);
 void sworddraw(Gfx*, Sword*);
+Rect swordbbox(Sword*);
 
 typedef enum Act Act;
 enum Act {
