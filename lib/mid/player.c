@@ -91,8 +91,11 @@ void playerupdate(Player *p, Zone *zn, Point *tr)
 	p->bi = bi;
 
 	double olddx = p->body.vel.x;
-	if(olddx)
+	if(olddx && p->hitback == 0)
 		p->body.vel.x = (olddx < 0 ? -1 : 1) * blkdrag(bi.flags) * run(p);
+
+	if(p->hitback != 0)
+		p->body.vel.x = p->hitback;
 
 	double oldddy = p->body.a.y;
 	p->body.a.y = blkgrav(bi.flags);
@@ -120,6 +123,9 @@ void playerupdate(Player *p, Zone *zn, Point *tr)
 		p->jframes--;
 	if(p->iframes > 0)
 		p->iframes--;
+
+	if(p->iframes < 750.0/Ticktm)
+		p->hitback = 0;
 
 	if(p->sframes > 8){
 		p->sframes--;
@@ -194,6 +200,7 @@ void playerdmg(Player *p, int x){
 		return;
 
 	p->iframes = 1000.0 / Ticktm; // 1s
+	p->hitback = p->anim == p->leftas? 5 : -5;
 	p->eqp[StatHp] -= x;
 	if(p->eqp[StatHp] <= 0)
 		p->eqp[StatHp] = 0;

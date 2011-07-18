@@ -414,6 +414,7 @@ struct Player {
 
 	int jframes;
 	int iframes; // invulnerability after damage;
+	double hitback;
 	int sframes;
 
 	/* if changed, update visibility. */
