@@ -32,23 +32,13 @@ void logclose(void){
 
 void prtime()
 {
-	char str[Bufsz];
-	struct tm tm;
 	time_t t = time(NULL);
 	if (t == ((time_t) -1)) {
 		perror("time");
 		fprintf(stderr, "%s failed: time failed\n", __func__);
 		abort();
 	}
-	if (!localtime_r(&t, &tm)) {
-		fprintf(stderr, "%s failed: localtime failed\n", __func__);
-		abort();
-	}
-	if (!strftime(str, Bufsz - 1, "[%T]", &tm)) {
-		fprintf(stderr, "%s failed: strftime failed\n", __func__);
-		abort();
-	}
-	fprintf(lfile, "%s ", str);
+	fprintf(lfile, "%s ", ctime(&t));
 }
 
 
@@ -66,14 +56,7 @@ void prraw(const char *func, int err, const char *fmt, va_list ap)
 	if (err == 0)
 		goto done;
 
-	char str[Bufsz];
-	if (strerror_r(err, str, Bufsz) == 0) {
-		fprintf(lfile, "%s" , str);
-	} else {
-		perror("strerror_r");
-		fprintf(stderr, "perr failed\n");
-		abort();
-	}
+	fprintf(lfile, "%s" , strerror(err));
 done:
 	fprintf(lfile, "\n");
 }

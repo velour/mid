@@ -5,15 +5,11 @@
 #include "game.h"
 #include <stdlib.h>
 #include <stdbool.h>
-#include <sys/times.h>
 
 Gfx *gfx;
 
 bool init()
 {
-	struct tms tm;
-	srand(times(&tm));
-
 	loginit(0);
 
 	pr("%s", "Let's rock.");

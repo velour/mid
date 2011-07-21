@@ -15,6 +15,7 @@ LIBS :=\
 	mid\
 	log\
 	rng\
+	os\
 
 ifndef CC
 CC := clang -fno-color-diagnostics
@@ -34,6 +35,17 @@ endif
 
 MANDCFLAGS := -g -O2 -Wall -Werror -std=c99 -D_POSIX_SOURCE -D_POSIX_C_SOURCE=200112L
 MANDLDFLAGS := -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf
+
+
+UNAME := $(shell uname)
+OS := $(shell echo $(UNAME) | sed 's/.*mingw.*/win/i')
+
+ifeq ($(OS),win)
+MANDCFLAGS += -Dmain=SDL_main
+MANDLDFLAGS += -L/mingw/bin $(shell sdl-config --static-libs)
+else
+OS := posix
+endif
 
 .PHONY: all clean install
 .DEFAULT_GOAL := all

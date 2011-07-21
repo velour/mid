@@ -3,7 +3,7 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include "../../include/rng.h"
-#include <sys/times.h>
+#include <time.h>
 #include <stdlib.h>
 #include <limits.h>
 
@@ -83,8 +83,7 @@ static int rng(Rng *r, int argc, char *argv[])
 		seed = strtol(argv[2], NULL, 10);
 		args = 2;
 	} else {
-		struct tms tm;
-		seed = times(&tm);
+		seed = time(0);
 		pr("enmgen seed = %lu", (unsigned long) seed);
 	}
 	rnginit(r, seed);

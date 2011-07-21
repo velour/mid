@@ -94,7 +94,7 @@ static void scanbody(Toks *toks, Body *b)
 /* Get the next white/space delimited token. */
 static char *nxt(Toks *toks)
 {
-	char *t = strtok_r(toks->str, " \t\n\r", &toks->sv);
+	char *t = strtok(toks->str, " \t\n\r");
 	if (toks->str)
 		toks->str = NULL;
 	return t;

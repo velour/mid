@@ -2,24 +2,12 @@
 # // Licensed under the MIT License. See LICENSE for details.
 include Make.inc
 
-TARG := mid
+TARG := os.a
 
 OFILES :=\
-	main.o\
-	game.o\
-	invscr.o\
-	title.o\
-	zone.o\
-	statscrn.o\
-	death.o\
+	dir_$(OS).o\
+	pipe_$(OS).o\
 
 HFILES :=\
-	game.h\
 
-LIBDEPS :=\
-	mid\
-	log\
-	rng\
-	os\
-
-include Make.cmd
+include Make.lib

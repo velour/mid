@@ -10,6 +10,8 @@
 #include "../../include/log.h"
 #include "../../include/rng.h"
 #include "game.h"
+#include <stdio.h>
+#include "../../include/os.h"
 
 static const char *zonedir = "_zones";
 enum { Bufsz = 1024 };
@@ -22,10 +24,8 @@ typedef struct Pipe {
 static FILE *inzone = NULL;
 
 static void ensuredir();
-static FILE *zfile(Rng *r);
 static char *zonefile(int);
 static FILE *zpipe(Rng *r);
-static void pipeinit(struct Pipe *);
 static void pipeadd(struct Pipe *, char *, ...);
 
 void zonestdin()
@@ -48,7 +48,7 @@ Zone *zonegen(Rng *r)
 		fclose(fin);
 		inzone = NULL;
 	} else {
-		int ret = pclose(fin);
+		int ret = pipeclose(fin);
 		if (ret == -1)
 			fatal("Zone gen pipeline exited with failure: %s", miderrstr());
 	}
@@ -126,7 +126,7 @@ static void ensuredir()
 {
 	struct stat sb;
 	if (stat(zonedir, &sb) < 0) {
-		if (mkdir(zonedir, 0700) < 0)
+		if (makedir(zonedir) < 0)
 			fatal("Failed to make the zone directory [%s]: %s", zonedir, miderrstr());
 	} else if (!S_ISDIR(sb.st_mode)) {
 		fatal("Zone directory [%s] is not a directory", zonedir);
@@ -135,8 +135,7 @@ static void ensuredir()
 
 static FILE *zpipe(Rng *r)
 {
-	Pipe p;
-	pipeinit(&p);
+	Pipe p = {};
 	pipeadd(&p, "./cmd/lvlgen/lvlgen -s %u 25 25 3", rngint(r));
 	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 1 1", rngint(r));
 	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 2 50", rngint(r));
@@ -147,16 +146,11 @@ static FILE *zpipe(Rng *r)
 	pipeadd(&p, "| tee cur.lvl");
 	pr("lvlgen pipeline: [%s]", p.cmd);
 
-	FILE *fin = popen(p.cmd, "r");
+	FILE *fin = piperead(p.cmd);
 	if (!fin)
 		fatal("Unable to execute zone gen pipeline: %s", miderrstr());
 
 	return fin;
-}
-
-static void pipeinit(Pipe *p)
-{	
-	memset(p, 0, sizeof(p));
 }
 
 static void pipeadd(Pipe *p, char *fmt, ...)
