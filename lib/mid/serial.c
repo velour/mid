@@ -21,9 +21,10 @@ static void scanpt(Toks *toks, Point *pt);
 static void scanrect(Toks *toks, Rect *r);
 static void scanbody(Toks *toks, Body *b);
 static char *nxt(Toks *toks);
-static int printpt(char *buf, size_t sz, Point p);
-static int printrect(char *buf, size_t sz, Rect r);
-static int printbody(char *buf, size_t sz, Body b);
+static void printpt(char **bufp, int *szp, Point p);
+static void printrect(char **bufp, int *szp, Rect r);
+static void printbody(char **bufp, int *szp, Body b);
+static void prfield(char **bufp, int *szp, char *fmt, ...);
 
 _Bool scangeom(char *buf, char *fmt, ...)
 {
@@ -100,7 +101,7 @@ static char *nxt(Toks *toks)
 	return t;
 }
 
-_Bool printgeom(char *buf, size_t sz, char *fmt, ...)
+_Bool printgeom(char *buf, int sz, char *fmt, ...)
 {
 	va_list ap;
 	char *f = fmt;
@@ -113,22 +114,22 @@ _Bool printgeom(char *buf, size_t sz, char *fmt, ...)
 			break;
 		switch (*f) {
 		case 'd':
-			n += snprintf(buf+n, sz-n, " %d", va_arg(ap, int));
+			prfield(&buf, &sz, " %d", va_arg(ap, int));
 			break;
 		case 'f':
-			n += snprintf(buf+n, sz-n, " %f", va_arg(ap, double));
+			prfield(&buf, &sz, " %f", va_arg(ap, double));
 			break;
 		case 'b':
-			n += snprintf(buf+n, sz-n, " %d", va_arg(ap, int));
+			prfield(&buf, &sz, " %d", va_arg(ap, int));
 			break;
 		case 'p':
-			n += printpt(buf+n, sz-n, va_arg(ap, Point));
+			printpt(&buf, &sz, va_arg(ap, Point));
 			break;
 		case 'r':
-			n += printrect(buf+n, sz-n, va_arg(ap, Rect));
+			printrect(&buf, &sz, va_arg(ap, Rect));
 			break;
 		case 'y':
-			n += printbody(buf+n, sz-n, va_arg(ap, Body));
+			printbody(&buf, &sz, va_arg(ap, Body));
 			break;
 		}
 		itms++;
@@ -136,24 +137,43 @@ _Bool printgeom(char *buf, size_t sz, char *fmt, ...)
 	}
 	va_end(ap);
 
-	return itms == strlen(fmt) && n < sz;
+	return itms == strlen(fmt) && n < sz && sz > 0;
 }
 
-static int printpt(char *buf, size_t sz, Point p)
+static void printpt(char **bufp, int *szp, Point p)
 {
-	return snprintf(buf, sz, " %f %f", p.x, p.y);
+	prfield(bufp, szp, " %f %f", p.x, p.y);
 }
 
-static int printrect(char *buf, size_t sz, Rect r)
+static void printrect(char **bufp, int *szp, Rect r)
 {
-	int n = printpt(buf, sz, r.a);
-	return n + printpt(buf+n, sz-n, r.b);
+	printpt(bufp, szp, r.a);
+	printpt(bufp, szp, r.b);
 }
 
-static int printbody(char *buf, size_t sz, Body b)
+static void printbody(char **bufp, int *szp, Body b)
 {
-	int n = printrect(buf, sz, b.bbox);
-	n += printpt(buf+n, sz-n, b.vel);
-	n += printpt(buf+n, sz-n, b.a);
-	return n + snprintf(buf+n, sz-n, " %d", b.fall);
+	printrect(bufp, szp, b.bbox);
+	printpt(bufp, szp, b.vel);
+	printpt(bufp, szp, b.a);
+	prfield(bufp, szp, " %d", b.fall);
+}
+
+static void prfield(char **bufp, int *szp, char *fmt, ...)
+{
+	va_list ap;
+
+	if (*szp < 0)
+		return;
+
+	va_start(ap, fmt);
+	int n = vsnprintf(*bufp, *szp, fmt, ap);
+	va_end(ap);
+
+	if (n < 0) {
+		*szp = -1;
+		return;
+	}
+	*bufp += n;
+	*szp -= n;
 }
