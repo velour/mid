@@ -143,7 +143,7 @@ static FILE *zpipe(Rng *r)
 	pipeadd(&p, " | ./cmd/envgen/envgen -s %u 1 1", rngint(r));
 	pipeadd(&p, " | ./cmd/enmgen/enmgen -s %u 1 50", rngint(r));
 
-	pipeadd(&p, "| tee cur.lvl");
+	pipeadd(&p, " | tee cur.lvl");
 	pr("lvlgen pipeline: [%s]", p.cmd);
 
 	FILE *fin = piperead(p.cmd);
