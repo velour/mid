@@ -69,3 +69,4 @@ void extradoors(struct Rng *, struct Lvl *);
 void water(struct Lvl *);
 
 void morereach(struct Lvl *);
+void closeunreach(struct Lvl *lvl);

@@ -77,3 +77,15 @@ static void reachover(Lvl *lvl, int x, int y)
 	setreach(lvl, x-1, y);
 	setreach(lvl, x+1, y);
 }
+
+void closeunreach(Lvl *lvl)
+{
+	for (int x = 1; x < lvl->w - 1; x++) {
+	for (int y = 1; y < lvl->h - 1; y++) {
+		Blkinfo bi = blkinfo(lvl, x, y, lvl->z);
+		if (bi.flags & Tilereach || bi.flags & Tilecollide)
+			continue;
+		blk(lvl, x, y, lvl->z)->tile = '#';
+	}
+	}
+}

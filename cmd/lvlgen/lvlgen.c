@@ -101,6 +101,7 @@ static Loc zlayer(Loc loc, Lvl *lvl)
 	Loc nxt = doorloc(lvl, p, loc);
 	pathfree(p);
 	morereach(lvl);
+	closeunreach(lvl);
 	return nxt;
 }
 
