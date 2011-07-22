@@ -448,19 +448,19 @@ static Rect hitzone(Rect a, Point v)
 	return (Rect) { .a = {xmin, ymin}, .b = {xmax, ymax} };
 }
 
-Blkinfo lvlmajorblk(Lvl *l, Rect r)
+Tileinfo lvlmajorblk(Lvl *l, Rect r)
 {
 	r = rectnorm(r);
 	double xmid = (r.b.x + r.a.x) / 2;
 	double ymid = (r.b.y + r.a.y) / 2;
-	return blkinfo(l, xmid / Twidth, ymid / Theight, l->z);
+	return tileinfo(l, xmid / Twidth, ymid / Theight, l->z);
 }
 
-Blkinfo blkinfo(Lvl *l, int x, int y, int z)
+Tileinfo tileinfo(Lvl *l, int x, int y, int z)
 {
 	int t = blk(l, x, y, z)->tile;
 	assert(tiles[t].ok);
-	return (Blkinfo) { .x = x, .y = y, .z = z, .flags = tiles[t].flags };
+	return (Tileinfo) { .x = x, .y = y, .z = z, .flags = tiles[t].flags };
 }
 
 static void swap(int *a, int *b)

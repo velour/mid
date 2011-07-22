@@ -130,7 +130,7 @@ unsigned int rnd(int min, int max)
 
 static void stairs(Rng *r, Lvl *lvl)
 {
-	if (blkinfo(lvl, Startx, Starty, 0).flags & Tilewater)
+	if (tileinfo(lvl, Startx, Starty, 0).flags & Tilewater)
 		blk(lvl, Startx, Starty, 0)->tile = 'U';
 	else
 		blk(lvl, Startx, Starty, 0)->tile = 'u';
@@ -140,7 +140,7 @@ static void stairs(Rng *r, Lvl *lvl)
 	int nls = stairlocs(lvl, ls, z);
 	int ind = rnd(0, nls -1);
 
-	if (blkinfo(lvl, ls[ind].x, ls[ind].y, z).flags & Tilewater)
+	if (tileinfo(lvl, ls[ind].x, ls[ind].y, z).flags & Tilewater)
 		blk(lvl, ls[ind].x, ls[ind].y, z)->tile = 'D';
 	else
 		blk(lvl, ls[ind].x, ls[ind].y, z)->tile = 'd';
@@ -151,8 +151,8 @@ static int stairlocs(Lvl *lvl, Loc ls[], int z)
 	int nls = 0;
 	for (int x = 1; x < lvl->w-1; x++)
 	for (int y = 1; y < lvl->h-2; y++) {
-		if (blkinfo(lvl, x, y, z).flags & Tilereach
-			&& blkinfo(lvl, x, y+1, z).flags & Tilecollide) {
+		if (tileinfo(lvl, x, y, z).flags & Tilereach
+			&& tileinfo(lvl, x, y+1, z).flags & Tilecollide) {
 			ls[nls] = (Loc){ x, y };
 			nls++;
 		}

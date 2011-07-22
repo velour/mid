@@ -72,7 +72,7 @@ static void trystairs(Scrnstk *stk, Game *gm)
 		}
 		gm->zone = zoneget(gm->znum);
 
-		Blkinfo bi = zonedstairs(gm->zone);
+		Tileinfo bi = zonedstairs(gm->zone);
 		gm->zone->lvl->z = bi.z;
 		playersetloc(&gm->player, bi.x, bi.y);
 	} else if (gm->zone->updown == Godown) {

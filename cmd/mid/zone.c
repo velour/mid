@@ -87,14 +87,14 @@ void zoneput(Zone *zn, int znum)
 	fclose(f);
 }
 
-Blkinfo zonedstairs(Zone *zn)
+Tileinfo zonedstairs(Zone *zn)
 {
-	Blkinfo bi;
+	Tileinfo bi;
 
 	for (int z = 0; z < zn->lvl->d; z++) {
 	for (int x = 0; x < zn->lvl->w; x++) {
 	for (int y = 0; y < zn->lvl->h; y++) {
-		bi = blkinfo(zn->lvl, x, y, z);
+		bi = tileinfo(zn->lvl, x, y, z);
 		if (bi.flags & Tiledown)
 			return bi;
 	}

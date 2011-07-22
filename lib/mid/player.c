@@ -46,7 +46,7 @@ void playerinit(Player *p, int x, int y)
 	mvsw(p);
 }
 
-static void trydoorstairs(Player *p, Zone *zn, Blkinfo bi)
+static void trydoorstairs(Player *p, Zone *zn, Tileinfo bi)
 {
 	Lvl *l = zn->lvl;
 	if (!p->acting)
@@ -84,7 +84,7 @@ void playerupdate(Player *p, Zone *zn, Point *tr)
 	Lvl *l = zn->lvl;
 	Point ppos = playerpos(p);
 
-	Blkinfo bi = lvlmajorblk(l, p->body.bbox);
+	Tileinfo bi = lvlmajorblk(l, p->body.bbox);
 
 	if (bi.x != p->bi.x || bi.y != p->bi.x || bi.z != p->bi.z)
 		lvlvis(l, bi.x, bi.y);
