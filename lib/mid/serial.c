@@ -8,19 +8,13 @@
 #include <string.h>
 #include <limits.h>
 
-typedef struct Toks Toks;
-struct Toks {
-	char *str;
-	char *sv;
-};
-
-static void scanint(Toks *toks, int *d);
-static void scandbl(Toks *toks, double *f);
-static void scanbool(Toks *toks, _Bool *b);
-static void scanpt(Toks *toks, Point *pt);
-static void scanrect(Toks *toks, Rect *r);
-static void scanbody(Toks *toks, Body *b);
-static char *nxt(Toks *toks);
+static void scanint(char **toks, int *d);
+static void scandbl(char **toks, double *f);
+static void scanbool(char **toks, _Bool *b);
+static void scanpt(char **toks, Point *pt);
+static void scanrect(char **toks, Rect *r);
+static void scanbody(char **toks, Body *b);
+static char *nxt(char **toks);
 static void printpt(char **bufp, int *szp, Point p);
 static void printrect(char **bufp, int *szp, Rect r);
 static void printbody(char **bufp, int *szp, Body b);
@@ -30,7 +24,7 @@ _Bool scangeom(char *buf, char *fmt, ...)
 {
 	va_list ap;
 	char *f = fmt;
-	Toks toks = (Toks) { buf };
+	char * toks = buf;
 
 	va_start(ap, fmt);
 	while (*f) {
@@ -49,7 +43,7 @@ _Bool scangeom(char *buf, char *fmt, ...)
 	return *f == '\0';
 }
 
-static void scanint(Toks *toks, int *d)
+static void scanint(char **toks, int *d)
 {
 	char *t = nxt(toks);
 	long l = strtol(t, NULL, 10);
@@ -58,33 +52,33 @@ static void scanint(Toks *toks, int *d)
 	*d = l;
 }
 
-static void scandbl(Toks *toks, double *f)
+static void scandbl(char **toks, double *f)
 {
 	char *t = nxt(toks);
 	double l = strtod(t, NULL);
 	*f = l;
 }
 
-static void scanbool(Toks *toks, _Bool *b)
+static void scanbool(char **toks, _Bool *b)
 {
 	int i;
 	scanint(toks, &i);
 	*b = i;
 }
 
-static void scanpt(Toks *toks, Point *pt)
+static void scanpt(char **toks, Point *pt)
 {
 	scandbl(toks, &pt->x);
 	scandbl(toks, &pt->y);
 }
 
-static void scanrect(Toks *toks, Rect *r)
+static void scanrect(char **toks, Rect *r)
 {
 	scanpt(toks, &r->a);
 	scanpt(toks, &r->b);
 }
 
-static void scanbody(Toks *toks, Body *b)
+static void scanbody(char **toks, Body *b)
 {
 	scanrect(toks, &b->bbox);
 	scanpt(toks, &b->vel);
@@ -93,11 +87,11 @@ static void scanbody(Toks *toks, Body *b)
 }
 
 /* Get the next white/space delimited token. */
-static char *nxt(Toks *toks)
+static char *nxt(char **toks)
 {
-	char *t = strtok(toks->str, " \t\n\r");
-	if (toks->str)
-		toks->str = NULL;
+	char *t = strtok(*toks, " \t\n\r");
+	if (*toks)
+		*toks = NULL;
 	return t;
 }
 

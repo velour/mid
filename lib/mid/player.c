@@ -46,7 +46,7 @@ void playerinit(Player *p, int x, int y)
 	mvsw(p);
 }
 
-static void trydoorstairs(Player *p, Zone *zn, Blkinfo bi)
+static void trydoorstairs(Player *p, Zone *zn, Tileinfo bi)
 {
 	Lvl *l = zn->lvl;
 	if (!p->acting)
@@ -84,7 +84,7 @@ void playerupdate(Player *p, Zone *zn, Point *tr)
 	Lvl *l = zn->lvl;
 	Point ppos = playerpos(p);
 
-	Blkinfo bi = lvlmajorblk(l, p->body.bbox);
+	Tileinfo bi = lvlmajorblk(l, p->body.bbox);
 
 	if (bi.x != p->bi.x || bi.y != p->bi.x || bi.z != p->bi.z)
 		lvlvis(l, bi.x, bi.y);
@@ -195,12 +195,16 @@ Rect playerbox(Player *p)
 	return p->body.bbox;
 }
 
-void playerdmg(Player *p, int x){
+void playerdmg(Player *p, int x, int dir){
 	if(p->iframes > 0)
 		return;
 
 	p->iframes = 1000.0 / Ticktm; // 1s
-	p->hitback = p->anim == p->leftas? 5 : -5;
+	p->hitback = 0;
+	if (dir > 0)
+		p->hitback =  5;
+	else if (dir < 0)
+		p->hitback = -5;
 	p->eqp[StatHp] -= x;
 	if(p->eqp[StatHp] <= 0)
 		p->eqp[StatHp] = 0;

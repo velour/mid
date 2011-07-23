@@ -9,7 +9,7 @@ Zone *zonegen(struct Rng *r);
 void zoneput(Zone *, int);
 void zonecleanup(int zmax);
 // Find the down stairs in this zone.
-Blkinfo zonedstairs(Zone *zn);
+Tileinfo zonedstairs(Zone *zn);
 
 typedef struct Game Game;
 Game *gamenew(void);

@@ -89,8 +89,9 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 	bodyupdate(&e->b, l);
 
 	if(isect(e->b.bbox, playerbox(p))){
+		int dir = e->b.bbox.a.x > p->body.bbox.a.x ? -1 : 1;
 		u->c.b = 255;
-		playerdmg(p, 3);
+		playerdmg(p, 3, dir);
 	}else
 		u->c.b = 55;
 

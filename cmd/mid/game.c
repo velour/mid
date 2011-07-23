@@ -6,6 +6,9 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <unistd.h>
+#include <time.h>
+#include <sys/types.h>
 #include "game.h"
 
 struct Game {
@@ -22,7 +25,7 @@ Game *gamenew(void)
 
 	lvlinit();
 
-	unsigned int seed = rand();
+	unsigned int seed = time(NULL) ^ getpid();
 	rnginit(&gm.rng, seed);
 	pr("game seed: %u", seed);
 
@@ -69,7 +72,7 @@ static void trystairs(Scrnstk *stk, Game *gm)
 		}
 		gm->zone = zoneget(gm->znum);
 
-		Blkinfo bi = zonedstairs(gm->zone);
+		Tileinfo bi = zonedstairs(gm->zone);
 		gm->zone->lvl->z = bi.z;
 		playersetloc(&gm->player, bi.x, bi.y);
 	} else if (gm->zone->updown == Godown) {

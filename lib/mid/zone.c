@@ -256,7 +256,7 @@ _Bool zonehasflags(Zone *zn, int z, Point loc, Point wh, unsigned int f)
 		for (int y = loc.y; y < (int) (loc.y + wh.y + 0.5); y++) {
 			if (y < 0 || y >= zn->lvl->h)
 				continue;
-			Blkinfo bi = blkinfo(zn->lvl, x, y, z);
+			Tileinfo bi = tileinfo(zn->lvl, x, y, z);
 			if (bi.flags & f)
 				return true;
 		}
@@ -274,7 +274,7 @@ _Bool zoneongrnd(Zone *zn, int z, Point loc, Point wh)
 	for (int x = loc.x; x < (int) (loc.x + wh.x + 0.5); x++) {
 		if (x < 0 || x >= zn->lvl->w)
 			return false;
-		if (blkinfo(zn->lvl, x, y, z).flags & Tilecollide)
+		if (tileinfo(zn->lvl, x, y, z).flags & Tilecollide)
 			return true;
 	}
 	return false;

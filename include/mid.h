@@ -252,8 +252,8 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale);
  * respect collisions. */
 Isect lvlisect(Lvl *l, Rect r, Point v);
 
-typedef struct Blkinfo Blkinfo;
-struct Blkinfo {
+typedef struct Tileinfo Tileinfo;
+struct Tileinfo {
 	int x, y, z;
 	unsigned int flags;
 };
@@ -270,9 +270,9 @@ enum {
 
 enum { Theight = 32, Twidth = 32 };
 
-Blkinfo blkinfo(Lvl *l, int x, int y, int z);
+Tileinfo tileinfo(Lvl *l, int x, int y, int z);
 /* Get the information on the dominant block that r is overlapping. */
-Blkinfo lvlmajorblk(Lvl *l, Rect r);
+Tileinfo lvlmajorblk(Lvl *l, Rect r);
 
 static inline Blk *blk(Lvl *l, int x, int y, int z)
 {
@@ -418,7 +418,7 @@ struct Player {
 	int sframes;
 
 	/* if changed, update visibility. */
-	Blkinfo bi;
+	Tileinfo bi;
 
 	int stats[StatMax];
 	int eqp[StatMax];
@@ -439,7 +439,7 @@ void playerdraw(Gfx *, Player *);
 void playerhandle(Player *, Event *);
 Point playerpos(Player *);
 Rect playerbox(Player *);
-void playerdmg(Player *, int);
+void playerdmg(Player *, int, int);
 void playerheal(Player *, int);
 _Bool playertake(Player *, Item *);
 
