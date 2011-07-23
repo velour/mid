@@ -14,8 +14,11 @@ CMDS :=\
 	itmgen\
 	lvlgen\
 	rectview\
+
 ifeq ($(OS),win)
+CMDS +=\
 	tee\
+
 endif
 
 LIBS :=\
