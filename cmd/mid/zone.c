@@ -137,12 +137,12 @@ static FILE *zpipe(Rng *r)
 {
 	Pipe p = {};
 	pipeadd(&p, "./cmd/lvlgen/lvlgen -s %u 25 25 3", rngint(r));
-	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 1 1", rngint(r));
-	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 2 50", rngint(r));
-	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 3 10", rngint(r));
-	pipeadd(&p, " | ./cmd/envgen/envgen -s %u 1 1", rngint(r));
-	pipeadd(&p, " | ./cmd/enmgen/enmgen -s %u 1 50", rngint(r));
-	pipeadd(&p, " | ./cmd/t/t cur.lvl");
+	pipeadd(&p, "./cmd/itmgen/itmgen -s %u 1 1", rngint(r));
+	pipeadd(&p, "./cmd/itmgen/itmgen -s %u 2 50", rngint(r));
+	pipeadd(&p, "./cmd/itmgen/itmgen -s %u 3 10", rngint(r));
+	pipeadd(&p, "./cmd/envgen/envgen -s %u 1 1", rngint(r));
+	pipeadd(&p, "./cmd/enmgen/enmgen -s %u 1 50", rngint(r));
+	pipeadd(&p, "./cmd/t/t cur.lvl");
 
 	pr("lvlgen pipeline: [%s]", p.cmd);
 
@@ -164,7 +164,10 @@ static void pipeadd(Pipe *p, char *fmt, ...)
 
 	if (n > Bufsz - p->n)
 		fatal("Buffer is too small");
-
+	if (p->n > 0) {
+		strcat(p->cmd, " | ");
+		p->n += 3;
+	}
 	strncat(p->cmd + p->n, buf, n);
 	p->n += n;
 }
