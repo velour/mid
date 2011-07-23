@@ -200,7 +200,11 @@ void playerdmg(Player *p, int x, int dir){
 		return;
 
 	p->iframes = 1000.0 / Ticktm; // 1s
-	p->hitback = dir > 0 ? 5 : -5;
+	p->hitback = 0;
+	if (dir > 0)
+		p->hitback =  5;
+	else if (dir < 0)
+		p->hitback = -5;
 	p->eqp[StatHp] -= x;
 	if(p->eqp[StatHp] <= 0)
 		p->eqp[StatHp] = 0;
