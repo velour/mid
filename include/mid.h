@@ -439,7 +439,7 @@ void playerdraw(Gfx *, Player *);
 void playerhandle(Player *, Event *);
 Point playerpos(Player *);
 Rect playerbox(Player *);
-void playerdmg(Player *, int);
+void playerdmg(Player *, int, int);
 void playerheal(Player *, int);
 _Bool playertake(Player *, Item *);
 

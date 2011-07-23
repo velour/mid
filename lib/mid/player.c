@@ -195,12 +195,12 @@ Rect playerbox(Player *p)
 	return p->body.bbox;
 }
 
-void playerdmg(Player *p, int x){
+void playerdmg(Player *p, int x, int dir){
 	if(p->iframes > 0)
 		return;
 
 	p->iframes = 1000.0 / Ticktm; // 1s
-	p->hitback = p->anim == p->leftas? 5 : -5;
+	p->hitback = dir > 0 ? 5 : -5;
 	p->eqp[StatHp] -= x;
 	if(p->eqp[StatHp] <= 0)
 		p->eqp[StatHp] = 0;
