@@ -8,7 +8,6 @@
 #include "../../include/log.h"
 #include "lvlgen.h"
 
-static void mvspecrev(Mvspec *spec);
 static Mv mvmk(Mvspec s, bool rev);
 static int blkd(Mvspec s, Loc l[], int sz);
 static int clr(Mvspec s, Loc l[], int sz);
