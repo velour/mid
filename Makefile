@@ -10,6 +10,7 @@ CMDS :=\
 	itmgen\
 	lvlgen\
 	rectview\
+	tee\
 
 LIBS :=\
 	mid\
@@ -42,7 +43,7 @@ OS := $(shell echo $(UNAME) | sed 's/.*mingw.*/win/i')
 
 ifeq ($(OS),win)
 MANDCFLAGS += -Dmain=SDL_main
-MANDLDFLAGS += -L/mingw/bin $(shell sdl-config --static-libs)
+MANDLDFLAGS += -L/mingw/bin -L/mingw/lib -lmingw32 -lSDLmain -lm -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lversion -luuid
 else
 OS := posix
 endif
@@ -64,3 +65,12 @@ all: $(ALL)
 clean:
 	rm -f $(ALL)
 	rm -f $(ALLO)
+	rm -f $(shell find . -name '*.exe')
+
+ifeq ($(OS),win)
+installer: all
+	mkdir -p Mid
+	cp /mingw/bin/SDL*.dll Mid
+	for c in mid lvlgen itmgen enmgen envgen tee; do cp cmd/$$c/$$c Mid/; done
+	cp -r resrc/ Mid/
+endif

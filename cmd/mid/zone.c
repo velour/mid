@@ -13,6 +13,8 @@
 #include <stdio.h>
 #include "../../include/os.h"
 
+extern int cmdpath(char *buf, int sz, char *cmd);
+
 static const char *zonedir = "_zones";
 enum { Bufsz = 1024 };
 
@@ -26,7 +28,7 @@ static FILE *inzone = NULL;
 static void ensuredir();
 static char *zonefile(int);
 static FILE *zpipe(Rng *r);
-static void pipeadd(struct Pipe *, char *, ...);
+static void pipeadd(struct Pipe *, char *, char *, ...);
 
 void zonestdin()
 {
@@ -136,14 +138,17 @@ static void ensuredir()
 static FILE *zpipe(Rng *r)
 {
 	Pipe p = {};
-	pipeadd(&p, "./cmd/lvlgen/lvlgen -s %u 25 25 3", rngint(r));
-	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 1 1", rngint(r));
-	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 2 50", rngint(r));
-	pipeadd(&p, " | ./cmd/itmgen/itmgen -s %u 3 10", rngint(r));
-	pipeadd(&p, " | ./cmd/envgen/envgen -s %u 1 1", rngint(r));
-	pipeadd(&p, " | ./cmd/enmgen/enmgen -s %u 1 50", rngint(r));
+	pipeadd(&p, "lvlgen", "-s %u 25 25 3", rngint(r));
+	pipeadd(&p, "itmgen", "-s %u 1 1", rngint(r));
+	pipeadd(&p, "itmgen", "-s %u 2 50", rngint(r));
+	pipeadd(&p, "itmgen", "-s %u 3 10", rngint(r));
+	pipeadd(&p, "envgen", "-s %u 1 1", rngint(r));
+	pipeadd(&p, "enmgen", "-s %u 1 50", rngint(r));
 
-	pipeadd(&p, "| tee cur.lvl");
+	pipeadd(&p, "tee", "cur.lvl");
+
+	p.cmd[p.n - 3] = 0;
+
 	pr("lvlgen pipeline: [%s]", p.cmd);
 
 	FILE *fin = piperead(p.cmd);
@@ -153,7 +158,7 @@ static FILE *zpipe(Rng *r)
 	return fin;
 }
 
-static void pipeadd(Pipe *p, char *fmt, ...)
+static void pipeadd(Pipe *p, char *cmd, char *fmt, ...)
 {
 	char buf[Bufsz];
 	va_list ap;
@@ -162,9 +167,15 @@ static void pipeadd(Pipe *p, char *fmt, ...)
 	int n = vsnprintf(buf, Bufsz, fmt, ap);
 	va_end(ap);
 
-	if (n > Bufsz - p->n)
+	char cmdbuf[Bufsz];
+	int cmdsz = cmdpath(cmdbuf, Bufsz, cmd);
+
+	if ((n+4+cmdsz) > Bufsz - p->n)
 		fatal("Buffer is too small");
 
-	strncat(p->cmd + p->n, buf, n);
-	p->n += n;
+	strcat(p->cmd + p->n, cmdbuf);
+	strcat(p->cmd + p->n + cmdsz, " ");
+	strcat(p->cmd + p->n + cmdsz + 1, buf);
+	strcat(p->cmd + p->n + cmdsz + 1 + n, " | ");
+	p->n += n + cmdsz + 4;
 }

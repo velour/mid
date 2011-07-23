@@ -2,25 +2,11 @@
 # // Licensed under the MIT License. See LICENSE for details.
 include Make.inc
 
-TARG := mid
+TARG := tee
 
 OFILES :=\
-	main.o\
-	game.o\
-	invscr.o\
-	title.o\
-	zone.o\
-	statscrn.o\
-	death.o\
-	cmdpath_$(OS).o\
-
-HFILES :=\
-	game.h\
+	tee.o\
 
 LIBDEPS :=\
-	mid\
-	log\
-	rng\
-	os\
 
 include Make.cmd

@@ -1,6 +1,7 @@
 // Copyright © 2011 Steve McCoy and Ethan Burns
 // Licensed under the MIT License. See LICENSE for details.
 #include <assert.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
@@ -138,9 +139,9 @@ static _Bool readl(char *buf, int sz, FILE *f)
 		return 0;
 
 	int l = strlen(buf);
-	assert(buf[l-1] == '\n');
 
-	buf[l-1] = '\0';
+	for(int i = l-1; i >= 0 && isspace(buf[i]); i--)
+		buf[i] = 0;
 
 	return 1;
 }

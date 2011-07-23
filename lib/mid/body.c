@@ -11,6 +11,7 @@ static void dofall(Body *b, Lvl*, Isect is);
 
 void bodyinit(Body *b, int x, int y)
 {
+	*b = (Body){};
 	/* Eventually we want to load this from the resrc directory. */
 	b->bbox = (Rect){ { x, y }, { x + Wide, y + Tall } };
 	b->vel = (Point) { 0, 0 };
