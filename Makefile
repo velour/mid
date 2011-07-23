@@ -1,5 +1,9 @@
 # // Copyright © 2011 Steve McCoy and Ethan Burns
 # // Licensed under the MIT License. See LICENSE for details.
+
+UNAME := $(shell uname)
+OS := $(shell echo $(UNAME) | sed 's/.*mingw.*/win/i')
+
 CMDS :=\
 	mid\
 	enmgen\
@@ -10,7 +14,9 @@ CMDS :=\
 	itmgen\
 	lvlgen\
 	rectview\
+ifeq ($(OS),win)
 	tee\
+endif
 
 LIBS :=\
 	mid\
@@ -36,10 +42,6 @@ endif
 
 MANDCFLAGS := -g -O2 -Wall -Werror -std=c99 -D_POSIX_SOURCE -D_POSIX_C_SOURCE=200112L
 MANDLDFLAGS := -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf
-
-
-UNAME := $(shell uname)
-OS := $(shell echo $(UNAME) | sed 's/.*mingw.*/win/i')
 
 ifeq ($(OS),win)
 MANDCFLAGS += -Dmain=SDL_main
