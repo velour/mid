@@ -10,6 +10,7 @@ CMDS :=\
 	itmgen\
 	lvlgen\
 	rectview\
+	t\
 
 LIBS :=\
 	mid\
