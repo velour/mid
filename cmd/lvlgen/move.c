@@ -9,8 +9,8 @@
 #include "lvlgen.h"
 
 static Mv mvmk(Mvspec s, bool rev);
-static int blkd(Mvspec s, Loc l[], int sz);
-static int clr(Mvspec s, Loc l[], int sz);
+static int blkd(Mvspec s, Loc, Loc l[], int sz);
+static int clr(Mvspec s, Loc, Loc l[], int sz);
 static Loc mvstart(Mvspec s);
 static Loc mvend(Mvspec s);
 
@@ -237,8 +237,8 @@ static Mv mvmk(Mvspec spec, bool rev)
 	mv.dx = e.x - s.x;
 	mv.dy = e.y - s.y;
 	mv.spec = spec;
-	mv.nclr = clr(spec, mv.clr, Maxblks);
-	mv.nblkd = blkd(spec, mv.blkd, Maxblks);
+	mv.nclr = clr(spec, s, mv.clr, Maxblks);
+	mv.nblkd = blkd(spec, s, mv.blkd, Maxblks);
 
 	return mv;
 }
@@ -267,11 +267,10 @@ static Loc mvend(Mvspec s)
 	fatal("No end location specified for move");
 }
 
-static int blkd(Mvspec s, Loc l[], int sz)
+static int blkd(Mvspec s, Loc l0, Loc l[], int sz)
 {
 
 	int i = 0;
-	Loc l0 = mvstart(s);
 
 	for (int x = 0; x < s.w; x++) {
 	for (int y = 0; y < s.h; y++) {
@@ -288,11 +287,10 @@ static int blkd(Mvspec s, Loc l[], int sz)
 	return i;
 }
 
-static int clr(Mvspec s, Loc l[], int sz)
+static int clr(Mvspec s, Loc l0, Loc l[], int sz)
 {
 
 	int i = 0;
-	Loc l0 = mvstart(s);
 
 	for (int x = 0; x < s.w; x++) {
 	for (int y = 0; y < s.h; y++) {
