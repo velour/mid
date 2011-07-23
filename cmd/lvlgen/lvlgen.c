@@ -47,10 +47,10 @@ int main(int argc, char *argv[])
 	for (int z = 0; z < d; z++) {
 		loc = zlayer(loc, lvl);
 		if (z < d - 1) {
-			blk(lvl, loc.x, loc.y, lvl->z)->tile = '>';
+			putdoor(lvl, loc.x, loc.y, lvl->z, '>');
 			water(lvl);
 			lvl->z++;
-			blk(lvl, loc.x, loc.y, lvl->z)->tile = '<';
+			putdoor(lvl, loc.x, loc.y, lvl->z, '<');
 		}
 	}
 
@@ -85,7 +85,7 @@ static void init(Lvl *l)
 	for (int z = 0; z < l->d; z++) {
 	for (int y = 0; y < l->h; y++) {
 	for (int x = 0; x < l->w; x++) {
-		int c = '.';
+		int c = ' ';
 		if (x == 0 || x == l->w - 1 || y == 0 || y == l->h - 1)
 				c = '#';
 			blk(l, x, y, z)->tile = c;
@@ -134,6 +134,7 @@ static void stairs(Rng *r, Lvl *lvl)
 		blk(lvl, Startx, Starty, 0)->tile = 'U';
 	else
 		blk(lvl, Startx, Starty, 0)->tile = 'u';
+	setreach(lvl, Startx, Starty, 0);
 
 	int z = rnd(0, lvl->d - 1);
 	Loc ls[lvl->w * lvl->h];
@@ -144,6 +145,7 @@ static void stairs(Rng *r, Lvl *lvl)
 		blk(lvl, ls[ind].x, ls[ind].y, z)->tile = 'D';
 	else
 		blk(lvl, ls[ind].x, ls[ind].y, z)->tile = 'd';
+	setreach(lvl, ls[ind].x, ls[ind].y, z);
 }
 
 static int stairlocs(Lvl *lvl, Loc ls[], int z)
@@ -151,8 +153,7 @@ static int stairlocs(Lvl *lvl, Loc ls[], int z)
 	int nls = 0;
 	for (int x = 1; x < lvl->w-1; x++)
 	for (int y = 1; y < lvl->h-2; y++) {
-		if (tileinfo(lvl, x, y, z).flags & Tilereach
-			&& tileinfo(lvl, x, y+1, z).flags & Tilecollide) {
+		if (reachable(lvl, x, y, z) && tileinfo(lvl, x, y+1, z).flags & Tilecollide) {
 			ls[nls] = (Loc){ x, y };
 			nls++;
 		}

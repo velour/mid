@@ -41,7 +41,7 @@ static int doorlocs(Lvl *lvl, Path *p, Loc ls[], int sz)
 	for (int x = 0; x < lvl->w; x++) {
 	for (int y = 0; y < lvl->h - 1; y++) {
 		Tileinfo bi = tileinfo(lvl, x, y+1, lvl->z);
-		if (used(lvl, (Loc) {x, y}) && bi.flags & Tilecollide) {
+		if (reachable(lvl, x, y, lvl->z) && bi.flags & Tilecollide) {
 			if (i == sz)
 				fatal("Door loc array is too small");
 			ls[i] = (Loc) {x, y};
@@ -99,17 +99,8 @@ void extradoors(Rng *r, Lvl *lvl)
 
 static void extdoor(Lvl *lvl, int x, int y, int z)
 {
-	Tileinfo bi0 = tileinfo(lvl, x, y, z);
-	if (bi0.flags & Tilewater)
-		blk(lvl, x, y, z)->tile = ')';
-	else
-		blk(lvl, x, y, z)->tile = '>';
-
-	Tileinfo bi1 = tileinfo(lvl, x, y, z+1);
-	if (bi1.flags & Tilewater)
-		blk(lvl, x, y, z+1)->tile = '(';
-	else
-		blk(lvl, x, y, z+1)->tile = '<';
+	putdoor(lvl, x, y, z, '>');
+	putdoor(lvl, x, y, z+1, '<');
 }
 
 static int extdoorlocs(Lvl *lvl, Loc ls[], int sz)
@@ -118,8 +109,7 @@ static int extdoorlocs(Lvl *lvl, Loc ls[], int sz)
 
 	for (int x = 1; x < lvl->w; x++) {
 	for (int y = 1; y < lvl->h - 1; y++) {
-		if (tileinfo(lvl, x, y, lvl->z).flags & Tilereach
-			&& tileinfo(lvl, x, y, lvl->z+1).flags & Tilereach
+		if (reachable(lvl, x, y, lvl->z) && reachable(lvl, x, y, lvl->z+1)
 			&& tileinfo(lvl, x, y+1, lvl->z).flags & Tilecollide
 			&& tileinfo(lvl, x, y+1, lvl->z+1).flags & Tilecollide) {
 			if (i == sz)
@@ -131,4 +121,16 @@ static int extdoorlocs(Lvl *lvl, Loc ls[], int sz)
 	}
 
 	return i;
+}
+
+void putdoor(Lvl *lvl, int x, int y, int z, int door)
+{
+	if (tileinfo(lvl, x, y, z).flags & Tilewater) {
+		if (door == '<')
+			door = '(';
+		else if (door == '>')
+			door = ')';
+	}
+	blk(lvl, x, y, z)->tile = door;
+	setreach(lvl, x, y, z);
 }

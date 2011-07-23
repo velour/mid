@@ -3,11 +3,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <string.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include "lvlgen.h"
 
-static Mv mvmk(Mvspec s);
+static void mvspecrev(Mvspec *spec);
+static Mv mvmk(Mvspec s, bool rev);
 static int blkd(Mvspec s, Loc l[], int sz);
 static int clr(Mvspec s, Loc l[], int sz);
 static Loc mvstart(Mvspec s);
@@ -26,15 +28,7 @@ static Mvspec specs[] = {
 		"s    e"
 		"#    #"
 		"######",
-	  .wt = 2, .w = 6, .h = 6, },
-
-	{ .blks = 
-		"######"
-		"#    #"
-		"#    #"
-		"e    s"
-		"#    #"
-		"######",
+	  . revable = true,
 	  .wt = 2, .w = 6, .h = 6, },
 
 	{ .blks = 
@@ -81,14 +75,7 @@ static Mvspec specs[] = {
 		"#   #"
 		"s   e"
 		"#####",
-	  .wt = 2, .w = 5, .h = 5, },
-
-	{ .blks = 
-		"#####"
-		"#   #"
-		"#   #"
-		"e   s"
-		"#####",
+	  .revable = true,
 	  .wt = 2, .w = 5, .h = 5, },
 
 	{ .blks = 
@@ -99,26 +86,19 @@ static Mvspec specs[] = {
 	{ .blks = 
 		"es"
 		"##",
+	  .revable = true,
 	  .wt = 5, .w = 2, .h = 2, },
-
-	{ .blks = 
-		"s e"
-		"###",
-	  .wt = 10, .w = 3, .h = 2 },
 
 	{ .blks = 
 		"e s"
 		"###",
+	  .revable = true,
 	  .wt = 10, .w = 3, .h = 2 },
-
-	{ .blks = 
-		"s  e"
-		"####",
-	  .wt = 10, .w = 4, .h = 2 },
 
 	{ .blks = 
 		"e  s"
 		"####",
+	  .revable = true,
 	  .wt = 10, .w = 4, .h = 2 },
 
 	{ .blks = 
@@ -126,61 +106,35 @@ static Mvspec specs[] = {
 		"     "
 		"s   e"
 		"#...#",
-	  .wt = 10, .h = 4, .w = 5 },
-
-	{ .blks = 
-		".    "
-		"     "
-		"e   s"
-		"#...#",
+	  .revable = true,
 	  .wt = 10, .h = 4, .w = 5 },
 
 	{ .blks = 
 		" e"
 		"s#"
 		"#.",
+	  .revable = true,
 	  .wt = 0, .w = 2, .h = 3 },
 
 	{ .blks = 
 		" e"
 		"s#"
 		"##",
+	  .revable = true,
 	  .wt = 5, .w = 2, .h = 3 },
 
 	{ .blks = 
-		" s"
-		"e#"
-		"#.",
-	  .wt = 1, .w = 2, .h = 3 },
-
-	{ .blks = 
-		" s"
-		"e#"
-		"##",
-	  .wt = 1, .w = 2, .h = 3 },
-
-	{ .blks = 
 		"s "
 		"#e"
 		".#",
+	  .revable = true,
 	  .wt = 1, .w = 2, .h = 3 },
 
 	{ .blks = 
 		"s "
 		"#e"
 		"##",
-	  .wt = 1, .w = 2, .h = 3 },
-
-	{ .blks = 
-		"e "
-		"#s"
-		".#",
-	  .wt = 1, .w = 2, .h = 3 },
-
-	{ .blks = 
-		"e "
-		"#s"
-		"##",
+	  .revable = true,
 	  .wt = 1, .w = 2, .h = 3 },
 
 	{ .blks = 
@@ -222,13 +176,6 @@ static Mvspec specs[] = {
 	  .wt = 15, .w = 3, .h = 5 },
 
 	{ .blks = 
-		"e  "
-		"#  "
-		"##s"
-		"###",
-	  .wt = 5, .w = 3, .h = 4 },
-
-	{ .blks = 
 		"s  "
 		"#. "
 		"..e"
@@ -236,12 +183,12 @@ static Mvspec specs[] = {
 	  .wt = 15, .w = 3, .h = 4 },
 
 	{ .blks = 
-		"s  "
+		"e  "
 		"#  "
-		"##e"
+		"##s"
 		"###",
+	  .revable = true,
 	  .wt = 5, .w = 3, .h = 4 },
-
 };
 
 static const int Nspecs = sizeof(specs) / sizeof(specs[0]);
@@ -251,8 +198,12 @@ int Nmoves;
 
 void mvini(void)
 {
-	for (int i = 0; i < Nspecs; i++)
-		Nmoves += specs[i].wt;
+	for (int i = 0; i < Nspecs; i++) {
+		int n = specs[i].wt;
+		if (specs[i].revable)
+			n *= 2;
+		Nmoves += n;
+	}
 
 	moves = xalloc(Nmoves, sizeof(*moves));
 
@@ -260,16 +211,27 @@ void mvini(void)
 	for (int i = 0; i < Nspecs; i++) {
 		Mvspec s = specs[i];
 		for (int j = 0; j < s.wt; j++) {
-			moves[nxt] = mvmk(s);
+			moves[nxt] = mvmk(s, false);
+			nxt++;
+		}
+		if (!s.revable)
+			continue;
+		for (int j = 0; j < s.wt; j++) {
+			moves[nxt] = mvmk(s, true);
 			nxt++;
 		}
 	}
 	assert(nxt == Nmoves);
 }
 
-static Mv mvmk(Mvspec spec)
+static Mv mvmk(Mvspec spec, bool rev)
 {
 	Loc s = mvstart(spec), e = mvend(spec);
+	if (rev) {
+		Loc t = s;
+		s = e;
+		e = t;
+	}
 
 	Mv mv;
 	mv.wt = spec.wt;
@@ -356,13 +318,16 @@ void mvblit(Mv *mv, Lvl *l, Loc l0)
 	for (int y = 0; y < mv->spec.h; y++) {
 		int lx = (x - strt.x) + l0.x;
 		int ly = (y - strt.y) + l0.y;
+		Loc l1 = (Loc) { lx, ly };
 		int t = mv->spec.blks[y * mv->spec.w + x];
-		if (blk(l, lx, ly, l->z)->tile != '.')
+		if (reachable(l, l1.x, l1.y, l->z))
 			continue;
-		if (t == '#')
+		if (t == '#') {
 			blk(l, lx, ly, l->z)->tile = '#';
-		if (t == ' ' || t == 's' || t == 'e')
+		} else if (t == ' ' || t == 's' || t == 'e') {
 			blk(l, lx, ly, l->z)->tile = ' ';
+			setreach(l, l1.x, l1.y, l->z);
+		}
 	}
 	}
 }

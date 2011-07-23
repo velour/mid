@@ -76,7 +76,7 @@ static bool segconfl(Lvl *l, Path *p, Seg s)
 		Loc blk = (Loc) { bp->x + s.l0.x, bp->y + s.l0.y };
 		if (blk.x < 0 || blk.x >= l->w || blk.y < 0 || blk.y >= l->h)
 			return false;
-		if (used(l, blk))
+		if (reachable(l, blk.x, blk.y, l->z))
 			return true;
 	}
 
@@ -102,14 +102,18 @@ static bool segclr(Lvl *l, Seg s)
 static bool beenthere(Lvl *l, Path *p, Seg s)
 {
 	for (int i = 0; i < p->nsegs; i++) {
-		if (used(l, s.l1))
+		if (reachable(l, s.l1.x, s.l1.y, l->z))
 			return true;
 	}
 	return false;
 }
 
-bool used(Lvl *l, Loc loc)
+bool reachable(Lvl *l, int x, int y, int z)
 {
-	int t = blk(l, loc.x, loc.y, l->z)->tile;
-	return t == ' ' || t == '<' || t == '>';
+	return blk(l, x, y, z)->flags != 0;
+}
+
+void setreach(Lvl *l, int x, int y, int z)
+{
+	blk(l, x, y, z)->flags = 1;
 }

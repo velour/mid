@@ -20,10 +20,8 @@ void water(Lvl *lvl)
 		Blk *b = blk(lvl, x, y, lvl->z);
 		int t = b->tile;
 		switch (t) {
-		case '.':
-			b->tile = 'w'; break;
 		case ' ':
-			b->tile = 'W'; break;
+			b->tile = 'w'; break;
 		case '>':
 			b->tile = ')'; break;
 		case '<':

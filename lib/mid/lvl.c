@@ -39,11 +39,6 @@ static Tinfo tiles[] = {
 	[' '] = {
 		.ok = true,
 		.anims = { [0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 } },
-		.flags = Tilereach
-	},
-	['.'] = {
-		.ok = true,
-		.anims = { [0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 } },
 	},
 	['#'] = {
 		.ok = true,
@@ -58,21 +53,13 @@ static Tinfo tiles[] = {
 		},
 		.flags = Tilewater
 	},
-	['W'] = {
-		.ok = true,
-		.anims = {
-			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
-			[2] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
-		},
-		.flags = Tilewater | Tilereach
-	},
 	['>'] = {
 		.ok = true,
 		.anims = {
 			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[1] = { .row = 3, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 		},
-		.flags = Tilebdoor | Tilereach
+		.flags = Tilebdoor
 	},
 	[')'] = {
 		.ok = true,
@@ -81,7 +68,7 @@ static Tinfo tiles[] = {
 			[1] = { .row = 3, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[2] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
 		},
-		.flags = Tilebdoor | Tilewater | Tilereach
+		.flags = Tilebdoor | Tilewater
 	},
 	['<'] = {
 		.ok = true,
@@ -89,7 +76,7 @@ static Tinfo tiles[] = {
 			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[3] = { .row = 4, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 		},
-		.flags = Tilefdoor | Tilereach
+		.flags = Tilefdoor
 	},
 	['('] = {
 		.ok = true,
@@ -98,7 +85,7 @@ static Tinfo tiles[] = {
 			[2] = { .row = 4, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[3] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
 		},
-		.flags = Tilefdoor | Tilewater | Tilereach
+		.flags = Tilefdoor | Tilewater
 	},
 	['d'] = {
 		.ok = true,
@@ -106,7 +93,7 @@ static Tinfo tiles[] = {
 			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[1] = { .row = 5, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 		},
-		.flags = Tiledown | Tilereach
+		.flags = Tiledown
 	},
 	['D'] = {
 		.ok = true,
@@ -115,7 +102,7 @@ static Tinfo tiles[] = {
 			[1] = { .row = 5, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[3] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
 		},
-		.flags = Tiledown | Tilewater | Tilereach
+		.flags = Tiledown | Tilewater
 	},
 	['u'] = {
 		.ok = true,
@@ -123,7 +110,7 @@ static Tinfo tiles[] = {
 			[0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[1] = { .row = 6, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 		},
-		.flags = Tileup | Tilereach
+		.flags = Tileup
 	},
 	['U'] = {
 		.ok = true,
@@ -132,7 +119,7 @@ static Tinfo tiles[] = {
 			[1] = { .row = 6, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[3] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
 		},
-		.flags = Tileup | Tilewater | Tilereach
+		.flags = Tileup | Tilewater
 	},
 };
 

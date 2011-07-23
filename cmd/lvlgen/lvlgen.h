@@ -14,6 +14,7 @@ struct Loc {
 typedef struct Mvspec Mvspec;
 struct Mvspec {
 	int wt, w, h;
+	_Bool revable;
 	char *blks;
 };
 
@@ -61,8 +62,10 @@ void pathfree(Path *);
 _Bool pathadd(struct Lvl *, Path *, Seg);
 void pathpr(struct Lvl *, Path *);
 
-_Bool used(struct Lvl *, Loc);
+_Bool reachable(struct Lvl *, int, int, int);
+void setreach(struct Lvl *, int, int, int);
 
+void putdoor(struct Lvl *lvl, int x, int y, int z, int door);
 Loc doorloc(struct Lvl *, Path *, Loc);
 void extradoors(struct Rng *, struct Lvl *);
 
