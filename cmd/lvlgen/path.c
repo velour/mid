@@ -16,7 +16,7 @@ Seg segmk(Loc l, Mv *m)
 {
 	Seg s;
 	s.l0 = l;
-	s.l1 = (Loc) { l.x + m->dx, l.y + m->dy };
+	s.l1 = (Loc) { l.x + m->dx, l.y + m->dy, l.z + m->dz };
 	s.mv = m;
 	return s;
 }
@@ -62,7 +62,8 @@ static bool segok(Lvl *l, Path *p, Seg s)
 		return false;
 
 	bool inrange = s.l1.x > 0 && s.l1.x < l->w - 1
-		&& s.l1.y > 0 && s.l1.y < l->h - 1;
+		&& s.l1.y > 0 && s.l1.y < l->h - 1
+		&& s.l1.z >= 0 && s.l1.z < l->d;
 
 	return inrange && segclr(l, s) && !segconfl(l, p, s)
 		&& !beenthere(l, p, s);
@@ -73,10 +74,11 @@ static bool segconfl(Lvl *l, Path *p, Seg s)
 {
 	for (int i = 0; i < s.mv->nblkd; i++) {
 		Loc *bp = &s.mv->blkd[i];
-		Loc blk = (Loc) { bp->x + s.l0.x, bp->y + s.l0.y };
-		if (blk.x < 0 || blk.x >= l->w || blk.y < 0 || blk.y >= l->h)
-			return false;
-		if (reachable(l, blk.x, blk.y, l->z))
+		Loc blk = (Loc) { bp->x + s.l0.x, bp->y + s.l0.y, bp->z + s.l0.z };
+		if (blk.x < 0 || blk.x >= l->w
+			|| blk.y < 0 || blk.y >= l->h
+			|| blk.z < 0 || blk.z >= l->d
+			|| reachable(l, blk.x, blk.y, blk.z))
 			return true;
 	}
 
@@ -88,11 +90,11 @@ static bool segclr(Lvl *l, Seg s)
 {
 	for (int i = 0; i < s.mv->nclr; i++) {
 		Loc *bp = &s.mv->clr[i];
-		Loc blk = (Loc) { bp->x + s.l0.x, bp->y + s.l0.y };
-		if (blk.x < 0 || blk.x >= l->w || blk.y < 0 || blk.y >= l->h)
-			return false;
-		Tileinfo b = tileinfo(l, blk.x, blk.y, l->z);
-		if (b.flags & Tilecollide)
+		Loc b = (Loc) { bp->x + s.l0.x, bp->y + s.l0.y, bp->z + s.l0.z };
+		if (b.x < 0 || b.x >= l->w
+			|| b.y < 0 || b.y >= l->h
+			|| b.z < 0 || b.z >= l->d
+			|| tileinfo(l, b.x, b.y, b.z).flags & Tilecollide)
 			return false;
 	}
 
@@ -102,7 +104,7 @@ static bool segclr(Lvl *l, Seg s)
 static bool beenthere(Lvl *l, Path *p, Seg s)
 {
 	for (int i = 0; i < p->nsegs; i++) {
-		if (reachable(l, s.l1.x, s.l1.y, l->z))
+		if (reachable(l, s.l1.x, s.l1.y, s.l1.z))
 			return true;
 	}
 	return false;

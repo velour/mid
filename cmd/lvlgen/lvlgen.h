@@ -8,7 +8,7 @@ unsigned int rnd(int min, int max);
 
 typedef struct Loc Loc;
 struct Loc {
-	int x, y;
+	int x, y, z;
 };
 
 typedef struct Mvspec Mvspec;
@@ -23,7 +23,8 @@ enum { Maxblks = 64 };
 typedef struct Mv Mv;
 struct Mv {
 	int wt;
-	int dx, dy;
+	int dx, dy, dz;
+	Loc strt;
 
 	/* Array of locs that must be 'clear' */
 	int nclr;
@@ -66,10 +67,10 @@ _Bool reachable(struct Lvl *, int, int, int);
 void setreach(struct Lvl *, int, int, int);
 
 void putdoor(struct Lvl *lvl, int x, int y, int z, int door);
-Loc doorloc(struct Lvl *, Path *, Loc);
+Loc doorloc(struct Lvl *, Loc);
 void extradoors(struct Rng *, struct Lvl *);
 
 void water(struct Lvl *);
 
-void morereach(struct Lvl *);
-void closeunreach(struct Lvl *lvl);
+void morereach(struct Lvl *, int z);
+void closeunreach(struct Lvl *lvl, int z);
