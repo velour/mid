@@ -6,7 +6,12 @@
 #include <SDL/SDL_ttf.h>
 #include <assert.h>
 #include <stdarg.h>
-#include "gfx.h"
+
+struct Gfx{
+	SDL_Window *win;
+	SDL_Renderer *rend;
+	Point tr;
+};
 
 static Gfx gfx;
 
