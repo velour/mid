@@ -73,7 +73,7 @@ static int rng(Rng *r, int argc, char *argv[])
 		args = 2;
 	} else {
 		seed = time(0);
-		pr("itmgen seed = %lu", (unsigned long) seed);
+		pr("lvlgen seed = %lu", (unsigned long) seed);
 	}
 	rnginit(r, seed);
 
