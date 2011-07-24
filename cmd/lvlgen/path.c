@@ -55,9 +55,6 @@ bool pathadd(Lvl *l, Path *p, Seg s)
 
 static bool segok(Lvl *l, Path *p, Seg s)
 {
-	assert (s.l0.x > 0 && s.l0.x < l->w - 1);
-	assert (s.l0.y > 0 && s.l0.y < l->h - 1);
-
 	if (p->nsegs == 0 && !startonblk(s.mv))
 		return false;
 
