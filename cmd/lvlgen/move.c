@@ -9,8 +9,8 @@
 #include "lvlgen.h"
 
 static Mv mvmk(Mvspec s, bool rev);
-static int blkd(Mvspec s, Loc l[], int sz);
-static int clr(Mvspec s, Loc l[], int sz);
+static int blkd(Mvspec s, Loc, Loc l[], int sz);
+static int clr(Mvspec s, Loc, Loc l[], int sz);
 static Loc mvstart(Mvspec s);
 static Loc mvend(Mvspec s);
 
@@ -233,12 +233,14 @@ static Mv mvmk(Mvspec spec, bool rev)
 	}
 
 	Mv mv;
+	mv.strt = s;
 	mv.wt = spec.wt;
 	mv.dx = e.x - s.x;
 	mv.dy = e.y - s.y;
+	mv.dz = 0;
 	mv.spec = spec;
-	mv.nclr = clr(spec, mv.clr, Maxblks);
-	mv.nblkd = blkd(spec, mv.blkd, Maxblks);
+	mv.nclr = clr(spec, s, mv.clr, Maxblks);
+	mv.nblkd = blkd(spec, s, mv.blkd, Maxblks);
 
 	return mv;
 }
@@ -249,7 +251,7 @@ static Loc mvstart(Mvspec s)
 	for (int y = 0; y < s.h; y++) {
 		char c = s.blks[y * s.w + x];
 		if (c == 's')
-			return (Loc) {x, y};
+			return (Loc) {x, y, 0};
 	}
 	}
 	fatal("No start location specified for move");
@@ -261,17 +263,16 @@ static Loc mvend(Mvspec s)
 	for (int y = 0; y < s.h; y++) {
 		char c = s.blks[y * s.w + x];
 		if (c == 'e')
-			return (Loc) {x, y};
+			return (Loc) {x, y, 0};
 	}
 	}
 	fatal("No end location specified for move");
 }
 
-static int blkd(Mvspec s, Loc l[], int sz)
+static int blkd(Mvspec s, Loc l0, Loc l[], int sz)
 {
 
 	int i = 0;
-	Loc l0 = mvstart(s);
 
 	for (int x = 0; x < s.w; x++) {
 	for (int y = 0; y < s.h; y++) {
@@ -279,7 +280,7 @@ static int blkd(Mvspec s, Loc l[], int sz)
 		if (c == '#') {
 			if (i >= sz)
 				fatal("blkd: array is too small\n");
-			l[i] = (Loc){x - l0.x , y - l0.y};
+			l[i] = (Loc){x - l0.x , y - l0.y, 0};
 			i++;
 		}
 	}
@@ -288,11 +289,10 @@ static int blkd(Mvspec s, Loc l[], int sz)
 	return i;
 }
 
-static int clr(Mvspec s, Loc l[], int sz)
+static int clr(Mvspec s, Loc l0, Loc l[], int sz)
 {
 
 	int i = 0;
-	Loc l0 = mvstart(s);
 
 	for (int x = 0; x < s.w; x++) {
 	for (int y = 0; y < s.h; y++) {
@@ -300,7 +300,7 @@ static int clr(Mvspec s, Loc l[], int sz)
 		if (c == ' ' || c == 's' || c == 'e') {
 			if (i >= sz)
 				fatal("clr: array is too small\n");
-			l[i] = (Loc){x - l0.x , y - l0.y};
+			l[i] = (Loc){x - l0.x , y - l0.y, 0};
 			i++;
 		}
 	}
@@ -311,21 +311,19 @@ static int clr(Mvspec s, Loc l[], int sz)
 
 void mvblit(Mv *mv, Lvl *l, Loc l0)
 {
-	Loc strt = mvstart(mv->spec);
-
 	for (int x = 0; x < mv->spec.w; x++) {
 	for (int y = 0; y < mv->spec.h; y++) {
-		int lx = (x - strt.x) + l0.x;
-		int ly = (y - strt.y) + l0.y;
-		Loc l1 = (Loc) { lx, ly };
+		int lx = (x - mv->strt.x) + l0.x;
+		int ly = (y - mv->strt.y) + l0.y;
+		Loc l1 = (Loc) { lx, ly, l0.z };
 		int t = mv->spec.blks[y * mv->spec.w + x];
-		if (reachable(l, l1.x, l1.y, l->z))
+		if (reachable(l, l1.x, l1.y, l1.z))
 			continue;
 		if (t == '#') {
-			blk(l, lx, ly, l->z)->tile = '#';
+			blk(l, lx, ly, l1.z)->tile = '#';
 		} else if (t == ' ' || t == 's' || t == 'e') {
-			blk(l, lx, ly, l->z)->tile = ' ';
-			setreach(l, l1.x, l1.y, l->z);
+			blk(l, lx, ly, l1.z)->tile = ' ';
+			setreach(l, lx, ly, l1.z);
 		}
 	}
 	}

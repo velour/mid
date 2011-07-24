@@ -42,15 +42,15 @@ int main(int argc, char *argv[])
 	mvini();
 	init(lvl);
 
-	Loc loc = (Loc) { Startx, Starty };
+	Loc loc = (Loc) { Startx, Starty, 0 };
 	blk(lvl, loc.x, loc.y, 0)->tile = ' ';
 	for (int z = 0; z < d; z++) {
+		loc.z = z;
 		loc = zlayer(loc, lvl);
 		if (z < d - 1) {
-			putdoor(lvl, loc.x, loc.y, lvl->z, '>');
+			putdoor(lvl, loc.x, loc.y, z, '>');
 			water(lvl);
-			lvl->z++;
-			putdoor(lvl, loc.x, loc.y, lvl->z, '<');
+			putdoor(lvl, loc.x, loc.y, z+1, '<');
 		}
 	}
 
@@ -88,7 +88,7 @@ static void init(Lvl *l)
 		int c = ' ';
 		if (x == 0 || x == l->w - 1 || y == 0 || y == l->h - 1)
 				c = '#';
-			blk(l, x, y, z)->tile = c;
+		blk(l, x, y, z)->tile = c;
 	}
 	}
 	}
@@ -98,10 +98,10 @@ static Loc zlayer(Loc loc, Lvl *lvl)
 {
 	Path *p = pathnew(lvl);
 	buildpath(lvl, p, loc);
-	Loc nxt = doorloc(lvl, p, loc);
+	Loc nxt = doorloc(lvl, loc);
 	pathfree(p);
-	morereach(lvl);
-	closeunreach(lvl);
+	morereach(lvl, loc.z);
+	closeunreach(lvl, loc.z);
 	return nxt;
 }
 
