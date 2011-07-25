@@ -11,7 +11,7 @@
 static int addmv(Mvspec *, Mv moves[]);
 static int addrev(Mvspec *, Mv moves[]);
 static Mv mvmk(Mvspec *);
-static int offsets(Mvspec *, const char *accept, Loc l0, Loc l[], int sz);
+static int offsets(Mvspec *, const char *accept, Loc l[], int sz);
 static Loc indloc(Mvspec *, int);
 
 static const char *strttiles = "s";
@@ -259,15 +259,16 @@ static Mv mvmk(Mvspec *spec)
 		.dz = 0,
 		.spec = spec,
 	};
-	mv.nclr = offsets(spec, clrtiles, s, mv.clr, Maxblks);
-	mv.nblkd = offsets(spec, blkdtiles, s, mv.blkd, Maxblks);
+	mv.nclr = offsets(spec, clrtiles, mv.clr, Maxblks);
+	mv.nblkd = offsets(spec, blkdtiles, mv.blkd, Maxblks);
 
 	return mv;
 }
 
-static int offsets(Mvspec *s, const char *accept, Loc l0, Loc l[], int sz)
+static int offsets(Mvspec *s, const char *accept, Loc l[], int sz)
 {
 	int n = 0;
+	Loc l0 = indloc(s, strcspn(s->blks, strttiles));
 
 	for (int i = 0; i < strlen(s->blks); i++) {
 		if (strchr(accept, s->blks[i]) != NULL) {
