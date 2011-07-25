@@ -205,12 +205,8 @@ int Nmoves;
 
 void mvini(void)
 {
-	for (int i = 0; i < Nspecs; i++) {
-		if (specs[i].revable)
-			Nmoves += specs[i].wt * 2;
-		else
-			Nmoves += specs[i].wt;
-	}
+	for (int i = 0; i < Nspecs; i++)
+		Nmoves += specs[i].wt * (specs[i].revable ? 2 : 1);
 
 	Mv *m;
 	moves = m = xalloc(Nmoves, sizeof(*moves));
