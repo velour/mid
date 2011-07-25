@@ -54,15 +54,13 @@ bool pathadd(Lvl *l, Path *p, Seg s)
 
 static bool segok(Lvl *l, Path *p, Seg s)
 {
-	if (p->nsegs == 0 && !startonblk(s.mv))
-		return false;
-
-	bool inrange = s.l1.x > 0 && s.l1.x < l->w - 1
+	return (p->nsegs != 0 || startonblk(s.mv))	// 1st seg must start on a block
+		&& s.l1.x > 0 && s.l1.x < l->w - 1
 		&& s.l1.y > 0 && s.l1.y < l->h - 1
-		&& s.l1.z >= 0 && s.l1.z < l->d;
-
-	return inrange && segclr(l, s) && !segconfl(l, p, s)
-		&& !reachable(l, s.l1.x, s.l1.y, s.l1.z);	// haven't been there yet.
+		&& s.l1.z >= 0 && s.l1.z < l->d
+		&& !reachable(l, s.l1.x, s.l1.y, s.l1.z)	// haven't been there yet.
+		&& segclr(l, s)
+		&& !segconfl(l, p, s);
 }
 
 static bool segconfl(Lvl *l, Path *p, Seg s)
