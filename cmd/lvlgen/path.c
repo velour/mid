@@ -10,7 +10,6 @@
 static bool segok(Lvl *l, Path *p, Seg s);
 static bool segconfl(Lvl *l, Path *p, Seg s);
 static bool segclr(Lvl *l, Seg s);
-static bool beenthere(Lvl *l, Path *p, Seg s);
 
 Seg segmk(Loc l, Mv *m)
 {
@@ -63,7 +62,7 @@ static bool segok(Lvl *l, Path *p, Seg s)
 		&& s.l1.z >= 0 && s.l1.z < l->d;
 
 	return inrange && segclr(l, s) && !segconfl(l, p, s)
-		&& !beenthere(l, p, s);
+		&& !reachable(l, s.l1.x, s.l1.y, s.l1.z);	// haven't been there yet.
 }
 
 static bool segconfl(Lvl *l, Path *p, Seg s)
@@ -94,9 +93,4 @@ static bool segclr(Lvl *l, Seg s)
 	}
 
 	return true;
-}
-
-static bool beenthere(Lvl *l, Path *p, Seg s)
-{
-	return reachable(l, s.l1.x, s.l1.y, s.l1.z);
 }
