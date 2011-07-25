@@ -66,7 +66,6 @@ static bool segok(Lvl *l, Path *p, Seg s)
 		&& !beenthere(l, p, s);
 }
 
-/* Conflict with other path segments? */
 static bool segconfl(Lvl *l, Path *p, Seg s)
 {
 	for (int i = 0; i < s.mv->nblkd; i++) {
@@ -82,7 +81,6 @@ static bool segconfl(Lvl *l, Path *p, Seg s)
 	return false;
 }
 
-/* Test if the segment area is clr. */
 static bool segclr(Lvl *l, Seg s)
 {
 	for (int i = 0; i < s.mv->nclr; i++) {
@@ -105,14 +103,4 @@ static bool beenthere(Lvl *l, Path *p, Seg s)
 			return true;
 	}
 	return false;
-}
-
-bool reachable(Lvl *l, int x, int y, int z)
-{
-	return blk(l, x, y, z)->flags != 0;
-}
-
-void setreach(Lvl *l, int x, int y, int z)
-{
-	blk(l, x, y, z)->flags = 1;
 }

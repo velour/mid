@@ -161,3 +161,13 @@ static int stairlocs(Lvl *lvl, Loc ls[], int z)
 	}
 	return nls;
 }
+
+bool reachable(Lvl *l, int x, int y, int z)
+{
+	return blk(l, x, y, z)->flags != 0;
+}
+
+void setreach(Lvl *l, int x, int y, int z)
+{
+	blk(l, x, y, z)->flags = 1;
+}
