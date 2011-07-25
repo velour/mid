@@ -44,3 +44,7 @@ Rect swordbbox(Sword *s){
 		loc = s->leftloc;
 	return loc[s->cur];
 }
+
+int swordstr(Sword *s, Player *p){
+	return s->pow + p->stats[StatStr] + p->eqp[StatStr];
+}

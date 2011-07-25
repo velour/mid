@@ -14,7 +14,7 @@ struct Unti{
 };
 
 _Bool untiinit(Enemy *e, int x, int y){
-	e->hp = 2;
+	e->hp = 10;
 	e->hitback = 0;
 	e->iframes = 0;
 
@@ -59,8 +59,14 @@ void untiupdate(Enemy *e, Player *p, Lvl *l){
 	Rect swbb = swordbbox(&p->sw);
 	if(e->iframes == 0 && p->sframes > 0 && isect(e->b.bbox, swbb)){
 		sfxplay(untihit);
-		e->hp--;
-		e->hitback = swbb.a.x < e->b.bbox.a.x ? 5 : -5;
+		int pstr = swordstr(&p->sw, p);
+		e->hp -= pstr;
+		int mhb = 5;
+		if(pstr > mhb*2)
+			mhb = pstr/2;
+		if(mhb > 32)
+			mhb = 32;
+		e->hitback = swbb.a.x < e->b.bbox.a.x ? mhb : -mhb;
 		e->iframes = 500.0 / Ticktm; // 0.5s
 	}
 

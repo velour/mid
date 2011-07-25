@@ -321,6 +321,14 @@ void bodyinit(Body *, int x, int y);
 void bodyupdate(Body *b, Lvl *l);
 
 typedef struct Sword Sword;
+typedef enum Act Act;
+typedef enum Stat Stat;
+typedef struct Item Item;
+typedef struct Invit Invit;
+typedef enum ItemID ItemID;
+typedef enum EqpLoc EqpLoc;
+typedef struct Player Player;
+
 struct Sword{
 	Rect rightloc[2];
 	Rect leftloc[2];
@@ -335,8 +343,8 @@ struct Sword{
 _Bool swordldresrc(void);
 void sworddraw(Gfx*, Sword*);
 Rect swordbbox(Sword*);
+int swordstr(Sword*, Player*);
 
-typedef enum Act Act;
 enum Act {
 	Stand,
 	Walk,
@@ -344,19 +352,12 @@ enum Act {
 	Nacts
 };
 
-typedef enum Stat Stat;
 enum Stat{
 	StatHp,
 	StatDex,
 	StatStr,
 	StatMax
 };
-
-typedef struct Item Item;
-typedef struct Invit Invit;
-typedef enum ItemID ItemID;
-typedef enum EqpLoc EqpLoc;
-typedef struct Player Player;
 
 enum { Maxinv = 15 };
 
