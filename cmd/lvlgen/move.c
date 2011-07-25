@@ -20,7 +20,8 @@ static const char *blkdtiles = "#";
  * of the move, anything in blkdtiles is a collidable block, any character
  * in clrtiles must be clear and is considered reachable.  Anything else
  * is a wild card (whatever ends up being put there while building the
- * path).
+ * path).  If .revable is true then both the inital version and the version
+ * with the start and end swapped are considered.
  */
 static Mvspec specs[] = {
 	{ .blks = 
