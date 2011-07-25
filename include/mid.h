@@ -446,6 +446,7 @@ typedef enum EnemyID EnemyID;
 enum EnemyID{
 	EnemyNone,
 	EnemyUnti,
+	EnemyNous,
 	EnemyMax
 };
 
@@ -454,6 +455,7 @@ typedef struct Ai Ai;
 struct Ai{
 	void (*update)(Enemy*,Player*,Lvl*);
 	Point mv;
+	Point lastp;
 	double awdst; // awareness distance
 };
 

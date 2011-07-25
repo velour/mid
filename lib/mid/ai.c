@@ -46,7 +46,14 @@ static void dojump(Enemy *e, Player *p, Lvl *lvl){
 }
 
 static void walk(Enemy *e, Player *p, Lvl *lvl){
+	double wx = e->ai.mv.x;
 
+	if(e->b.bbox.a.x == e->ai.lastp.x)
+		e->ai.mv.x = -wx;
+
+	e->ai.lastp = e->b.bbox.a;
+
+	e->b.vel.x = e->ai.mv.x;
 }
 
 static void patrol(Enemy *e, Player *p, Lvl *lvl){
