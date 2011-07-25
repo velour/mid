@@ -268,11 +268,6 @@ static int offsets(Mvspec s, const char *accept, Loc l0, Loc l[], int sz)
 	return n;
 }
 
-static Loc indloc(Mvspec s, int i)
-{
-	return (Loc) { i % s.w, i / s.w, 0 };
-}
-
 void mvblit(Mv *mv, Lvl *lvl, Loc l0)
 {
 	char *blks = mv->spec.blks;
@@ -293,6 +288,11 @@ void mvblit(Mv *mv, Lvl *lvl, Loc l0)
 			setreach(lvl, l1.x, l1.y, l1.z);
 		}
 	}
+}
+
+static Loc indloc(Mvspec s, int i)
+{
+	return (Loc) { i % s.w, i / s.w, 0 };
 }
 
 bool startonblk(Mv *mv)
