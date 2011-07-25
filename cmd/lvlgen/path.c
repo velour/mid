@@ -98,9 +98,5 @@ static bool segclr(Lvl *l, Seg s)
 
 static bool beenthere(Lvl *l, Path *p, Seg s)
 {
-	for (int i = 0; i < p->nsegs; i++) {
-		if (reachable(l, s.l1.x, s.l1.y, s.l1.z))
-			return true;
-	}
-	return false;
+	return reachable(l, s.l1.x, s.l1.y, s.l1.z);
 }
