@@ -8,10 +8,14 @@
 #include "../../include/log.h"
 #include "lvlgen.h"
 
-static Mv mvmk(Mvspec s, bool rev);
-static int offsets(Mvspec s, const char *accept, Loc l0, Loc l[], int sz);
-static Loc indloc(Mvspec, int);
+static int addmv(Mvspec *, Mv moves[]);
+static int addrev(Mvspec *, Mv moves[]);
+static Mv mvmk(Mvspec *);
+static int offsets(Mvspec *, const char *accept, Loc l0, Loc l[], int sz);
+static Loc indloc(Mvspec *, int);
 
+static const char *strttiles = "s";
+static const char *endtiles = "e";
 static const char *clrtiles = " es";
 static const char *blkdtiles = "#";
 
@@ -202,46 +206,58 @@ int Nmoves;
 void mvini(void)
 {
 	for (int i = 0; i < Nspecs; i++) {
-		int n = specs[i].wt;
 		if (specs[i].revable)
-			n *= 2;
-		Nmoves += n;
+			Nmoves += specs[i].wt * 2;
+		else
+			Nmoves += specs[i].wt;
 	}
 
-	moves = xalloc(Nmoves, sizeof(*moves));
+	Mv *m;
+	moves = m = xalloc(Nmoves, sizeof(*moves));
 
-	int nxt = 0;
 	for (int i = 0; i < Nspecs; i++) {
-		Mvspec s = specs[i];
-		for (int j = 0; j < s.wt; j++) {
-			moves[nxt] = mvmk(s, false);
-			nxt++;
-		}
-		if (!s.revable)
-			continue;
-		for (int j = 0; j < s.wt; j++) {
-			moves[nxt] = mvmk(s, true);
-			nxt++;
-		}
+		m += addmv(specs+i, m);
+		if (specs[i].revable)
+			m += addrev(specs+i, m);
 	}
-	assert(nxt == Nmoves);
+
+	assert(m - moves == Nmoves);
 }
 
-static Mv mvmk(Mvspec spec, bool rev)
+static int addmv(Mvspec *s, Mv moves[])
 {
-	int si = strcspn(spec.blks, "s");
-	int ei = strcspn(spec.blks, "e");
-	if (rev) {
-		int t = si;
-		si = ei;
-		ei = t;
-	}
+	for (int i = 0; i < s->wt; i++)
+		moves[i] = mvmk(s);
+	return s->wt;
+}
 
-	Loc s = indloc(spec, si), e = indloc(spec, ei);
+static int addrev(Mvspec *s, Mv moves[])
+{
+	Mvspec *rev = xalloc(1, sizeof(*rev));
+	*rev = *s;
+	rev->blks = xalloc(strlen(s->blks), sizeof(*s->blks));
+	strcpy(rev->blks, s->blks);
+
+	int si = strcspn(rev->blks, strttiles);
+	int ei = strcspn(rev->blks, endtiles);
+	char tmp = rev->blks[si];
+	rev->blks[si] = rev->blks[ei];
+	rev->blks[ei] = tmp;
+
+	for (int i = 0; i< s->wt; i++)
+		moves[i] = mvmk(rev);
+
+	return rev->wt;
+}
+
+static Mv mvmk(Mvspec *spec)
+{
+	Loc s = indloc(spec, strcspn(spec->blks, strttiles));
+	Loc e = indloc(spec, strcspn(spec->blks, endtiles));
 
 	Mv mv = (Mv) {
 		.strt = s,
-		.wt = spec.wt,
+		.wt = spec->wt,
 		.dx = e.x - s.x,
 		.dy = e.y - s.y,
 		.dz = 0,
@@ -253,13 +269,13 @@ static Mv mvmk(Mvspec spec, bool rev)
 	return mv;
 }
 
-static int offsets(Mvspec s, const char *accept, Loc l0, Loc l[], int sz)
+static int offsets(Mvspec *s, const char *accept, Loc l0, Loc l[], int sz)
 {
 
 	int n = 0;
 
-	for (int i = 0; i < strlen(s.blks); i++) {
-		if (strchr(accept, s.blks[i]) != NULL) {
+	for (int i = 0; i < strlen(s->blks); i++) {
+		if (strchr(accept, s->blks[i]) != NULL) {
 			if (n >= sz)
 				fatal("offsets: array is too small\n");
 			Loc cur =  indloc(s, i);
@@ -273,7 +289,7 @@ static int offsets(Mvspec s, const char *accept, Loc l0, Loc l[], int sz)
 
 void mvblit(Mv *mv, Lvl *lvl, Loc l0)
 {
-	char *blks = mv->spec.blks;
+	char *blks = mv->spec->blks;
 	Loc s = mv->strt;
 
 	for (int i = 0; i < strlen(blks); i++) {
@@ -293,9 +309,9 @@ void mvblit(Mv *mv, Lvl *lvl, Loc l0)
 	}
 }
 
-static Loc indloc(Mvspec s, int i)
+static Loc indloc(Mvspec *s, int i)
 {
-	return (Loc) { i % s.w, i / s.w, 0 };
+	return (Loc) { i % s->w, i / s->w, 0 };
 }
 
 bool startonblk(Mv *mv)

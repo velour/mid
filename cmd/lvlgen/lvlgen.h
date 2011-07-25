@@ -34,7 +34,7 @@ struct Mv {
 	int nblkd;
 	Loc blkd[Maxblks];
 
-	Mvspec spec;
+	Mvspec *spec;
 };
 
 Mv *moves;
