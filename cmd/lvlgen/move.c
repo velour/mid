@@ -15,10 +15,12 @@ static Loc indloc(Mvspec, int);
 static const char *clrtiles = " es";
 static const char *blkdtiles = "#";
 
-/* Move specification array: 's' is the start of the move, 'e' is the
- * end of the move, '#' is a block, ' ' is a space that *must* be
- * clear and is considered reachable.  Anything else is a wild card
- * (whatever ends up being put there while building the path).
+/*
+ * Move specification array: 's' is the start of the move, 'e' is the end
+ * of the move, anything in blkdtiles is a collidable block, any character
+ * in clrtiles must be clear and is considered reachable.  Anything else
+ * is a wild card (whatever ends up being put there while building the
+ * path).
  */
 static Mvspec specs[] = {
 	{ .blks = 
