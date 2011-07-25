@@ -107,7 +107,7 @@ Tileinfo zonedstairs(Zone *zn)
 
 void zonecleanup(int zmax)
 {
-	for (int i = 0; i < zmax; i++) {
+	for (int i = 0; i <= zmax; i++) {
 		char *zfile = zonefile(i);
 		if (!fsexists(zfile))
 			continue;
