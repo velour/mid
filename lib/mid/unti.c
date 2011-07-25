@@ -14,7 +14,9 @@ struct Unti{
 };
 
 _Bool untiinit(Enemy *e, int x, int y){
-	e->hp = 1;
+	e->hp = 2;
+	e->hitback = 0;
+	e->iframes = 0;
 
 	Unti *u = xalloc(1, sizeof(*u));
 	u->c = (Color){ 255, 55, 55, 255 };
@@ -35,6 +37,16 @@ void untiupdate(Enemy *e, Player *p, Lvl *l){
 	Unti *u = e->data;
 
 	e->ai.update(e, p, l);
+
+	if(e->iframes > 0){
+		e->b.vel.x = e->hitback;
+		e->iframes--;
+	}else
+		e->b.vel.x = 0;
+
+	if(e->iframes < 250.0/Ticktm)
+		e->hitback = 0;
+
 	bodyupdate(&e->b, l);
 
 	if(isect(e->b.bbox, playerbox(p))){
@@ -44,9 +56,12 @@ void untiupdate(Enemy *e, Player *p, Lvl *l){
 	}else
 		u->c.b = 55;
 
-	if(p->sframes > 0 && isect(e->b.bbox, swordbbox(&p->sw))){
+	Rect swbb = swordbbox(&p->sw);
+	if(e->iframes == 0 && p->sframes > 0 && isect(e->b.bbox, swbb)){
 		sfxplay(untihit);
 		e->hp--;
+		e->hitback = swbb.a.x < e->b.bbox.a.x ? 5 : -5;
+		e->iframes = 500.0 / Ticktm; // 0.5s
 	}
 
 	u->c.r++;
@@ -55,8 +70,8 @@ void untiupdate(Enemy *e, Player *p, Lvl *l){
 void untidraw(Enemy *e, Gfx *g){
 	if(!untiimg) untiimg = resrcacq(imgs, "img/unti.png", 0);
 
-	//gfxfillrect(g, r, u->c);
-	camdrawimg(g, untiimg, e->b.bbox.a);
+	if(e->iframes % 4 == 0)
+		camdrawimg(g, untiimg, e->b.bbox.a);
 }
 
 _Bool untiscan(char *buf, Enemy *e){
@@ -64,6 +79,9 @@ _Bool untiscan(char *buf, Enemy *e){
 
 	if (!scangeom(buf, "dyddddd", &e->id, &e->b, &e->hp, &r, &g, &b, &a))
 		return 0;
+
+	e->hitback = 0;
+	e->iframes = 0;
 
 	Unti *u = xalloc(1, sizeof(*u));
 	u->c = (Color){ r, g, b, a };

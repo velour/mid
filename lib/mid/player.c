@@ -18,6 +18,7 @@ static void mvsw(Player *);
 void playerinit(Player *p, int x, int y)
 {
 	bodyinit(&p->body, x * Twidth, y * Theight);
+	p->hitback = 0;
 
 	plsh = resrcacq(imgs, "img/knight.png", NULL);
 	assert(plsh != NULL);

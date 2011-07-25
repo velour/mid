@@ -463,6 +463,8 @@ struct Enemy{
 	EnemyID id;
 	Body b;
 	int hp;
+	double hitback;
+	int iframes;
 	void *data;
 	Ai ai;
 };
