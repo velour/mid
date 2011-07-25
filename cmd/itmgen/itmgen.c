@@ -56,7 +56,8 @@ int main(int argc, char *argv[])
 			ls[lind] = ls[nls-1];
 		nls--;
 		Item it;
-		iteminit(&it, ids[idind], l.p);
+		if (!iteminit(&it, ids[idind], l.p))
+			fatal("Failed to initialize item with ID: %d", ids[idind]);
 		if (!zoneadditem(zn, l.z, it)) {
 			/* oops, this z-layer is full. */
 			nls = rmz(ls, nls, l.z);

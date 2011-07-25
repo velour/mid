@@ -66,7 +66,8 @@ int main(int argc, char *argv[])
 			ls[lind] = ls[nls-1];
 		nls--;
 		Env env;
-		envinit(&env, id, l.p);
+		if (!envinit(&env, id, l.p))
+			fatal("Failed to initialize env with ID: %d", id);
 		if (!zoneaddenv(zn, l.z, env)) {
 			nls = rmz(ls, nls, l.z);
 			num--;

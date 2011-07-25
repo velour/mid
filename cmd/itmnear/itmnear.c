@@ -34,7 +34,8 @@ int main(int argc, char *argv[])
 	qsort(pts, n, sizeof(*pts), cmp);
 	for (int i = 0; i < num; i++) {
 		Item it;
-		iteminit(&it, id, pts[i]);
+		if (!iteminit(&it, id, pts[i]))
+			fatal("Failed to initialize item with ID: %d", id);
 		zoneadditem(zn, 0, it);
 	}
 

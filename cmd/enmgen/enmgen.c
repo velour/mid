@@ -57,7 +57,8 @@ int main(int argc, char *argv[])
 			ls[lind] = ls[nls-1];
 		nls--;
 		Enemy enm;
-		enemyinit(&enm, ids[idind], l.p.x, l.p.y);
+		if (!enemyinit(&enm, ids[idind], l.p.x, l.p.y))
+			fatal("Failed to initialize enemy with ID: %d", ids[idind]);
 		if (!zoneaddenemy(zn, l.z, enm)) {
 			nls = rmz(ls, nls, l.z);
 			num--;

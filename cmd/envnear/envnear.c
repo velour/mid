@@ -43,7 +43,8 @@ int main(int argc, char *argv[])
 	qsort(pts, n, sizeof(*pts), cmp);
 	for (int i = 0; i < num; i++) {
 		Env env;
-		envinit(&env, id, pts[i]);
+		if (!envinit(&env, id, pts[i]))
+			fatal("Failed to initialize env with ID: %d", id);
 		zoneaddenv(zn, 0, env);
 	}
 
