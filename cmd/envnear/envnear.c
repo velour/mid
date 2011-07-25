@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 
 	Zone *zn = zoneread(stdin);
 	if (!zn)
-		fatal("Failed to read the zone: %s", miderrstr());
+		die("Failed to read the zone: %s", miderrstr());
 
 	wh = envsize(id);
 	start = (Rect) { (Point) { Startx * Twidth, Starty * Theight },

@@ -44,7 +44,7 @@ Zone *zonegen(Rng *r)
 		fin = zpipe(r);
 	Zone *z = zoneread(fin);
 	if (!z)
-		fatal("Failed to read the zone: %s", miderrstr());
+		die("Failed to read the zone: %s", miderrstr());
 
 	if (inzone) {
 		fclose(fin);
