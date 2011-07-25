@@ -73,7 +73,7 @@ static int rng(Rng *r, int argc, char *argv[])
 		seed = strtol(argv[2], NULL, 10);
 		args = 2;
 	} else {
-		seed = time(0) ^ getpid();
+		seed = time(0) ^ getpid() ^ getpid() << 16;
 		pr("lvlgen seed = %lu", (unsigned long) seed);
 	}
 	rnginit(r, seed);
