@@ -33,12 +33,19 @@ void logclose(void){
 void prtime()
 {
 	time_t t = time(NULL);
-	if (t == ((time_t) -1)) {
-		perror("time");
-		fprintf(stderr, "%s failed: time failed\n", __func__);
-		abort();
+	struct tm *tm = localtime(&t);
+	if (!tm) {
+		fprintf(stderr, "prtime: localtime() failed\n");
+		return;
 	}
-	fprintf(lfile, "%s ", ctime(&t));
+
+	char buf[Bufsz];
+	size_t ret = strftime(buf, Bufsz, "[%H:%M:%S]", tm);
+	if (ret == 0) {
+		fprintf(stderr,"prtime: strftime() failed for some reason...\n");
+		return;
+	}
+	fprintf(lfile, "%s ", buf);
 }
 
 
