@@ -14,6 +14,8 @@ struct Enemymt{
 };
 
 static Sfx *untihit;
+static Img *untiimg;
+
 static _Bool untiinit(Enemy *e, int x, int y);
 static void untifree(Enemy*);
 static void untiupdate(Enemy*,Player*,Lvl*);
@@ -21,12 +23,25 @@ static void untidraw(Enemy*,Gfx*);
 static _Bool untiscan(char *buf, Enemy *e);
 static _Bool untiprint(char *buf, size_t sz, Enemy *e);
 
+static _Bool nousinit(Enemy *e, int x, int y);
+static void nousfree(Enemy*);
+static void nousupdate(Enemy*,Player*,Lvl*);
+static void nousdraw(Enemy*,Gfx*);
+static _Bool nousscan(char *buf, Enemy *e);
+static _Bool nousprint(char *buf, size_t sz, Enemy *e);
+
 static _Bool defaultscan(char *, Enemy *);
 static _Bool defaultprint(char *, size_t, Enemy *);
 
 static Enemymt mt[] = {
-	[EnemyUnti] = { untiinit, untifree, untiupdate, untidraw,
-		untiscan, untiprint },
+	[EnemyUnti] = {
+		untiinit, untifree, untiupdate, untidraw,
+		untiscan, untiprint
+	},
+	[EnemyNous] = {
+		nousinit, nousfree, nousupdate, nousdraw,
+		nousscan, nousprint
+	},
 };
 
 // NOTE: this function should only be called by the zone gen pipeline.
@@ -104,10 +119,10 @@ static void untiupdate(Enemy *e, Player *p, Lvl *l){
 }
 
 static void untidraw(Enemy *e, Gfx *g){
-	Unti *u = e->data;
+	if(!untiimg) untiimg = resrcacq(imgs, "img/unti.png", 0);
 
 	//gfxfillrect(g, r, u->c);
-	camdrawimg(g, u->img, e->b.bbox.a);
+	camdrawimg(g, untiimg, e->b.bbox.a);
 }
 
 static _Bool untiscan(char *buf, Enemy *e){
@@ -118,7 +133,6 @@ static _Bool untiscan(char *buf, Enemy *e){
 
 	Unti *u = xalloc(1, sizeof(*u));
 	u->c = (Color){ r, g, b, a };
-	u->img = resrcacq(imgs, "img/unti.png", 0);
 	e->data = u;
 	aijumper(&e->ai, 8);
 
@@ -138,6 +152,54 @@ static _Bool defaultscan(char *buf, Enemy *e){
 static _Bool defaultprint(char *buf, size_t sz, Enemy *e){
 	return printgeom(buf, sz, "dyd", e->id, e->b, e->hp);
 }
+
+
+static _Bool nousinit(Enemy *e, int x, int y){
+	e->hp = 1;
+	e->data = 0;
+	return 1;
+}
+
+static void nousfree(Enemy *e){
+	resrcrel(imgs, "img/unti.png", 0);
+}
+
+static void nousupdate(Enemy *e, Player *p, Lvl *l){
+	if(!untihit)
+		untihit = resrcacq(sfx, "sfx/hit.wav", 0);
+
+	e->ai.update(e, p, l);
+	bodyupdate(&e->b, l);
+
+	if(isect(e->b.bbox, playerbox(p))){
+		int dir = e->b.bbox.a.x > p->body.bbox.a.x ? -1 : 1;
+		playerdmg(p, 2, dir);
+	}
+
+	if(p->sframes > 0 && isect(e->b.bbox, swordbbox(&p->sw))){
+		sfxplay(untihit);
+		e->hp--;
+	}
+}
+
+static void nousdraw(Enemy *e, Gfx *g){
+	if(!untiimg) untiimg = resrcacq(imgs, "img/unti.png", 0);
+	camdrawimg(g, untiimg, e->b.bbox.a);
+}
+
+static _Bool nousscan(char *buf, Enemy *e){
+	if (!defaultscan(buf, e))
+		return 0;
+
+	aiwalker(&e->ai, 2);
+
+	return 1;
+}
+
+static _Bool nousprint(char *buf, size_t sz, Enemy *e){
+	return defaultprint(buf, sz, e);
+}
+
 
 _Bool enemyscan(char *buf, Enemy *e){
 	int id;
