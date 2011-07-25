@@ -26,8 +26,11 @@ OFILES :=\
 	serial.o\
 	sword.o\
 	ai.o\
+	unti.o\
+	nous.o\
 
 HFILES :=\
 	fs.h\
+	enemy.h\
 
 include Make.lib
