@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <assert.h>
+#include <unistd.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include "../../include/rng.h"
@@ -72,7 +73,7 @@ static int rng(Rng *r, int argc, char *argv[])
 		seed = strtol(argv[2], NULL, 10);
 		args = 2;
 	} else {
-		seed = time(0);
+		seed = time(0) ^ getpid();
 		pr("lvlgen seed = %lu", (unsigned long) seed);
 	}
 	rnginit(r, seed);
