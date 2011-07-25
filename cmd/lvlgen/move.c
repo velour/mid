@@ -231,7 +231,7 @@ static int addrev(Mvspec *s, Mv moves[])
 {
 	Mvspec *rev = xalloc(1, sizeof(*rev));
 	*rev = *s;
-	rev->blks = xalloc(strlen(s->blks), sizeof(*s->blks));
+	rev->blks = xalloc(strlen(s->blks)+1, sizeof(*s->blks));
 	strcpy(rev->blks, s->blks);
 
 	int si = strcspn(rev->blks, strttiles);
