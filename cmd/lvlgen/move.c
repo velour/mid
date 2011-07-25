@@ -9,8 +9,11 @@
 #include "lvlgen.h"
 
 static Mv mvmk(Mvspec s, bool rev);
-static int offsets(Mvspec s, char *accept, Loc l0, Loc l[], int sz);
+static int offsets(Mvspec s, const char *accept, Loc l0, Loc l[], int sz);
 static Loc indloc(Mvspec, int);
+
+static const char *clrtiles = " es";
+static const char *blkdtiles = "#";
 
 /* Move specification array: 's' is the start of the move, 'e' is the
  * end of the move, '#' is a block, ' ' is a space that *must* be
@@ -241,13 +244,13 @@ static Mv mvmk(Mvspec spec, bool rev)
 		.dz = 0,
 		.spec = spec,
 	};
-	mv.nclr = offsets(spec, " es", s, mv.clr, Maxblks);
-	mv.nblkd = offsets(spec, "#", s, mv.blkd, Maxblks);
+	mv.nclr = offsets(spec, clrtiles, s, mv.clr, Maxblks);
+	mv.nblkd = offsets(spec, blkdtiles, s, mv.blkd, Maxblks);
 
 	return mv;
 }
 
-static int offsets(Mvspec s, char *accept, Loc l0, Loc l[], int sz)
+static int offsets(Mvspec s, const char *accept, Loc l0, Loc l[], int sz)
 {
 
 	int n = 0;
@@ -270,25 +273,25 @@ static Loc indloc(Mvspec s, int i)
 	return (Loc) { i % s.w, i / s.w, 0 };
 }
 
-void mvblit(Mv *mv, Lvl *l, Loc l0)
+void mvblit(Mv *mv, Lvl *lvl, Loc l0)
 {
-	for (int x = 0; x < mv->spec.w; x++) {
-	for (int y = 0; y < mv->spec.h; y++) {
-		int lx = (x - mv->strt.x) + l0.x;
-		int ly = (y - mv->strt.y) + l0.y;
-		Loc l1 = (Loc) { lx, ly, l0.z };
+	char *blks = mv->spec.blks;
+	Loc s = mv->strt;
 
-		int t = mv->spec.blks[y * mv->spec.w + x];
-		if (reachable(l, l1.x, l1.y, l1.z))
+	for (int i = 0; i < strlen(blks); i++) {
+		char t = blks[i];
+		Loc cur = indloc(mv->spec, i);
+		Loc l1 = (Loc) { cur.x - s.x + l0.x, cur.y - s.y + l0.y, l0.z };
+
+		if (reachable(lvl, l1.x, l1.y, l1.z))
 			continue;
 
-		if (t == '#') {
-			blk(l, lx, ly, l1.z)->tile = '#';
-		} else if (t == ' ' || t == 's' || t == 'e') {
-			blk(l, lx, ly, l1.z)->tile = ' ';
-			setreach(l, lx, ly, l1.z);
+		if (strchr(blkdtiles, t) != NULL) {
+			blk(lvl, l1.x, l1.y, l1.z)->tile = t;
+		} else if (strchr(clrtiles, t) != NULL) {
+			blk(lvl, l1.x, l1.y, l1.z)->tile = ' ';
+			setreach(lvl, l1.x, l1.y, l1.z);
 		}
-	}
 	}
 }
 
