@@ -271,7 +271,6 @@ static Mv mvmk(Mvspec *spec)
 
 static int offsets(Mvspec *s, const char *accept, Loc l0, Loc l[], int sz)
 {
-
 	int n = 0;
 
 	for (int i = 0; i < strlen(s->blks); i++) {
