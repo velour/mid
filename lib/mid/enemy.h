@@ -14,6 +14,8 @@ void untidraw(Enemy*,Gfx*);
 _Bool untiscan(char *buf, Enemy *e);
 _Bool untiprint(char *buf, size_t sz, Enemy *e);
 
+extern Img *nousimg;
+
 _Bool nousinit(Enemy *e, int x, int y);
 void nousfree(Enemy*);
 void nousupdate(Enemy*,Player*,Lvl*);

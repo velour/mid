@@ -4,6 +4,8 @@
 #include "enemy.h"
 #include <stdio.h>
 
+Img *nousimg;
+
 _Bool nousinit(Enemy *e, int x, int y){
 	e->hp = 1;
 	e->data = 0;
@@ -33,8 +35,19 @@ void nousupdate(Enemy *e, Player *p, Lvl *l){
 }
 
 void nousdraw(Enemy *e, Gfx *g){
-	if(!untiimg) untiimg = resrcacq(imgs, "img/unti.png", 0);
-	camdrawimg(g, untiimg, e->b.bbox.a);
+	if(!nousimg) nousimg = resrcacq(imgs, "img/nous.png", 0);
+	Rect clip;
+	if(e->b.vel.x < 0)
+		clip = (Rect){
+			{ 0, 0 },
+			{ 32, 32 }
+		};
+	else
+		clip = (Rect){
+			{ 32, 0 },
+			{ 64, 32 }
+		};
+	camdrawreg(g, nousimg, clip, e->b.bbox.a);
 }
 
 _Bool nousscan(char *buf, Enemy *e){
