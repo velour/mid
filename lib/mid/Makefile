@@ -7,6 +7,7 @@ TARG := mid.a
 OFILES :=\
 	errstr.o\
 	event.o\
+	keyrpt_sdl$(SDLVER).o\
 	geom.o\
 	gfx_sdl$(SDLVER).o\
 	fs.o\

@@ -8,6 +8,8 @@
 // This will probably never change in SDL, but just in case...
 enum { assert_keychar_eq = 1/!!('a' == SDLK_a) };
 
+extern _Bool keyrpt(SDL_Event*);
+
 static int prevtm = 0;
 
 double meanftime = 0.0;
@@ -50,7 +52,7 @@ _Bool pollevent(Event *event){
 	case SDL_KEYUP:
 		event->type = Keychng;
 		event->down = e.type == SDL_KEYDOWN;
-		event->repeat = e.key.repeat != 0;
+		event->repeat = keyrpt(&e);
 		event->key = e.key.keysym.sym;
 		return 1;
 	case SDL_MOUSEMOTION:
