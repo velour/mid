@@ -12,12 +12,14 @@ static void reachup(Lvl *lvl, int x, int y, int z);
 static void reachdown(Lvl *lvl, int x, int y, int z);
 static void reachover(Lvl *lvl, int x, int y, int z);
 
-void morereach(Lvl *lvl, int z)
+void morereach(Lvl *lvl)
 {
+	for (int z = 0; z < lvl->d; z++) {
 	for (int x = 1; x < lvl->w - 1; x++) {
 	for (int y = 1; y < lvl->h - 1; y++) {
 		if (reachable(lvl, x, y, z))
 			expndreach(lvl, x, y, z);
+	}
 	}
 	}
 }
@@ -67,14 +69,16 @@ static void reachover(Lvl *lvl, int x, int y, int z)
 	reach(lvl, x+1, y, z);
 }
 
-void closeunreach(Lvl *lvl, int z)
+void closeunreach(Lvl *lvl)
 {
+	for (int z = 0; z < lvl->d; z++) {
 	for (int x = 1; x < lvl->w - 1; x++) {
 	for (int y = 1; y < lvl->h - 1; y++) {
 		Tileinfo bi = tileinfo(lvl, x, y, z);
 		if (reachable(lvl, x, y, z) || bi.flags & Tilecollide)
 			continue;
 		blk(lvl, x, y, z)->tile = '#';
+	}
 	}
 	}
 }
