@@ -79,3 +79,13 @@ installer: all
 	for c in mid lvlgen itmgen enmgen envgen tee; do cp cmd/$$c/$$c Mid/; done
 	cp -r resrc/ Mid/
 endif
+
+ifeq ($(shell uname),Darwin)
+installer: all
+	mkdir -p Mid.app/Contents/MacOS
+	mkdir -p Mid.app/Contents/Resources
+	mkdir -p Mid.app/Contents/Frameworks
+	cp osx/Info.plist Mid.app/Contents/
+	for c in mid lvlgen itmgen enmgen envgen; do cp cmd/$$c/$$c Mid.app/Contents/MacOS/; done
+	cp -r resrc/ Mid.app/Contents/Resources/
+endif

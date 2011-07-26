@@ -42,6 +42,8 @@ int Nmoves;
 void mvini(void);
 void mvblit(Mv *mv, struct Lvl *l, Loc l0);
 _Bool startonblk(Mv *mv);
+_Bool hasdoor(Mvspec *s);
+Loc dooroffs(Mvspec *s);
 
 typedef struct Seg Seg;
 struct Seg {
@@ -72,5 +74,5 @@ void extradoors(struct Rng *, struct Lvl *);
 
 void water(struct Lvl *);
 
-void morereach(struct Lvl *, int z);
-void closeunreach(struct Lvl *lvl, int z);
+void morereach(struct Lvl *);
+void closeunreach(struct Lvl *lvl);

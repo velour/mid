@@ -14,12 +14,9 @@
 static int rng(Rng *, int, char *[]);
 static void init(Lvl *l);
 extern void lvlwrite(FILE *, Lvl *);
-/* Fill in a z-layer and return a Loc for a good door placement to the
- * next zlayer. */
-static Loc zlayer(Loc loc, Lvl *lvl);
 static void buildpath(Lvl *lvl, Path *p, Loc loc);
 static void stairs(Rng *, Lvl *);
-static int stairlocs(Lvl *, Loc [], int);
+static int stairlocs(Lvl *, Loc []);
 
 Rng r;
 enum { Startx = 2, Starty = 2 };
@@ -45,17 +42,12 @@ int main(int argc, char *argv[])
 
 	Loc loc = (Loc) { Startx, Starty, 0 };
 	blk(lvl, loc.x, loc.y, 0)->tile = ' ';
-	for (int z = 0; z < d; z++) {
-		loc.z = z;
-		loc = zlayer(loc, lvl);
-		if (z < d - 1) {
-			putdoor(lvl, loc.x, loc.y, z, '>');
-			water(lvl);
-			putdoor(lvl, loc.x, loc.y, z+1, '<');
-		}
-	}
+	Path *p = pathnew(lvl);
+	buildpath(lvl, p, loc);
+	pathfree(p);
 
-	extradoors(&r, lvl);
+	morereach(lvl);
+	closeunreach(lvl);
 	stairs(&r, lvl);
 
 	lvlwrite(stdout, lvl);
@@ -95,17 +87,6 @@ static void init(Lvl *l)
 	}
 }
 
-static Loc zlayer(Loc loc, Lvl *lvl)
-{
-	Path *p = pathnew(lvl);
-	buildpath(lvl, p, loc);
-	Loc nxt = doorloc(lvl, loc);
-	pathfree(p);
-	morereach(lvl, loc.z);
-	closeunreach(lvl, loc.z);
-	return nxt;
-}
-
 enum { Minbr = 3, Maxbr = 9 };
 
 static void buildpath(Lvl *lvl, Path *p, Loc loc)
@@ -138,8 +119,10 @@ static void stairs(Rng *r, Lvl *lvl)
 	setreach(lvl, Startx, Starty, 0);
 
 	int z = rnd(0, lvl->d - 1);
-	Loc ls[lvl->w * lvl->h];
-	int nls = stairlocs(lvl, ls, z);
+	Loc ls[lvl->w * lvl->h * lvl->d];
+	int nls = stairlocs(lvl, ls);
+	if (nls == 0)
+		fatal("No stair locations");
 	int ind = rnd(0, nls -1);
 
 	if (tileinfo(lvl, ls[ind].x, ls[ind].y, z).flags & Tilewater)
@@ -149,13 +132,16 @@ static void stairs(Rng *r, Lvl *lvl)
 	setreach(lvl, ls[ind].x, ls[ind].y, z);
 }
 
-static int stairlocs(Lvl *lvl, Loc ls[], int z)
+
+static int stairlocs(Lvl *lvl, Loc ls[])
 {
 	int nls = 0;
+	for (int z = 0; z < lvl->d; z++)
 	for (int x = 1; x < lvl->w-1; x++)
 	for (int y = 1; y < lvl->h-2; y++) {
-		if (reachable(lvl, x, y, z) && tileinfo(lvl, x, y+1, z).flags & Tilecollide) {
-			ls[nls] = (Loc){ x, y };
+		if (reachable(lvl, x, y, z) &&  tileinfo(lvl, x, y+1, z).flags & Tilecollide
+			&& !(tileinfo(lvl, x, y, z).flags & (Tilefdoor | Tilebdoor))) {
+			ls[nls] = (Loc){ x, y, z };
 			nls++;
 		}
 	}
@@ -170,4 +156,6 @@ bool reachable(Lvl *l, int x, int y, int z)
 void setreach(Lvl *l, int x, int y, int z)
 {
 	blk(l, x, y, z)->flags = 1;
+	if (blk(l, x, y, z)->tile == '.')
+		blk(l, x, y, z)->tile = ' ';
 }
