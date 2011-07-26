@@ -38,7 +38,7 @@ struct Tinfo {
 static Tinfo tiles[] = {
 	[' '] = {
 		.ok = true,
-		.anims = { [0] = { .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 } },
+		.anims = { [0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm } },
 	},
 	['#'] = {
 		.ok = true,
