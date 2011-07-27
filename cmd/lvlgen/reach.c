@@ -68,6 +68,24 @@ static void reachover(Lvl *lvl, int x, int y, int z)
 	reach(lvl, x+1, y, z);
 }
 
+/* Fill in single block dips in the ground.  This cannot hurt
+ * reachability and gets rid of a bunch of unpleasentness
+ * in the levels. */
+void closeunits(Lvl *lvl)
+{
+	for (int z = 0; z < lvl->d; z++) {
+	for (int x = 1; x < lvl->w - 1; x++) {
+	for (int y = 1; y < lvl->h - 1; y++) {
+		if (tileinfo(lvl, x-1, y, z).flags & Tilecollide
+			&& tileinfo(lvl, x+1, y, z).flags & Tilecollide
+			&& tileinfo(lvl, x, y+1, z).flags & Tilecollide) {
+			*blk(lvl, x, y, z) = (Blk) { .tile = '#' };
+		}
+	}
+	}
+	}
+}
+
 int closeunreach(Lvl *lvl)
 {
 	int nreach = 0;

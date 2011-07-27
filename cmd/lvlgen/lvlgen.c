@@ -49,6 +49,7 @@ restart:
 	pathfree(p);
 
 	morereach(lvl);
+	closeunits(lvl);
 	if (closeunreach(lvl) < 200)
 		goto restart;
 
