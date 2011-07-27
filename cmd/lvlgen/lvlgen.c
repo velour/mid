@@ -38,6 +38,8 @@ int main(int argc, char *argv[])
 	Lvl *lvl = lvlnew(d, w, h);
 
 	mvini();
+
+restart:
 	init(lvl);
 
 	Loc loc = (Loc) { Startx, Starty, 0 };
@@ -47,9 +49,10 @@ int main(int argc, char *argv[])
 	pathfree(p);
 
 	morereach(lvl);
-	closeunreach(lvl);
-	stairs(&r, lvl);
+	if (closeunreach(lvl) < 200)
+		goto restart;
 
+	stairs(&r, lvl);
 	lvlwrite(stdout, lvl);
 	lvlfree(lvl);
 
@@ -81,7 +84,7 @@ static void init(Lvl *l)
 		int c = ' ';
 		if (x == 0 || x == l->w - 1 || y == 0 || y == l->h - 1)
 				c = '#';
-		blk(l, x, y, z)->tile = c;
+		*blk(l, x, y, z) = (Blk) { .tile = c };
 	}
 	}
 	}

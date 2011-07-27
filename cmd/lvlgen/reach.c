@@ -26,8 +26,8 @@ void morereach(Lvl *lvl)
 
 static void expndreach(Lvl *lvl, int x, int y, int z)
 {
-	Tileinfo bundr = tileinfo(lvl, x, y+1, z);
-	if (bundr.flags & Tilecollide) {
+	Tileinfo tundr = tileinfo(lvl, x, y+1, z);
+	if (tundr.flags & Tilecollide) {
 		reachup(lvl, x, y, z);
 		reachover(lvl, x, y, z);
 	} else {
@@ -37,8 +37,7 @@ static void expndreach(Lvl *lvl, int x, int y, int z)
 
 static void reach(Lvl *lvl, int x, int y, int z)
 {
-	Tileinfo bi = tileinfo(lvl, x, y, z);
-	if (bi.flags & Tilecollide || reachable(lvl, x, y, z))
+	if (tileinfo(lvl, x, y, z).flags & Tilecollide || reachable(lvl, x, y, z))
 		return;
 	setreach(lvl, x, y, z);
 	expndreach(lvl, x, y, z);
@@ -47,8 +46,8 @@ static void reach(Lvl *lvl, int x, int y, int z)
 static void reachup(Lvl *lvl, int x, int y, int z)
 {
 	for (int yy = y; yy >= y - Uplim && yy > 0; yy--) {
-		Tileinfo bi = tileinfo(lvl, x, yy, z);
-		if (bi.flags & Tilecollide)
+		Tileinfo ti = tileinfo(lvl, x, yy, z);
+		if (ti.flags & Tilecollide)
 			return;
 		reach(lvl, x, yy, z);
 		reach(lvl, x-1, yy, z);
@@ -69,16 +68,23 @@ static void reachover(Lvl *lvl, int x, int y, int z)
 	reach(lvl, x+1, y, z);
 }
 
-void closeunreach(Lvl *lvl)
+int closeunreach(Lvl *lvl)
 {
+	int nreach = 0;
+
 	for (int z = 0; z < lvl->d; z++) {
 	for (int x = 1; x < lvl->w - 1; x++) {
 	for (int y = 1; y < lvl->h - 1; y++) {
-		Tileinfo bi = tileinfo(lvl, x, y, z);
-		if (reachable(lvl, x, y, z) || bi.flags & Tilecollide)
+		if (reachable(lvl, x, y, z)) {
+			nreach++;
+			continue;
+		}
+		if (tileinfo(lvl, x, y, z).flags & Tilecollide)
 			continue;
 		blk(lvl, x, y, z)->tile = '#';
 	}
 	}
 	}
+
+	return nreach;
 }
