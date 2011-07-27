@@ -21,7 +21,7 @@ static Loc indloc(Mvspec *, int);
 static const char *strttiles = "s";
 static const char *endtiles = "e<>";
 static const char *doortiles = "<>";
-static const char *clrtiles = " es";
+static const char *clrtiles = " es<>";
 static const char *blkdtiles = "#";
 
 /* Move specification array: any character in strttiles is the start of

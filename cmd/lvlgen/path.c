@@ -45,7 +45,6 @@ bool pathadd(Lvl *l, Path *p, Seg s)
 {
 	if (p->nsegs == p->maxsegs || !segok(l, p, s))
 		return false;
-
 	mvblit(s.mv, l, s.l0);
 
 	p->segs[p->nsegs] = s;
