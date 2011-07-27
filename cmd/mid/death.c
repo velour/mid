@@ -6,6 +6,7 @@
 typedef struct Gover Gover;
 struct Gover{
 	Player *p;
+	int maxd;
 	Txt *txt;
 };
 
@@ -22,11 +23,12 @@ static Scrnmt govermt = {
 	goverfree
 };
 
-Scrn *goverscrnnew(Player *p){
+Scrn *goverscrnnew(Player *p, int maxd){
 	static Gover go = {0};
 	static Scrn s = {0};
 
 	go.p = p;
+	go.maxd = maxd;
 
 	Txtinfo ti = { 32, { 255, 255, 255 } };
 	go.txt = resrcacq(txt, "txt/retganon.ttf", &ti);
@@ -50,7 +52,11 @@ static void draw(Scrn *s, Gfx *g){
 	enum { Bufsz = 256 };
 	char buf[Bufsz];
 
-	char *d = "You are dead!";
+	char *d;
+	if(go->maxd < 0)
+		d = "YOU ARE A COWARD.";
+	else
+		d = "You are dead!";
 	snprintf(buf, Bufsz, "With %d %s gold for your family.", m, praise(m));
 
 	Point dp = txtdims(go->txt, d);

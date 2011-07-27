@@ -67,7 +67,7 @@ static void trystairs(Scrnstk *stk, Game *gm)
 		gm->znum--;
 		if (gm->znum < 0) {
 			pr("You just left the dungeon");
-			scrnstkpush(stk, goverscrnnew(&gm->player));
+			scrnstkpush(stk, goverscrnnew(&gm->player, gm->znum));
 			return;
 		}
 		gm->zone = zoneget(gm->znum);
@@ -102,7 +102,7 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 	zoneupdate(gm->zone, &gm->player, &gm->transl);
 	trystairs(stk, gm);
 	if(gm->player.eqp[StatHp] <= 0 && !debugging)
-		scrnstkpush(stk, goverscrnnew(&gm->player));
+		scrnstkpush(stk, goverscrnnew(&gm->player, gm->znum));
 }
 
 void gamedraw(Scrn *s, Gfx *g)
