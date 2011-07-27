@@ -118,20 +118,18 @@ static void stairs(Rng *r, Lvl *lvl)
 		blk(lvl, Startx, Starty, 0)->tile = 'u';
 	setreach(lvl, Startx, Starty, 0);
 
-	int z = rnd(0, lvl->d - 1);
 	Loc ls[lvl->w * lvl->h * lvl->d];
 	int nls = stairlocs(lvl, ls);
 	if (nls == 0)
 		fatal("No stair locations");
-	int ind = rnd(0, nls -1);
 
-	if (tileinfo(lvl, ls[ind].x, ls[ind].y, z).flags & Tilewater)
-		blk(lvl, ls[ind].x, ls[ind].y, z)->tile = 'D';
+	Loc l = ls[rnd(0, nls - 1)];
+	if (tileinfo(lvl, l.x, l.y, l.z).flags & Tilewater)
+		blk(lvl, l.x, l.y, l.z)->tile = 'D';
 	else
-		blk(lvl, ls[ind].x, ls[ind].y, z)->tile = 'd';
-	setreach(lvl, ls[ind].x, ls[ind].y, z);
+		blk(lvl, l.x, l.y, l.z)->tile = 'd';
+	setreach(lvl, l.x, l.y, l.z);
 }
-
 
 static int stairlocs(Lvl *lvl, Loc ls[])
 {
