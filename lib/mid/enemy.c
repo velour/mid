@@ -14,19 +14,14 @@ struct Enemymt{
 	_Bool (*print)(char *, size_t, Enemy *);
 };
 
+#define ENEMYMT(e) e##init, e##free, e##update, e##draw, e##scan, e##print
+
 static Enemymt mt[] = {
-	[EnemyUnti] = {
-		untiinit, untifree, untiupdate, untidraw,
-		untiscan, untiprint
-	},
-	[EnemyNous] = {
-		nousinit, nousfree, nousupdate, nousdraw,
-		nousscan, nousprint
-	},
+	[EnemyUnti] = { ENEMYMT(unti) },
+	[EnemyNous] = { ENEMYMT(nous) },
+	[EnemySplat] = { ENEMYMT(splat) },
 };
 
-// NOTE: this function should only be called by the zone gen pipeline.
-// It doesn't initialize any of the resources.
 _Bool enemyinit(Enemy *e, EnemyID id, int x, int y){
 	if(id == 0 || id >= EnemyMax)
 		return 0;

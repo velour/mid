@@ -448,6 +448,7 @@ enum EnemyID{
 	EnemyNone,
 	EnemyUnti,
 	EnemyNous,
+	EnemySplat,
 	EnemyMax
 };
 
@@ -470,6 +471,7 @@ struct Enemy{
 	Ai ai;
 };
 
+_Bool enemyinit(Enemy *e, EnemyID id, int x, int y);
 void enemyfree(Enemy*);
 void enemyupdate(Enemy*, Player*, Lvl*);
 void enemydraw(Enemy*, Gfx*);

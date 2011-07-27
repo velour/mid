@@ -61,6 +61,7 @@ void untiupdate(Enemy *e, Player *p, Lvl *l){
 		sfxplay(untihit);
 		int pstr = swordstr(&p->sw, p);
 		e->hp -= pstr;
+
 		int mhb = 5;
 		if(pstr > mhb*2)
 			mhb = pstr/2;
@@ -68,6 +69,15 @@ void untiupdate(Enemy *e, Player *p, Lvl *l){
 			mhb = 32;
 		e->hitback = swbb.a.x < e->b.bbox.a.x ? mhb : -mhb;
 		e->iframes = 500.0 / Ticktm; // 0.5s
+
+		if(e->hp <= 0){
+			Enemy splat = {};
+			enemyinit(&splat, EnemySplat, 0, 0);
+			splat.b = e->b;
+			untifree(e);
+			*e = splat;
+			return;
+		}
 	}
 
 	u->c.r++;

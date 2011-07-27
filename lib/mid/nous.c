@@ -13,7 +13,6 @@ _Bool nousinit(Enemy *e, int x, int y){
 }
 
 void nousfree(Enemy *e){
-	resrcrel(imgs, "img/unti.png", 0);
 }
 
 void nousupdate(Enemy *e, Player *p, Lvl *l){
@@ -31,6 +30,15 @@ void nousupdate(Enemy *e, Player *p, Lvl *l){
 	if(p->sframes > 0 && isect(e->b.bbox, swordbbox(&p->sw))){
 		sfxplay(untihit);
 		e->hp--;
+
+		if(e->hp <= 0){
+			Enemy splat = {};
+			enemyinit(&splat, EnemySplat, 0, 0);
+			splat.b = e->b;
+			nousfree(e);
+			*e = splat;
+			return;
+		}
 	}
 }
 
