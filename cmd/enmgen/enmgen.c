@@ -114,8 +114,6 @@ static int locs(Zone *zn, Loc locs[])
 		int sz = zn->lvl->w * zn->lvl->h;
 		Point pts[sz];
 		int npts = zonelocs(zn, z, goodloc, pts, sz);
-		if (!npts)
-			fatal("No available locations at layer %d", z);
 		for (int i = 0; i < npts; i++) {
 			locs[nxt] = (Loc) { pts[i], z };
 			nxt++;
