@@ -57,7 +57,7 @@ static Tinfo tiles[] = {
 		.ok = true,
 		.anims = {
 			[0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
-			[1] = { .row = 3, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[1] = { .row = 3, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 		},
 		.flags = Tilebdoor
 	},
@@ -65,7 +65,7 @@ static Tinfo tiles[] = {
 		.ok = true,
 		.anims = {
 			[0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
-			[1] = { .row = 3, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[1] = { .row = 3, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 			[2] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
 		},
 		.flags = Tilebdoor | Tilewater
@@ -74,7 +74,7 @@ static Tinfo tiles[] = {
 		.ok = true,
 		.anims = {
 			[0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
-			[3] = { .row = 4, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[3] = { .row = 4, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 		},
 		.flags = Tilefdoor
 	},
@@ -82,7 +82,7 @@ static Tinfo tiles[] = {
 		.ok = true,
 		.anims = {
 			[0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
-			[2] = { .row = 4, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+			[2] = { .row = 4, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 			[3] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
 		},
 		.flags = Tilefdoor | Tilewater
