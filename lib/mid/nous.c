@@ -24,7 +24,7 @@ void nousupdate(Enemy *e, Player *p, Lvl *l){
 
 	if(isect(e->b.bbox, playerbox(p))){
 		int dir = e->b.bbox.a.x > p->body.bbox.a.x ? -1 : 1;
-		playerdmg(p, 2, dir);
+		playerdmg(p, 1, dir);
 	}
 
 	if(p->sframes > 0 && isect(e->b.bbox, swordbbox(&p->sw))){
