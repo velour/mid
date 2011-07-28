@@ -133,10 +133,12 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 
 	if(e->down && e->key == kmap[Mvact]){
 		Player *p = sup->p;
-		for(Invit *i = p->inv; i != p->inv + Maxinv && sup->uorbs > 0; i++){
+		int u = 0;
+		for(Invit *i = p->inv; i != p->inv + Maxinv && u < sup->uorbs; i++){
 			if(i->id == ItemStatup){
 				i->id = 0;
 				sup->norbs--;
+				u++;
 			}
 		}
 
