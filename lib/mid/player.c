@@ -6,6 +6,7 @@
 #include <stddef.h>
 
 static Img *plsh;
+static Sfx *ow;
 
 static void loadanim(Anim *a, int, int, int);
 static void chngdir(Player *b);
@@ -24,6 +25,9 @@ void playerinit(Player *p, int x, int y)
 
 	plsh = resrcacq(imgs, "img/knight.png", NULL);
 	assert(plsh != NULL);
+
+	ow = resrcacq(sfx, "sfx/ow.wav", NULL);
+	assert(ow != NULL);
 
 	loadanim(&p->leftas[Stand], 0, 1, 1);
 	loadanim(&p->leftas[Walk], 1, 4, 100);
@@ -201,6 +205,8 @@ Rect playerbox(Player *p)
 void playerdmg(Player *p, int x, int dir){
 	if(p->iframes > 0)
 		return;
+
+	sfxplay(ow);
 
 	p->iframes = 1000.0 / Ticktm; // 1s
 	p->hitback = 0;
