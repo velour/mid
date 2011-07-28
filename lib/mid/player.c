@@ -17,6 +17,8 @@ static void mvsw(Player *);
 
 void playerinit(Player *p, int x, int y)
 {
+	p->lives = 3;
+
 	bodyinit(&p->body, x * Twidth, y * Theight);
 	p->hitback = 0;
 

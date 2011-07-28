@@ -14,6 +14,7 @@
 struct Game {
 	Player player;
 	Point transl;
+	_Bool died;
 	int znum, zmax;
 	Zone *zone;
 	Rng rng;
@@ -101,8 +102,26 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 
 	zoneupdate(gm->zone, &gm->player, &gm->transl);
 	trystairs(stk, gm);
-	if(gm->player.eqp[StatHp] <= 0 && !debugging)
-		scrnstkpush(stk, goverscrnnew(&gm->player, gm->znum));
+	if(gm->player.eqp[StatHp] <= 0 && !debugging){
+		if(gm->player.lives == 0)
+			scrnstkpush(stk, goverscrnnew(&gm->player, gm->znum));
+		else{
+			gm->died = 1;
+			gm->player.eqp[StatHp] = gm->player.stats[StatHp];
+			Player p = gm->player;
+			playerinit(&p, 2, 2);
+			gm->player.body = p.body;
+			gm->player.imgloc = p.imgloc;
+			gm->player.hitback = 0;
+			gm->player.sframes = 0;
+			gm->player.lives--;
+			gm->transl.x = 0;
+			gm->transl.y = 0;
+
+			int lose = rngintincl(&gm->rng, 0, Maxinv-1);
+			gm->player.inv[lose] = (Invit){};
+		}
+	}
 }
 
 void gamedraw(Scrn *s, Gfx *g)
@@ -111,7 +130,11 @@ void gamedraw(Scrn *s, Gfx *g)
 
 	gfxclear(g, (Color){ 0, 0, 0, 0 });
 
-	cammove(g, gm->transl.x, gm->transl.y);
+	if(gm->died){
+		gm->died = 0;
+		camreset(g);
+	}else
+		cammove(g, gm->transl.x, gm->transl.y);
 
 	zonedraw(g, gm->zone, &gm->player);
 
@@ -121,6 +144,15 @@ void gamedraw(Scrn *s, Gfx *g)
 	gfxfillrect(g, hp, (Color){ 200 });
 	gfxfillrect(g, curhp, (Color){ 0, 200, 200 });
 	gfxdrawrect(g, hp, (Color){0});
+
+	for(int i = 0; i < gm->player.lives; i++){
+		Rect life = {
+			{ 1 + i*16 + i*1, 16 + 2 },
+			{ 1 + i*16 + i*1 + 16, 16 + 2 + 16}
+		};
+		gfxfillrect(g, life, (Color){200});
+		gfxdrawrect(g, life, (Color){0});
+	}
 
 	gfxflip(g);
 }

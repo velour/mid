@@ -416,6 +416,7 @@ struct Player {
 	int iframes; // invulnerability after damage;
 	double hitback;
 	int sframes;
+	int lives;
 
 	/* if changed, update visibility. */
 	Tileinfo bi;
