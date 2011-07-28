@@ -55,8 +55,10 @@ static void draw(Scrn *s, Gfx *g){
 	char *d;
 	if(go->maxd < 0)
 		d = "YOU ARE A COWARD.";
-	else
+	else if(go->maxd < 10)
 		d = "You are dead!";
+	else
+		d = "You have died with HONOR!";
 	snprintf(buf, Bufsz, "With %d %s gold for your family.", m, praise(m));
 
 	Point dp = txtdims(go->txt, d);
