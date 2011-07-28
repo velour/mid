@@ -8,7 +8,8 @@
 typedef struct Invscr Invscr;
 struct Invscr{
 	Player *p;
-	Lvl *lvl;
+	Zone *zone;
+	int depth, zvis;
 	Invit *curitem;
 };
 
@@ -47,12 +48,14 @@ static Scrnmt invmt = {
 	invfree,
 };
 
-Scrn *invscrnnew(Player *p, Lvl *lvl){
+Scrn *invscrnnew(Player *p, Zone *zone, int depth){
 	static Invscr inv = {0};
 	static Scrn s = {0};
 
 	inv.p = p;
-	inv.lvl = lvl;
+	inv.zone = zone;
+	inv.depth = depth;
+	inv.zvis = zone->lvl->z;
 	inv.curitem = NULL;
 
 	s.mt = &invmt;
@@ -70,14 +73,24 @@ static void draw(Scrn *s, Gfx *g){
 	gfxclear(g, (Color){ 127, 127, 127 });
 
 	Invscr *i = s->data;
-	lvlminidraw(g, i->lvl, (Point){0,0}, Scale);
+	Txt *txt = gettxt();
+
+	char buf[32];
+	snprintf(buf, sizeof(buf), "%d-%d", i->depth, i->zvis);
+	Point info = txtdims(txt, buf);
+	txtdraw(g, txt, (Point){0}, buf);
+
+	int realz = i->zone->lvl->z;
+	i->zone->lvl->z = i->zvis;
+	lvlminidraw(g, i->zone->lvl, (Point){0,info.y+1}, Scale);
+	i->zone->lvl->z = realz;
 
 	Point ppos = playerpos(i->p);
 	double px = ppos.x / Twidth;
 	double py = ppos.y / Theight;
 	Rect r = {
-		(Point){ px*Scale, py*Scale },
-		(Point){ px*Scale + Scale, py*Scale + Scale }
+		(Point){ px*Scale, info.y+1 + py*Scale },
+		(Point){ px*Scale + Scale, info.y+1 + py*Scale + Scale }
 	};
 	gfxfillrect(g, r, (Color){ 255, 0, 0, 255 });
 
@@ -93,7 +106,6 @@ static void draw(Scrn *s, Gfx *g){
 			{ a.x + Invitw + 1, a.y + Invith + 1}
 		};
 		gfxdrawrect(g, er, (Color){0});
-		Txt *txt = gettxt();
 		txtdraw(g, txt, (Point){ er.b.x + Pad, er.a.y }, locname[j]);
 		if(i->p->inv[j].id)
 			invitdraw(&i->p->wear[j], g, a);
@@ -159,8 +171,9 @@ static Txt *gettxt(void)
 }
 
 static void handle(Scrn *s, Scrnstk *stk, Event *e){
+	Invscr *i = s->data;
+
 	if (e->type == Mousemv) {
-		Invscr *i = s->data;
 		i->curitem = invat(i->p->inv, e->x, e->y);
 	}
 
@@ -171,6 +184,11 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 		scrnstkpop(stk);
 		return;
 	}
+
+	if(e->down && e->key == kmap[Mvleft] && i->zvis > 0)
+			i->zvis--;
+	else if(e->down && e->key == kmap[Mvright] && i->zvis < i->zone->lvl->d - 1)
+			i->zvis++;
 }
 
 static Invit *invat(Invit inv[], int x, int y)

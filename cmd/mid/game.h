@@ -21,7 +21,7 @@ extern Scrnmt gamemt;
 
 enum { Invrows = 5, Invcols = 3 };
 
-Scrn *invscrnnew(Player *, Lvl *);
+Scrn *invscrnnew(Player *, Zone *, int);
 Scrn *titlescrnnew(Gfx *);
 Scrn *statscrnnew(Player *, Env *);
 Scrn *goverscrnnew(Player *, int);

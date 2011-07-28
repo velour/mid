@@ -320,13 +320,11 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale)
 {
 	int w = l->w, h = l->h;
 	for (int x = 0; x < w; x++){
-		int pxx = offs.x + x;
 		for (int y = 0; y < h; y++) {
 			Blk *b = blk(l, x, y, l->z);
 			if (!(b->flags & Blkvis) && !debugging)
 				continue;
 			int t = b->tile;
-			Point pt = (Point){ pxx, offs.y + y };
 
 			Color c = (Color){ 255, 255, 255, 255 };
 			unsigned int flags = tiles[t].flags;
@@ -344,8 +342,8 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale)
 				c = (Color){ 75, 75, 255 };
 
 			Rect r = {
-				(Point){ pt.x * scale, pt.y * scale },
-				(Point){ pt.x * scale + scale, pt.y * scale + scale }
+				(Point){ offs.x + x*scale, offs.y + y*scale },
+				(Point){ offs.x + x*scale + scale, offs.y + y*scale + scale }
 			};
 			gfxfillrect(g, r, c);
 		}
