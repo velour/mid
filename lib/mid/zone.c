@@ -363,7 +363,7 @@ static void writeblkflgs(FILE *f, Lvl *lvl)
 	for (int z = 0; z < lvl->d; z++) {
 	for (int y = 0; y < lvl->h; y++) {
 		if (blkflgszero(lvl, y, z))
-			return;
+			continue;
 
 		fprintf(f, "f %u %u", z, y);
 		for (int x = 0; x < lvl->w; x++)
