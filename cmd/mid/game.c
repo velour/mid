@@ -117,6 +117,7 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 			gm->player.lives--;
 			gm->transl.x = 0;
 			gm->transl.y = 0;
+			gm->zone->lvl->z = 0;
 
 			int lose = rngintincl(&gm->rng, 0, Maxinv-1);
 			gm->player.inv[lose] = (Invit){};
