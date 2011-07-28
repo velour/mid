@@ -77,7 +77,6 @@ static void trystairs(Scrnstk *stk, Game *gm)
 		gm->zone->lvl->z = bi.z;
 		playersetloc(&gm->player, bi.x, bi.y);
 	} else if (gm->zone->updown == Godown) {
-		zoneput(gm->zone, gm->znum);
 		gm->znum++;
 		if (gm->znum > gm->zmax) {
 			gm->zmax = gm->znum;
