@@ -50,7 +50,7 @@ restart:
 
 	morereach(lvl);
 	closeunits(lvl);
-	if (closeunreach(lvl) < 200)
+	if (closeunreach(lvl) < lvl->w * lvl->h * lvl->d * 0.40)
 		goto restart;
 
 	stairs(&r, lvl);
