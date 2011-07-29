@@ -42,7 +42,7 @@ void playerinit(Player *p, int x, int y)
 
 	p->bi.x = p->bi.y = p->bi.z = -1;
 	p->stats[StatHp] = 10;
-	p->stats[StatDex] = 8;
+	p->stats[StatDex] = 5;
 	p->stats[StatStr] = 5;
 	p->eqp[StatHp] = p->stats[StatHp];
 
@@ -295,11 +295,11 @@ static Point scroll(Player *p, Point delta){
 }
 
 static double run(Player *p){
-	return (p->stats[StatDex] + p->eqp[StatDex]) / 2 - 1;
+	return 2 + (p->stats[StatDex] + p->eqp[StatDex]) / 4;
 }
 
 static double jmp(Player *p){
-	return (p->stats[StatDex] + p->eqp[StatDex]);
+	return 7 + (p->stats[StatDex] + p->eqp[StatDex]) / 5;
 }
 
 static void mvsw(Player *p){

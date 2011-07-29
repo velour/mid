@@ -107,7 +107,7 @@ static void draw(Scrn *s, Gfx *g){
 		};
 		gfxdrawrect(g, er, (Color){0});
 		txtdraw(g, txt, (Point){ er.b.x + Pad, er.a.y }, locname[j]);
-		if(i->p->inv[j].id)
+		if(i->p->wear[j].id > 0)
 			invitdraw(&i->p->wear[j], g, a);
 	}
 
