@@ -9,7 +9,6 @@ enum { Uplim = 2 };
 static void expndreach(Lvl *lvl, int x, int y, int z);
 static void reach(Lvl *lvl, int x, int y, int z);
 static void reachup(Lvl *lvl, int x, int y, int z);
-static void reachdown(Lvl *lvl, int x, int y, int z);
 static void reachover(Lvl *lvl, int x, int y, int z);
 
 void morereach(Lvl *lvl)
@@ -30,8 +29,6 @@ static void expndreach(Lvl *lvl, int x, int y, int z)
 	if (tundr.flags & Tilecollide) {
 		reachup(lvl, x, y, z);
 		reachover(lvl, x, y, z);
-	} else {
-		reachdown(lvl, x, y, z);
 	}
 }
 
@@ -53,13 +50,6 @@ static void reachup(Lvl *lvl, int x, int y, int z)
 		reach(lvl, x-1, yy, z);
 		reach(lvl, x+1, yy, z);
 	}
-}
-
-static void reachdown(Lvl *lvl, int x, int y, int z)
-{
-	reach(lvl, x-1, y+1, z);
-	reach(lvl, x, y+1, z);
-	reach(lvl, x+1, y+1, z);
 }
 
 static void reachover(Lvl *lvl, int x, int y, int z)
