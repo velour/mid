@@ -44,7 +44,7 @@ char kmap[] = {
 	[Mvsword] = 'j',
 };
 
-static Uint8*keystate;
+static Uint8 *keystate;
 static int nkeys;
 
 _Bool iskeydown(Action act){
