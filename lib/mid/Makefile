@@ -17,7 +17,7 @@ OFILES :=\
 	anim.o\
 	lvl.o\
 	player.o\
-	keymap.o\
+	kbd.o\
 	enemy.o\
 	body.o\
 	mem.o\

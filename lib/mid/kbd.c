@@ -1,6 +1,8 @@
 // Copyright © 2011 Steve McCoy and Ethan Burns
 // Licensed under the MIT License. See LICENSE for details.
 #include "../../include/mid.h"
+#include <SDL/SDL.h>
+#include <assert.h>
 #include <string.h>
 
 _Bool keymapread(char km[], char *fname){
@@ -41,3 +43,15 @@ char kmap[] = {
 	[Mvinv] = 'n',
 	[Mvsword] = 'j',
 };
+
+static Uint8*keystate;
+static int nkeys;
+
+_Bool iskeydown(Action act){
+	if (!keystate)
+		keystate = SDL_GetKeyboardState(&nkeys);
+	int keysym = SDL_GetScancodeFromKey(kmap[act]);
+	assert (keysym >= 0);
+	assert (keysym < nkeys);
+	return keystate[keysym];
+}

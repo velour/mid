@@ -297,8 +297,9 @@ enum Action{
 	Nactions,
 };
 
-_Bool keymapread(char km[Nactions], char *fname);
 extern char kmap[Nactions];
+_Bool keymapread(char km[Nactions], char *fname);
+_Bool iskeydown(Action);
 
 enum { Scrnw = 1024, Scrnh = 576 };
 

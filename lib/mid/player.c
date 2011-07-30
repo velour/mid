@@ -12,6 +12,7 @@ static void loadanim(Anim *a, int, int, int);
 static void chngdir(Player *b);
 static void chngact(Player *b);
 static Point scroll(Player*, Point delta);
+static void chkdirkeys(Player *);
 static double run(Player *);
 static double jmp(Player *);
 static void mvsw(Player *);
@@ -88,6 +89,8 @@ void playersetloc(Player *p, int x, int y)
 
 void playerupdate(Player *p, Zone *zn, Point *tr)
 {
+	chkdirkeys(p);
+
 	Lvl *l = zn->lvl;
 	Point ppos = playerpos(p);
 
@@ -156,23 +159,22 @@ void playerdraw(Gfx *g, Player *p)
 		sworddraw(g, &p->sw);
 }
 
+static void chkdirkeys(Player *p)
+{
+	p->body.vel.x = 0;
+	if(iskeydown(Mvleft))
+		p->body.vel.x -= run(p);
+	if (iskeydown(Mvright))
+		p->body.vel.x += run(p);
+}
+
 void playerhandle(Player *p, Event *e)
 {
 	if (e->type != Keychng || e->repeat)
 		return;
 
 	char k = e->key;
-	if(k == kmap[Mvleft]){
-		if(e->down && p->body.vel.x > -run(p))
-			p->body.vel.x -= run(p);
-		else if(!e->down)
-			p->body.vel.x += run(p);
-	}else if(k == kmap[Mvright]){
-		if(e->down && p->body.vel.x < run(p))
-			p->body.vel.x += run(p);
-		else if(!e->down)
-			p->body.vel.x -= run(p);
-	}else if(k == kmap[Mvjump]){
+	if(k == kmap[Mvjump]){
 		if(!e->down && p->body.fall){
 			if(p->body.vel.y < 0){
 				p->body.vel.y += (8 - p->jframes);
