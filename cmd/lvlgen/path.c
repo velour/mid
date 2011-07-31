@@ -7,25 +7,14 @@
 #include "../../include/log.h"
 #include "lvlgen.h"
 
+static int extend(Mv [], int, Lvl *, Path *, Loc);
+static int tryadd(Lvl *l, Path *p, Seg s);
+static Seg segmk(Loc l, Mv *m);
 static bool segok(Lvl *l, Path *p, Seg s);
 static bool segconfl(Lvl *l, Path *p, Seg s);
 static bool segclr(Lvl *l, Seg s);
 static bool doorsok(Lvl *l, Path *p, Seg s);
 static bool atstart(Path *p, int x, int y, int z);
-
-Seg segmk(Loc l, Mv *m)
-{
-	Seg s;
-	s.l0 = l;
-	s.l1 = (Loc) { l.x + m->dx, l.y + m->dy, l.z + m->dz };
-	s.mv = m;
-	return s;
-}
-
-void segpr(Seg s)
-{
-	pr("seg: %d,%d -> %d,%d", s.l0.x, s.l0.y, s.l1.x, s.l1.y);
-}
 
 Path *pathnew(Lvl *l)
 {
@@ -41,7 +30,36 @@ void pathfree(Path *p)
 	free(p);
 }
 
-int pathadd(Lvl *l, Path *p, Seg s)
+enum { Minbr = 3, Maxbr = 9 };
+
+void pathbuild(Lvl *lvl, Path *p, Loc loc)
+{
+	unsigned int br = rnd(Minbr, Maxbr);
+	for (int i = 0; i < br; i++) {
+		int ind = extend(moves, Nmoves, lvl, p, loc);
+		if (ind >= 0)
+			pathbuild(lvl, p, p->segs[ind].l1);
+	}
+}
+
+static int extend(Mv mvs[], int n, Lvl *lvl, Path *p, Loc loc)
+{
+	Mv *failed = NULL;
+	unsigned int base = rnd(0, n);
+	for (int i = 0; i < n; i++) {
+		Mv *mv = mvs + ((base + i) % n);
+		if (mv == failed)
+			continue;
+		Seg s = segmk(loc, mv);
+		int ind = tryadd(lvl, p, s);
+		if (ind >= 0)
+			return ind;
+		failed = mv;
+	}
+	return -1;
+}
+
+static int tryadd(Lvl *l, Path *p, Seg s)
 {
 	if (p->nsegs == p->maxsegs || !segok(l, p, s))
 		return -1;
@@ -51,6 +69,15 @@ int pathadd(Lvl *l, Path *p, Seg s)
 	p->nsegs++;
 
 	return p->nsegs - 1;
+}
+
+static Seg segmk(Loc l, Mv *m)
+{
+	Seg s;
+	s.l0 = l;
+	s.l1 = (Loc) { l.x + m->dx, l.y + m->dy, l.z + m->dz };
+	s.mv = m;
+	return s;
 }
 
 static bool segok(Lvl *l, Path *p, Seg s)

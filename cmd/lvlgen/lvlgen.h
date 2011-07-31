@@ -48,9 +48,6 @@ struct Seg {
 	Mv *mv;
 };
 
-Seg segmk(Loc l, Mv *m);
-void segpr(Seg s);
-
 typedef struct Path Path;
 struct Path {
 	int maxsegs, nsegs;
@@ -59,7 +56,7 @@ struct Path {
 
 Path *pathnew(struct Lvl *);
 void pathfree(Path *);
-int pathadd(struct Lvl *, Path *, Seg);
+void pathbuild(struct Lvl *lvl, Path *, Loc);
 void pathpr(struct Lvl *, Path *);
 
 _Bool reachable(struct Lvl *, int, int, int);
