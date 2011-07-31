@@ -13,12 +13,13 @@ struct Loc {
 
 typedef struct Mvspec Mvspec;
 struct Mvspec {
-	int wt, w, h;
+	int wt;
+	int w, h;
 	_Bool revable;
 	char *blks;
 };
 
-enum { Maxblks = 64 };
+enum { Maxblks = 64, Maxdrs = 2 };
 
 typedef struct Mv Mv;
 struct Mv {
@@ -26,24 +27,20 @@ struct Mv {
 	int dx, dy, dz;
 	Loc strt;
 
-	/* Array of locs that must be 'clear' */
-	int nclr;
 	Loc clr[Maxblks];
-
-	/* Array of blocks. */
-	int nblkd;
 	Loc blkd[Maxblks];
+	Loc door[Maxdrs];
+	int nclr, nblkd, ndoor;
 
 	Mvspec *spec;
 };
 
 Mv *moves;
 int Nmoves;
+
 void mvini(void);
 void mvblit(Mv *mv, struct Lvl *l, Loc l0);
 _Bool startonblk(Mv *mv);
-_Bool hasdoor(Mvspec *s);
-Loc dooroffs(Mvspec *s);
 
 typedef struct Seg Seg;
 struct Seg {

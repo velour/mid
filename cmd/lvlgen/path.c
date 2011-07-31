@@ -10,7 +10,7 @@
 static bool segok(Lvl *l, Path *p, Seg s);
 static bool segconfl(Lvl *l, Path *p, Seg s);
 static bool segclr(Lvl *l, Seg s);
-static bool doorok(Lvl *l, Path *p, Seg s);
+static bool doorsok(Lvl *l, Path *p, Seg s);
 static bool atstart(Path *p, int x, int y, int z);
 
 Seg segmk(Loc l, Mv *m)
@@ -62,7 +62,7 @@ static bool segok(Lvl *l, Path *p, Seg s)
 		&& !reachable(l, s.l1.x, s.l1.y, s.l1.z)	// haven't been there yet.
 		&& segclr(l, s)
 		&& !segconfl(l, p, s)
-		&& (!hasdoor(s.mv->spec) || doorok(l, p, s));
+		&& doorsok(l, p, s);
 }
 
 static bool segconfl(Lvl *l, Path *p, Seg s)
@@ -80,17 +80,20 @@ static bool segconfl(Lvl *l, Path *p, Seg s)
 	return false;
 }
 
-static bool doorok(Lvl *l, Path *p, Seg s)
+static bool doorsok(Lvl *l, Path *p, Seg s)
 {
 	static const unsigned long rejflgs = Tilefdoor | Tilebdoor | Tileup | Tiledown;
 
-	Mvspec *spec = s.mv->spec;
-	Loc d = dooroffs(spec);
-	int doorx = s.l0.x + d.x, doory = s.l0.y + d.y;
-	return !(tileinfo(l, doorx, doory, s.l0.z).flags & rejflgs)
-		&& !(tileinfo(l, doorx, doory, s.l1.z).flags & rejflgs)
-		&& !atstart(p, doorx, doory, s.l0.z)
-		&& !atstart(p, doorx, doory, s.l1.z);
+	for (int i = 0; i < s.mv->ndoor; i++) {
+		Loc d = s.mv->door[i];
+		int x = s.l0.x + d.x;
+		int y = s.l0.y + d.y;
+		int z = s.l0.z + d.z;
+		if (tileinfo(l, x, y, z).flags & rejflgs || atstart(p, x, y, z))
+			return false;
+	}
+
+	return true;
 }
 
 static bool atstart(Path *p, int x, int y, int z)
