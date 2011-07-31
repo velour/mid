@@ -46,7 +46,7 @@ _Bool iteminit(Item *i, ItemID id, Point p){
 	assert(id >= 0 && id < ItemMax);
 
 	i->id = id;
-	bodyinit(&i->body, p.x * Twidth, p.y * Theight);
+	bodyinit(&i->body, p.x * Twidth, p.y * Theight, Twidth, Theight);
 	i->gotit = 0;
 
 	return 1;

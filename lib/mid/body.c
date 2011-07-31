@@ -9,14 +9,14 @@ static double tillwhole(double loc, double vel);
 static Point velstep(Body *b, Point p);
 static void dofall(Body *b, Lvl*, Isect is);
 
-void bodyinit(Body *b, int x, int y)
+void bodyinit(Body *b, int x, int y, int w, int h)
 {
-	*b = (Body){};
-	/* Eventually we want to load this from the resrc directory. */
-	b->bbox = (Rect){ { x, y }, { x + Wide, y + Tall } };
-	b->vel = (Point) { 0, 0 };
-	b->fall = false;
-	b->a.y = 0;
+	*b = (Body){
+		.bbox = { { x, y }, { x + w, y + h } },
+		.vel = { 0, 0 },
+		.a = { 0, 0 },
+		.fall = false
+	};
 }
 
 void bodyupdate(Body *b, Lvl *l)

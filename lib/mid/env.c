@@ -33,7 +33,7 @@ _Bool envinit(Env *e, EnvID id, Point p){
 	assert(id >= 0 && id < EnvMax);
 
 	e->id = id;
-	bodyinit(&e->body, p.x * Twidth, p.y * Theight);
+	bodyinit(&e->body, p.x * Twidth, p.y * Theight, Twidth, Theight);
 	e->body.bbox.b.x = e->body.bbox.a.x + ops[id].wh.x;
 	e->body.bbox.b.y = e->body.bbox.a.y + ops[id].wh.y;
 

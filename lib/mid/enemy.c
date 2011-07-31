@@ -27,7 +27,7 @@ _Bool enemyinit(Enemy *e, EnemyID id, int x, int y){
 		return 0;
 
 	e->id = id;
-	bodyinit(&e->b, x * Twidth, y * Theight);
+	bodyinit(&e->b, x * Twidth, y * Theight, Twidth, Theight);
 
 	return mt[id].init(e, x, y);
 }

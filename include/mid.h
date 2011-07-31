@@ -318,7 +318,7 @@ struct Body {
 	_Bool fall;
 };
 
-void bodyinit(Body *, int x, int y);
+void bodyinit(Body *, int x, int y, int w, int h);
 void bodyupdate(Body *b, Lvl *l);
 
 typedef struct Sword Sword;

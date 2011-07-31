@@ -21,7 +21,7 @@ void playerinit(Player *p, int x, int y)
 {
 	p->lives = 3;
 
-	bodyinit(&p->body, x * Twidth, y * Theight);
+	bodyinit(&p->body, x * Twidth, y * Theight, Twidth, Theight);
 	p->hitback = 0;
 
 	plsh = resrcacq(imgs, "img/knight.png", NULL);
