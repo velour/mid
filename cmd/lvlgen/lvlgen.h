@@ -59,7 +59,7 @@ struct Path {
 
 Path *pathnew(struct Lvl *);
 void pathfree(Path *);
-_Bool pathadd(struct Lvl *, Path *, Seg);
+int pathadd(struct Lvl *, Path *, Seg);
 void pathpr(struct Lvl *, Path *);
 
 _Bool reachable(struct Lvl *, int, int, int);

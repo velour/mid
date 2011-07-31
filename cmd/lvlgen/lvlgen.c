@@ -15,6 +15,7 @@ static int rng(Rng *, int, char *[]);
 static void init(Lvl *l);
 extern void lvlwrite(FILE *, Lvl *);
 static void buildpath(Lvl *lvl, Path *p, Loc loc);
+static int extendpath(Mv [], int, Lvl *, Path *, Loc);
 static void stairs(Rng *, Lvl *);
 static int stairlocs(Lvl *, Loc []);
 
@@ -98,16 +99,27 @@ static void buildpath(Lvl *lvl, Path *p, Loc loc)
 {
 	unsigned int br = rnd(Minbr, Maxbr);
 	for (int i = 0; i < br; i++) {
-		unsigned int base = rnd(0, Nmoves);
-		for (int j = 0; j < Nmoves; j++) {
-			unsigned int mv = (base + j) % Nmoves;
-			Seg s = segmk(loc, &moves[mv]);
-			if (pathadd(lvl, p, s)) {
-				buildpath(lvl, p, s.l1);
-				break;
-			}
-		}
+		int ind = extendpath(moves, Nmoves, lvl, p, loc);
+		if (ind >= 0)
+			buildpath(lvl, p, p->segs[ind].l1);
 	}
+}
+
+static int extendpath(Mv mvs[], int n, Lvl *lvl, Path *p, Loc loc)
+{
+	Mv *failed = NULL;
+	unsigned int base = rnd(0, n);
+	for (int i = 0; i < n; i++) {
+		Mv *mv = mvs + ((base + i) % n);
+		if (mv == failed)
+			continue;
+		Seg s = segmk(loc, mv);
+		int ind = pathadd(lvl, p, s);
+		if (ind >= 0)
+			return ind;
+		failed = mv;
+	}
+	return -1;
 }
 
 unsigned int rnd(int min, int max)

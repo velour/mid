@@ -41,16 +41,16 @@ void pathfree(Path *p)
 	free(p);
 }
 
-bool pathadd(Lvl *l, Path *p, Seg s)
+int pathadd(Lvl *l, Path *p, Seg s)
 {
 	if (p->nsegs == p->maxsegs || !segok(l, p, s))
-		return false;
+		return -1;
 	mvblit(s.mv, l, s.l0);
 
 	p->segs[p->nsegs] = s;
 	p->nsegs++;
 
-	return true;
+	return p->nsegs - 1;
 }
 
 static bool segok(Lvl *l, Path *p, Seg s)
