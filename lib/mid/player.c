@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+static Point hboff = { 7, 2 };
+
 static Img *plsh;
 static Sfx *ow;
 
@@ -16,12 +18,13 @@ static void chkdirkeys(Player *);
 static double run(Player *);
 static double jmp(Player *);
 static void mvsw(Player *);
+static Rect attackclip(Player *p, int up);
 
 void playerinit(Player *p, int x, int y)
 {
 	p->lives = 3;
 
-	bodyinit(&p->body, x * Twidth + 7, y * Theight + 2, 21, 29);
+	bodyinit(&p->body, x * Twidth + hboff.x, y * Theight + hboff.y, 21, 29);
 	p->hitback = 0;
 
 	plsh = resrcacq(imgs, "img/knight.png", NULL);
@@ -152,8 +155,14 @@ void playerdraw(Gfx *g, Player *p)
 	if(debugging)
 		camfillrect(g, p->body.bbox, (Color){255,0,0,255});
 
-	if(p->iframes % 4 == 0)
-		animdraw(g, &p->anim[p->act], p->imgloc);
+	if(p->iframes % 4 == 0){
+		if(p->sframes > 8)
+			imgdrawreg(g, plsh, attackclip(p, 0), p->imgloc);
+		else if(p->sframes > 0)
+			imgdrawreg(g, plsh, attackclip(p, 1), p->imgloc);
+		else
+			animdraw(g, &p->anim[p->act], p->imgloc);
+	}
 
 	if(p->sw.cur >= 0)
 		sworddraw(g, &p->sw);
@@ -305,20 +314,30 @@ static double jmp(Player *p){
 }
 
 static void mvsw(Player *p){
+	Point ul = vecadd(p->body.bbox.a, (Point){ -hboff.x, -hboff.y });
+
 	p->sw.rightloc[0] = (Rect){
-		{ p->body.bbox.a.x - 11, p->body.bbox.a.y - 32 },
-		{ p->body.bbox.b.x - 11, p->body.bbox.b.y - 32 }
+		{ ul.x - 11, ul.y - 32 },
+		{ ul.x - 11 + 32, ul.y }
 	};
 	p->sw.rightloc[1] = (Rect){
-		{ p->body.bbox.a.x + 20, p->body.bbox.a.y },
-		{ p->body.bbox.b.x + 20, p->body.bbox.b.y }
+		{ ul.x + 32, ul.y },
+		{ ul.x + 32 + 32, ul.y + 32}
 	};
 	p->sw.leftloc[0] = (Rect){
-		{ p->body.bbox.a.x + 11, p->body.bbox.a.y - 32 },
-		{ p->body.bbox.b.x + 11, p->body.bbox.b.y - 32 }
+		{ ul.x + 11, ul.y - 32 },
+		{ ul.x + 11 + 32, ul.y }
 	};
 	p->sw.leftloc[1] = (Rect){
-		{ p->body.bbox.a.x - 20, p->body.bbox.a.y },
-		{ p->body.bbox.b.x - 20, p->body.bbox.b.y }
+		{ ul.x - 32, ul.y },
+		{ ul.x, ul.y + 32}
+	};
+}
+
+static Rect attackclip(Player *p, int col){
+	int row = (p->anim == p->leftas) ? 6 : 7;
+	return (Rect){
+		{ col * Twidth, row * Theight },
+		{ col * Twidth + Theight, row * Theight + Theight }
 	};
 }
