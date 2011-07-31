@@ -3,24 +3,30 @@
 #include "../../include/mid.h"
 
 static Img *swordsh;
+static Img *woosh;
 
 _Bool swordldresrc(void){
 	if(!swordsh)
 		swordsh = resrcacq(imgs, "img/swords.png", 0);
+	if(!woosh)
+		woosh = resrcacq(imgs, "img/woosh.png", 0);
 	return swordsh != NULL;
 }
 
 void sworddraw(Gfx *g, Sword *s){
-	int pos;
+	int pos, wpos;
 	Rect *loc;
 	if(s->cur == 0){
 		pos = 0;
+		wpos = -1;
 		loc = s->dir == Mvright? s->rightloc : s->leftloc;
 	}else if(s->dir == Mvright){
 		pos = 1;
+		wpos = 0;
 		loc = s->rightloc;
 	}else{
 		pos = 2;
+		wpos = 1;
 		loc = s->leftloc;
 	}
 
@@ -32,6 +38,14 @@ void sworddraw(Gfx *g, Sword *s){
 	};	
 
 	camdrawreg(g, swordsh, clip, loc[s->cur].a);
+
+	if(pos > -1){
+		Rect wc = {
+			{ wpos * 32, 0 }, //TODO: row should match sword row
+			{ wpos *32 + 32, 32 }
+		};
+		camdrawreg(g, woosh, wc, vecadd(loc[s->cur].a, (Point){0,-16}));
+	}
 }
 
 Rect swordbbox(Sword *s){
