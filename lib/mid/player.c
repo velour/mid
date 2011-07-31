@@ -99,7 +99,7 @@ void playerupdate(Player *p, Zone *zn, Point *tr)
 
 	Tileinfo bi = lvlmajorblk(l, p->body.bbox);
 
-	if (bi.x != p->bi.x || bi.y != p->bi.x || bi.z != p->bi.z)
+	if (bi.x != p->bi.x || bi.y != p->bi.y || bi.z != p->bi.z)
 		lvlvis(l, bi.x, bi.y);
 	p->bi = bi;
 
