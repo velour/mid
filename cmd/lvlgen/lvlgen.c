@@ -53,6 +53,7 @@ restart:
 	if (closeunreach(lvl) < lvl->w * lvl->h * lvl->d * 0.40)
 		goto restart;
 
+	water(lvl);
 	stairs(&r, lvl);
 	lvlwrite(stdout, lvl);
 	lvlfree(lvl);
