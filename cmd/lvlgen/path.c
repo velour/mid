@@ -36,7 +36,7 @@ void pathbuild(Lvl *lvl, Path *p, Loc loc)
 {
 	unsigned int br = rnd(Minbr, Maxbr);
 	for (int i = 0; i < br; i++) {
-		int ind = extend(moves, Nmoves, lvl, p, loc);
+		int ind = extend(moves, nmoves, lvl, p, loc);
 		if (ind >= 0)
 			pathbuild(lvl, p, p->segs[ind].l1);
 	}

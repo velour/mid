@@ -35,10 +35,10 @@ struct Mv {
 	Mvspec *spec;
 };
 
-Mv *moves;
-int Nmoves;
+extern Mv *moves;
+extern int nmoves;
 
-void mvini(void);
+void mvsinit(void);
 void mvblit(Mv *mv, struct Lvl *l, Loc l0);
 _Bool startonblk(Mv *mv);
 

@@ -8,6 +8,8 @@
 #include "../../include/log.h"
 #include "lvlgen.h"
 
+static void specsinit(Mvspec [], int, Mv **, int *);
+static int cntmoves(Mvspec [], int);
 static Mvspec *specrev(Mvspec *s);
 static int addmv(Mvspec *, Mv moves[]);
 static Mv mvmk(Mvspec *);
@@ -226,27 +228,39 @@ static Mvspec specs[] = {
 static const int Nspecs = sizeof(specs) / sizeof(specs[0]);
 
 Mv *moves;
-int Nmoves;
+int nmoves;
 
-void mvini(void)
+void mvsinit(void)
 {
-	for (int i = 0; i < Nspecs; i++) {
-		int mul = 1;
-		if (specs[i].revable)
-			mul *= 2;
-		Nmoves += specs[i].wt * mul;
-	}
+	specsinit(specs, Nspecs, &moves, &nmoves);
+}
 
-	Mv *m;
-	moves = m = xalloc(Nmoves, sizeof(*moves));
+static void specsinit(Mvspec specs[], int nspecs, Mv **mvs, int *nmv)
+{
+	*nmv = cntmoves(specs, nspecs);
+	Mv *m = xalloc(*nmv, sizeof((*mvs)[0]));
+	*mvs = m;
 
-	for (int i = 0; i < Nspecs; i++) {
+	for (int i = 0; i < nspecs; i++) {
 		m += addmv(specs+i, m);
 		if (specs[i].revable)
 			m += addmv(specrev(specs+i), m);
 	}
 
-	assert(m - moves == Nmoves);
+	assert(m - moves == *nmv);
+}
+
+static int cntmoves(Mvspec specs[], int nspecs)
+{
+	int n = 0;
+
+	for (int i = 0; i < nspecs; i++) {
+		n += specs[i].wt;
+		if (specs[i].revable)
+			n += specs[i].wt;
+	}
+
+	return n;
 }
 
 static Mvspec *specrev(Mvspec *s)

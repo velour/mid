@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 	int d = strtol(argv[3], NULL, 10);
 	Lvl *lvl = lvlnew(d, w, h);
 
-	mvini();
+	mvsinit();
 
 restart:
 	init(lvl);
