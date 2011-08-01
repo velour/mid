@@ -68,6 +68,7 @@ void dadraw(Enemy *e, Gfx *g){
 }
 
 _Bool dascan(char *buf, Enemy *e){
+	*e = (Enemy){};
 	if (!defaultscan(buf, e))
 		return 0;
 
