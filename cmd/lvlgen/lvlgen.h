@@ -15,8 +15,13 @@ typedef struct Mvspec Mvspec;
 struct Mvspec {
 	int wt;
 	int w, h;
-	_Bool revable;
+	char flgs;
 	char *blks;
+};
+
+enum {
+	Mvrev = 1 << 0,
+	Mvwtr = 1 << 1,
 };
 
 enum { Maxblks = 64, Maxdrs = 2 };
@@ -35,10 +40,12 @@ struct Mv {
 	Mvspec *spec;
 };
 
-Mv *moves;
-int Nmoves;
+extern Mv *moves;
+extern int nmoves;
+extern Mv *wtrmvs;
+extern int nwtrmvs;
 
-void mvini(void);
+void mvsinit(void);
 void mvblit(Mv *mv, struct Lvl *l, Loc l0);
 _Bool startonblk(Mv *mv);
 
@@ -48,9 +55,6 @@ struct Seg {
 	Mv *mv;
 };
 
-Seg segmk(Loc l, Mv *m);
-void segpr(Seg s);
-
 typedef struct Path Path;
 struct Path {
 	int maxsegs, nsegs;
@@ -59,15 +63,12 @@ struct Path {
 
 Path *pathnew(struct Lvl *);
 void pathfree(Path *);
-int pathadd(struct Lvl *, Path *, Seg);
+void pathbuild(struct Lvl *lvl, Path *, Loc);
 void pathpr(struct Lvl *, Path *);
 
 _Bool reachable(struct Lvl *, int, int, int);
 void setreach(struct Lvl *, int, int, int);
 
-void putdoor(struct Lvl *lvl, int x, int y, int z, int door);
-Loc doorloc(struct Lvl *, Loc);
-void extradoors(struct Rng *, struct Lvl *);
 
 void water(struct Lvl *);
 

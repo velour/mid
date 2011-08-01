@@ -14,8 +14,6 @@
 static int rng(Rng *, int, char *[]);
 static void init(Lvl *l);
 extern void lvlwrite(FILE *, Lvl *);
-static void buildpath(Lvl *lvl, Path *p, Loc loc);
-static int extendpath(Mv [], int, Lvl *, Path *, Loc);
 static void stairs(Rng *, Lvl *);
 static int stairlocs(Lvl *, Loc []);
 
@@ -38,15 +36,16 @@ int main(int argc, char *argv[])
 	int d = strtol(argv[3], NULL, 10);
 	Lvl *lvl = lvlnew(d, w, h);
 
-	mvini();
+	mvsinit();
 
 restart:
 	init(lvl);
+	water(lvl);
 
 	Loc loc = (Loc) { Startx, Starty, 0 };
 	blk(lvl, loc.x, loc.y, 0)->tile = ' ';
 	Path *p = pathnew(lvl);
-	buildpath(lvl, p, loc);
+	pathbuild(lvl, p, loc);
 	pathfree(p);
 
 	morereach(lvl);
@@ -54,7 +53,6 @@ restart:
 	if (closeunreach(lvl) < lvl->w * lvl->h * lvl->d * 0.40)
 		goto restart;
 
-	water(lvl);
 	stairs(&r, lvl);
 	lvlwrite(stdout, lvl);
 	lvlfree(lvl);
@@ -91,35 +89,6 @@ static void init(Lvl *l)
 	}
 	}
 	}
-}
-
-enum { Minbr = 3, Maxbr = 9 };
-
-static void buildpath(Lvl *lvl, Path *p, Loc loc)
-{
-	unsigned int br = rnd(Minbr, Maxbr);
-	for (int i = 0; i < br; i++) {
-		int ind = extendpath(moves, Nmoves, lvl, p, loc);
-		if (ind >= 0)
-			buildpath(lvl, p, p->segs[ind].l1);
-	}
-}
-
-static int extendpath(Mv mvs[], int n, Lvl *lvl, Path *p, Loc loc)
-{
-	Mv *failed = NULL;
-	unsigned int base = rnd(0, n);
-	for (int i = 0; i < n; i++) {
-		Mv *mv = mvs + ((base + i) % n);
-		if (mv == failed)
-			continue;
-		Seg s = segmk(loc, mv);
-		int ind = pathadd(lvl, p, s);
-		if (ind >= 0)
-			return ind;
-		failed = mv;
-	}
-	return -1;
 }
 
 unsigned int rnd(int min, int max)
