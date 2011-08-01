@@ -387,7 +387,7 @@ struct Item{
 	_Bool gotit;
 };
 
-_Bool itemldresrc();
+_Bool itemldresrc(void);
 _Bool iteminit(Item*, ItemID id, Point p);
 void itemupdateanims(void);
 void itemupdate(Item*, Player*, Lvl*);
@@ -478,6 +478,7 @@ struct Enemy{
 	Ai ai;
 };
 
+_Bool enemyldresrc(void);
 _Bool enemyinit(Enemy *e, EnemyID id, int x, int y);
 void enemyfree(Enemy*);
 void enemyupdate(Enemy*, Player*, Lvl*);
@@ -504,7 +505,7 @@ struct Env{
 	_Bool gotit;
 };
 
-_Bool envldresrc();
+_Bool envldresrc(void);
 _Bool envinit(Env*, EnvID, Point);
 void envupdateanims(void);
 void envupdate(Env*, Lvl*);

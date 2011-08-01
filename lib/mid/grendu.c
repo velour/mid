@@ -16,9 +16,6 @@ void grendufree(Enemy *e){
 }
 
 void grenduupdate(Enemy *e, Player *p, Lvl *l){
-	if(!untihit)
-		untihit = resrcacq(sfx, "sfx/hit.wav", 0);
-
 	e->ai.update(e, p, l);
 
 	if(e->iframes > 0){
@@ -62,8 +59,6 @@ void grenduupdate(Enemy *e, Player *p, Lvl *l){
 }
 
 void grendudraw(Enemy *e, Gfx *g){
-	if(!grenduimg) grenduimg = resrcacq(imgs, "img/grendu.png", 0);
-
 	if(e->iframes % 4 != 0)
 		return;
 

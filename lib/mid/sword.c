@@ -10,7 +10,7 @@ _Bool swordldresrc(void){
 		swordsh = resrcacq(imgs, "img/swords.png", 0);
 	if(!woosh)
 		woosh = resrcacq(imgs, "img/woosh.png", 0);
-	return swordsh != NULL;
+	return swordsh != NULL && woosh != NULL;
 }
 
 void sworddraw(Gfx *g, Sword *s){

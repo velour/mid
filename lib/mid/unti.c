@@ -26,14 +26,10 @@ _Bool untiinit(Enemy *e, int x, int y){
 }
 
 void untifree(Enemy *e){
-	resrcrel(imgs, "img/unti.png", 0);
 	xfree(e->data);
 }
 
 void untiupdate(Enemy *e, Player *p, Lvl *l){
-	if(!untihit)
-		untihit = resrcacq(sfx, "sfx/hit.wav", 0);
-
 	Unti *u = e->data;
 
 	e->ai.update(e, p, l);
@@ -84,8 +80,6 @@ void untiupdate(Enemy *e, Player *p, Lvl *l){
 }
 
 void untidraw(Enemy *e, Gfx *g){
-	if(!untiimg) untiimg = resrcacq(imgs, "img/unti.png", 0);
-
 	if(e->iframes % 4 == 0)
 		camdrawimg(g, untiimg, e->body.bbox.a);
 }

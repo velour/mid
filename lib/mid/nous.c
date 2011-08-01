@@ -16,9 +16,6 @@ void nousfree(Enemy *e){
 }
 
 void nousupdate(Enemy *e, Player *p, Lvl *l){
-	if(!untihit)
-		untihit = resrcacq(sfx, "sfx/hit.wav", 0);
-
 	e->ai.update(e, p, l);
 	bodyupdate(&e->body, l);
 
@@ -43,7 +40,6 @@ void nousupdate(Enemy *e, Player *p, Lvl *l){
 }
 
 void nousdraw(Enemy *e, Gfx *g){
-	if(!nousimg) nousimg = resrcacq(imgs, "img/nous.png", 0);
 	Rect clip;
 	if(e->body.vel.x < 0)
 		clip = (Rect){

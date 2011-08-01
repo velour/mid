@@ -4,6 +4,25 @@
 #include "enemy.h"
 #include <stdio.h>
 
+_Bool enemyldresrc(void){
+	untihit = resrcacq(sfx, "sfx/hit.wav", 0);
+	if(!untihit) return 0;
+	untiimg = resrcacq(imgs, "img/unti.png", 0);
+	if(!untiimg) return 0;
+	thuimg = resrcacq(imgs, "img/thu.png", 0);
+	if(!thuimg) return 0;
+	splatimg = resrcacq(imgs, "img/splat.png", 0);
+	if(!splatimg) return 0;
+	nousimg = resrcacq(imgs, "img/nous.png", 0);
+	if(!nousimg) return 0;
+	grenduimg = resrcacq(imgs, "img/grendu.png", 0);
+	if(!grenduimg) return 0;
+	daimg = resrcacq(imgs, "img/da.png", 0);
+	if(!daimg) return 0;
+
+	return 1;
+}
+
 typedef struct Enemymt Enemymt;
 struct Enemymt{
 	_Bool (*init)(Enemy *, int, int);

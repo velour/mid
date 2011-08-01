@@ -42,8 +42,10 @@ Game *gamenew(void)
 	ok = envldresrc();
 	if (!ok)
 		fatal("Failed to load env resources: %s", miderrstr());
+	if(!enemyldresrc())
+		fatal("Failed to load enemy resrouces: %s", miderrstr());
 	if(!swordldresrc())
-		fatal("Failed to load item resrouces: %s", miderrstr());
+		fatal("Failed to load sword resrouces: %s", miderrstr());
 
 	return &gm;
 }

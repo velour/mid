@@ -40,7 +40,7 @@ _Bool envinit(Env *e, EnvID id, Point p){
 	return 1;
 }
 
-_Bool envldresrc(){
+_Bool envldresrc(void){
 	for (int id = 1; id < sizeof(ops)/sizeof(ops[0]); id++) {
 		char *n = ops[id].animname;
 		assert(n != NULL);

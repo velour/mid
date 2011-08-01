@@ -16,9 +16,6 @@ void thufree(Enemy *e){
 }
 
 void thuupdate(Enemy *e, Player *p, Lvl *l){
-	if(!untihit)
-		untihit = resrcacq(sfx, "sfx/hit.wav", 0);
-
 	e->ai.update(e, p, l);
 
 	if(e->iframes > 0){
@@ -62,8 +59,6 @@ void thuupdate(Enemy *e, Player *p, Lvl *l){
 }
 
 void thudraw(Enemy *e, Gfx *g){
-	if(!thuimg) thuimg = resrcacq(imgs, "img/thu.png", 0);
-
 	if(e->iframes % 4 != 0)
 		return;
 

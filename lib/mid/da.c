@@ -16,9 +16,6 @@ void dafree(Enemy *e){
 }
 
 void daupdate(Enemy *e, Player *p, Lvl *l){
-	if(!untihit)
-		untihit = resrcacq(sfx, "sfx/hit.wav", 0);
-
 	e->ai.update(e, p, l);
 	bodyupdate(&e->body, l);
 
@@ -48,8 +45,6 @@ void daupdate(Enemy *e, Player *p, Lvl *l){
 }
 
 void dadraw(Enemy *e, Gfx *g){
-	if(!daimg) daimg = resrcacq(imgs, "img/da.png", 0);
-
 	if(e->iframes % 4 != 0)
 		return;
 
