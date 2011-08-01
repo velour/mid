@@ -450,6 +450,7 @@ enum EnemyID{
 	EnemyNone,
 	EnemyUnti,
 	EnemyNous,
+	EnemyDa,
 	EnemySplat,
 	EnemyMax
 };

@@ -30,6 +30,7 @@ OFILES :=\
 	unti.o\
 	nous.o\
 	splat.o\
+	da.o\
 
 HFILES :=\
 	fs.h\

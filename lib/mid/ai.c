@@ -57,7 +57,20 @@ static void walk(Enemy *e, Player *p, Lvl *lvl){
 }
 
 static void patrol(Enemy *e, Player *p, Lvl *lvl){
+	double wx = e->ai.mv.x;
+	double bw = e->b.bbox.b.x - e->b.bbox.a.x;
+	double s = wx < 0 ? -1 : 1;
 
+	Rect nextlow = {
+		vecadd(e->b.bbox.a, (Point){s*bw,32}),
+		vecadd(e->b.bbox.b, (Point){s*bw,32})
+	};
+	if(!(lvlmajorblk(lvl, nextlow).flags & Tilecollide) || e->b.bbox.a.x == e->ai.lastp.x)
+		e->ai.mv.x = -wx;
+
+	e->ai.lastp = e->b.bbox.a;
+
+	e->b.vel.x = e->ai.mv.x;
 }
 
 static void chase(Enemy *e, Player *p, Lvl *lvl){

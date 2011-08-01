@@ -19,6 +19,7 @@ struct Enemymt{
 static Enemymt mt[] = {
 	[EnemyUnti] = { ENEMYMT(unti) },
 	[EnemyNous] = { ENEMYMT(nous) },
+	[EnemyDa] = { ENEMYMT(da) },
 	[EnemySplat] = { ENEMYMT(splat) },
 };
 
