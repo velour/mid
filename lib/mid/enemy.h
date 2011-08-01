@@ -25,4 +25,7 @@ ENEMYDECL(splat);
 extern Img *daimg;
 ENEMYDECL(da);
 
+extern Img *thuimg;
+ENEMYDECL(thu);
+
 #undef ENEMYDECL

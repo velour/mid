@@ -74,7 +74,17 @@ static void patrol(Enemy *e, Player *p, Lvl *lvl){
 }
 
 static void chase(Enemy *e, Player *p, Lvl *lvl){
+	if(dist(e->b.bbox.a, p->body.bbox.a) > e->ai.awdst)
+		return; //unaware
 
+	double wx = e->ai.mv.x;
+
+	if(p->body.bbox.a.x < e->b.bbox.a.x)
+		wx = -wx;
+
+	e->ai.lastp = e->b.bbox.a;
+
+	e->b.vel.x = wx;
 }
 
 static void hunt(Enemy *e, Player *p, Lvl *lvl){

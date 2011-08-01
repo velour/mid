@@ -22,6 +22,8 @@ struct Point{
 };
 
 Point vecadd(Point, Point);
+double distsquare(Point, Point);
+double dist(Point, Point);
 
 typedef struct Line1d Line1d;
 struct Line1d{
@@ -451,6 +453,7 @@ enum EnemyID{
 	EnemyUnti,
 	EnemyNous,
 	EnemyDa,
+	EnemyThu,
 	EnemySplat,
 	EnemyMax
 };

@@ -8,6 +8,15 @@ Point vecadd(Point a, Point b){
 	return (Point){ a.x + b.x, a.y + b.y };
 }
 
+double distsquare(Point a, Point b){
+	double x = b.x - a.x;
+	double y = b.y - a.y;
+	return x*x + y*y;
+}
+double dist(Point a, Point b){
+	return sqrt(distsquare(a, b));
+}
+
 static int between(double min, double max, double n){
 	return n >= min && n <= max;
 }

@@ -20,6 +20,7 @@ static Enemymt mt[] = {
 	[EnemyUnti] = { ENEMYMT(unti) },
 	[EnemyNous] = { ENEMYMT(nous) },
 	[EnemyDa] = { ENEMYMT(da) },
+	[EnemyThu] = { ENEMYMT(thu) },
 	[EnemySplat] = { ENEMYMT(splat) },
 };
 
