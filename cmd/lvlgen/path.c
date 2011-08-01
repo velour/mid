@@ -7,25 +7,15 @@
 #include "../../include/log.h"
 #include "lvlgen.h"
 
+static int extend(Mv [], int, Lvl *, Path *, Loc);
+static int tryadd(Lvl *l, Path *p, Seg s);
+static Seg segmk(Loc l, Mv *m);
 static bool segok(Lvl *l, Path *p, Seg s);
 static bool segconfl(Lvl *l, Path *p, Seg s);
 static bool segclr(Lvl *l, Seg s);
+static bool segwtrok(Lvl *l, Seg s);
 static bool doorsok(Lvl *l, Path *p, Seg s);
 static bool atstart(Path *p, int x, int y, int z);
-
-Seg segmk(Loc l, Mv *m)
-{
-	Seg s;
-	s.l0 = l;
-	s.l1 = (Loc) { l.x + m->dx, l.y + m->dy, l.z + m->dz };
-	s.mv = m;
-	return s;
-}
-
-void segpr(Seg s)
-{
-	pr("seg: %d,%d -> %d,%d", s.l0.x, s.l0.y, s.l1.x, s.l1.y);
-}
 
 Path *pathnew(Lvl *l)
 {
@@ -41,7 +31,40 @@ void pathfree(Path *p)
 	free(p);
 }
 
-int pathadd(Lvl *l, Path *p, Seg s)
+enum { Minbr = 3, Maxbr = 9 };
+
+void pathbuild(Lvl *lvl, Path *p, Loc loc)
+{
+	unsigned int br = rnd(Minbr, Maxbr);
+	for (int i = 0; i < br; i++) {
+		int ind = -1;
+		if (tileinfo(lvl, loc.x, loc.y, loc.z).flags & Tilewater)
+			ind = extend(wtrmvs, nwtrmvs, lvl, p, loc);
+		if (ind < 0)
+			ind = extend(moves, nmoves, lvl, p, loc);
+		if (ind >= 0)
+			pathbuild(lvl, p, p->segs[ind].l1);
+	}
+}
+
+static int extend(Mv mvs[], int n, Lvl *lvl, Path *p, Loc loc)
+{
+	Mv *failed = NULL;
+	unsigned int base = rnd(0, n);
+	for (int i = 0; i < n; i++) {
+		Mv *mv = mvs + ((base + i) % n);
+		if (mv == failed)
+			continue;
+		Seg s = segmk(loc, mv);
+		int ind = tryadd(lvl, p, s);
+		if (ind >= 0)
+			return ind;
+		failed = mv;
+	}
+	return -1;
+}
+
+static int tryadd(Lvl *l, Path *p, Seg s)
 {
 	if (p->nsegs == p->maxsegs || !segok(l, p, s))
 		return -1;
@@ -53,6 +76,15 @@ int pathadd(Lvl *l, Path *p, Seg s)
 	return p->nsegs - 1;
 }
 
+static Seg segmk(Loc l, Mv *m)
+{
+	Seg s;
+	s.l0 = l;
+	s.l1 = (Loc) { l.x + m->dx, l.y + m->dy, l.z + m->dz };
+	s.mv = m;
+	return s;
+}
+
 static bool segok(Lvl *l, Path *p, Seg s)
 {
 	return (p->nsegs != 0 || startonblk(s.mv))	// 1st seg must start on a block
@@ -61,6 +93,7 @@ static bool segok(Lvl *l, Path *p, Seg s)
 		&& s.l1.z >= 0 && s.l1.z < l->d
 		&& !reachable(l, s.l1.x, s.l1.y, s.l1.z)	// haven't been there yet.
 		&& segclr(l, s)
+		&& segwtrok(l, s)
 		&& !segconfl(l, p, s)
 		&& doorsok(l, p, s);
 }
@@ -113,7 +146,27 @@ static bool segclr(Lvl *l, Seg s)
 		if (b.x < 0 || b.x >= l->w
 			|| b.y < 0 || b.y >= l->h
 			|| b.z < 0 || b.z >= l->d
-			|| tileinfo(l, b.x, b.y, b.z).flags & Tilecollide)
+			||  tileinfo(l, b.x, b.y, b.z).flags & Tilecollide)
+			return false;
+	}
+
+	return true;
+}
+
+static bool segwtrok(Lvl *l, Seg s)
+{
+	if (!(s.mv->spec->flgs & Mvwtr))
+		return true;
+
+	for (int i = 0; i < s.mv->nclr; i++) {
+		Loc *bp = &s.mv->clr[i];
+		if (bp->z != 0)	// Only need water on 1st z-layer
+			continue;
+		Loc b = (Loc) { bp->x + s.l0.x, bp->y + s.l0.y, s.l0.z };
+		if (b.x < 0 || b.x >= l->w
+			|| b.y < 0 || b.y >= l->h
+			|| b.z < 0 || b.z >= l->d
+			|| !(tileinfo(l, b.x, b.y, b.z).flags & Tilewater))
 			return false;
 	}
 
