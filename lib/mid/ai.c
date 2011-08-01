@@ -88,5 +88,20 @@ static void chase(Enemy *e, Player *p, Lvl *lvl){
 }
 
 static void hunt(Enemy *e, Player *p, Lvl *lvl){
+	if(dist(e->b.bbox.a, p->body.bbox.a) > e->ai.awdst)
+		return; //unaware
 
+	double wx = e->ai.mv.x;
+
+	if(p->body.bbox.a.x < e->b.bbox.a.x)
+		wx = -wx;
+
+	if(!e->b.fall && p->body.bbox.a.y < e->b.bbox.a.y){
+		e->b.vel.y = -e->ai.mv.y;
+		e->b.fall = 1;
+	}
+
+	e->ai.lastp = e->b.bbox.a;
+
+	e->b.vel.x = wx;
 }

@@ -32,6 +32,7 @@ OFILES :=\
 	splat.o\
 	da.o\
 	thu.o\
+	grendu.o\
 
 HFILES :=\
 	fs.h\

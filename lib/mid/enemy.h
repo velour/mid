@@ -28,4 +28,7 @@ ENEMYDECL(da);
 extern Img *thuimg;
 ENEMYDECL(thu);
 
+extern Img *grenduimg;
+ENEMYDECL(grendu);
+
 #undef ENEMYDECL
