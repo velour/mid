@@ -50,13 +50,25 @@ void sworddraw(Gfx *g, Sword *s){
 
 Rect swordbbox(Sword *s){
 	Rect *loc;
-	if(s->cur == 0)
+	if(s->cur == 0){
 		loc = s->dir == Mvright? s->rightloc : s->leftloc;
-	else if(s->dir == Mvright)
+		Point ul = vecadd(loc[s->cur].a, (Point){11,0});
+		return (Rect){
+			ul,
+			{ ul.x + 10, ul.y + 32 }
+		};
+	}
+
+	if(s->dir == Mvright)
 		loc = s->rightloc;
 	else
 		loc = s->leftloc;
-	return loc[s->cur];
+
+	Point ul = vecadd(loc[s->cur].a, (Point){0,-32});
+	return (Rect){
+		ul,
+		{ ul.x + 32, ul.y + 32 + 20 }
+	};
 }
 
 int swordstr(Sword *s, Player *p){
