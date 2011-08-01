@@ -34,7 +34,7 @@ void splatfree(Enemy *e){
 }
 
 void splatupdate(Enemy *e, Player *p, Lvl *l){
-	bodyupdate(&e->b, l);
+	bodyupdate(&e->body, l);
 
 	if(!splatimg) splatimg = resrcacq(imgs, "img/splat.png", 0);
 
@@ -51,7 +51,7 @@ void splatdraw(Enemy *e, Gfx *g){
 	Splat *sp = e->data;
 	if(!splatimg) splatimg = resrcacq(imgs, "img/splat.png", 0);
 	sp->anim.sheet = splatimg;
-	camdrawanim(g, &sp->anim, e->b.bbox.a);
+	camdrawanim(g, &sp->anim, e->body.bbox.a);
 }
 
 _Bool splatscan(char *buf, Enemy *e){

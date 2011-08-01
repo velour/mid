@@ -14,7 +14,7 @@ void bodyinit(Body *b, int x, int y, int w, int h)
 	*b = (Body){
 		.bbox = { { x, y }, { x + w, y + h } },
 		.vel = { 0, 0 },
-		.a = { 0, 0 },
+		.acc = { 0, 0 },
 		.fall = false
 	};
 }
@@ -23,7 +23,7 @@ void bodyupdate(Body *b, Lvl *l)
 {
 	bodymv(b, l);
 	if (b->fall && b->vel.y < Maxdy)
-		b->vel.y += b->a.y;
+		b->vel.y += b->acc.y;
 }
 
 static void bodymv(Body *b, Lvl *l)
@@ -84,16 +84,16 @@ static void dofall(Body *b, Lvl *l, Isect is)
 	if(b->vel.y > 0 && is.dy > 0 && b->fall) { /* hit the ground */
 		/* Constantly try to fall in order to test ground
 		 * beneath us. */
-		b->a.y = g;
+		b->acc.y = g;
 		b->fall = false;
 	} else if (b->vel.y < 0 && is.dy > 0) { /* hit my head on something */
 		b->vel.y = 0;
-		b->a.y = g;
+		b->acc.y = g;
 		b->fall = true;
 	}
 	if (!is.is && !b->fall) { /* are we falling now? */
 		b->vel.y = 0;
-		b->a.y = g;
+		b->acc.y = g;
 		b->fall = true;
 	}
 }

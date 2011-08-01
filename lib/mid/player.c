@@ -110,14 +110,14 @@ void playerupdate(Player *p, Zone *zn, Point *tr)
 	if(p->hitback != 0)
 		p->body.vel.x = p->hitback;
 
-	double oldddy = p->body.a.y;
-	p->body.a.y = blkgrav(bi.flags);
+	double oldddy = p->body.acc.y;
+	p->body.acc.y = blkgrav(bi.flags);
 
 	trydoorstairs(p, zn, bi);
 
 	bodyupdate(&p->body, l);
 	p->body.vel.x = olddx;
-	p->body.a.y = oldddy;
+	p->body.acc.y = oldddy;
 
 	mvsw(p);
 

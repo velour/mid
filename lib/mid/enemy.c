@@ -30,7 +30,7 @@ _Bool enemyinit(Enemy *e, EnemyID id, int x, int y){
 		return 0;
 
 	e->id = id;
-	bodyinit(&e->b, x * Twidth, y * Theight, Twidth, Theight);
+	bodyinit(&e->body, x * Twidth, y * Theight, Twidth, Theight);
 
 	return mt[id].init(e, x, y);
 }
@@ -68,9 +68,9 @@ _Bool enemyprint(char *buf, size_t s, Enemy *e){
 }
 
 _Bool defaultscan(char *buf, Enemy *e){
-	return scangeom(buf, "dyd", &e->id, &e->b, &e->hp);
+	return scangeom(buf, "dyd", &e->id, &e->body, &e->hp);
 }
 
 _Bool defaultprint(char *buf, size_t sz, Enemy *e){
-	return printgeom(buf, sz, "dyd", e->id, e->b, e->hp);
+	return printgeom(buf, sz, "dyd", e->id, e->body, e->hp);
 }

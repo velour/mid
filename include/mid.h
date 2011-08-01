@@ -316,7 +316,7 @@ typedef struct Body Body;
 struct Body {
 	Rect bbox;
 	Point vel;
-	Point a;
+	Point acc;
 	_Bool fall;
 };
 
@@ -470,7 +470,7 @@ struct Ai{
 
 struct Enemy{
 	EnemyID id;
-	Body b;
+	Body body;
 	int hp;
 	double hitback;
 	int iframes;

@@ -39,25 +39,25 @@ void untiupdate(Enemy *e, Player *p, Lvl *l){
 	e->ai.update(e, p, l);
 
 	if(e->iframes > 0){
-		e->b.vel.x = e->hitback;
+		e->body.vel.x = e->hitback;
 		e->iframes--;
 	}else
-		e->b.vel.x = 0;
+		e->body.vel.x = 0;
 
 	if(e->iframes < 250.0/Ticktm)
 		e->hitback = 0;
 
-	bodyupdate(&e->b, l);
+	bodyupdate(&e->body, l);
 
-	if(isect(e->b.bbox, playerbox(p))){
-		int dir = e->b.bbox.a.x > p->body.bbox.a.x ? -1 : 1;
+	if(isect(e->body.bbox, playerbox(p))){
+		int dir = e->body.bbox.a.x > p->body.bbox.a.x ? -1 : 1;
 		u->c.b = 255;
 		playerdmg(p, 3, dir);
 	}else
 		u->c.b = 55;
 
 	Rect swbb = swordbbox(&p->sw);
-	if(e->iframes == 0 && p->sframes > 0 && isect(e->b.bbox, swbb)){
+	if(e->iframes == 0 && p->sframes > 0 && isect(e->body.bbox, swbb)){
 		sfxplay(untihit);
 		int pstr = swordstr(&p->sw, p);
 		e->hp -= pstr;
@@ -67,13 +67,13 @@ void untiupdate(Enemy *e, Player *p, Lvl *l){
 			mhb = pstr/2;
 		if(mhb > 32)
 			mhb = 32;
-		e->hitback = swbb.a.x < e->b.bbox.a.x ? mhb : -mhb;
+		e->hitback = swbb.a.x < e->body.bbox.a.x ? mhb : -mhb;
 		e->iframes = 500.0 / Ticktm; // 0.5s
 
 		if(e->hp <= 0){
 			Enemy splat = {};
 			enemyinit(&splat, EnemySplat, 0, 0);
-			splat.b = e->b;
+			splat.body = e->body;
 			untifree(e);
 			*e = splat;
 			return;
@@ -87,13 +87,13 @@ void untidraw(Enemy *e, Gfx *g){
 	if(!untiimg) untiimg = resrcacq(imgs, "img/unti.png", 0);
 
 	if(e->iframes % 4 == 0)
-		camdrawimg(g, untiimg, e->b.bbox.a);
+		camdrawimg(g, untiimg, e->body.bbox.a);
 }
 
 _Bool untiscan(char *buf, Enemy *e){
 	int r, g, b, a;
 
-	if (!scangeom(buf, "dyddddd", &e->id, &e->b, &e->hp, &r, &g, &b, &a))
+	if (!scangeom(buf, "dyddddd", &e->id, &e->body, &e->hp, &r, &g, &b, &a))
 		return 0;
 
 	e->hitback = 0;
@@ -110,5 +110,5 @@ _Bool untiscan(char *buf, Enemy *e){
 _Bool untiprint(char *buf, size_t sz, Enemy *e){
 	Unti *u = e->data;
 	Color c = u->c;
-	return printgeom(buf, sz, "dyddddd", e->id, e->b, e->hp, c.r, c.g, c.b, c.a);
+	return printgeom(buf, sz, "dyddddd", e->id, e->body, e->hp, c.r, c.g, c.b, c.a);
 }

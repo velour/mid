@@ -20,24 +20,24 @@ void daupdate(Enemy *e, Player *p, Lvl *l){
 		untihit = resrcacq(sfx, "sfx/hit.wav", 0);
 
 	e->ai.update(e, p, l);
-	bodyupdate(&e->b, l);
+	bodyupdate(&e->body, l);
 
 	if(e->iframes > 0)
 		e->iframes--;
 
-	if(isect(e->b.bbox, playerbox(p))){
-		int dir = e->b.bbox.a.x > p->body.bbox.a.x ? -1 : 1;
+	if(isect(e->body.bbox, playerbox(p))){
+		int dir = e->body.bbox.a.x > p->body.bbox.a.x ? -1 : 1;
 		playerdmg(p, 1, dir);
 	}
 
-	if(e->iframes == 0 && p->sframes > 0 && isect(e->b.bbox, swordbbox(&p->sw))){
+	if(e->iframes == 0 && p->sframes > 0 && isect(e->body.bbox, swordbbox(&p->sw))){
 		sfxplay(untihit);
 		e->hp -= swordstr(&p->sw, p);
 
 		if(e->hp <= 0){
 			Enemy splat = {};
 			enemyinit(&splat, EnemySplat, 0, 0);
-			splat.b = e->b;
+			splat.body = e->body;
 			dafree(e);
 			*e = splat;
 			return;
@@ -54,7 +54,7 @@ void dadraw(Enemy *e, Gfx *g){
 		return;
 
 	Rect clip;
-	if(e->b.vel.x < 0)
+	if(e->body.vel.x < 0)
 		clip = (Rect){
 			{ 0, 0 },
 			{ 32, 32 }
@@ -64,7 +64,7 @@ void dadraw(Enemy *e, Gfx *g){
 			{ 32, 0 },
 			{ 64, 32 }
 		};
-	camdrawreg(g, daimg, clip, e->b.bbox.a);
+	camdrawreg(g, daimg, clip, e->body.bbox.a);
 }
 
 _Bool dascan(char *buf, Enemy *e){

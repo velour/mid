@@ -298,7 +298,7 @@ _Bool zoneoverlap(Zone *zn, int z, Point loc, Point wh)
 	}
 	for (int i = 0; i < Maxenms; i++) {
 		Enemy *en = &zn->enms[z][i];
-		if (en->id && isect(r, en->b.bbox))
+		if (en->id && isect(r, en->body.bbox))
 			return true;
 	}
 

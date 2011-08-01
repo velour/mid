@@ -82,7 +82,7 @@ static void scanbody(char **toks, Body *b)
 {
 	scanrect(toks, &b->bbox);
 	scanpt(toks, &b->vel);
-	scanpt(toks, &b->a);
+	scanpt(toks, &b->acc);
 	scanbool(toks, &b->fall);
 }
 
@@ -149,7 +149,7 @@ static void printbody(char **bufp, int *szp, Body b)
 {
 	printrect(bufp, szp, b.bbox);
 	printpt(bufp, szp, b.vel);
-	printpt(bufp, szp, b.a);
+	printpt(bufp, szp, b.acc);
 	prfield(bufp, szp, " %d", b.fall);
 }
 

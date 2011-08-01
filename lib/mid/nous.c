@@ -20,21 +20,21 @@ void nousupdate(Enemy *e, Player *p, Lvl *l){
 		untihit = resrcacq(sfx, "sfx/hit.wav", 0);
 
 	e->ai.update(e, p, l);
-	bodyupdate(&e->b, l);
+	bodyupdate(&e->body, l);
 
-	if(isect(e->b.bbox, playerbox(p))){
-		int dir = e->b.bbox.a.x > p->body.bbox.a.x ? -1 : 1;
+	if(isect(e->body.bbox, playerbox(p))){
+		int dir = e->body.bbox.a.x > p->body.bbox.a.x ? -1 : 1;
 		playerdmg(p, 1, dir);
 	}
 
-	if(p->sframes > 0 && isect(e->b.bbox, swordbbox(&p->sw))){
+	if(p->sframes > 0 && isect(e->body.bbox, swordbbox(&p->sw))){
 		sfxplay(untihit);
 		e->hp--;
 
 		if(e->hp <= 0){
 			Enemy splat = {};
 			enemyinit(&splat, EnemySplat, 0, 0);
-			splat.b = e->b;
+			splat.body = e->body;
 			nousfree(e);
 			*e = splat;
 			return;
@@ -45,7 +45,7 @@ void nousupdate(Enemy *e, Player *p, Lvl *l){
 void nousdraw(Enemy *e, Gfx *g){
 	if(!nousimg) nousimg = resrcacq(imgs, "img/nous.png", 0);
 	Rect clip;
-	if(e->b.vel.x < 0)
+	if(e->body.vel.x < 0)
 		clip = (Rect){
 			{ 0, 0 },
 			{ 32, 32 }
@@ -55,7 +55,7 @@ void nousdraw(Enemy *e, Gfx *g){
 			{ 32, 0 },
 			{ 64, 32 }
 		};
-	camdrawreg(g, nousimg, clip, e->b.bbox.a);
+	camdrawreg(g, nousimg, clip, e->body.bbox.a);
 }
 
 _Bool nousscan(char *buf, Enemy *e){
