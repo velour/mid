@@ -143,7 +143,7 @@ static FILE *zpipe(Rng *r)
 	pipeadd(&p, "itmgen", "-s %u 2 50", rngint(r));
 	pipeadd(&p, "itmgen", "-s %u 3 10", rngint(r));
 	pipeadd(&p, "envgen", "-s %u 1 1", rngint(r));
-	pipeadd(&p, "enmgen", "-s %u 1 1 2 2 3 4 5 50", rngint(r));
+	pipeadd(&p, "enmgen", "-s %u 1 1 1 2 2 2 2 3 3 4 5 50", rngint(r));
 
 	pipeadd(&p, "tee", "cur.lvl");
 
