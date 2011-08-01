@@ -10,24 +10,19 @@ static const double Prob = 0.33;
 
 void water(Lvl *lvl)
 {
-	if (!withprob(Prob))
-		return;
+	for (int z = 0; z < lvl->d; z++) {
+		if (!withprob(Prob))
+			continue;
 
-	unsigned int ht = rnd(1, lvl->h - 2);
+		unsigned int ht = rnd(1, lvl->h - 2);
 
-	for (int x = 0; x < lvl->w - 1; x++) {
-	for (int y = lvl->h - 2; y > lvl->h - 2 - ht; y--) {
-		Blk *b = blk(lvl, x, y, lvl->z);
-		int t = b->tile;
-		switch (t) {
-		case ' ':
-			b->tile = 'w'; break;
-		case '>':
-			b->tile = ')'; break;
-		case '<':
-			b->tile = '('; break;
+		for (int x = 0; x < lvl->w - 1; x++) {
+		for (int y = lvl->h - 2; y > lvl->h - 2 - ht; y--) {
+			Blk *b = blk(lvl, x, y, z);
+			if (b->tile == ' ')
+				b->tile = 'w';
 		}
-	}
+		}
 	}
 }
 

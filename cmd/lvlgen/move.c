@@ -8,13 +8,12 @@
 #include "../../include/log.h"
 #include "lvlgen.h"
 
-static void specsinit(Mvspec [], int, Mv **, int *);
-static int cntmoves(Mvspec [], int);
+static void cntmoves(void);
 static Mvspec *specrev(Mvspec *s);
 static int addmv(Mvspec *, Mv moves[]);
 static Mv mvmk(Mvspec *);
 static int offsets(Mvspec *, const char *accept, Loc l[], int sz);
-static void blittile(Lvl *lvl, Loc loc, char t);
+static void blitdoor(Lvl *, Loc, int);
 static Loc indloc(Mvspec *, int);
 
 static const char *strttiles = "s";
@@ -41,7 +40,7 @@ static Mvspec specs[] = {
 		"####"
 		"e <#"
 		"####",
-	  .revable = true,
+	  .flgs = Mvrev,
 	  .wt = 5, .w = 4, .h = 3 },
 
 	{ .blks =
@@ -52,7 +51,7 @@ static Mvspec specs[] = {
 		"####"
 		"#< e"
 		"####",
-	  .revable = true,
+	  .flgs = Mvrev,
 	  .wt = 5, .w = 4, .h = 3 },
 
 	{ .blks = 
@@ -62,7 +61,7 @@ static Mvspec specs[] = {
 		"s    e"
 		"#    #"
 		"######",
-	  . revable = true,
+	  . flgs = Mvrev,
 	  .wt = 2, .w = 6, .h = 6 },
 
 	{ .blks = 
@@ -109,7 +108,7 @@ static Mvspec specs[] = {
 		"#   #"
 		"s   e"
 		"#####",
-	  .revable = true,
+	  .flgs = Mvrev,
 	  .wt = 2, .w = 5, .h = 5 },
 
 	{ .blks = 
@@ -120,19 +119,19 @@ static Mvspec specs[] = {
 	{ .blks = 
 		"es"
 		"##",
-	  .revable = true,
+	  .flgs = Mvrev,
 	  .wt = 5, .w = 2, .h = 2 },
 
 	{ .blks = 
 		"e s"
 		"###",
-	  .revable = true,
+	  .flgs = Mvrev,
 	  .wt = 10, .w = 3, .h = 2 },
 
 	{ .blks = 
 		"e  s"
 		"####",
-	  .revable = true,
+	  .flgs = Mvrev,
 	  .wt = 10, .w = 4, .h = 2 },
 
 	{ .blks = 
@@ -140,35 +139,35 @@ static Mvspec specs[] = {
 		"     "
 		"s   e"
 		"#...#",
-	  .revable = true,
+	  .flgs = Mvrev,
 	  .wt = 10, .w = 5, .h = 4, },
 
 	{ .blks = 
 		" e"
 		"s#"
 		"#.",
-	  .revable = true,
+	  .flgs = Mvrev,
 	  .wt = 0, .w = 2, .h = 3 },
 
 	{ .blks = 
 		" e"
 		"s#"
 		"##",
-	  .revable = true,
+	  .flgs = Mvrev,
 	  .wt = 5, .w = 2, .h = 3 },
 
 	{ .blks = 
 		"s "
 		"#e"
 		".#",
-	  .revable = true,
+	  .flgs = Mvrev,
 	  .wt = 1, .w = 2, .h = 3 },
 
 	{ .blks = 
 		"s "
 		"#e"
 		"##",
-	  .revable = true,
+	  .flgs = Mvrev,
 	  .wt = 1, .w = 2, .h = 3 },
 
 	{ .blks = 
@@ -221,46 +220,139 @@ static Mvspec specs[] = {
 		"#  "
 		"##s"
 		"###",
-	  .revable = true,
+	  .flgs = Mvrev,
 	  .wt = 5, .w = 3, .h = 4 },
+
+	{ .blks =
+		"s   e"
+		"#####",
+	.flgs = Mvrev | Mvwtr,
+	.wt = 10, .w = 5, .h = 2 },
+
+	{ .blks =
+		" e"
+		" #"
+		" *"
+		" *"
+		"s*"
+		"#*",
+	.flgs = Mvrev | Mvwtr,
+	.wt = 5, .w = 2, .h = 6 },
+
+	{ .blks =
+		"e "
+		"# "
+		"* "
+		"* "
+		"*s"
+		"*#",
+	.flgs = Mvrev | Mvwtr,
+	.wt = 5, .w = 2, .h = 6 },
+
+	{ .blks =
+		"e  "
+		"# *"
+		"# *"
+		"# *"
+		"#s "
+		"##",
+	.flgs = Mvrev | Mvwtr,
+	.wt = 5, .w = 3, .h = 6 },
+
+	{ .blks =
+		"  e"
+		"* #"
+		"* #"
+		"* #"
+		" s#"
+		"###",
+	.flgs = Mvrev | Mvwtr,
+	.wt = 5, .w = 3, .h = 6 },
+
+	{ .blks =
+		"   e"
+		"   #"
+		"   *"
+		"  **"
+		"s***"
+		"#***",
+	.flgs = Mvrev | Mvwtr,
+	.wt = 5, .w = 4, .h = 6 },
+
+	{ .blks =
+		"e   "
+		"#   "
+		"*   "
+		"**  "
+		"***s"
+		"***#",
+	.flgs = Mvrev | Mvwtr,
+	.wt = 5, .w = 4, .h = 6 },
+
+	{ .blks =
+		"####"
+		"#> s"
+		"####"
+
+		"####"
+		"#< e"
+		"####",
+	.flgs = Mvrev | Mvwtr,
+	.wt = 2, .w = 4, .h = 3 },
+
+	{ .blks =
+		"####"
+		"s >#"
+		"####"
+
+		"####"
+		"e <#"
+		"####",
+	.flgs = Mvrev | Mvwtr,
+	.wt = 2, .w = 4, .h = 3 },
 };
 
 static const int Nspecs = sizeof(specs) / sizeof(specs[0]);
 
 Mv *moves;
 int nmoves;
+Mv *wtrmvs;
+int nwtrmvs;
 
 void mvsinit(void)
 {
-	specsinit(specs, Nspecs, &moves, &nmoves);
-}
+	cntmoves();
 
-static void specsinit(Mvspec specs[], int nspecs, Mv **mvs, int *nmv)
-{
-	*nmv = cntmoves(specs, nspecs);
-	Mv *m = xalloc(*nmv, sizeof((*mvs)[0]));
-	*mvs = m;
+	Mv *mv = xalloc(nmoves, sizeof(moves[0]));
+	Mv *wmv = xalloc(nwtrmvs, sizeof(wtrmvs[0]));
+	moves = mv;
+	wtrmvs = wmv;
 
-	for (int i = 0; i < nspecs; i++) {
-		m += addmv(specs+i, m);
-		if (specs[i].revable)
-			m += addmv(specrev(specs+i), m);
+	for (int i = 0; i < Nspecs; i++) {
+		Mvspec *s = specs + i;
+		Mv **m = s->flgs & Mvwtr ? &wmv : &mv;
+		*m += addmv(s, *m);
+		if (s->flgs & Mvrev)
+			*m += addmv(specrev(s), *m);
 	}
 
-	assert(m - moves == *nmv);
+	assert(mv - moves == nmoves);
+	assert(wmv - wtrmvs == nwtrmvs);
 }
 
-static int cntmoves(Mvspec specs[], int nspecs)
+static void cntmoves(void)
 {
-	int n = 0;
+	for (int i = 0; i < Nspecs; i++) {
+		Mvspec *s = specs + i;
+		int n = s->wt;
+		if (s->flgs & Mvrev)
+			n += s->wt;
 
-	for (int i = 0; i < nspecs; i++) {
-		n += specs[i].wt;
-		if (specs[i].revable)
-			n += specs[i].wt;
+		if (s->flgs & Mvwtr)
+			nwtrmvs += n;
+		else
+			nmoves += n;
 	}
-
-	return n;
 }
 
 static Mvspec *specrev(Mvspec *s)
@@ -340,22 +432,27 @@ void mvblit(Mv *mv, Lvl *lvl, Loc l0)
 		if (reachable(lvl, loc.x, loc.y, loc.z) && strchr(doortiles, t) == NULL)
 			continue;
 
-		blittile(lvl, loc, t);
+		bool clr = strchr(clrtiles, t) != NULL;
+		if (clr)
+			setreach(lvl, loc.x, loc.y, loc.z);
+
+		Blk *b = blk(lvl, loc.x, loc.y, loc.z);
+		if (strchr(blkdtiles, t) != NULL)
+			b->tile = t;
+		else if (strchr(doortiles, t) != NULL)
+			blitdoor(lvl, loc, t);
 	}
 }
 
-static void blittile(Lvl *lvl, Loc loc, char t)
+static void blitdoor(Lvl *lvl, Loc l, int door)
 {
-	if (strchr(blkdtiles, t) != NULL) {
-		blk(lvl, loc.x, loc.y, loc.z)->tile = t;
-	} else if (strchr(doortiles, t) != NULL) {
-		assert(blk(lvl, loc.x, loc.y, loc.z)->tile == ' ');
-		blk(lvl, loc.x, loc.y, loc.z)->tile = t;
-		setreach(lvl, loc.x, loc.y, loc.z);
-	} else if (strchr(clrtiles, t) != NULL) {
-		blk(lvl, loc.x, loc.y, loc.z)->tile = ' ';
-		setreach(lvl, loc.x, loc.y, loc.z);
+	if (tileinfo(lvl, l.x, l.y, l.z).flags & Tilewater) {
+		if (door == '<')
+			door = '(';
+		else if (door == '>')
+			door = ')';
 	}
+	blk(lvl, l.x, l.y, l.z)->tile = door;
 }
 
 static Loc indloc(Mvspec *s, int i)

@@ -8,7 +8,6 @@ OFILES :=\
 	lvlgen.o\
 	path.o\
 	move.o\
-	door.o\
 	water.o\
 	reach.o\
 

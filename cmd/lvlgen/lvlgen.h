@@ -15,8 +15,13 @@ typedef struct Mvspec Mvspec;
 struct Mvspec {
 	int wt;
 	int w, h;
-	_Bool revable;
+	char flgs;
 	char *blks;
+};
+
+enum {
+	Mvrev = 1 << 0,
+	Mvwtr = 1 << 1,
 };
 
 enum { Maxblks = 64, Maxdrs = 2 };
@@ -37,6 +42,8 @@ struct Mv {
 
 extern Mv *moves;
 extern int nmoves;
+extern Mv *wtrmvs;
+extern int nwtrmvs;
 
 void mvsinit(void);
 void mvblit(Mv *mv, struct Lvl *l, Loc l0);
@@ -62,9 +69,6 @@ void pathpr(struct Lvl *, Path *);
 _Bool reachable(struct Lvl *, int, int, int);
 void setreach(struct Lvl *, int, int, int);
 
-void putdoor(struct Lvl *lvl, int x, int y, int z, int door);
-Loc doorloc(struct Lvl *, Loc);
-void extradoors(struct Rng *, struct Lvl *);
 
 void water(struct Lvl *);
 
