@@ -18,6 +18,7 @@ struct Game {
 	int znum, zmax;
 	Zone *zone;
 	Rng rng;
+	Img *ui;
 };
 
 Game *gamenew(void)
@@ -46,6 +47,8 @@ Game *gamenew(void)
 		fatal("Failed to load enemy resrouces: %s", miderrstr());
 	if(!swordldresrc())
 		fatal("Failed to load sword resrouces: %s", miderrstr());
+
+	gm.ui = resrcacq(imgs, "img/ui.png", 0);
 
 	return &gm;
 }
@@ -148,12 +151,9 @@ void gamedraw(Scrn *s, Gfx *g)
 	gfxdrawrect(g, hp, (Color){0});
 
 	for(int i = 0; i < gm->player.lives; i++){
-		Rect life = {
-			{ 1 + i*16 + i*1, 16 + 2 },
-			{ 1 + i*16 + i*1 + 16, 16 + 2 + 16}
-		};
-		gfxfillrect(g, life, (Color){200});
-		gfxdrawrect(g, life, (Color){0});
+		Point life = { 1 + i*16, 16 + 2 };
+		Rect clip = { { 0, 0 }, { 16, 16 } };
+		imgdrawreg(g, gm->ui, clip, life);
 	}
 
 	gfxflip(g);
