@@ -98,7 +98,7 @@ unsigned int rnd(int min, int max)
 
 static void stairs(Rng *r, Lvl *lvl)
 {
-	if (tileinfo(lvl, Startx, Starty, 0).flags & Tilewater)
+	if (tileinfo(lvl, Startx, Starty, 0).flags & Twater)
 		blk(lvl, Startx, Starty, 0)->tile = 'U';
 	else
 		blk(lvl, Startx, Starty, 0)->tile = 'u';
@@ -110,7 +110,7 @@ static void stairs(Rng *r, Lvl *lvl)
 		fatal("No stair locations");
 
 	Loc l = ls[rnd(0, nls - 1)];
-	if (tileinfo(lvl, l.x, l.y, l.z).flags & Tilewater)
+	if (tileinfo(lvl, l.x, l.y, l.z).flags & Twater)
 		blk(lvl, l.x, l.y, l.z)->tile = 'D';
 	else
 		blk(lvl, l.x, l.y, l.z)->tile = 'd';
@@ -123,8 +123,8 @@ static int stairlocs(Lvl *lvl, Loc ls[])
 	for (int z = 0; z < lvl->d; z++)
 	for (int x = 1; x < lvl->w-1; x++)
 	for (int y = 1; y < lvl->h-2; y++) {
-		if (reachable(lvl, x, y, z) &&  tileinfo(lvl, x, y+1, z).flags & Tilecollide
-			&& !(tileinfo(lvl, x, y, z).flags & (Tilefdoor | Tilebdoor))) {
+		if (reachable(lvl, x, y, z) &&  tileinfo(lvl, x, y+1, z).flags & Tcollide
+			&& !(tileinfo(lvl, x, y, z).flags & (Tfdoor | Tbdoor))) {
 			ls[nls] = (Loc){ x, y, z };
 			nls++;
 		}

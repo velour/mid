@@ -261,12 +261,13 @@ struct Tileinfo {
 };
 
 enum {
-	Tilecollide = 1<<0,
-	Tilewater = 1<<1,
-	Tilefdoor = 1<<2,
-	Tilebdoor = 1<<3,
-	Tiledown = 1 << 4,
-	Tileup = 1 << 5,
+	Tcollide = 1<<0,
+	Twater = 1<<1,
+	Tfdoor = 1<<2,
+	Tbdoor = 1<<3,
+	Tdown = 1 << 4,
+	Tup = 1 << 5,
+	Topaque = 1 << 6,
 };
 
 enum { Theight = 32, Twidth = 32 };

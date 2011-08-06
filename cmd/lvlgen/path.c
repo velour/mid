@@ -38,7 +38,7 @@ void pathbuild(Lvl *lvl, Path *p, Loc loc)
 	unsigned int br = rnd(Minbr, Maxbr);
 	for (int i = 0; i < br; i++) {
 		int ind = -1;
-		if (tileinfo(lvl, loc.x, loc.y, loc.z).flags & Tilewater)
+		if (tileinfo(lvl, loc.x, loc.y, loc.z).flags & Twater)
 			ind = extend(wtrmvs, nwtrmvs, lvl, p, loc);
 		if (ind < 0)
 			ind = extend(moves, nmoves, lvl, p, loc);
@@ -115,7 +115,7 @@ static bool segconfl(Lvl *l, Path *p, Seg s)
 
 static bool doorsok(Lvl *l, Path *p, Seg s)
 {
-	static const unsigned long rejflgs = Tilefdoor | Tilebdoor | Tileup | Tiledown;
+	static const unsigned long rejflgs = Tfdoor | Tbdoor | Tup | Tdown;
 
 	for (int i = 0; i < s.mv->ndoor; i++) {
 		Loc d = s.mv->door[i];
@@ -146,7 +146,7 @@ static bool segclr(Lvl *l, Seg s)
 		if (b.x < 0 || b.x >= l->w
 			|| b.y < 0 || b.y >= l->h
 			|| b.z < 0 || b.z >= l->d
-			||  tileinfo(l, b.x, b.y, b.z).flags & Tilecollide)
+			||  tileinfo(l, b.x, b.y, b.z).flags & Tcollide)
 			return false;
 	}
 
@@ -166,7 +166,7 @@ static bool segwtrok(Lvl *l, Seg s)
 		if (b.x < 0 || b.x >= l->w
 			|| b.y < 0 || b.y >= l->h
 			|| b.z < 0 || b.z >= l->d
-			|| !(tileinfo(l, b.x, b.y, b.z).flags & Tilewater))
+			|| !(tileinfo(l, b.x, b.y, b.z).flags & Twater))
 			return false;
 	}
 

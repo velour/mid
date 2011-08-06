@@ -126,7 +126,7 @@ static _Bool goodloc(Zone *zn, int z, Point pt)
 {
 	return (pt.x != Startx || pt.y != Starty)
 		&& zoneongrnd(zn, z, pt, (Point) { Twidth, Theight })
-		&& !zonehasflags(zn, z, pt, (Point) { Twidth, Theight }, Tilecollide)
+		&& !zonehasflags(zn, z, pt, (Point) { Twidth, Theight }, Tcollide)
 		&& !zoneoverlap(zn, z, pt, (Point) { Twidth, Theight });
 }
 

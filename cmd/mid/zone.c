@@ -97,7 +97,7 @@ Tileinfo zonedstairs(Zone *zn)
 	for (int x = 0; x < zn->lvl->w; x++) {
 	for (int y = 0; y < zn->lvl->h; y++) {
 		bi = tileinfo(zn->lvl, x, y, z);
-		if (bi.flags & Tiledown)
+		if (bi.flags & Tdown)
 			return bi;
 	}
 	}

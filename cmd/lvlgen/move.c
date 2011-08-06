@@ -446,7 +446,7 @@ void mvblit(Mv *mv, Lvl *lvl, Loc l0)
 
 static void blitdoor(Lvl *lvl, Loc l, int door)
 {
-	if (tileinfo(lvl, l.x, l.y, l.z).flags & Tilewater) {
+	if (tileinfo(lvl, l.x, l.y, l.z).flags & Twater) {
 		if (door == '<')
 			door = '(';
 		else if (door == '>')

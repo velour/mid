@@ -274,7 +274,7 @@ _Bool zoneongrnd(Zone *zn, int z, Point loc, Point wh)
 	for (int x = loc.x; x < (int) (loc.x + wh.x + 0.5); x++) {
 		if (x < 0 || x >= zn->lvl->w)
 			return false;
-		if (tileinfo(zn->lvl, x, y, z).flags & Tilecollide)
+		if (tileinfo(zn->lvl, x, y, z).flags & Tcollide)
 			return true;
 	}
 	return false;

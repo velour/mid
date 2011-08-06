@@ -64,13 +64,13 @@ static void trydoorstairs(Player *p, Zone *zn, Tileinfo bi)
 		return;
 
 	int oldz = l->z;
-	if (p->acting && bi.flags & Tilebdoor)
+	if (p->acting && bi.flags & Tbdoor)
 		l->z += 1;
-	else if (p->acting && bi.flags & Tilefdoor)
+	else if (p->acting && bi.flags & Tfdoor)
 		l->z -= 1;
-	else if (p->acting && bi.flags & Tileup)
+	else if (p->acting && bi.flags & Tup)
 		zn->updown = Goup;
-	else if (p->acting && bi.flags & Tiledown)
+	else if (p->acting && bi.flags & Tdown)
 		zn->updown = Godown;
 
 	p->acting = false;

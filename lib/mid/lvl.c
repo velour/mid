@@ -43,7 +43,7 @@ static Tinfo tiles[] = {
 	['#'] = {
 		.ok = true,
 		.anims = { [0] = { .row = 1, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 } },
-		.flags = Tilecollide
+		.flags = Tcollide | Topaque
 	},
 	['w'] = {
 		.ok = true,
@@ -51,7 +51,7 @@ static Tinfo tiles[] = {
 			[0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm  },
 			[2] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
 		},
-		.flags = Tilewater
+		.flags = Twater
 	},
 	['>'] = {
 		.ok = true,
@@ -59,7 +59,7 @@ static Tinfo tiles[] = {
 			[0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 			[1] = { .row = 3, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 		},
-		.flags = Tilebdoor
+		.flags = Tbdoor
 	},
 	[')'] = {
 		.ok = true,
@@ -68,7 +68,7 @@ static Tinfo tiles[] = {
 			[1] = { .row = 3, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 			[2] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
 		},
-		.flags = Tilebdoor | Tilewater
+		.flags = Tbdoor | Twater
 	},
 	['<'] = {
 		.ok = true,
@@ -76,7 +76,7 @@ static Tinfo tiles[] = {
 			[0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 			[3] = { .row = 4, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 		},
-		.flags = Tilefdoor
+		.flags = Tfdoor
 	},
 	['('] = {
 		.ok = true,
@@ -85,7 +85,7 @@ static Tinfo tiles[] = {
 			[2] = { .row = 4, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 			[3] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
 		},
-		.flags = Tilefdoor | Tilewater
+		.flags = Tfdoor | Twater
 	},
 	['d'] = {
 		.ok = true,
@@ -93,7 +93,7 @@ static Tinfo tiles[] = {
 			[0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 			[1] = { .row = 5, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 		},
-		.flags = Tiledown
+		.flags = Tdown
 	},
 	['D'] = {
 		.ok = true,
@@ -102,7 +102,7 @@ static Tinfo tiles[] = {
 			[1] = { .row = 5, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[3] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
 		},
-		.flags = Tiledown | Tilewater
+		.flags = Tdown | Twater
 	},
 	['u'] = {
 		.ok = true,
@@ -110,7 +110,7 @@ static Tinfo tiles[] = {
 			[0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 			[1] = { .row = 6, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 		},
-		.flags = Tileup
+		.flags = Tup
 	},
 	['U'] = {
 		.ok = true,
@@ -119,7 +119,7 @@ static Tinfo tiles[] = {
 			[1] = { .row = 6, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 			[3] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
 		},
-		.flags = Tileup | Tilewater
+		.flags = Tup | Twater
 	},
 };
 
@@ -230,11 +230,11 @@ static bool tileread(FILE *f, Lvl *l, int x, int y, int z)
 		return false;
 	}
 
-	if (z == 0 && tiles[c].flags & Tilefdoor) {
+	if (z == 0 && tiles[c].flags & Tfdoor) {
 		seterrstr("Front door on x=%d, y=%d, z=0", x, y);
 		return false;
 	}
-	if (z == l->d - 1 && tiles[c].flags & Tilebdoor) {
+	if (z == l->d - 1 && tiles[c].flags & Tbdoor) {
 		seterrstr("Back door on x=%d, y=%d, z=max", x, y);
 		return false;
 	}
@@ -307,7 +307,7 @@ static void tiledrawlyrs(Gfx *g, int t, Point pt, int mn, int mx)
 static bool isshaded(Lvl *l, int t, int x, int y)
 {
 	assert(tiles[t].ok);
-	if (tiles[t].flags & Tilecollide)
+	if (tiles[t].flags & Tcollide)
 		return false;
 
 	return !isvis(l, x-1, y) || !isvis(l, x+1, y)
@@ -339,17 +339,17 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale)
 
 			Color c = (Color){ 255, 255, 255, 255 };
 			unsigned int flags = tiles[t].flags;
-			if(flags & Tilecollide)
+			if(flags & Tcollide)
 				c = (Color){ 0, 0, 0 };
-			else if(flags & Tilebdoor)
+			else if(flags & Tbdoor)
 				c = (Color){ 0, 255, 0 };
-			else if(flags & Tilefdoor)
+			else if(flags & Tfdoor)
 				c = (Color){ 64, 255, 0 };
-			else if(flags & Tiledown)
+			else if(flags & Tdown)
 				c = (Color){ 230, 255, 0 };
-			else if(flags & Tileup)
+			else if(flags & Tup)
 				c = (Color){ 255, 230, 0 };
-			else if(flags & Tilewater)
+			else if(flags & Twater)
 				c = (Color){ 75, 75, 255 };
 
 			Rect r = {
@@ -418,7 +418,7 @@ static Isect tileisect(int t, int x, int y, Rect r)
 	if (!tiles[t].ok)
 		printf("t=[%c]", t);
 	assert(tiles[t].ok);
-	if (!(tiles[t].flags & Tilecollide))
+	if (!(tiles[t].flags & Tcollide))
 		return (Isect){ .is = 0 };
 	return isection(r, tilebbox(x, y));
 }
@@ -535,12 +535,12 @@ static bool edge(Lvl *l, int x, int y)
 static bool blkd(Lvl *l, int x, int y)
 {
 	int t = blk(l, x, y, l->z)->tile;
-	return tiles[t].flags & Tilecollide;
+	return tiles[t].flags & Topaque;
 }
 
 double blkgrav(int flags)
 {
-	if(flags & Tilewater)
+	if(flags & Twater)
 		return 0.5 * Grav;
 	else
 		return Grav;
@@ -548,7 +548,7 @@ double blkgrav(int flags)
 
 double blkdrag(int flags)
 {
-	if(flags & Tilewater)
+	if(flags & Twater)
 		return 0.7;
 	else
 		return 1.0;

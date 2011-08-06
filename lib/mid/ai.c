@@ -65,7 +65,7 @@ static void patrol(Enemy *e, Player *p, Lvl *lvl){
 		vecadd(e->body.bbox.a, (Point){s*bw,32}),
 		vecadd(e->body.bbox.b, (Point){s*bw,32})
 	};
-	if(!(lvlmajorblk(lvl, nextlow).flags & Tilecollide) || e->body.bbox.a.x == e->ai.lastp.x)
+	if(!(lvlmajorblk(lvl, nextlow).flags & Tcollide) || e->body.bbox.a.x == e->ai.lastp.x)
 		e->ai.mv.x = -wx;
 
 	e->ai.lastp = e->body.bbox.a;

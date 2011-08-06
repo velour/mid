@@ -136,7 +136,7 @@ static _Bool goodloc(Zone *zn, int z, Point pt)
 	Rect r = (Rect) { (Point) { pt.x * Twidth, pt.y * Theight },
 		(Point) { pt.x * Twidth + wh.x, pt.y * Theight + wh.y } };
 	return !isect(start, r)
-		&& !zonehasflags(zn, z, pt, wh, Tilecollide | Tilebdoor | Tilefdoor | Tiledown)
+		&& !zonehasflags(zn, z, pt, wh, Tcollide | Tbdoor | Tfdoor | Tdown)
 		&& zoneongrnd(zn, z, pt, wh)
 		&& !zoneoverlap(zn, z, pt, wh);
 }
