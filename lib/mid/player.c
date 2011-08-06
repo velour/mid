@@ -27,7 +27,7 @@ void playerinit(Player *p, int x, int y)
 	bodyinit(&p->body, x * Twidth + hboff.x, y * Theight + hboff.y, 21, 29);
 	p->hitback = 0;
 
-	plsh = resrcacq(imgs, "img/dude.png", NULL);
+	plsh = resrcacq(imgs, "img/knight.png", NULL);
 	assert(plsh != NULL);
 
 	ow = resrcacq(sfx, "sfx/ow.wav", NULL);
