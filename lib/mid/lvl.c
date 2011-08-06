@@ -156,6 +156,16 @@ bool lvlinit()
 	if (!shdimg)
 		return false;
 
+	for (int i = 0; i < Ntiles; i++) {
+		if (!tiles[i].ok)
+			continue;
+		for (int l = 0; l < Tlayers; l++) {
+			if (tiles[i].anims[l].len == 0)
+				continue;
+			tiles[i].anims[l].sheet = tisht;
+		}
+	}
+
 	return true;
 }
 
@@ -281,16 +291,17 @@ static void tiledraw(Gfx *g, int t, Point pt, int l)
 {
 	assert(tiles[t].ok);
 	assert(tisht != NULL);
-	if (!tiles[t].anims[l].sheet)
-		tiles[t].anims[l].sheet = tisht;
 	assert(tiles[t].anims[l].sheet != NULL);
 	camdrawanim(g, &tiles[t].anims[l], pt);
 }
 
 static void tiledrawlyrs(Gfx *g, int t, Point pt, int mn, int mx)
 {
-	for (int l = mn; l <= mx; l++)
+	for (int l = mn; l <= mx; l++) {
+		if (tiles[t].anims[l].len == 0)
+			continue;
 		tiledraw(g, t, pt, l);
+	}
 }
 
 static bool isshaded(Lvl *l, int t, int x, int y)
@@ -353,12 +364,13 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale)
 void lvlupdate(Lvl *l)
 {
 	for (int i = 0; i < sizeof(tiles) / sizeof(tiles[0]); i++) {
-	for (int l = 0; l < Tlayers; l++) {
 		if (!tiles[i].ok)
 			continue;
-		if (tiles[i].anims[l].sheet)
+		for (int l = 0; l < Tlayers; l++) {
+			if (tiles[i].anims[l].len == 0)
+				continue;
 			animupdate(&tiles[i].anims[l]);
-	}
+		}
 	}
 }
 
