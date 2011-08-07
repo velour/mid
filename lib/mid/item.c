@@ -17,6 +17,8 @@ struct ItemOps{
 static void statupupdate(Item*,Player*,Lvl*);
 static void copperupdate(Item*,Player*,Lvl*);
 static void healthupdate(Item *, Player *, Lvl *);
+static void silverupdate(Item*,Player*,Lvl*);
+static void goldupdate(Item*,Player*,Lvl*);
 
 static Sfx *goldgrab;
 static Sfx *gengrab;
@@ -39,6 +41,18 @@ static ItemOps ops[] = {
 		"img/items.png",
 		healthupdate,
 		{ .row = 2, .len = 2, .delay = 600/Ticktm, .w = 32, .h = 32, .d = 600/Ticktm }
+	},
+	[ItemSilver] = {
+		"s",
+		"img/items.png",
+		silverupdate,
+		{ .row = 3, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
+	},
+	[ItemGold] = {
+		"g",
+		"img/items.png",
+		goldupdate,
+		{ .row = 3, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
 	},
 };
 
@@ -143,6 +157,26 @@ static void healthupdate(Item *i, Player *p, Lvl *l){
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(gengrab);
 		playerheal(p, 1);
+		i->gotit = 1;
+	}
+}
+
+static void silverupdate(Item *i, Player *p, Lvl *l){
+	bodyupdate(&i->body, l);
+
+	if(isect(i->body.bbox, playerbox(p))){
+		sfxplay(goldgrab);
+		p->money += 5;
+		i->gotit = 1;
+	}
+}
+
+static void goldupdate(Item *i, Player *p, Lvl *l){
+	bodyupdate(&i->body, l);
+
+	if(isect(i->body.bbox, playerbox(p))){
+		sfxplay(goldgrab);
+		p->money += 25;
 		i->gotit = 1;
 	}
 }

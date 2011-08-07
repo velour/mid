@@ -379,6 +379,8 @@ enum ItemID{
 	ItemStatup,
 	ItemCopper,
 	ItemHealth,
+	ItemSilver,
+	ItemGold,
 	ItemMax
 };
 
