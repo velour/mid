@@ -45,8 +45,10 @@ void untiupdate(Enemy *e, Player *p, Lvl *l){
 
 	bodyupdate(&e->body, l);
 
-	if(isect(e->body.bbox, playerbox(p))){
-		int dir = e->body.bbox.a.x > p->body.bbox.a.x ? -1 : 1;
+	Rect pbbox = playerbox(p);
+
+	if(isect(e->body.bbox, pbbox)){
+		int dir = e->body.bbox.a.x > pbbox.a.x ? -1 : 1;
 		u->c.b = 255;
 		playerdmg(p, 3, dir);
 	}else
@@ -63,7 +65,7 @@ void untiupdate(Enemy *e, Player *p, Lvl *l){
 			mhb = pstr/2;
 		if(mhb > 32)
 			mhb = 32;
-		e->hitback = swbb.a.x < e->body.bbox.a.x ? mhb : -mhb;
+		e->hitback = pbbox.a.x < e->body.bbox.a.x ? mhb : -mhb;
 		e->iframes = 500.0 / Ticktm; // 0.5s
 
 		if(e->hp <= 0){
