@@ -19,6 +19,7 @@ static void copperupdate(Item*,Player*,Lvl*);
 static void healthupdate(Item *, Player *, Lvl *);
 static void silverupdate(Item*,Player*,Lvl*);
 static void goldupdate(Item*,Player*,Lvl*);
+static void carrotupdate(Item*,Player*,Lvl*);
 
 static Sfx *goldgrab;
 static Sfx *gengrab;
@@ -37,7 +38,7 @@ static ItemOps ops[] = {
 		{ .row = 1, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
 	},
 	[ItemHealth] = {
-		"Heart",
+		"Broccoli",
 		"img/items.png",
 		healthupdate,
 		{ .row = 2, .len = 2, .delay = 600/Ticktm, .w = 32, .h = 32, .d = 600/Ticktm }
@@ -52,7 +53,13 @@ static ItemOps ops[] = {
 		"g",
 		"img/items.png",
 		goldupdate,
-		{ .row = 3, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
+		{ .row = 4, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
+	},
+	[ItemCarrot] = {
+		"Carrot",
+		"img/items.png",
+		carrotupdate,
+		{ .row = 5, .len = 2, .delay = 600/Ticktm, .w = 32, .h = 32, .d = 600/Ticktm }
 	},
 };
 
@@ -177,6 +184,16 @@ static void goldupdate(Item *i, Player *p, Lvl *l){
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(goldgrab);
 		p->money += 25;
+		i->gotit = 1;
+	}
+}
+
+static void carrotupdate(Item *i, Player *p, Lvl *l){
+	bodyupdate(&i->body, l);
+
+	if(isect(i->body.bbox, playerbox(p))){
+		sfxplay(gengrab);
+		playerheal(p, 5);
 		i->gotit = 1;
 	}
 }
