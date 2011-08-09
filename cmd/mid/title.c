@@ -26,18 +26,13 @@ Scrn *titlescrnnew(Gfx *g){
 	static Tit t = {0};
 	static Scrn s = {0};
 
-	Txt *txt = txtnew("resrc/txt/prstartk.ttf", 72, (Color){0});
-	if(!txt)
-		return NULL;
-
-	t.title = txt2img(g, txt, "MID");
-	txtfree(txt);
+	t.title = resrcacq(imgs, "img/title.png", 0);
 	if(!t.title)
 		return NULL;
 
 	t.titlepos = (Point){
 		gfxdims(g).x / 2 - imgdims(t.title).x / 2,
-		imgdims(t.title).y
+		0
 	};
 
 	s.mt = &titmt;
@@ -70,6 +65,4 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 }
 
 static void titfree(Scrn *s){
-	Tit *t = s->data;
-	imgfree(t->title);
 }
