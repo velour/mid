@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "../../include/os.h"
+#include <assert.h>
 
 static char path[256];
 
