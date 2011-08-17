@@ -151,7 +151,7 @@ static FILE *zpipe(Rng *r)
 	pipeadd(&p, "enmgen", "-s %u 1 1 1 2 2 2 2 3 3 4 5 50", rngint(r));
 
 	char adc[256];
-	if(snprintf(adc, sizeof(adc), "%s/cur.lvl", zonedir) == -1)
+	if(snprintf(adc, sizeof(adc), "'%s/cur.lvl'", zonedir) == -1)
 		die("Failed to create cur.lvl path: %s", miderrstr());
 	pipeadd(&p, "tee", adc);
 
