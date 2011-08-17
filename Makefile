@@ -48,7 +48,7 @@ MANDLDFLAGS := -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf
 
 ifeq ($(OS),win)
 MANDCFLAGS += -Dmain=SDL_main
-MANDLDFLAGS += -L/mingw/bin -L/mingw/lib -lmingw32 -lSDLmain -lm -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lversion -luuid
+MANDLDFLAGS += -L/mingw/bin $(shell sdl-config --static-libs)
 else ifeq ($(OS),Darwin)
 OS := osx
 MANDLDFLAGS += -framework Foundation

@@ -42,6 +42,7 @@ void deinit()
 	freeresrc();
 	sndfree();
 	gfxfree(gfx);
+	logclose();
 }
 
 int main(int argc, char *argv[])

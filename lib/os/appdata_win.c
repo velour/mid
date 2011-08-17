@@ -1,13 +1,16 @@
 #include <stdio.h>
 #include "../../include/os.h"
-//#include <shlobj.h>
-//#include <stdlib.h>
+#include <shlobj.h>
+#include <stdlib.h>
 
-//static char path[256];
-//static wchar_t wpath[
+static char path[256];
 
 const char *appdata(const char *prog){
-	// SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, 0, &wpath);
-	// wcstombs(path, wpath, sizeof(path);
-	return "./Stub";
+	if(path[0] != 0)
+		return path;
+
+	char ad[MAX_PATH];
+	SHGetFolderPathA(0, CSIDL_APPDATA, 0, 0, ad);
+	snprintf(path, sizeof(path), "%s\\%s", ad, prog);
+	return path;
 }
