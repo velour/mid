@@ -2,7 +2,7 @@
 # // Licensed under the MIT License. See LICENSE for details.
 
 UNAME := $(shell uname)
-OS := $(shell echo $(UNAME) | sed 's/.*mingw.*/win/i')
+OS := $(shell echo $(UNAME) | sed 's/.*MINGW.*/win/')
 
 CMDS :=\
 	mid\
@@ -49,6 +49,9 @@ MANDLDFLAGS := -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf
 ifeq ($(OS),win)
 MANDCFLAGS += -Dmain=SDL_main
 MANDLDFLAGS += -L/mingw/bin -L/mingw/lib -lmingw32 -lSDLmain -lm -luser32 -lgdi32 -lwinmm -limm32 -lole32 -loleaut32 -lversion -luuid
+else ifeq ($(OS),Darwin)
+OS := osx
+MANDLDFLAGS += -framework Foundation
 else
 OS := posix
 endif
