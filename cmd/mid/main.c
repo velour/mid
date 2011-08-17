@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE for details.
 #include "../../include/log.h"
 #include "../../include/mid.h"
+#include "../../include/os.h"
 #include "game.h"
 #include <stdlib.h>
 #include <stdbool.h>
@@ -10,7 +11,17 @@ Gfx *gfx;
 
 bool init()
 {
-	loginit(0);
+	if(debugging)
+		loginit(0);
+	else{
+		const char *ad = appdata("mid");
+		makedir(ad);
+		char adm[256];
+		if(snprintf(adm, sizeof(adm), "%s/debug.log", ad) == -1)
+			exit(1);
+		if(loginit(adm))
+			exit(2);
+	}
 
 	pr("%s", "Let's rock.");
 
