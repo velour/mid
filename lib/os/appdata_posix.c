@@ -10,7 +10,7 @@ const char *appdata(const char *prog){
 		char *home = getenv("HOME");
 		if (!home)
 			home = ".";
-		int n = snprintf(path, sizeof(path), "%s/%s", home, prog);
+		int n = snprintf(path, sizeof(path), "%s/.%s", home, prog);
 		assert(n > 0);
 	}
 	return path;
