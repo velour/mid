@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "../../include/os.h"
 
 static char path[256];
