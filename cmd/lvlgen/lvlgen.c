@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	int w = strtol(argv[1], NULL, 10);
 	int h = strtol(argv[2], NULL, 10);
 	int d = strtol(argv[3], NULL, 10);
-	Lvl *lvl = lvlnew(d, w, h);
+	Lvl *lvl = lvlnew(d, w, h, 0);
 
 	mvsinit();
 

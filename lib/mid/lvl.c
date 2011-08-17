@@ -137,12 +137,13 @@ void lvlfree(Lvl *l)
 	xfree(l);
 }
 
-Lvl *lvlnew(int d, int w, int h)
+Lvl *lvlnew(int d, int w, int h, int z)
 {
 	Lvl *l = xalloc(1, sizeof(*l) + sizeof(Blk[d * w * h]));
 	l->d = d;
 	l->w = w;
 	l->h = h;
+	l->seenz = z;
 	return l;
 }
 
@@ -171,12 +172,12 @@ bool lvlinit()
 
 Lvl *lvlread(FILE *f)
 {
-	int w, h, d;
-	if (fscanf(f, " %d %d %d",&d, &w, &h) != 3) {
+	int w, h, d, seenz;
+	if (fscanf(f, " %d %d %d %d",&d, &w, &h, &seenz) != 4) {
 		seterrstr("Invalid lvl header");
 		return NULL;
 	}
-	Lvl *l = lvlnew(d, w, h);
+	Lvl *l = lvlnew(d, w, h, seenz);
 
 	int x, y, z;
 	x = y = z = 0;
@@ -205,7 +206,7 @@ err:
 
 void lvlwrite(FILE *f, Lvl *l)
 {
-	fprintf(f, "%d %d %d\n", l->d, l->w, l->h);
+	fprintf(f, "%d %d %d %d\n", l->d, l->w, l->h, l->seenz);
 	for (int z = 0; z < l->d; z++) {
 		for (int y = 0; y < l->h; y++) {
 			for (int x = 0; x < l->w; x++) {

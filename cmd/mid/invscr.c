@@ -187,7 +187,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 
 	if(e->down && e->key == kmap[Mvleft] && i->zvis > 0)
 			i->zvis--;
-	else if(e->down && e->key == kmap[Mvright] && i->zvis < i->zone->lvl->d - 1)
+	else if(e->down && e->key == kmap[Mvright] && i->zvis < i->zone->lvl->seenz)
 			i->zvis++;
 }
 

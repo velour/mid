@@ -239,10 +239,11 @@ struct Blk {
 typedef struct Lvl Lvl;
 struct Lvl {
 	int d, w, h, z;
+	int seenz;
 	Blk blks[];
 };
 
-Lvl *lvlnew(int, int, int);
+Lvl *lvlnew(int, int, int, int);
 Lvl *lvlread(FILE *);
 void lvlwrite(FILE *, Lvl *);
 void lvlfree(Lvl *);

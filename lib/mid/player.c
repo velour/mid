@@ -78,6 +78,9 @@ static void trydoorstairs(Player *p, Zone *zn, Tileinfo bi)
 	if (oldz == l->z)
 		return;
 
+	if(l->z > l->seenz)
+		l->seenz = l->z;
+
 	/* center the player on the door */
 	playersetloc(p, bi.x, bi.y);
 }
