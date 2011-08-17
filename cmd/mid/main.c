@@ -16,11 +16,15 @@ bool init()
 	else{
 		const char *ad = appdata("mid");
 		makedir(ad);
-		char adm[256];
+		static char adm[256];
 		if(snprintf(adm, sizeof(adm), "%s/debug.log", ad) == -1)
 			exit(1);
 		if(loginit(adm))
 			exit(2);
+		if(snprintf(adm, sizeof(adm), "%s/zones", ad) == -1)
+			die("Failed to make zoneloc path: %s", miderrstr());
+		makedir(adm);
+		zoneloc(adm);
 	}
 
 	pr("%s", "Let's rock.");

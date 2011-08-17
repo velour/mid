@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE for details.
 struct Rng;
 
+void zoneloc(const char*);
 /* Notify zone loader to use stdin for the next zone. */
 void zonestdin();
 Zone *zoneget(int);

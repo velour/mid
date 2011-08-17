@@ -30,6 +30,11 @@ static char *zonefile(int);
 static FILE *zpipe(Rng *r);
 static void pipeadd(struct Pipe *, char *, char *, ...);
 
+void zoneloc(const char *p)
+{
+	zonedir = p;
+}
+
 void zonestdin()
 {
 	inzone = stdin;
@@ -52,7 +57,7 @@ Zone *zonegen(Rng *r)
 	} else {
 		int ret = pipeclose(fin);
 		if (ret == -1)
-			fatal("Zone gen pipeline exited with failure: %s", miderrstr());
+			die("Zone gen pipeline exited with failure: %s", miderrstr());
 	}
 
 	return z;
@@ -65,11 +70,11 @@ Zone *zoneget(int znum)
 	char *zfile = zonefile(znum);
 	FILE *f = fopen(zfile, "r");
 	if (!f)
-		fatal("Unable to open the zone file [%s]: %s", zfile, miderrstr());
+		die("Unable to open the zone file [%s]: %s", zfile, miderrstr());
 
 	Zone *zn = zoneread(f);
 	if (!zn)
-		fatal("Failed to read the zone file [%s]: %s", zfile, miderrstr());
+		die("Failed to read the zone file [%s]: %s", zfile, miderrstr());
 
 	fclose(f);
 	return zn;
@@ -83,7 +88,7 @@ void zoneput(Zone *zn, int znum)
 	char *zfile = zonefile(znum);
 	FILE *f = fopen(zfile, "w");
 	if (!f)
-		fatal("Failed to open zone file for writing [%s]: %s", zfile, miderrstr());
+		die("Failed to open zone file for writing [%s]: %s", zfile, miderrstr());
 
 	zonewrite(f, zn);
 	fclose(f);
@@ -129,9 +134,9 @@ static void ensuredir()
 	struct stat sb;
 	if (stat(zonedir, &sb) < 0) {
 		if (makedir(zonedir) < 0)
-			fatal("Failed to make the zone directory [%s]: %s", zonedir, miderrstr());
+			die("Failed to make the zone directory [%s]: %s", zonedir, miderrstr());
 	} else if (!S_ISDIR(sb.st_mode)) {
-		fatal("Zone directory [%s] is not a directory", zonedir);
+		die("Zone directory [%s] is not a directory", zonedir);
 	}
 }
 
@@ -145,7 +150,10 @@ static FILE *zpipe(Rng *r)
 	pipeadd(&p, "envgen", "-s %u 1 1", rngint(r));
 	pipeadd(&p, "enmgen", "-s %u 1 1 1 2 2 2 2 3 3 4 5 50", rngint(r));
 
-	pipeadd(&p, "tee", "cur.lvl");
+	char adc[256];
+	if(snprintf(adc, sizeof(adc), "%s/cur.lvl", zonedir) == -1)
+		die("Failed to create cur.lvl path: %s", miderrstr());
+	pipeadd(&p, "tee", adc);
 
 	p.cmd[p.n - 3] = 0;
 
@@ -153,7 +161,7 @@ static FILE *zpipe(Rng *r)
 
 	FILE *fin = piperead(p.cmd);
 	if (!fin)
-		fatal("Unable to execute zone gen pipeline: %s", miderrstr());
+		die("Unable to execute zone gen pipeline: %s", miderrstr());
 
 	return fin;
 }
