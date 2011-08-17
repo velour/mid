@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include "../../include/os.h"
 #include <assert.h>
@@ -6,7 +7,10 @@ static char path[256];
 
 const char *appdata(const char *prog){
 	if(path[0] == 0){
-		int n = snprintf(path, sizeof(path), "~/.%s", prog);
+		char *home = getenv("HOME");
+		if (!home)
+			home = ".";
+		int n = snprintf(path, sizeof(path), "%s/.%s", home, prog);
 		assert(n > 0);
 	}
 	return path;
