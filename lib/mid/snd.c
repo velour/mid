@@ -26,6 +26,8 @@ bool sndinit(void)
 		return false;
 	Mix_AllocateChannels(NCHAN);
 
+	sndvol(SndVolDefault);
+
 	return true;
 }
 
@@ -35,6 +37,11 @@ void sndfree(void)
 		return;
 
 	Mix_CloseAudio();
+}
+
+int sndvol(int v)
+{
+	return Mix_Volume(-1, v);
 }
 
 struct Music {

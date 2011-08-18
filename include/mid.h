@@ -115,6 +115,13 @@ void camdrawanim(Gfx *, Anim *, Point);
 _Bool sndinit(void);
 void sndfree(void);
 
+enum{
+	SndVolMin = 0,
+	SndVolMax = 128,
+	SndVolDefault = 64,
+};
+int sndvol(int);
+
 typedef struct Music Music;
 
 Music *musicnew(const char *);
