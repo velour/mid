@@ -41,6 +41,7 @@ void sndfree(void)
 
 int sndvol(int v)
 {
+	Mix_VolumeMusic(v);
 	return Mix_Volume(-1, v);
 }
 
