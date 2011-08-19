@@ -51,6 +51,12 @@ Scrn *titlescrnnew(Gfx *g){
 		return NULL;
 	}
 
+	ti.size = TxtSzSmall;
+	f = resrcacq(txt, "txt/retganon.ttf", &ti);
+	if(!f){
+		imgfree(t.start);
+		return NULL;
+	}
 	t.copy = txt2img(g, f, "Copyright 2011 Steve McCoy and Ethan Burns");
 	if(!t.copy){
 		imgfree(t.opts);
