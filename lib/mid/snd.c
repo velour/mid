@@ -41,6 +41,9 @@ void sndfree(void)
 
 int sndvol(int v)
 {
+	if(mute)
+		return 0;
+
 	Mix_VolumeMusic(v);
 	return Mix_Volume(-1, v);
 }

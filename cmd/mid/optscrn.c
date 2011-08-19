@@ -74,7 +74,7 @@ static void draw(Scrn *s, Gfx *g){
 	}
 
 	loc.y += pad*2;
-	txtdraw(g, opt->txt, loc, "Volume: %d", sndvol(-1) / (float)SndVolMax * 100);
+	txtdraw(g, opt->txt, loc, "Volume: %d", (int)(sndvol(-1) / (float)SndVolMax * 100));
 
 	gfxflip(g);
 }
