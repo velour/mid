@@ -163,7 +163,7 @@ static Txt *gettxt(void)
 	static Txt *invtxt;
 	static Txtinfo txtinfo = { TxtSzMedium, {0} };
 	if (!invtxt) {
-		invtxt = resrcacq(txt, "txt/retganon.ttf", &txtinfo);
+		invtxt = resrcacq(txt, TxtStyleMenu, &txtinfo);
 		if (!invtxt)
 			fatal("Failed to load inventory text");
 	}

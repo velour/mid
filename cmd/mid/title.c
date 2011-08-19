@@ -36,12 +36,12 @@ Scrn *titlescrnnew(Gfx *g){
 		return NULL;
 
 	Txtinfo ti = { TxtSzMedium };
-	t.f = resrcacq(txt, "txt/retganon.ttf", &ti);
+	t.f = resrcacq(txt, TxtStyleMenu, &ti);
 	if(!t.f)
 		return NULL;
 
 	ti.size = TxtSzSmall;
-	Txt *f = resrcacq(txt, "txt/retganon.ttf", &ti);
+	Txt *f = resrcacq(txt, TxtStyleMenu, &ti);
 	if(!f)
 		return NULL;
 

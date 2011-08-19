@@ -34,7 +34,7 @@ Scrn *statscrnnew(Player *p, Env *sh){
 	sup.shrine = sh;
 
 	Txtinfo ti = { TxtSzMedium };
-	sup.txt = resrcacq(txt, "txt/retganon.ttf", &ti);
+	sup.txt = resrcacq(txt, TxtStyleMenu, &ti);
 	if(!sup.txt)
 		die("Failed to load stat screen font");
 

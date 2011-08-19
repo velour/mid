@@ -32,7 +32,7 @@ Scrn *optscrnnew(void){
 	memcpy(opts.kmap, kmap, Nactions);
 	opts.curkey = Mvleft;
 	Txtinfo ti = { TxtSzMedium };
-	opts.txt = resrcacq(txt, "txt/retganon.ttf", &ti);
+	opts.txt = resrcacq(txt, TxtStyleMenu, &ti);
 	if(!opts.txt)
 		return NULL;
 

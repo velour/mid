@@ -7,7 +7,8 @@ typedef struct Gover Gover;
 struct Gover{
 	Player *p;
 	int maxd;
-	Txt *txt;
+	Txt *big;
+	Txt *med;
 };
 
 static void update(Scrn *s, Scrnstk *stk);
@@ -31,7 +32,9 @@ Scrn *goverscrnnew(Player *p, int maxd){
 	go.maxd = maxd;
 
 	Txtinfo ti = { TxtSzLarge, { 255, 255, 255 } };
-	go.txt = resrcacq(txt, "txt/retganon.ttf", &ti);
+	go.big = resrcacq(txt, TxtStyleMenu, &ti);
+	ti.size = TxtSzMedium;
+	go.med = resrcacq(txt, TxtStyleMenu, &ti);
 
 	s.mt = &govermt;
 	s.data = &go;
@@ -61,9 +64,12 @@ static void draw(Scrn *s, Gfx *g){
 		d = "You have died with HONOR!";
 	snprintf(buf, Bufsz, "With %d %s gold for your family.", m, praise(m));
 
-	Point dp = txtdims(go->txt, d);
-	txtdraw(g, go->txt, (Point){1,1}, d);
-	txtdraw(g, go->txt, (Point){1,dp.y}, buf);
+	Point dp = txtdims(go->big, d);
+	Point dl = { gfxdims(g).x/2 - dp.x/2, dp.y };
+	txtdraw(g, go->big, dl, d);
+
+	Point mp = txtdims(go->med, buf);
+	txtdraw(g, go->med, (Point){gfxdims(g).x/2 - mp.x/2, dl.y+dp.y+TxtSzMedium/2}, buf);
 
 	gfxflip(g);
 }

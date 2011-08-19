@@ -101,6 +101,8 @@ enum{
 	TxtSzLarge = 64,
 };
 
+#define TxtStyleMenu "txt/Designosaur-Regular.ttf"
+
 Txt *txtnew(const char *font, int sz, Color);
 void txtfree(Txt *);
 Point txtdims(const Txt *, const char *fmt, ...);
