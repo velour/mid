@@ -95,6 +95,12 @@ void imgdrawreg(Gfx *, Img *, Rect, Point);
 
 typedef struct Txt Txt;
 
+enum{
+	TxtSzSmall = 16,
+	TxtSzMedium = 32,
+	TxtSzLarge = 64,
+};
+
 Txt *txtnew(const char *font, int sz, Color);
 void txtfree(Txt *);
 Point txtdims(const Txt *, const char *fmt, ...);

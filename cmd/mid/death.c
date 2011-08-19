@@ -30,7 +30,7 @@ Scrn *goverscrnnew(Player *p, int maxd){
 	go.p = p;
 	go.maxd = maxd;
 
-	Txtinfo ti = { 32, { 255, 255, 255 } };
+	Txtinfo ti = { TxtSzLarge, { 255, 255, 255 } };
 	go.txt = resrcacq(txt, "txt/retganon.ttf", &ti);
 
 	s.mt = &govermt;

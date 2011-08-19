@@ -161,7 +161,7 @@ static void curdraw(Gfx *g, Invit *inv)
 static Txt *gettxt(void)
 {
 	static Txt *invtxt;
-	static Txtinfo txtinfo = { 32, {0} };
+	static Txtinfo txtinfo = { TxtSzMedium, {0} };
 	if (!invtxt) {
 		invtxt = resrcacq(txt, "txt/retganon.ttf", &txtinfo);
 		if (!invtxt)

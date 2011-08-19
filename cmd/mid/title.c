@@ -36,7 +36,7 @@ Scrn *titlescrnnew(Gfx *g){
 	if(!t.title)
 		return NULL;
 
-	Txtinfo ti = { 32, {0} };
+	Txtinfo ti = { TxtSzMedium };
 	Txt *f = resrcacq(txt, "txt/retganon.ttf", &ti);
 	if(!f)
 		return NULL;
