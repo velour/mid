@@ -13,6 +13,7 @@ OFILES :=\
 	statscrn.o\
 	death.o\
 	cmdpath_$(OS).o\
+	optscrn.o\
 
 HFILES :=\
 	game.h\

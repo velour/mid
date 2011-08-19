@@ -7,8 +7,7 @@
 typedef struct Tit Tit;
 struct Tit{
 	Img *title;
-	Img *start;
-	Img *opts;
+	Txt *f;
 	Img *copy;
 	Point titlepos;
 	Point startpos;
@@ -37,46 +36,34 @@ Scrn *titlescrnnew(Gfx *g){
 		return NULL;
 
 	Txtinfo ti = { TxtSzMedium };
+	t.f = resrcacq(txt, "txt/retganon.ttf", &ti);
+	if(!t.f)
+		return NULL;
+
+	ti.size = TxtSzSmall;
 	Txt *f = resrcacq(txt, "txt/retganon.ttf", &ti);
 	if(!f)
 		return NULL;
 
-	t.start = txt2img(g, f, "Press '%c' to Start", kmap[Mvinv]);
-	if(!t.start)
-		return NULL;
-
-	t.opts = txt2img(g, f, "Press '%c' for Options", kmap[Mvact]);
-	if(!t.opts){
-		imgfree(t.start);
-		return NULL;
-	}
-
-	ti.size = TxtSzSmall;
-	f = resrcacq(txt, "txt/retganon.ttf", &ti);
-	if(!f){
-		imgfree(t.start);
-		return NULL;
-	}
 	t.copy = txt2img(g, f, "Copyright 2011 Steve McCoy and Ethan Burns");
-	if(!t.copy){
-		imgfree(t.opts);
-		imgfree(t.start);
+	if(!t.copy)
 		return NULL;
-	}
 
 	t.titlepos = (Point){
 		gfxdims(g).x / 2 - imgdims(t.title).x / 2,
 		0
 	};
 
+	Point sd = txtdims(t.f, "Press 'x' to Start");
 	t.startpos = (Point){
-		gfxdims(g).x / 2 - imgdims(t.start).x / 2,
+		gfxdims(g).x / 2 - sd.x / 2,
 		t.titlepos.y + imgdims(t.title).y
 	};
 
+	Point od = txtdims(t.f, "Press 'x' for Options");
 	t.optspos = (Point){
-		gfxdims(g).x / 2 - imgdims(t.opts).x / 2,
-		t.startpos.y + imgdims(t.start).y + 16
+		gfxdims(g).x / 2 - od.x / 2,
+		t.startpos.y + sd.y + 16
 	};
 
 	t.copypos = (Point){
@@ -96,8 +83,8 @@ static void draw(Scrn *s, Gfx *g){
 	gfxclear(g, (Color){ 240, 240, 240 });
 	Tit *t = s->data;
 	imgdraw(g, t->title, t->titlepos);
-	imgdraw(g, t->start, t->startpos);
-	imgdraw(g, t->opts, t->optspos);
+	txtdraw(g, t->f, t->startpos, "Press '%c' to Start", kmap[Mvinv]);
+	txtdraw(g, t->f, t->optspos, "Press '%c' for Options", kmap[Mvact]);
 	imgdraw(g, t->copy, t->copypos);
 	gfxflip(g);
 }
@@ -114,13 +101,12 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 		scrnstkpush(stk, &gms);
 		return;
 	}else if(e->down && e->key == kmap[Mvact]){
-		//TODO
+		scrnstkpush(stk, optscrnnew());
+		return;
 	}
 }
 
 static void titfree(Scrn *s){
 	Tit *t = s->data;
 	imgfree(t->copy);
-	imgfree(t->opts);
-	imgfree(t->start);
 }

@@ -26,3 +26,4 @@ Scrn *invscrnnew(Player *, Zone *, int);
 Scrn *titlescrnnew(Gfx *);
 Scrn *statscrnnew(Player *, Env *);
 Scrn *goverscrnnew(Player *, int);
+Scrn *optscrnnew(void);
