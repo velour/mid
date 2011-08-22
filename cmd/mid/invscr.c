@@ -265,7 +265,7 @@ static void invfree(Scrn *s){
 	Invscr *inv = s->data;
 	Player *p = inv->p;
 
-	memset(p->eqp+1, 0, sizeof(inv->p->eqp));
+	memset(p->eqp+1, 0, (EqpMax-2)*sizeof(int));
 	for(int i = EqpHead; i < EqpMax; i++)
 		if(p->wear[i].id > 0) for(int j = 0; j < StatMax; j++)
 			p->eqp[j] += p->wear[i].stats[j];
