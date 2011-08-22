@@ -7,6 +7,8 @@
 #include <string.h>
 
 typedef struct Invscr Invscr;
+typedef struct Eloc Eloc;
+
 struct Invscr{
 	Player *p;
 	Zone *zone;
@@ -16,6 +18,11 @@ struct Invscr{
 	Point mouse;
 	Rect invgrid[Maxinv];
 	Rect eqpgrid[EqpMax];
+};
+
+struct Eloc{
+	Invit *it;
+	EqpLoc loc;
 };
 
 enum { Invitw = 32, Invith = 32 };
@@ -44,7 +51,7 @@ static void curdraw(Gfx *g, Invit *inv);
 static void moneydraw(Gfx *g, int m);
 static Txt *gettxt(void);
 static void invswap(Invit *, Invit *);
-static Invit *eqpat(Invscr *i, int x, int y);
+static Eloc eqpat(Invscr *i, int x, int y);
 
 static Scrnmt invmt = {
 	update,
@@ -196,7 +203,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	if(e->type == Mousebt && e->down){
 		i->curitem = invat(i, e->x, e->y);
 		if(!i->curitem)
-			i->curitem = eqpat(i, e->x, e->y);
+			i->curitem = eqpat(i, e->x, e->y).it;
 		i->drag = i->curitem != NULL;
 		return;
 	}
@@ -210,8 +217,9 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 			invswap(i->curitem, s);
 			i->curitem = s;
 		}else{
-			s = eqpat(i, e->x, e->y);
-			if(!s) return;
+			Eloc el = eqpat(i, e->x, e->y);
+			s = el.it;
+			if(!s || el.loc != itemeqploc(i->curitem->id)) return;
 			invswap(i->curitem, s);
 			i->curitem = 0;
 		}
@@ -246,12 +254,13 @@ static void invswap(Invit *a, Invit *b){
 	*b = c;
 }
 
-static Invit *eqpat(Invscr *i, int x, int y){
+static Eloc eqpat(Invscr *i, int x, int y){
 	Point p = { x, y };
 	for (int j = 1; j < EqpMax; j++)
 		if(rectcontains(i->eqpgrid[j], p))
-			return &i->p->wear[j];
-	return NULL;
+			return (Eloc){ &i->p->wear[j], j };
+
+	return (Eloc){ NULL, -1 };
 }
 
 static void invfree(Scrn *s){
