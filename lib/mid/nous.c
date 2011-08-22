@@ -9,6 +9,7 @@ Img *nousimg;
 _Bool nousinit(Enemy *e, int x, int y){
 	e->hp = 1;
 	e->data = 0;
+	bodyinit(&e->body, x*Twidth+3, y*Theight, Twidth-3, Theight);
 	return 1;
 }
 
@@ -51,7 +52,10 @@ void nousdraw(Enemy *e, Gfx *g){
 			{ 32, 0 },
 			{ 64, 32 }
 		};
-	camdrawreg(g, nousimg, clip, e->body.bbox.a);
+
+	Point p = e->body.bbox.a;
+	p.x -= 3;
+	camdrawreg(g, nousimg, clip, p);
 }
 
 _Bool nousscan(char *buf, Enemy *e){
