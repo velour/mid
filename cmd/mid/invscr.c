@@ -14,6 +14,8 @@ struct Invscr{
 	Invit *curitem;
 	_Bool drag;
 	Point mouse;
+	Rect invgrid[Maxinv];
+	Rect eqpgrid[EqpMax];
 };
 
 enum { Invitw = 32, Invith = 32 };
@@ -36,15 +38,13 @@ static char *locname[] = {
 static void update(Scrn*,Scrnstk*);
 static void draw(Scrn*,Gfx*);
 static void handle(Scrn*,Scrnstk*,Event*);
-static Invit *invat(Invit inv[], int x, int y);
+static Invit *invat(Invscr *i, int x, int y);
 static void invfree(Scrn*);
 static void curdraw(Gfx *g, Invit *inv);
 static void moneydraw(Gfx *g, int m);
-static void entrydraw(Gfx *g, Invit inv[], Invit *cur, int r, int c);
-static void griddraw(Gfx *g, Invit inv[], Invit *cur);
 static Txt *gettxt(void);
 static void invswap(Invit *, Invit *);
-static Invit *eqpat(Invit eqp[], int x, int y);
+static Invit *eqpat(Invscr *i, int x, int y);
 
 static Scrnmt invmt = {
 	update,
@@ -62,6 +62,31 @@ Scrn *invscrnnew(Player *p, Zone *zone, int depth){
 	inv.depth = depth;
 	inv.zvis = zone->lvl->z;
 	inv.curitem = NULL;
+
+	int i = 0;
+	for(int r = 0; r < Invrows; r++){
+	for(int c = 0; c < Invcols; c++){
+		int x0 = Xmin + c * Pad;
+		int y0 = Ymin + r * Pad;
+		Point a = { c * Invitw + x0, r * Invith + y0 };
+		inv.invgrid[i] = (Rect){
+			{ a.x - 1, a.y - 1 },
+			{ (c + 1) * Invitw + x0 + 1, (r + 1) * Invith + y0 + 1 }
+		};
+		i++;
+	}
+	}
+
+	for(int j = EqpHead; j < EqpMax; j++){
+		Point a = {
+			EqpXmin + Pad*3,
+			Ymin + (j-1) * (Invith + Pad)
+		};
+		inv.eqpgrid[j] = (Rect){
+			{ a.x - 1, a.y - 1 },
+			{ a.x + Invitw + 1, a.y + Invith + 1}
+		};
+	}
 
 	s.mt = &invmt;
 	s.data = &inv;
@@ -100,24 +125,30 @@ static void draw(Scrn *s, Gfx *g){
 	gfxfillrect(g, r, (Color){ 255, 0, 0, 255 });
 
 	moneydraw(g, i->p->money);
-	griddraw(g, i->p->inv, i->curitem);
 	if (i->curitem && i->curitem->id > 0 && !i->drag)
 		curdraw(g, i->curitem);
 
-	for (int j = 1; j < EqpMax; j++){
-		Point a = { EqpXmin + Pad*3, Ymin + (j-1) * (Invith + Pad) };
-		Rect er = {
-			{ a.x - 1, a.y - 1 },
-			{ a.x + Invitw + 1, a.y + Invith + 1}
-		};
-		gfxdrawrect(g, er, (Color){0});
-		txtdraw(g, txt, (Point){ er.b.x + Pad, er.a.y }, locname[j]);
-		if(i->p->wear[j].id > 0)
-			invitdraw(&i->p->wear[j], g, a);
+	for(int j = 0; j < Maxinv; j++){
+		Rect r = i->invgrid[j];
+		gfxdrawrect(g, r, (Color){0});
+		Invit *it = &i->p->inv[j];
+		if(it->id > 0 && (!i->drag || it != i->curitem))
+			invitdraw(it, g, (Point){r.a.x+1,r.a.y+1});
 	}
 
-	if(i->drag && i->curitem && i->curitem->id > 0)
-		invitdraw(i->curitem, g, i->mouse);
+	for (int j = EqpHead; j < EqpMax; j++){
+		Rect er = i->eqpgrid[j];
+		gfxdrawrect(g, er, (Color){0});
+		txtdraw(g, txt, (Point){ er.b.x + Pad, er.a.y }, locname[j]);
+		Invit *it = &i->p->wear[j];
+		if(it->id > 0 && (!i->drag || it != i->curitem))
+			invitdraw(it, g, (Point){er.a.x+1,er.a.y+1});
+	}
+
+	if(i->drag && i->curitem && i->curitem->id > 0){
+		Point moff = vecadd(i->mouse, (Point){-Invitw/2,-Invith/2});
+		invitdraw(i->curitem, g, moff);
+	}
 
 	gfxflip(g);
 }
@@ -129,33 +160,6 @@ static void moneydraw(Gfx *g, int m)
 	txtdraw(g, invtxt, (Point) { Scrnw - d.x, 1 }, moneystr);
 	d.x += txtdims(invtxt, "%d ", m).x;
 	txtdraw(g, invtxt, (Point) { Scrnw - d.x , 1 }, "%d ", m);
-}
-
-static void griddraw(Gfx *g, Invit inv[], Invit *cur)
-{
-	for (int r = 0; r < Invrows; r++) {
-	for (int c = 0; c < Invcols; c++) {
-		entrydraw(g, inv, cur, r, c);
-	}
-	}
-}
-
-static void entrydraw(Gfx *g, Invit inv[], Invit *cur, int r, int c)
-{
-	int x0 = Xmin + c * Pad;
-	int y0 = Ymin + r * Pad;
-	Point a = { c * Invitw + x0, r * Invith + y0 };
-	Rect rect = {
-		{ a.x - 1, a.y - 1 },
-		{ (c + 1) * Invitw + x0 + 1, (r + 1) * Invith + y0 + 1 }
-	};
-	Invit *it = &inv[r * Invcols + c];
-	if (cur && it == cur)
-		gfxfillrect(g, rect, (Color){0x99,0x66,0,0xFF});
-	gfxdrawrect(g, rect, (Color){0});
-
-	if (it->id > 0)
-		invitdraw(it, g, a);
 }
 
 static void curdraw(Gfx *g, Invit *inv)
@@ -183,30 +187,30 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 
 	if (e->type == Mousemv) {
 		if(!i->drag)
-			i->curitem = invat(i->p->inv, e->x, e->y);
+			i->curitem = invat(i, e->x, e->y);
 		i->mouse.x = e->x;
 		i->mouse.y = e->y;
 		return;
 	}
 
 	if(e->type == Mousebt && e->down){
-		i->curitem = invat(i->p->inv, e->x, e->y);
+		i->curitem = invat(i, e->x, e->y);
 		if(!i->curitem)
-			i->curitem = eqpat(i->p->wear, e->x, e->y);
+			i->curitem = eqpat(i, e->x, e->y);
 		i->drag = i->curitem != NULL;
 		return;
 	}
 
 	if(e->type == Mousebt && !e->down && i->drag){
 		i->drag = 0;
-		Invit *s = invat(i->p->inv, e->x, e->y);
+		Invit *s = invat(i, e->x, e->y);
 		if(i->curitem == s)
 			return;
 		if(s){
 			invswap(i->curitem, s);
 			i->curitem = s;
 		}else{
-			s = eqpat(i->p->wear, e->x, e->y);
+			s = eqpat(i, e->x, e->y);
 			if(!s) return;
 			invswap(i->curitem, s);
 			i->curitem = 0;
@@ -227,19 +231,13 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 			i->zvis++;
 }
 
-static Invit *invat(Invit inv[], int x, int y)
+static Invit *invat(Invscr *i, int x, int y)
 {
-	if (x < Xmin || x > Xmin + Width || y < Ymin || y > Ymin + Height)
-		return NULL;
-
-	int i = (x - Xmin) / (Invitw + Pad);
-	int j = (y - Ymin) / (Invith + Pad);
-
-	if (x > Xmin + i * (Invitw + Pad) + Invitw
-	    || y > Ymin + j * (Invith + Pad) + Invith)
-		return NULL;	/* In padding */
-
-	return &inv[j * Invcols + i];
+	Point p = { x, y };
+	for(int j = 0; j < Maxinv; j++)
+		if(rectcontains(i->invgrid[j], p))
+			return &i->p->inv[j];
+	return NULL;
 }
 
 static void invswap(Invit *a, Invit *b){
@@ -248,16 +246,11 @@ static void invswap(Invit *a, Invit *b){
 	*b = c;
 }
 
-static Invit *eqpat(Invit eqp[], int x, int y){
-	for (int j = 1; j < EqpMax; j++){
-		Point a = { EqpXmin + Pad*3, Ymin + (j-1) * (Invith + Pad) };
-		Rect er = {
-			{ a.x - 1, a.y - 1 },
-			{ a.x + Invitw + 1, a.y + Invith + 1}
-		};
-		if(rectcontains(er, (Point){x,y}))
-			return &eqp[j];
-	}
+static Invit *eqpat(Invscr *i, int x, int y){
+	Point p = { x, y };
+	for (int j = 1; j < EqpMax; j++)
+		if(rectcontains(i->eqpgrid[j], p))
+			return &i->p->wear[j];
 	return NULL;
 }
 
