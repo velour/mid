@@ -48,6 +48,29 @@ int sndvol(int v)
 	return Mix_Volume(-1, v);
 }
 
+_Bool sndread(char *fname){
+	FILE *f = fopen(fname, "r");
+	if(!f)
+		return 1;
+
+	int v = 0;
+	fscanf(f, "%d", &v);
+	if(ferror(f))
+		return fclose(f);
+
+	sndvol(v);
+	return 0;
+}
+
+_Bool sndwrite(char *fname){
+	FILE *f = fopen(fname, "w");
+	if(!f)
+		return 1;
+
+	fprintf(f, "%d\n", sndvol(-1));
+	return fclose(f);
+}
+
 struct Music {
 	Mix_Music *m;
 };

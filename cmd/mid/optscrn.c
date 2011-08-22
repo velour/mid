@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE for details.
 #include "../../include/mid.h"
 #include "../../include/log.h"
+#include "../../include/os.h"
 #include "game.h"
 #include <string.h>
 #include <ctype.h>
@@ -19,6 +20,7 @@ struct Opts{
 	_Bool iscancel;
 	Txt *txt;
 	Sfx *testsfx;
+	int origvol;
 };
 
 enum{
@@ -78,6 +80,8 @@ Scrn *optscrnnew(void){
 		loc,
 		vecadd(loc, (Point){ TxtSzMedium*4, TxtSzMedium })
 	};
+
+	opts.origvol = sndvol(-1);
 
 	s.mt = &optsmt;
 	s.data = &opts;
@@ -215,11 +219,6 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	if(e->repeat)
 		return;
 
-	if(opt->curkey == Nactions){
-		opt->curkey = Mvleft;
-		return;
-	}
-
 	int ck = opt->kmap[opt->curkey];
 	for(int i = Mvleft; i < Nactions; i++)
 		if(opt->kmap[i] == e->key){
@@ -228,6 +227,9 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 		}
 	opt->kmap[opt->curkey] = e->key;
 	opt->curkey++;
+
+	if(opt->curkey == Nactions)
+		opt->curkey = Mvleft;
 }
 
 static void optsfree(Scrn *s){
@@ -235,11 +237,17 @@ static void optsfree(Scrn *s){
 
 	if(opt->isokay){
 		memcpy(kmap, opt->kmap, Nactions);
-		//TODO: save to a file in appdata, also load at game start iff exists
+
+		char ad[256];
+		snprintf(ad, sizeof(ad), "%s/keys.txt", appdata("mid"));
+		keymapwrite(kmap, ad);
+
+		snprintf(ad, sizeof(ad), "%s/vol.txt", appdata("mid"));
+		sndwrite(ad);
 	}
 
 	if(opt->iscancel){
-		sndvol(SndVolDefault);
+		sndvol(opt->origvol);
 	}
 
 	memset(opt, 0, sizeof(*opt));

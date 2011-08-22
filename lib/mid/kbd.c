@@ -5,6 +5,15 @@
 #include <assert.h>
 #include <string.h>
 
+static char *names[] = {
+	[Mvleft] = "left",
+	[Mvright] = "right",
+	[Mvjump] = "jump",
+	[Mvact] = "act",
+	[Mvinv] = "inv",
+	[Mvsword] = "sword",
+};
+
 _Bool keymapread(char km[], char *fname){
 	FILE *f = fopen(fname, "r");
 	if(!f)
@@ -13,18 +22,9 @@ _Bool keymapread(char km[], char *fname){
 	char act[8];
 	char k;
 	while(fscanf(f, "%7s %c", act, &k) != EOF){
-		if(strcmp(act, "left") == 0)
-			km[Mvleft] = k;
-		else if(strcmp(act, "right") == 0)
-			km[Mvright] = k;
-		else if(strcmp(act, "jump") == 0)
-			km[Mvjump] = k;
-		else if(strcmp(act, "act") == 0)
-			km[Mvact] = k;
-		else if(strcmp(act, "inv") == 0)
-			km[Mvinv] = k;
-		else if(strcmp(act, "sword") == 0)
-			km[Mvsword] = k;
+		for(int i = Mvleft; i < Nactions; i++)
+			if(strcmp(act, names[i]) == 0)
+				km[i] = k;
 	}
 
 	if(ferror(f)){
@@ -33,6 +33,17 @@ _Bool keymapread(char km[], char *fname){
 	}
 	fclose(f);
 	return 0;
+}
+
+_Bool keymapwrite(char km[], char *fname){
+	FILE *f = fopen(fname, "w");
+	if(!f)
+		return 1;
+
+	for(int i = Mvleft; i < Nactions; i++)
+		fprintf(f, "%s %c\n", names[i], km[i]);
+
+	return fclose(f);
 }
 
 char kmap[] = {

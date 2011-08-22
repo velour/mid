@@ -36,6 +36,11 @@ bool init()
 	if(!sndinit())
 		return false;
 
+	char vloc[256];
+	snprintf(vloc, sizeof(vloc), "%s/vol.txt", appdata("mid"));
+	if(sndread(vloc))
+		pr("Volume not loaded: %s", miderrstr());
+
 	initresrc();
 
 	return true;
@@ -76,6 +81,12 @@ int main(int argc, char *argv[])
 
 	if(kmname && keymapread(kmap, kmname))
 		die("failed to read %s", kmname);
+	else{
+		char kloc[256];
+		snprintf(kloc, sizeof(kloc), "%s/keys.txt", appdata("mid"));
+		if(keymapread(kmap, kloc))
+			pr("Keymap not loaded (%s), using defaults.", miderrstr());
+	}
 
 	Scrnstk *stk = scrnstknew();
 	scrnstkpush(stk, titlescrnnew(gfx));

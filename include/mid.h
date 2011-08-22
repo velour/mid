@@ -122,6 +122,8 @@ void camdrawanim(Gfx *, Anim *, Point);
 
 _Bool sndinit(void);
 void sndfree(void);
+_Bool sndread(char*);
+_Bool sndwrite(char*);
 
 enum{
 	SndVolMin = 0,
@@ -318,6 +320,7 @@ enum Action{
 
 extern char kmap[Nactions];
 _Bool keymapread(char km[Nactions], char *fname);
+_Bool keymapwrite(char km[Nactions], char *fname);
 _Bool iskeydown(Action);
 
 enum { Scrnw = 1024, Scrnh = 576 };
