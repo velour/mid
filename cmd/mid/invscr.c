@@ -4,6 +4,7 @@
 #include "../../include/log.h"
 #include "game.h"
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct Invscr Invscr;
 struct Invscr{
@@ -11,6 +12,8 @@ struct Invscr{
 	Zone *zone;
 	int depth, zvis;
 	Invit *curitem;
+	_Bool drag;
+	Point mouse;
 };
 
 enum { Invitw = 32, Invith = 32 };
@@ -40,6 +43,8 @@ static void moneydraw(Gfx *g, int m);
 static void entrydraw(Gfx *g, Invit inv[], Invit *cur, int r, int c);
 static void griddraw(Gfx *g, Invit inv[], Invit *cur);
 static Txt *gettxt(void);
+static void invswap(Invit *, Invit *);
+static Invit *eqpat(Invit eqp[], int x, int y);
 
 static Scrnmt invmt = {
 	update,
@@ -96,7 +101,7 @@ static void draw(Scrn *s, Gfx *g){
 
 	moneydraw(g, i->p->money);
 	griddraw(g, i->p->inv, i->curitem);
-	if (i->curitem && i->curitem->id > 0)
+	if (i->curitem && i->curitem->id > 0 && !i->drag)
 		curdraw(g, i->curitem);
 
 	for (int j = 1; j < EqpMax; j++){
@@ -110,6 +115,9 @@ static void draw(Scrn *s, Gfx *g){
 		if(i->p->wear[j].id > 0)
 			invitdraw(&i->p->wear[j], g, a);
 	}
+
+	if(i->drag && i->curitem && i->curitem->id > 0)
+		invitdraw(i->curitem, g, i->mouse);
 
 	gfxflip(g);
 }
@@ -174,7 +182,35 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	Invscr *i = s->data;
 
 	if (e->type == Mousemv) {
+		if(!i->drag)
+			i->curitem = invat(i->p->inv, e->x, e->y);
+		i->mouse.x = e->x;
+		i->mouse.y = e->y;
+		return;
+	}
+
+	if(e->type == Mousebt && e->down){
 		i->curitem = invat(i->p->inv, e->x, e->y);
+		if(!i->curitem)
+			i->curitem = eqpat(i->p->wear, e->x, e->y);
+		i->drag = i->curitem != NULL;
+		return;
+	}
+
+	if(e->type == Mousebt && !e->down && i->drag){
+		i->drag = 0;
+		Invit *s = invat(i->p->inv, e->x, e->y);
+		if(i->curitem == s)
+			return;
+		if(s){
+			invswap(i->curitem, s);
+			i->curitem = s;
+		}else{
+			s = eqpat(i->p->wear, e->x, e->y);
+			if(!s) return;
+			invswap(i->curitem, s);
+			i->curitem = 0;
+		}
 	}
 
 	if(e->type != Keychng || e->repeat)
@@ -206,6 +242,31 @@ static Invit *invat(Invit inv[], int x, int y)
 	return &inv[j * Invcols + i];
 }
 
+static void invswap(Invit *a, Invit *b){
+	Invit c = *a;
+	*a = *b;
+	*b = c;
+}
+
+static Invit *eqpat(Invit eqp[], int x, int y){
+	for (int j = 1; j < EqpMax; j++){
+		Point a = { EqpXmin + Pad*3, Ymin + (j-1) * (Invith + Pad) };
+		Rect er = {
+			{ a.x - 1, a.y - 1 },
+			{ a.x + Invitw + 1, a.y + Invith + 1}
+		};
+		if(rectcontains(er, (Point){x,y}))
+			return &eqp[j];
+	}
+	return NULL;
+}
+
 static void invfree(Scrn *s){
-	// nothing
+	Invscr *inv = s->data;
+	Player *p = inv->p;
+
+	memset(p->eqp+1, 0, sizeof(inv->p->eqp));
+	for(int i = EqpHead; i < EqpMax; i++)
+		if(p->wear[i].id > 0) for(int j = 0; j < StatMax; j++)
+			p->eqp[j] += p->wear[i].stats[j];
 }

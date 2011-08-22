@@ -145,7 +145,7 @@ static FILE *zpipe(Rng *r)
 	Pipe p = {};
 	pipeadd(&p, "lvlgen", "-s %u 25 25 3", rngint(r));
 	pipeadd(&p, "itmgen", "-s %u 1 1", rngint(r));
-	pipeadd(&p, "itmgen", "-s %u 2 2 2 2 2 4 4 5 50", rngint(r));
+	pipeadd(&p, "itmgen", "-s %u 2 2 2 2 2 4 4 5 6 7 7 7 7 7 50", rngint(r));
 	pipeadd(&p, "itmgen", "-s %u 3 3 3 3 6 10", rngint(r));
 	pipeadd(&p, "envgen", "-s %u 1 1", rngint(r));
 	pipeadd(&p, "enmgen", "-s %u 1 1 1 2 2 2 2 3 3 4 5 50", rngint(r));
