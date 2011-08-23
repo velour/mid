@@ -174,8 +174,7 @@ static void moneydraw(Gfx *g, int m)
 static void curdraw(Gfx *g, Invit *inv)
 {
 	Txt *invtxt = gettxt();
-	Point d = txtdims(invtxt, itemname(inv->id));
-	Point p = (Point) { .x = Scrnw - d.x, .y = Height + Ymin + Pad};
+	Point p = { .x = Xmin, .y = Height + Ymin + Pad};
 	txtdraw(g, invtxt, p, itemname(inv->id));
 }
 
@@ -197,6 +196,8 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	if (e->type == Mousemv) {
 		if(!i->drag)
 			i->curitem = invat(i, e->x, e->y);
+		if(!i->curitem)
+			i->curitem = eqpat(i, e->x, e->y).it;
 		i->mouse.x = e->x;
 		i->mouse.y = e->y;
 		return;
