@@ -298,7 +298,7 @@ static void invfree(Scrn *s){
 }
 
 static void resetstats(Player *p){
-	memset(p->eqp+1, 0, (EqpMax-2)*sizeof(int));
+	memset(p->eqp, 0, sizeof(p->eqp));
 	for(int i = EqpHead; i < EqpMax; i++)
 		if(p->wear[i].id > 0) for(int j = 0; j < StatMax; j++)
 			p->eqp[j] += p->wear[i].stats[j];

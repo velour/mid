@@ -48,7 +48,7 @@ void playerinit(Player *p, int x, int y)
 	p->stats[StatHp] = 10;
 	p->stats[StatDex] = 5;
 	p->stats[StatStr] = 5;
-	p->eqp[StatHp] = p->stats[StatHp];
+	p->curhp = p->stats[StatHp];
 
 	p->sw.row = 0;
 	p->sw.dir = Mvright;
@@ -228,16 +228,17 @@ void playerdmg(Player *p, int x, int dir){
 		p->hitback =  5;
 	else if (dir < 0)
 		p->hitback = -5;
-	p->eqp[StatHp] -= x;
-	if(p->eqp[StatHp] <= 0)
-		p->eqp[StatHp] = 0;
+	p->curhp -= x;
+	if(p->curhp <= 0)
+		p->curhp = 0;
 }
 
 void playerheal(Player *p, int x)
 {
-	p->eqp[StatHp] += x;
-	if (p->eqp[StatHp] > p->stats[StatHp])
-		p->eqp[StatHp] = p->stats[StatHp];
+	p->curhp += x;
+	int max = p->stats[StatHp] + p->eqp[StatHp];
+	if (p->curhp > max)
+		p->curhp = max;
 }
 
 _Bool playertake(Player *p, Item *i){

@@ -106,12 +106,12 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 
 	zoneupdate(gm->zone, &gm->player, &gm->transl);
 	trystairs(stk, gm);
-	if(gm->player.eqp[StatHp] <= 0 && !debugging){
+	if(gm->player.curhp <= 0 && !debugging){
 		if(gm->player.lives == 0)
 			scrnstkpush(stk, goverscrnnew(&gm->player, gm->znum));
 		else{
 			gm->died = 1;
-			gm->player.eqp[StatHp] = gm->player.stats[StatHp];
+			gm->player.curhp = gm->player.eqp[StatHp] + gm->player.stats[StatHp];
 			Player p = gm->player;
 			playerinit(&p, 2, 2);
 			gm->player.body = p.body;
@@ -143,9 +143,10 @@ void gamedraw(Scrn *s, Gfx *g)
 
 	zonedraw(g, gm->zone, &gm->player);
 
-	Rect hp = { { 1, 1 }, { gm->player.stats[StatHp] * 5, 16 } };
+	int maxhp = gm->player.stats[StatHp] + gm->player.eqp[StatHp];
+	Rect hp = { { 1, 1 }, { maxhp * 5, 16 } };
 	Rect curhp = hp;
-	curhp.b.x = gm->player.eqp[StatHp] * 5;
+	curhp.b.x = gm->player.curhp * 5;
 	gfxfillrect(g, hp, (Color){ 200 });
 	gfxfillrect(g, curhp, (Color){ 0, 200, 200 });
 	gfxdrawrect(g, hp, (Color){0});

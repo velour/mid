@@ -450,6 +450,7 @@ struct Player {
 
 	int stats[StatMax];
 	int eqp[StatMax];
+	int curhp;
 
 	int money;
 	Invit inv[Maxinv];
