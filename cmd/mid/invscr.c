@@ -25,14 +25,16 @@ struct Eloc{
 	EqpLoc loc;
 };
 
-enum { Invitw = 32, Invith = 32 };
-enum { Pad = 4 };
 enum {
+	Invitw = 32,
+	Invith = 32,
+	Pad = 4,
 	Width = Invitw * Invcols + Pad * (Invcols - 1),
 	Height = Invith * Invrows + Pad * (Invrows - 1),
+	EqpXmin = Scrnw - Invitw * 5,
+	Xmin = EqpXmin - Width,
+	Ymin = 40
 };
-enum { EqpXmin = Scrnw - Invitw * 3 };
-enum { Xmin = EqpXmin - Width, Ymin = 40 };
 
 static const char *moneystr = "gold";
 static char *locname[] = {
