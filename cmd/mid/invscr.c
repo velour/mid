@@ -44,6 +44,12 @@ static char *locname[] = {
 	[EqpAcc] = "Acc.",
 };
 
+static char *statname[] = {
+	[StatHp] = "HP",
+	[StatDex] = "Dex",
+	[StatStr] = "Str",
+};
+
 static void update(Scrn*,Scrnstk*);
 static void draw(Scrn*,Gfx*);
 static void handle(Scrn*,Scrnstk*,Event*);
@@ -54,6 +60,7 @@ static void moneydraw(Gfx *g, int m);
 static Txt *gettxt(void);
 static void invswap(Invit *, Invit *);
 static Eloc eqpat(Invscr *i, int x, int y);
+static void resetstats(Player*);
 
 static Scrnmt invmt = {
 	update,
@@ -159,6 +166,22 @@ static void draw(Scrn *s, Gfx *g){
 		invitdraw(i->curitem, g, moff);
 	}
 
+	Point sloc = { Pad, Height + Ymin + Pad + TxtSzMedium };
+	for(int j = StatHp; j < StatMax; j++){
+		Rect nat = {
+			{ sloc.x + TxtSzMedium*2, sloc.y },
+			{ sloc.x + TxtSzMedium*2 + i->p->stats[j]*3, sloc.y + TxtSzMedium }
+		};
+		Rect eqp = {
+			{ nat.b.x, nat.a.y },
+			{ nat.b.x + i->p->eqp[j]*3, nat.b.y }
+		};
+		txtdraw(g, gettxt(), sloc, statname[j]);
+		gfxfillrect(g, nat, (Color){0x1E, 0x94, 0x22});
+		gfxfillrect(g, eqp, (Color){0x1B, 0xAF, 0xE0});
+		sloc = vecadd(sloc, (Point){0, TxtSzMedium + Pad});
+	}
+
 	gfxflip(g);
 }
 
@@ -219,12 +242,15 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 		if(s){
 			invswap(i->curitem, s);
 			i->curitem = s;
+			resetstats(i->p);
 		}else{
 			Eloc el = eqpat(i, e->x, e->y);
 			s = el.it;
-			if(!s || el.loc != itemeqploc(i->curitem->id)) return;
+			if(!s || s == i->curitem || el.loc != itemeqploc(i->curitem->id))
+				return;
 			invswap(i->curitem, s);
-			i->curitem = 0;
+			i->curitem = s;
+			resetstats(i->p);
 		}
 	}
 
@@ -268,8 +294,10 @@ static Eloc eqpat(Invscr *i, int x, int y){
 
 static void invfree(Scrn *s){
 	Invscr *inv = s->data;
-	Player *p = inv->p;
+	resetstats(inv->p);
+}
 
+static void resetstats(Player *p){
 	memset(p->eqp+1, 0, (EqpMax-2)*sizeof(int));
 	for(int i = EqpHead; i < EqpMax; i++)
 		if(p->wear[i].id > 0) for(int j = 0; j < StatMax; j++)
