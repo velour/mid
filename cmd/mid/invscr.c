@@ -176,8 +176,12 @@ static void draw(Scrn *s, Gfx *g){
 			{ nat.b.x, nat.a.y },
 			{ nat.b.x + i->p->eqp[j]*3, nat.b.y }
 		};
-		Rect both = { nat.a, eqp.b };
+		Rect both = {
+			nat.a,
+			{ nat.a.x + 3*30, eqp.b.y }
+		};
 		txtdraw(g, gettxt(), sloc, statname[j]);
+		gfxfillrect(g, both, (Color){0x65, 0x65, 0x65});
 		gfxfillrect(g, nat, (Color){0x1E, 0x94, 0x22});
 		gfxfillrect(g, eqp, (Color){0x1B, 0xAF, 0xE0});
 		gfxdrawrect(g, both, (Color){0});
