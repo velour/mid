@@ -72,5 +72,5 @@ Rect swordbbox(Sword *s){
 }
 
 int swordstr(Sword *s, Player *p){
-	return s->pow + p->stats[StatStr] + p->eqp[StatStr];
+	return p->stats[StatStr] + p->eqp[StatStr];
 }

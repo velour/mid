@@ -360,7 +360,6 @@ struct Sword{
 	int cur;
 
 	int row;
-	int pow;
 };
 
 _Bool swordldresrc(void);
@@ -402,6 +401,7 @@ enum ItemID{
 	ItemGold,
 	ItemCarrot,
 	ItemTopHat,
+	ItemSilverSwd,
 	ItemMax
 };
 

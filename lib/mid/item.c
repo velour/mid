@@ -21,6 +21,7 @@ static void silverupdate(Item*,Player*,Lvl*);
 static void goldupdate(Item*,Player*,Lvl*);
 static void carrotupdate(Item*,Player*,Lvl*);
 static void tophatupdate(Item*,Player*,Lvl*);
+static void silverswdupdate(Item*,Player*,Lvl*);
 
 static Sfx *goldgrab;
 static Sfx *gengrab;
@@ -69,6 +70,14 @@ static ItemOps ops[] = {
 		{.row = 6, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
 		.stats = { 0, 5, 0 },
 		.loc = EqpHead
+	},
+	[ItemSilverSwd] = {
+		"Silver Sword",
+		"img/items.png",
+		silverswdupdate,
+		{ .row = 7, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		.stats = { 0, 0, 1 },
+		.loc = EqpWep
 	},
 };
 
@@ -208,6 +217,15 @@ static void carrotupdate(Item *i, Player *p, Lvl *l){
 }
 
 static void tophatupdate(Item *i, Player *p, Lvl *l){
+	bodyupdate(&i->body, l);
+
+	if(isect(i->body.bbox, playerbox(p)) && playertake(p, i)){
+		sfxplay(gengrab);
+		i->gotit = 1;
+	}
+}
+
+static void silverswdupdate(Item *i, Player *p, Lvl *l){
 	bodyupdate(&i->body, l);
 
 	if(isect(i->body.bbox, playerbox(p)) && playertake(p, i)){

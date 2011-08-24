@@ -53,7 +53,7 @@ void playerinit(Player *p, int x, int y)
 	p->sw.row = 0;
 	p->sw.dir = Mvright;
 	p->sw.cur = -1;
-	p->sw.pow = 1;
+	invitinit(&p->wear[EqpWep], ItemSilverSwd);
 	mvsw(p);
 }
 
