@@ -79,6 +79,14 @@ static ItemOps ops[] = {
 		.stats = { 0, 0, 1 },
 		.loc = EqpWep
 	},
+	[ItemBroadSwd] = {
+		"Lady Sword",
+		"img/items.png",
+		silverswdupdate,
+		{ .row = 8, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		.stats = { 0, 0, 3 },
+		.loc = EqpWep
+	},
 };
 
 _Bool iteminit(Item *i, ItemID id, Point p){

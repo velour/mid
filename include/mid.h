@@ -402,6 +402,7 @@ enum ItemID{
 	ItemCarrot,
 	ItemTopHat,
 	ItemSilverSwd,
+	ItemBroadSwd,
 	ItemMax
 };
 

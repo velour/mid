@@ -308,4 +308,10 @@ static void resetstats(Player *p){
 	for(int i = EqpHead; i < EqpMax; i++)
 		if(p->wear[i].id > 0) for(int j = 0; j < StatMax; j++)
 			p->eqp[j] += p->wear[i].stats[j];
+
+	//TODO: swd fun for this
+	if(p->wear[EqpWep].id == 0)
+		p->sw.row = 0;
+	else
+		p->sw.row = p->wear[EqpWep].id - ItemSilverSwd;
 }
