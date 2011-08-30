@@ -8,20 +8,20 @@ typedef struct ItemOps ItemOps;
 struct ItemOps{
 	char *name;
 	char *animname;
-	void (*update)(Item*,Player*,Lvl*);
+	void (*update)(Item*,Player*,Zone*);
 	Anim anim;
 	int stats[StatMax];
 	EqpLoc loc;
 };
 
-static void statupupdate(Item*,Player*,Lvl*);
-static void copperupdate(Item*,Player*,Lvl*);
-static void healthupdate(Item *, Player *, Lvl *);
-static void silverupdate(Item*,Player*,Lvl*);
-static void goldupdate(Item*,Player*,Lvl*);
-static void carrotupdate(Item*,Player*,Lvl*);
-static void tophatupdate(Item*,Player*,Lvl*);
-static void silverswdupdate(Item*,Player*,Lvl*);
+static void statupupdate(Item*,Player*,Zone*);
+static void copperupdate(Item*,Player*,Zone*);
+static void healthupdate(Item *, Player *, Zone *);
+static void silverupdate(Item*,Player*,Zone*);
+static void goldupdate(Item*,Player*,Zone*);
+static void carrotupdate(Item*,Player*,Zone*);
+static void tophatupdate(Item*,Player*,Zone*);
+static void silverswdupdate(Item*,Player*,Zone*);
 
 static Sfx *goldgrab;
 static Sfx *gengrab;
@@ -135,7 +135,7 @@ void itemupdateanims(void){
 		animupdate(&ops[i].anim);
 }
 
-void itemupdate(Item *i, Player *p, Lvl *l){
+void itemupdate(Item *i, Player *p, Zone *l){
 	if(i->gotit)
 		return;
 	ops[i->id].update(i, p, l);
@@ -165,8 +165,8 @@ void invitdraw(Invit *it, Gfx *g, Point p){
 	animdraw(g, &ops[it->id].anim, p);
 }
 
-static void statupupdate(Item *i, Player *p, Lvl *l){
-	bodyupdate(&i->body, l);
+static void statupupdate(Item *i, Player *p, Zone *z){
+	bodyupdate(&i->body, z->lvl);
 
 	if(isect(i->body.bbox, playerbox(p)) && playertake(p, i)){
 		sfxplay(gengrab);
@@ -174,8 +174,8 @@ static void statupupdate(Item *i, Player *p, Lvl *l){
 	}
 }
 
-static void copperupdate(Item *i, Player *p, Lvl *l){
-	bodyupdate(&i->body, l);
+static void copperupdate(Item *i, Player *p, Zone *z){
+	bodyupdate(&i->body, z->lvl);
 
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(goldgrab);
@@ -184,8 +184,8 @@ static void copperupdate(Item *i, Player *p, Lvl *l){
 	}
 }
 
-static void healthupdate(Item *i, Player *p, Lvl *l){
-	bodyupdate(&i->body, l);
+static void healthupdate(Item *i, Player *p, Zone *z){
+	bodyupdate(&i->body, z->lvl);
 
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(gengrab);
@@ -194,8 +194,8 @@ static void healthupdate(Item *i, Player *p, Lvl *l){
 	}
 }
 
-static void silverupdate(Item *i, Player *p, Lvl *l){
-	bodyupdate(&i->body, l);
+static void silverupdate(Item *i, Player *p, Zone *z){
+	bodyupdate(&i->body, z->lvl);
 
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(goldgrab);
@@ -204,8 +204,8 @@ static void silverupdate(Item *i, Player *p, Lvl *l){
 	}
 }
 
-static void goldupdate(Item *i, Player *p, Lvl *l){
-	bodyupdate(&i->body, l);
+static void goldupdate(Item *i, Player *p, Zone *z){
+	bodyupdate(&i->body, z->lvl);
 
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(goldgrab);
@@ -214,8 +214,8 @@ static void goldupdate(Item *i, Player *p, Lvl *l){
 	}
 }
 
-static void carrotupdate(Item *i, Player *p, Lvl *l){
-	bodyupdate(&i->body, l);
+static void carrotupdate(Item *i, Player *p, Zone *z){
+	bodyupdate(&i->body, z->lvl);
 
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(gengrab);
@@ -224,8 +224,8 @@ static void carrotupdate(Item *i, Player *p, Lvl *l){
 	}
 }
 
-static void tophatupdate(Item *i, Player *p, Lvl *l){
-	bodyupdate(&i->body, l);
+static void tophatupdate(Item *i, Player *p, Zone *z){
+	bodyupdate(&i->body, z->lvl);
 
 	if(isect(i->body.bbox, playerbox(p)) && playertake(p, i)){
 		sfxplay(gengrab);
@@ -233,8 +233,8 @@ static void tophatupdate(Item *i, Player *p, Lvl *l){
 	}
 }
 
-static void silverswdupdate(Item *i, Player *p, Lvl *l){
-	bodyupdate(&i->body, l);
+static void silverswdupdate(Item *i, Player *p, Zone *z){
+	bodyupdate(&i->body, z->lvl);
 
 	if(isect(i->body.bbox, playerbox(p)) && playertake(p, i)){
 		sfxplay(gengrab);

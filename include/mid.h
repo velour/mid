@@ -351,6 +351,7 @@ typedef struct Invit Invit;
 typedef enum ItemID ItemID;
 typedef enum EqpLoc EqpLoc;
 typedef struct Player Player;
+typedef struct Zone Zone;
 
 struct Sword{
 	Rect rightloc[2];
@@ -415,7 +416,7 @@ struct Item{
 _Bool itemldresrc(void);
 _Bool iteminit(Item*, ItemID id, Point p);
 void itemupdateanims(void);
-void itemupdate(Item*, Player*, Lvl*);
+void itemupdate(Item*, Player*, Zone *z);
 void itemdraw(Item*, Gfx*);
 char *itemname(ItemID);
 EqpLoc itemeqploc(ItemID);
@@ -460,8 +461,6 @@ struct Player {
 	Sword sw;
 };
 
-typedef struct Zone Zone;
-
 void playerinit(Player *p, int x, int y);
 void playersetloc(Player *p, int x, int y);	// tile coords
 void playerupdate(Player *, Zone *, Point *tr);
@@ -488,7 +487,7 @@ enum EnemyID{
 typedef struct Enemy Enemy;
 typedef struct Ai Ai;
 struct Ai{
-	void (*update)(Enemy*,Player*,Lvl*);
+	void (*update)(Enemy*,Player*,Zone*);
 	Point mv;
 	Point lastp;
 	double awdst; // awareness distance
@@ -507,7 +506,7 @@ struct Enemy{
 _Bool enemyldresrc(void);
 _Bool enemyinit(Enemy *e, EnemyID id, int x, int y);
 void enemyfree(Enemy*);
-void enemyupdate(Enemy*, Player*, Lvl*);
+void enemyupdate(Enemy*, Player*, Zone*);
 void enemydraw(Enemy*, Gfx*);
 
 void aijumper(Ai*, double jv);
@@ -534,9 +533,9 @@ struct Env{
 _Bool envldresrc(void);
 _Bool envinit(Env*, EnvID, Point);
 void envupdateanims(void);
-void envupdate(Env*, Lvl*);
+void envupdate(Env*, Zone*);
 void envdraw(Env*,  Gfx*);
-void envact(Env*, Player*, Lvl*);
+void envact(Env*, Player*, Zone*);
 Point envsize(EnvID);
 
 enum {

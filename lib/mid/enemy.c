@@ -27,7 +27,7 @@ typedef struct Enemymt Enemymt;
 struct Enemymt{
 	_Bool (*init)(Enemy *, int, int);
 	void (*free)(Enemy*);
-	void (*update)(Enemy*, Player*, Lvl*);
+	void (*update)(Enemy*, Player*, Zone*);
 	void (*draw)(Enemy*, Gfx*);
 	_Bool (*scan)(char *, Enemy *);
 	_Bool (*print)(char *, size_t, Enemy *);
@@ -62,8 +62,8 @@ void enemyfree(Enemy *e){
 	e->hp = 0;
 }
 
-void enemyupdate(Enemy *e, Player *p, Lvl *l){
-	if(e->id) mt[e->id].update(e, p, l);
+void enemyupdate(Enemy *e, Player *p, Zone *z){
+	if(e->id) mt[e->id].update(e, p, z);
 }
 
 void enemydraw(Enemy *e, Gfx *g){

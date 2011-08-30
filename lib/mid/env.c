@@ -6,13 +6,13 @@
 typedef struct EnvOps EnvOps;
 struct EnvOps{
 	char *animname;
-	void (*act)(Env*,Player*,Lvl*);
+	void (*act)(Env*,Player*,Zone*);
 	Point wh;
 	Anim anim;
 };
 
-static void shremptyact(Env*,Player*,Lvl*);
-static void shrusedact(Env*,Player*,Lvl*);
+static void shremptyact(Env*,Player*,Zone*);
+static void shrusedact(Env*,Player*,Zone*);
 
 static EnvOps ops[] = {
 	[EnvShrempty] = {
@@ -70,23 +70,23 @@ void envupdateanims(void){
 		animupdate(&ops[i].anim);
 }
 
-void envupdate(Env *e, Lvl *l){
-	bodyupdate(&e->body, l);
+void envupdate(Env *e, Zone *z){
+	bodyupdate(&e->body, z->lvl);
 }
 
 void envdraw(Env *e, Gfx *g){
 	camdrawanim(g, &ops[e->id].anim, e->body.bbox.a);
 }
 
-void envact(Env *e, Player *p, Lvl *l){
-	ops[e->id].act(e, p, l);
+void envact(Env *e, Player *p, Zone *z){
+	ops[e->id].act(e, p, z);
 }
 
-static void shremptyact(Env *e, Player *p, Lvl *l){
+static void shremptyact(Env *e, Player *p, Zone *z){
 	if(isect(e->body.bbox, p->body.bbox))
 		p->statup = 1;
 }
 
-static void shrusedact(Env *e, Player *p, Lvl *l){
+static void shrusedact(Env *e, Player *p, Zone *z){
 	// nothing
 }

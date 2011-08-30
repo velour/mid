@@ -180,7 +180,7 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 		for(int i = 0; i < Maxenvs; i++) {
 			if (!ev[i].id)
 				continue;
-			envact(&ev[i], &gm->player, gm->zone->lvl);
+			envact(&ev[i], &gm->player, gm->zone);
 			if(gm->player.statup){
 				scrnstkpush(stk, statscrnnew(&gm->player, &ev[i]));
 				return;

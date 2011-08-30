@@ -33,8 +33,8 @@ void splatfree(Enemy *e){
 	xfree(e->data);
 }
 
-void splatupdate(Enemy *e, Player *p, Lvl *l){
-	bodyupdate(&e->body, l);
+void splatupdate(Enemy *e, Player *p, Zone *z){
+	bodyupdate(&e->body, z->lvl);
 
 	Splat *sp = e->data;
 	sp->anim.sheet = splatimg;

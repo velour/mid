@@ -29,10 +29,10 @@ void untifree(Enemy *e){
 	xfree(e->data);
 }
 
-void untiupdate(Enemy *e, Player *p, Lvl *l){
+void untiupdate(Enemy *e, Player *p, Zone *z){
 	Unti *u = e->data;
 
-	e->ai.update(e, p, l);
+	e->ai.update(e, p, z);
 
 	if(e->iframes > 0){
 		e->body.vel.x = e->hitback;
@@ -43,7 +43,7 @@ void untiupdate(Enemy *e, Player *p, Lvl *l){
 	if(e->iframes < 250.0/Ticktm)
 		e->hitback = 0;
 
-	bodyupdate(&e->body, l);
+	bodyupdate(&e->body, z->lvl);
 
 	Rect pbbox = playerbox(p);
 

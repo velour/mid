@@ -316,19 +316,19 @@ void zoneupdate(Zone *zn, Player *p, Point *tr)
 
 	Item *itms = zn->itms[z];
 	for(size_t i = 0; i < Maxitms; i++)
-		if (itms[i].id) itemupdate(&itms[i], p, zn->lvl);
+		if (itms[i].id) itemupdate(&itms[i], p, zn);
 
 	envupdateanims();
 
 	Env *en = zn->envs[z];
 	for(size_t i = 0; i < Maxenvs; i++)
-		if (en[i].id) envupdate(&en[i], zn->lvl);
+		if (en[i].id) envupdate(&en[i], zn);
 
 	Enemy *e = zn->enms[z];
 	for(size_t i = 0; i < Maxenms; i++) {
 		if (!e[i].id)
 			continue;
-		enemyupdate(&e[i], p, zn->lvl);
+		enemyupdate(&e[i], p, zn);
 		if(e[i].hp <= 0)
 			enemyfree(&e[i]);
 	}

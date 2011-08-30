@@ -15,9 +15,9 @@ _Bool dainit(Enemy *e, int x, int y){
 void dafree(Enemy *e){
 }
 
-void daupdate(Enemy *e, Player *p, Lvl *l){
-	e->ai.update(e, p, l);
-	bodyupdate(&e->body, l);
+void daupdate(Enemy *e, Player *p, Zone *z){
+	e->ai.update(e, p, z);
+	bodyupdate(&e->body, z->lvl);
 
 	if(e->iframes > 0)
 		e->iframes--;

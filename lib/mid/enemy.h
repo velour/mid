@@ -7,7 +7,7 @@ _Bool defaultprint(char *, size_t, Enemy *);
 #define ENEMYDECL(e) \
 _Bool e##init(Enemy*,int,int);\
 void e##free(Enemy*);\
-void e##update(Enemy*,Player*,Lvl*);\
+void e##update(Enemy*,Player*,Zone*);\
 void e##draw(Enemy*,Gfx*);\
 _Bool e##scan(char*,Enemy*);\
 _Bool e##print(char*,size_t,Enemy*)

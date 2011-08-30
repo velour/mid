@@ -15,8 +15,8 @@ _Bool thuinit(Enemy *e, int x, int y){
 void thufree(Enemy *e){
 }
 
-void thuupdate(Enemy *e, Player *p, Lvl *l){
-	e->ai.update(e, p, l);
+void thuupdate(Enemy *e, Player *p, Zone *z){
+	e->ai.update(e, p, z);
 
 	if(e->iframes > 0){
 		e->body.vel.x = e->hitback;
@@ -26,7 +26,7 @@ void thuupdate(Enemy *e, Player *p, Lvl *l){
 	if(e->iframes <= 0)
 		e->hitback = 0;
 
-	bodyupdate(&e->body, l);
+	bodyupdate(&e->body, z->lvl);
 
 	Rect pbbox = playerbox(p);
 

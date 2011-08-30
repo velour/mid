@@ -16,9 +16,9 @@ _Bool nousinit(Enemy *e, int x, int y){
 void nousfree(Enemy *e){
 }
 
-void nousupdate(Enemy *e, Player *p, Lvl *l){
-	e->ai.update(e, p, l);
-	bodyupdate(&e->body, l);
+void nousupdate(Enemy *e, Player *p, Zone *z){
+	e->ai.update(e, p, z);
+	bodyupdate(&e->body, z->lvl);
 
 	if(isect(e->body.bbox, playerbox(p))){
 		int dir = e->body.bbox.a.x > p->body.bbox.a.x ? -1 : 1;
