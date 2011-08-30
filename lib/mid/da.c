@@ -6,6 +6,19 @@
 
 Img *daimg;
 
+Info dainfo = {
+	.stats = {
+		[StatHp] = 12,
+		[StatDex] = 3,
+		[StatStr] = 1,
+	},
+	.drops = {
+		.item = { ItemNone, ItemNone },
+		.prob = { 99, 1 }
+	},
+	.death = EnemySplat
+};
+
 _Bool dainit(Enemy *e, int x, int y){
 	e->hp = 12;
 	e->data = 0;
@@ -16,32 +29,7 @@ void dafree(Enemy *e){
 }
 
 void daupdate(Enemy *e, Player *p, Zone *z){
-	e->ai.update(e, p, z);
-	bodyupdate(&e->body, z->lvl);
-
-	if(e->iframes > 0)
-		e->iframes--;
-
-	if(isect(e->body.bbox, playerbox(p))){
-		int dir = e->body.bbox.a.x > p->body.bbox.a.x ? -1 : 1;
-		playerdmg(p, 1, dir);
-	}
-
-	if(e->iframes == 0 && p->sframes > 0 && isect(e->body.bbox, swordbbox(&p->sw))){
-		sfxplay(untihit);
-		e->hp -= swordstr(&p->sw, p);
-
-		if(e->hp <= 0){
-			Enemy splat = {};
-			enemyinit(&splat, EnemySplat, 0, 0);
-			splat.body = e->body;
-			dafree(e);
-			*e = splat;
-			return;
-		}
-
-		e->iframes = 500.0/Ticktm;
-	}
+	enemygenupdate(e, p, z, &dainfo);
 }
 
 void dadraw(Enemy *e, Gfx *g){

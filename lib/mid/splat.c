@@ -4,8 +4,12 @@
 #include "enemy.h"
 #include <stdio.h>
 #include <assert.h>
-#include "../../include/log.h"
+
 Img *splatimg;
+
+Info splatinfo = {
+	// unused
+};
 
 typedef struct Splat Splat;
 struct Splat{

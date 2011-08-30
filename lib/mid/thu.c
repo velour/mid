@@ -6,6 +6,19 @@
 
 Img *thuimg;
 
+Info thuinfo = {
+	.stats = {
+		[StatHp] = 7,
+		[StatDex] = 4,
+		[StatStr] = 2,
+	},
+	.drops = {
+		.item = { ItemNone, ItemNone },
+		.prob = { 99, 1 }
+	},
+	.death = EnemySplat
+};
+
 _Bool thuinit(Enemy *e, int x, int y){
 	e->hp = 7;
 	e->data = 0;
@@ -16,48 +29,7 @@ void thufree(Enemy *e){
 }
 
 void thuupdate(Enemy *e, Player *p, Zone *z){
-	e->ai.update(e, p, z);
-
-	if(e->iframes > 0){
-		e->body.vel.x = e->hitback;
-		e->iframes--;
-	}
-
-	if(e->iframes <= 0)
-		e->hitback = 0;
-
-	bodyupdate(&e->body, z->lvl);
-
-	Rect pbbox = playerbox(p);
-
-	if(isect(e->body.bbox, pbbox)){
-		int dir = e->body.bbox.a.x > pbbox.a.x ? -1 : 1;
-		playerdmg(p, 2, dir);
-	}
-
-	Rect swbb = swordbbox(&p->sw);
-
-	if(e->iframes == 0 && p->sframes > 0 && isect(e->body.bbox, swbb)){
-		sfxplay(untihit);
-		int pstr = swordstr(&p->sw, p);
-		e->hp -= pstr;
-
-		int mhb = 5;
-		if(pstr > mhb*2)
-			mhb = pstr/2;
-		if(mhb > 32)
-			mhb = 32;
-		e->hitback = pbbox.a.x < e->body.bbox.a.x ? mhb : -mhb;
-		e->iframes = 500.0 / Ticktm; // 0.5s
-		if(e->hp <= 0){
-			Enemy splat = {};
-			enemyinit(&splat, EnemySplat, 0, 0);
-			splat.body = e->body;
-			dafree(e);
-			*e = splat;
-			return;
-		}
-	}
+	enemygenupdate(e, p, z, &thuinfo);
 }
 
 void thudraw(Enemy *e, Gfx *g){

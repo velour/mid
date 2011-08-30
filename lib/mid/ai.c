@@ -43,6 +43,8 @@ static void dojump(Enemy *e, Player *p, Zone *z){
 		e->body.vel.y = -e->ai.mv.y;
 		e->body.fall = 1;
 	}
+	if(e->iframes == 0)
+		e->body.vel.x = 0;
 }
 
 static void walk(Enemy *e, Player *p, Zone *z){

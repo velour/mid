@@ -6,6 +6,19 @@
 
 Img *grenduimg;
 
+Info grenduinfo = {
+	.stats = {
+		[StatHp] = 7,
+		[StatDex] = 2,
+		[StatStr] = 2,
+	},
+	.drops = {
+		.item = { ItemSilver, ItemGold },
+		.prob = { 85, 15 }
+	},
+	.death = EnemySplat
+};
+
 _Bool grenduinit(Enemy *e, int x, int y){
 	e->hp = 7;
 	e->data = 0;
@@ -16,6 +29,8 @@ void grendufree(Enemy *e){
 }
 
 void grenduupdate(Enemy *e, Player *p, Zone *z){
+	enemygenupdate(e, p, z, &grenduinfo);
+/*
 	e->ai.update(e, p, z);
 
 	if(e->iframes > 0){
@@ -58,6 +73,7 @@ void grenduupdate(Enemy *e, Player *p, Zone *z){
 			return;
 		}
 	}
+*/
 }
 
 void grendudraw(Enemy *e, Gfx *g){

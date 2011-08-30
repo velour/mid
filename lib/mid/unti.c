@@ -7,6 +7,19 @@
 Sfx *untihit;
 Img *untiimg;
 
+Info untiinfo = {
+	.stats = {
+		[StatHp] = 10,
+		[StatDex] = 8,
+		[StatStr] = 3,
+	},
+	.drops = {
+		.item = { ItemNone, ItemTopHat },
+		.prob = { 90, 10 }
+	},
+	.death = EnemySplat
+};
+
 typedef struct Unti Unti;
 struct Unti{
 	Color c;
@@ -30,55 +43,7 @@ void untifree(Enemy *e){
 }
 
 void untiupdate(Enemy *e, Player *p, Zone *z){
-	Unti *u = e->data;
-
-	e->ai.update(e, p, z);
-
-	if(e->iframes > 0){
-		e->body.vel.x = e->hitback;
-		e->iframes--;
-	}else
-		e->body.vel.x = 0;
-
-	if(e->iframes < 250.0/Ticktm)
-		e->hitback = 0;
-
-	bodyupdate(&e->body, z->lvl);
-
-	Rect pbbox = playerbox(p);
-
-	if(isect(e->body.bbox, pbbox)){
-		int dir = e->body.bbox.a.x > pbbox.a.x ? -1 : 1;
-		u->c.b = 255;
-		playerdmg(p, 3, dir);
-	}else
-		u->c.b = 55;
-
-	Rect swbb = swordbbox(&p->sw);
-	if(e->iframes == 0 && p->sframes > 0 && isect(e->body.bbox, swbb)){
-		sfxplay(untihit);
-		int pstr = swordstr(&p->sw, p);
-		e->hp -= pstr;
-
-		int mhb = 5;
-		if(pstr > mhb*2)
-			mhb = pstr/2;
-		if(mhb > 32)
-			mhb = 32;
-		e->hitback = pbbox.a.x < e->body.bbox.a.x ? mhb : -mhb;
-		e->iframes = 500.0 / Ticktm; // 0.5s
-
-		if(e->hp <= 0){
-			Enemy splat = {};
-			enemyinit(&splat, EnemySplat, 0, 0);
-			splat.body = e->body;
-			untifree(e);
-			*e = splat;
-			return;
-		}
-	}
-
-	u->c.r++;
+	enemygenupdate(e, p, z, &untiinfo);
 }
 
 void untidraw(Enemy *e, Gfx *g){
