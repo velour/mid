@@ -35,6 +35,13 @@ void nousupdate(Enemy *e, Player *p, Zone *z){
 			splat.body = e->body;
 			nousfree(e);
 			*e = splat;
+			Item coin = {};
+			Point gridcoord = { // BARF
+				e->body.bbox.a.x / Twidth,
+				e->body.bbox.a.y / Theight
+			};
+			iteminit(&coin, ItemCopper, gridcoord);
+			zoneadditem(z, z->lvl->z, coin);
 			return;
 		}
 	}
