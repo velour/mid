@@ -34,6 +34,9 @@ OFILES :=\
 	thu.o\
 	grendu.o\
 
+LIBDEPS :=\
+	rng
+
 HFILES :=\
 	fs.h\
 	enemy.h\

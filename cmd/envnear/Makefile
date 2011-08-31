@@ -10,5 +10,6 @@ OFILES :=\
 LIBDEPS :=\
 	mid\
 	log\
+	rng\
 
 include Make.cmd

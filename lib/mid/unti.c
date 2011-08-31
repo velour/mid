@@ -15,7 +15,7 @@ Info untiinfo = {
 	},
 	.drops = {
 		.item = { ItemNone, ItemTopHat },
-		.prob = { 90, 10 }
+		.prob = { 95, 5 }
 	},
 	.death = EnemySplat
 };

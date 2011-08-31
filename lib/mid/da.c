@@ -13,8 +13,8 @@ Info dainfo = {
 		[StatStr] = 1,
 	},
 	.drops = {
-		.item = { ItemNone, ItemNone },
-		.prob = { 99, 1 }
+		.item = { ItemNone, ItemBroadSwd },
+		.prob = { 80, 20 }
 	},
 	.death = EnemySplat
 };

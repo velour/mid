@@ -1,8 +1,11 @@
 // Copyright © 2011 Steve McCoy and Ethan Burns
 // Licensed under the MIT License. See LICENSE for details.
 #include "../../include/mid.h"
+#include "../../include/rng.h"
 #include "enemy.h"
 #include <stdio.h>
+
+static Rng rng;
 
 _Bool enemyldresrc(void){
 	untihit = resrcacq(sfx, "sfx/hit.wav", 0);
@@ -31,6 +34,8 @@ _Bool enemyldresrc(void){
 	daimg = resrcacq(imgs, "img/da.png", 0);
 	if(!daimg) return 0;
 	dainfo.hit = untihit;
+
+	rnginit(&rng, 666); //TODO: use the game seed
 
 	return 1;
 }
@@ -147,7 +152,19 @@ void enemygenupdate(Enemy *e, Player *p, Zone *z, Info *i){
 			enemyfree(e);
 			*e = splat;
 
-			//TODO: drop a random item, randomly
+			int n = rngintincl(&rng, 0, 100);
+			Drops *d = &i->drops;
+			ItemID id = d->item[n > d->prob[DropCommon]];
+			if(id == ItemNone)
+				return;
+			Item drop = {};
+			Point gridcoord = { // BARF
+				e->body.bbox.a.x / Twidth,
+				e->body.bbox.a.y / Theight
+			};
+			iteminit(&drop, id, gridcoord);
+			drop.body.vel.y = - 8;
+			zoneadditem(z, z->lvl->z, drop);
 
 			return;
 		}

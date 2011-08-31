@@ -30,50 +30,6 @@ void grendufree(Enemy *e){
 
 void grenduupdate(Enemy *e, Player *p, Zone *z){
 	enemygenupdate(e, p, z, &grenduinfo);
-/*
-	e->ai.update(e, p, z);
-
-	if(e->iframes > 0){
-		e->body.vel.x = e->hitback;
-		e->iframes--;
-	}
-
-	if(e->iframes <= 0)
-		e->hitback = 0;
-
-	bodyupdate(&e->body, z->lvl);
-
-	Rect pbbox = playerbox(p);
-
-	if(isect(e->body.bbox, pbbox)){
-		int dir = e->body.bbox.a.x > pbbox.a.x ? -1 : 1;
-		playerdmg(p, 2, dir);
-	}
-
-	Rect swbb = swordbbox(&p->sw);
-
-	if(e->iframes == 0 && p->sframes > 0 && isect(e->body.bbox, swbb)){
-		sfxplay(untihit);
-		int pstr = swordstr(&p->sw, p);
-		e->hp -= pstr;
-
-		int mhb = 5;
-		if(pstr > mhb*2)
-			mhb = pstr/2;
-		if(mhb > 32)
-			mhb = 32;
-		e->hitback = pbbox.a.x < e->body.bbox.a.x ? mhb : -mhb;
-		e->iframes = 500.0 / Ticktm; // 0.5s
-		if(e->hp <= 0){
-			Enemy splat = {};
-			enemyinit(&splat, EnemySplat, 0, 0);
-			splat.body = e->body;
-			dafree(e);
-			*e = splat;
-			return;
-		}
-	}
-*/
 }
 
 void grendudraw(Enemy *e, Gfx *g){

@@ -5,15 +5,17 @@ _Bool defaultscan(char *, Enemy *);
 _Bool defaultprint(char *, size_t, Enemy *);
 
 enum{
-	MaxDrops = 2,
+	DropCommon,
+	DropRare,
+	MaxDrops,
 };
 
-typedef struct Drops Drops;
 typedef struct Info Info;
+typedef struct Drops Drops;
 
 struct Drops{
 	ItemID item[MaxDrops];
-	int prob[MaxDrops]; // MUST SUM TO 100!!!
+	int prob[MaxDrops]; // must sum to 100
 };
 
 struct Info{

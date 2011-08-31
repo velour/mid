@@ -34,36 +34,6 @@ void nousfree(Enemy *e){
 
 void nousupdate(Enemy *e, Player *p, Zone *z){
 	enemygenupdate(e, p, z, &nousinfo);
-/*
-	e->ai.update(e, p, z);
-	bodyupdate(&e->body, z->lvl);
-
-	if(isect(e->body.bbox, playerbox(p))){
-		int dir = e->body.bbox.a.x > p->body.bbox.a.x ? -1 : 1;
-		playerdmg(p, 1, dir);
-	}
-
-	if(p->sframes > 0 && isect(e->body.bbox, swordbbox(&p->sw))){
-		sfxplay(untihit);
-		e->hp--;
-
-		if(e->hp <= 0){
-			Enemy splat = {};
-			enemyinit(&splat, EnemySplat, 0, 0);
-			splat.body = e->body;
-			nousfree(e);
-			*e = splat;
-			Item coin = {};
-			Point gridcoord = { // BARF
-				e->body.bbox.a.x / Twidth,
-				e->body.bbox.a.y / Theight
-			};
-			iteminit(&coin, ItemCopper, gridcoord);
-			zoneadditem(z, z->lvl->z, coin);
-			return;
-		}
-	}
-*/
 }
 
 void nousdraw(Enemy *e, Gfx *g){
