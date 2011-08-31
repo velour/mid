@@ -17,7 +17,7 @@ struct Invscr{
 	_Bool drag;
 	Point mouse;
 	Rect invgrid[Maxinv];
-	Rect eqpgrid[EqpMax];
+	Rect eqpgrid[EqpMax + 2];
 };
 
 struct Eloc{
@@ -33,7 +33,9 @@ enum {
 	Height = Invith * Invrows + Pad * (Invrows - 1),
 	EqpXmin = Scrnw - Invitw * 5,
 	Xmin = EqpXmin - Width,
-	Ymin = 40
+	Ymin = 40,
+	EqpEat = EqpMax,
+	EqpDrop = EqpEat + 1,
 };
 
 static const char *moneystr = "gold";
@@ -42,6 +44,8 @@ static char *locname[] = {
 	[EqpBody] = "Body",
 	[EqpWep] = "Wep.",
 	[EqpAcc] = "Acc.",
+	[EqpEat] = "Eat",
+	[EqpDrop] = "Drop",
 };
 
 static char *statname[] = {
@@ -93,7 +97,7 @@ Scrn *invscrnnew(Player *p, Zone *zone, int depth){
 	}
 	}
 
-	for(int j = EqpHead; j < EqpMax; j++){
+	for(int j = EqpHead; j < EqpMax + 2; j++){
 		Point a = {
 			EqpXmin + Pad*3,
 			Ymin + (j-1) * (Invith + Pad)
@@ -152,7 +156,7 @@ static void draw(Scrn *s, Gfx *g){
 			invitdraw(it, g, (Point){r.a.x+1,r.a.y+1});
 	}
 
-	for (int j = EqpHead; j < EqpMax; j++){
+	for (int j = EqpHead; j < EqpMax + 2; j++){
 		Rect er = i->eqpgrid[j];
 		gfxdrawrect(g, er, (Color){0});
 		txtdraw(g, txt, (Point){ er.b.x + Pad, er.a.y }, locname[j]);
@@ -203,7 +207,7 @@ static void moneydraw(Gfx *g, int m)
 static void curdraw(Gfx *g, Invit *inv)
 {
 	Txt *invtxt = gettxt();
-	Point p = { .x = Xmin, .y = Height + Ymin + Pad};
+	Point p = { .x = Xmin, .y = Height + Ymin + Pad + TxtSzMedium + Pad };
 	txtdraw(g, invtxt, p, itemname(inv->id));
 }
 
@@ -252,6 +256,20 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 		}else{
 			Eloc el = eqpat(i, e->x, e->y);
 			s = el.it;
+			if(el.loc == EqpDrop){
+				Item drop = {};
+				Point gridloc = { // BARF
+					i->p->body.bbox.a.x / Twidth + 1,
+					i->p->body.bbox.a.y / Theight
+				};
+				iteminit(&drop, i->curitem->id, gridloc);
+				zoneadditem(i->zone, i->zone->lvl->z, drop);
+				*i->curitem = (Invit){};
+				return;
+			}
+			if(el.loc == EqpEat){
+				//TODO: use it
+			}
 			if(!s || s == i->curitem || el.loc != itemeqploc(i->curitem->id))
 				return;
 			invswap(i->curitem, s);
@@ -294,6 +312,12 @@ static Eloc eqpat(Invscr *i, int x, int y){
 	for (int j = 1; j < EqpMax; j++)
 		if(rectcontains(i->eqpgrid[j], p))
 			return (Eloc){ &i->p->wear[j], j };
+
+	if(rectcontains(i->eqpgrid[EqpEat], p))
+		return (Eloc){ NULL, EqpEat };
+
+	if(rectcontains(i->eqpgrid[EqpDrop], p))
+		return (Eloc){ NULL, EqpDrop };
 
 	return (Eloc){ NULL, -1 };
 }
