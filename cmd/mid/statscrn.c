@@ -69,7 +69,8 @@ static void draw(Scrn *s, Gfx *g){
 	snprintf(buf, Bufsz, "HP: %d", sup->p->stats[StatHp]);
 	Point hploc = txtdims(sup->txt, buf);
 
-	Rect r = { { 1, 1 } };
+	int Pad = 4;
+	Rect r = { { Pad, Pad } };
 	r.b = vecadd(r.a, hploc);
 
 	if(rectcontains(r, sup->mouse)){
@@ -82,13 +83,13 @@ static void draw(Scrn *s, Gfx *g){
 			sup->inc = 0;
 		}
 	}
-	txtdraw(g, sup->txt, (Point){1,1}, buf);
+	txtdraw(g, sup->txt, r.a, buf);
 
-	Point prevloc = { 1, r.b.y };
+	Point prevloc = { r.a.x, r.b.y };
 	for(size_t i = StatDex; i < StatMax; i++){
 		snprintf(buf, Bufsz, "%s: %d", names[i], sup->p->stats[i]);
 		Point loc = txtdims(sup->txt, buf);
-		Rect hover = { { 1, 1 + prevloc.y } };
+		Rect hover = { { Pad, Pad + prevloc.y } };
 		hover.b = vecadd(hover.a, loc);
 
 		if(rectcontains(hover, sup->mouse)){

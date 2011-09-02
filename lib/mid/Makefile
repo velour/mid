@@ -33,6 +33,7 @@ OFILES :=\
 	da.o\
 	thu.o\
 	grendu.o\
+	meter.o\
 
 LIBDEPS :=\
 	rng

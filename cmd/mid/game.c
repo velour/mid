@@ -144,12 +144,16 @@ void gamedraw(Scrn *s, Gfx *g)
 	zonedraw(g, gm->zone, &gm->player);
 
 	int maxhp = gm->player.stats[StatHp] + gm->player.eqp[StatHp];
-	Rect hp = { { 1, 1 }, { maxhp * 5, 16 } };
-	Rect curhp = hp;
-	curhp.b.x = gm->player.curhp * 5;
-	gfxfillrect(g, hp, (Color){ 200 });
-	gfxfillrect(g, curhp, (Color){ 0, 200, 200 });
-	gfxdrawrect(g, hp, (Color){0});
+	Meter lm = {
+		.base = gm->player.curhp,
+		.extra = 0,
+		.max = maxhp,
+		.xscale = 5,
+		.h = TxtSzSmall,
+		.cbg = { 200 },
+		.cbase = { 0, 200, 200 },
+	};
+	meterdraw(g, &lm, (Point){1,1});
 
 	for(int i = 0; i < gm->player.lives; i++){
 		Point life = { 1 + i*16, 16 + 2 };

@@ -172,23 +172,21 @@ static void draw(Scrn *s, Gfx *g){
 
 	Point sloc = { Pad, Height + Ymin + Pad + TxtSzMedium };
 	for(int j = StatHp; j < StatMax; j++){
-		Rect nat = {
-			{ sloc.x + TxtSzMedium*2, sloc.y },
-			{ sloc.x + TxtSzMedium*2 + i->p->stats[j]*3, sloc.y + TxtSzMedium }
+		Meter meter = {
+			.base = i->p->stats[j],
+			.extra = i->p->eqp[j],
+			.max = 30,
+			.xscale = 3,
+			.h = TxtSzMedium,
+			.cbg = {0x65, 0x65, 0x65},
+			.cbase = {0x1E, 0x94, 0x22},
+			.cextra = {0x1B, 0xAF, 0xE0},
+			.cborder = {}
 		};
-		Rect eqp = {
-			{ nat.b.x, nat.a.y },
-			{ nat.b.x + i->p->eqp[j]*3, nat.b.y }
-		};
-		Rect both = {
-			nat.a,
-			{ nat.a.x + 3*30, eqp.b.y }
-		};
+
 		txtdraw(g, gettxt(), sloc, statname[j]);
-		gfxfillrect(g, both, (Color){0x65, 0x65, 0x65});
-		gfxfillrect(g, nat, (Color){0x1E, 0x94, 0x22});
-		gfxfillrect(g, eqp, (Color){0x1B, 0xAF, 0xE0});
-		gfxdrawrect(g, both, (Color){0});
+		meterdraw(g, &meter, (Point){ sloc.x + TxtSzMedium*2, sloc.y });
+
 		sloc = vecadd(sloc, (Point){0, TxtSzMedium + Pad});
 	}
 

@@ -595,3 +595,18 @@ _Bool scangeom(char *buf, char *fmt, ...);
 _Bool printgeom(char *buf, int sz, char *fmt, ...);
 
 _Bool fsexists(const char *path);
+
+typedef struct Meter Meter;
+struct Meter{
+	int base;
+	int extra;
+	int max;
+	int xscale;
+	int h;
+	Color cbg;
+	Color cbase;
+	Color cextra;
+	Color cborder;
+};
+
+Rect meterdraw(Gfx*, Meter*, Point);
