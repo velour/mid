@@ -21,11 +21,15 @@ struct Opts{
 	Txt *txt;
 	Sfx *testsfx;
 	int origvol;
+	Meter volmeter;
+	Rect volmetarea;
 };
 
 enum{
 	Pad = TxtSzMedium/2,
 };
+
+static Color hilit = { 255, 219, 0 };
 
 static void update(Scrn *s, Scrnstk *stk);
 static void draw(Scrn *s, Gfx *g);
@@ -63,11 +67,26 @@ Scrn *optscrnnew(void){
 		loc.y = opts.hilit[i].b.y + Pad;
 	}
 
+	opts.origvol = sndvol(-1);
+
+	opts.volmeter = (Meter){
+		.base = opts.origvol,
+		.max = SndVolMax,
+		.xscale = 1,
+		.h = TxtSzMedium,
+		.cbg = {0x65, 0x65, 0x65},
+		.cbase = {0x1E, 0x94, 0x22},
+		.cextra = {0x1B, 0xAF, 0xE0}
+	};
+	opts.volmetarea = meterarea(&opts.volmeter, (Point){});
+
 	loc.y += Pad*2;
 	opts.volhilit = (Rect){
 		loc,
-		vecadd(loc, (Point){ TxtSzMedium*7, TxtSzMedium })
+		vecadd(loc, (Point){ TxtSzMedium*5 + opts.volmetarea.b.x, TxtSzMedium })
 	};
+	opts.volmetarea.a = (Point){ TxtSzMedium*5, loc.y };
+	opts.volmetarea.b = vecadd(opts.volmetarea.a, opts.volmetarea.b);
 
 	loc.y = opts.volhilit.b.y + Pad*3;
 	opts.okay = (Rect){
@@ -80,8 +99,6 @@ Scrn *optscrnnew(void){
 		loc,
 		vecadd(loc, (Point){ TxtSzMedium*4, TxtSzMedium })
 	};
-
-	opts.origvol = sndvol(-1);
 
 	s.mt = &optsmt;
 	s.data = &opts;
@@ -106,8 +123,6 @@ static void draw(Scrn *s, Gfx *g){
 
 	gfxclear(g, (Color){ 240, 240, 240 });
 
-	Color hilit = { 255, 219, 0 };
-
 	for(int i = Mvleft; i < Nactions; i++){
 		if(i == opt->curkey){
 			Rect h = {
@@ -125,21 +140,11 @@ static void draw(Scrn *s, Gfx *g){
 		txtdraw(g, opt->txt, cp, "%c", opt->kmap[i]);
 	}
 
-	if(opt->volset){
-		Rect h = {
-			vecadd(opt->volhilit.a, (Point){-4,-4}),
-			vecadd(opt->volhilit.b, (Point){4,4})
-		};
-		gfxfillrect(g, h, hilit);
-	}
-	txtdraw(g, opt->txt, opt->volhilit.a, "Volume:");
-	float vpcnt = sndvol(-1) / (float)SndVolMax * 100;
-	Point pd = txtdims(opt->txt, "%.1f%%", vpcnt);
-	pd.x = -pd.x;
-	pd.y = 0;
-	Point pp = vecadd(opt->volhilit.b, pd);
-	pp.y = opt->volhilit.a.y;
-	txtdraw(g, opt->txt, pp, "%.1f%%", vpcnt);
+	txtdraw(g, opt->txt, opt->volhilit.a, "Volume");
+
+	opt->volmeter.base = sndvol(-1);
+
+	meterdraw(g, &opt->volmeter, opt->volmetarea.a);
 
 	Color butt = { 200, 200, 200 };
 	Rect oh = {
@@ -176,11 +181,13 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 			if(rectcontains(opt->hilit[i], m)){
 				opt->curkey = i;
 				opt->volset = 0;
+				opt->volmeter.cbg = (Color){0x65, 0x65, 0x65};
 				return;
 			}
 
-		if(rectcontains(opt->volhilit, m)){
+		if(rectcontains(opt->volmetarea, m)){
 			opt->volset = 1;
+			opt->volmeter.cbg = hilit;
 			opt->curkey = Nactions;
 			return;
 		}
