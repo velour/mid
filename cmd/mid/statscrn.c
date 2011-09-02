@@ -103,46 +103,6 @@ static void draw(Scrn *s, Gfx *g){
 
 		sloc = vecadd(sloc, (Point){0, TxtSzMedium + Pad});
 	}
-/*
-	snprintf(buf, Bufsz, "HP: %d", sup->p->stats[StatHp]);
-	Point hploc = txtdims(sup->txt, buf);
-
-	int Pad = 4;
-	Rect r = { { Pad, Pad } };
-	r.b = vecadd(r.a, hploc);
-
-	if(rectcontains(r, sup->mouse)){
-		gfxfillrect(g, r, hilit);
-		if(sup->inc){
-			sup->p->stats[StatHp] += 5;
-			sup->p->eqp[StatHp] += 5;
-			sup->norbs--;
-			sup->uorbs++;
-			sup->inc = 0;
-		}
-	}
-	txtdraw(g, sup->txt, r.a, buf);
-
-	Point prevloc = { r.a.x, r.b.y };
-	for(size_t i = StatDex; i < StatMax; i++){
-		snprintf(buf, Bufsz, "%s: %d", names[i], sup->p->stats[i]);
-		Point loc = txtdims(sup->txt, buf);
-		Rect hover = { { Pad, Pad + prevloc.y } };
-		hover.b = vecadd(hover.a, loc);
-
-		if(rectcontains(hover, sup->mouse)){
-			gfxfillrect(g, hover, hilit);
-			if(sup->inc){
-				sup->p->stats[i]++;
-				sup->norbs--;
-				sup->uorbs++;
-				sup->inc = 0;
-			}
-		}
-		txtdraw(g, sup->txt, hover.a, buf);
-		prevloc.y = hover.b.y;
-	}
-*/
 
 	snprintf(buf, Bufsz, "Orbs: %d", sup->norbs);
 	Point o = txtdims(sup->txt, buf);
