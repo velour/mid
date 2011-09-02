@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 {
 	char *kmname = NULL;
 
-#	define ARGIS(a) argv[i][0] == '-' && argv[i][1] == a
+#	define ARGIS(a) argv[i][0] == '-' && argv[i][1] == a && argv[i][2] == 0
 
 	for(int i = 1; i < argc; i++){
 	if(ARGIS('k')){

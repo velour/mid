@@ -14,6 +14,12 @@ int cmdpath(char *out, int sz, char *cmd){
 	if(stat(out, &s) != -1)
 		return n;
 
+	n = snprintf(out, sz, "./%s", cmd);
+	assert(n > 0);
+
+	if(stat(out, &s) != -1)
+		return n;
+
 	n = strlen(cmd);
 	strcpy(out, cmd);
 	return n;

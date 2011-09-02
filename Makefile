@@ -91,4 +91,12 @@ installer: all
 	cp osx/Info.plist Mid.app/Contents/
 	for c in mid lvlgen itmgen enmgen envgen; do cp cmd/$$c/$$c Mid.app/Contents/MacOS/; done
 	cp -r resrc/ Mid.app/Contents/Resources/
+	for lib in SDL-1.3.0 SDL_image-1.2.0 SDL_mixer-1.2.0 SDL_ttf-2.0.0; do \
+		cp /usr/local/lib/lib$$lib.dylib Mid.app/Contents/Frameworks; \
+		install_name_tool -id "@executable_path/../Frameworks/lib$$lib.dylib" Mid.app/Contents/Frameworks/lib$$lib.dylib; \
+		install_name_tool -change /usr/local/lib/libSDL-1.3.0.dylib "@executable_path/../Frameworks/libSDL-1.3.0.dylib" Mid.app/Contents/Frameworks/lib$$lib.dylib; \
+		for c in mid lvlgen itmgen enmgen envgen; do \
+			install_name_tool -change /usr/local/lib/lib$$lib.dylib "@executable_path/../Frameworks/lib$$lib.dylib" Mid.app/Contents/MacOS/$$c; \
+		done; \
+	done
 endif

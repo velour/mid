@@ -5,8 +5,11 @@
 #include <Foundation/NSPathUtilities.h>
 #include <Foundation/NSURL.h>
 #include <Foundation/NSAutoreleasePool.h>
+#include <Foundation/NSBundle.h>
 
 static char path[128];
+
+static void setworkdir(void);
 
 const char *appdata(const char *prog){
 	if(path[0] != 0)
@@ -31,6 +34,22 @@ const char *appdata(const char *prog){
 	const char *p = [[upath path] UTF8String];
 	strncpy(path, p, sizeof(path)-1);
 
+	// while we're in OSX-land...
+	setworkdir();
+
 	[pool release];
 	return path;
+}
+
+static void setworkdir(void){
+	NSBundle *b = [NSBundle mainBundle];
+	if(!b)
+		return;
+
+	NSURL *burl = [b bundleURL];
+	NSURL *xurl = [burl URLByAppendingPathComponent:@"Contents/MacOS"];
+
+	NSString *apath = [xurl path];
+	NSFileManager *fm = [NSFileManager defaultManager];
+	[fm changeCurrentDirectoryPath:apath];
 }

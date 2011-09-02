@@ -13,7 +13,7 @@ enum { Initsize = 257 };
 enum { Fillfact = 3 };
 enum { Cachesize = 100 };
 
-static const char *roots[] = { "resrc" };
+static const char *roots[] = { "resrc", "../Resources" };
 enum { NROOTS = sizeof(roots) / sizeof(roots[0]) };
 
 typedef struct Resrc Resrc;
