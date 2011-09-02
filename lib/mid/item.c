@@ -9,6 +9,7 @@ struct ItemOps{
 	char *name;
 	char *animname;
 	void (*update)(Item*,Player*,Zone*);
+	void (*eat)(Invit*,Player*,Zone*);
 	Anim anim;
 	int stats[StatMax];
 	EqpLoc loc;
@@ -22,6 +23,7 @@ static void goldupdate(Item*,Player*,Zone*);
 static void carrotupdate(Item*,Player*,Zone*);
 static void tophatupdate(Item*,Player*,Zone*);
 static void silverswdupdate(Item*,Player*,Zone*);
+static void hamcaneat(Invit*,Player*,Zone*);
 
 static Sfx *goldgrab;
 static Sfx *gengrab;
@@ -31,42 +33,56 @@ static ItemOps ops[] = {
 		"Orb of Power",
 		"img/items.png",
 		statupupdate,
+		NULL,
 		{ .row = 0, .len = 2, .delay = 1200/Ticktm, .w = 32, .h = 32, .d = 1200/Ticktm }
 	},
 	[ItemCopper] = {
 		"c",
 		"img/items.png",
 		copperupdate,
+		NULL,
 		{ .row = 1, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
 	},
 	[ItemHealth] = {
 		"Broccoli",
 		"img/items.png",
 		healthupdate,
+		NULL,
 		{ .row = 2, .len = 2, .delay = 600/Ticktm, .w = 32, .h = 32, .d = 600/Ticktm }
 	},
 	[ItemSilver] = {
 		"s",
 		"img/items.png",
 		silverupdate,
+		NULL,
 		{ .row = 3, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
 	},
 	[ItemGold] = {
 		"g",
 		"img/items.png",
 		goldupdate,
+		NULL,
 		{ .row = 4, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
 	},
 	[ItemCarrot] = {
 		"Carrot",
 		"img/items.png",
 		carrotupdate,
+		NULL,
 		{ .row = 5, .len = 2, .delay = 600/Ticktm, .w = 32, .h = 32, .d = 600/Ticktm }
+	},
+	[ItemHamCan] = {
+		"Ham Can",
+		"img/items.png",
+		statupupdate,
+		hamcaneat,
+		{ .row = 9, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
 	},
 	[ItemTopHat] = {
 		"Top Hat",
 		"img/items.png",
 		tophatupdate,
+		NULL,
 		{.row = 6, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
 		.stats = { 0, 5, 0 },
 		.loc = EqpHead
@@ -75,6 +91,7 @@ static ItemOps ops[] = {
 		"Silver Sword",
 		"img/items.png",
 		silverswdupdate,
+		NULL,
 		{ .row = 7, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
 		.stats = { 0, 0, 1 },
 		.loc = EqpWep
@@ -83,6 +100,7 @@ static ItemOps ops[] = {
 		"Lady Sword",
 		"img/items.png",
 		silverswdupdate,
+		NULL,
 		{ .row = 8, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
 		.stats = { 0, 0, 3 },
 		.loc = EqpWep
@@ -165,6 +183,14 @@ void invitdraw(Invit *it, Gfx *g, Point p){
 	animdraw(g, &ops[it->id].anim, p);
 }
 
+_Bool inviteat(Invit *it, Player *p, Zone *z){
+	if(!ops[it->id].eat)
+		return 0;
+
+	ops[it->id].eat(it, p, z);
+	return 1;
+}
+
 static void statupupdate(Item *i, Player *p, Zone *z){
 	bodyupdate(&i->body, z->lvl);
 
@@ -240,4 +266,9 @@ static void silverswdupdate(Item *i, Player *p, Zone *z){
 		sfxplay(gengrab);
 		i->gotit = 1;
 	}
+}
+
+static void hamcaneat(Invit *i, Player *p, Zone *z){
+	sfxplay(gengrab);
+	playerheal(p, 10);
 }

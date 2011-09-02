@@ -268,7 +268,9 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 				return;
 			}
 			if(el.loc == EqpEat){
-				//TODO: use it
+				if(inviteat(i->curitem, i->p, i->zone))
+					*i->curitem = (Invit){};
+				return;
 			}
 			if(!s || s == i->curitem || el.loc != itemeqploc(i->curitem->id))
 				return;

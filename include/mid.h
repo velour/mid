@@ -401,6 +401,7 @@ enum ItemID{
 	ItemSilver,
 	ItemGold,
 	ItemCarrot,
+	ItemHamCan,
 	ItemTopHat,
 	ItemSilverSwd,
 	ItemBroadSwd,
@@ -428,6 +429,7 @@ struct Invit{
 
 void invitinit(Invit*, ItemID);
 void invitdraw(Invit*, Gfx*, Point p);
+_Bool inviteat(Invit*, Player*, Zone*);
 
 struct Player {
 	Anim leftas[Nacts];
