@@ -54,18 +54,56 @@ static void update(Scrn *s, Scrnstk *stk){
 static void draw(Scrn *s, Gfx *g){
 	static char *names[] = {
 		[StatHp] = "HP",
-		[StatDex] = "Dexterity",
-		[StatStr] = "Strength",
+		[StatDex] = "Dex",
+		[StatStr] = "Str",
 	};
 
 	Statup *sup = s->data;
 
 	gfxclear(g, (Color){ 127, 200, 255 });
 
-	Color hilit = { 255, 219, 0 };
 	enum { Bufsz = 256 };
 	char buf[Bufsz];
 
+	int Pad = 4;
+	Point sloc = { Pad, Pad };
+	for(int i = StatHp; i < StatMax; i++){
+		Meter meter = {
+			.base = sup->p->stats[i],
+			.extra = sup->p->eqp[i],
+			.max = 30,
+			.xscale = 3,
+			.h = TxtSzMedium,
+			.cbg = {0x65, 0x65, 0x65},
+			.cbase = {0x1E, 0x94, 0x22},
+			.cextra = {0x1B, 0xAF, 0xE0},
+			.cborder = {}
+		};
+
+		Point mloc = { sloc.x + TxtSzMedium*2, sloc.y };
+		Rect ma = meterarea(&meter, mloc);
+
+		if(rectcontains(ma, sup->mouse))
+			meter.cbg = (Color){ 255, 219, 0 };
+
+		txtdraw(g, sup->txt, sloc, names[i]);
+		meterdraw(g, &meter, mloc);
+
+		if(rectcontains(ma, sup->mouse) && sup->inc){
+			if(i == StatHp){
+				sup->p->stats[i] += 5;
+				sup->p->curhp += 5;
+			}else
+				sup->p->stats[i]++;
+
+			sup->norbs--;
+			sup->uorbs++;
+			sup->inc = 0;
+		}
+
+		sloc = vecadd(sloc, (Point){0, TxtSzMedium + Pad});
+	}
+/*
 	snprintf(buf, Bufsz, "HP: %d", sup->p->stats[StatHp]);
 	Point hploc = txtdims(sup->txt, buf);
 
@@ -104,6 +142,7 @@ static void draw(Scrn *s, Gfx *g){
 		txtdraw(g, sup->txt, hover.a, buf);
 		prevloc.y = hover.b.y;
 	}
+*/
 
 	snprintf(buf, Bufsz, "Orbs: %d", sup->norbs);
 	Point o = txtdims(sup->txt, buf);

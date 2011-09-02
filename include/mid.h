@@ -610,3 +610,4 @@ struct Meter{
 };
 
 Rect meterdraw(Gfx*, Meter*, Point);
+Rect meterarea(Meter*, Point);
