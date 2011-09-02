@@ -131,7 +131,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	if(e->type != Keychng || e->repeat)
 		return;
 
-	if(e->down && e->key == kmap[Mvact]){
+	if(e->down && e->key == kmap[Mvinv]){
 		Player *p = sup->p;
 		int u = 0;
 		for(Invit *i = p->inv; i != p->inv + Maxinv && u < sup->uorbs; i++){
