@@ -160,6 +160,8 @@ static void draw(Scrn *s, Gfx *g){
 		Rect er = i->eqpgrid[j];
 		gfxdrawrect(g, er, (Color){0});
 		txtdraw(g, txt, (Point){ er.b.x + Pad, er.a.y }, locname[j]);
+		if(j >= EqpMax)
+			continue;
 		Invit *it = &i->p->wear[j];
 		if(it->id > 0 && (!i->drag || it != i->curitem))
 			invitdraw(it, g, (Point){er.a.x+1,er.a.y+1});
