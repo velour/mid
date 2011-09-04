@@ -42,8 +42,9 @@ static const char *moneystr = "gold";
 static char *locname[] = {
 	[EqpHead] = "Head",
 	[EqpBody] = "Body",
+	[EqpArms] = "Arms",
+	[EqpLegs] = "Legs",
 	[EqpWep] = "Wep.",
-	[EqpAcc] = "Acc.",
 	[EqpEat] = "Eat",
 	[EqpDrop] = "Drop",
 };

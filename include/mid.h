@@ -388,8 +388,9 @@ enum EqpLoc{
 	EqpNone,
 	EqpHead,
 	EqpBody,
+	EqpArms,
+	EqpLegs,
 	EqpWep,
-	EqpAcc,
 	EqpMax,
 };
 
