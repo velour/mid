@@ -149,6 +149,9 @@ static FILE *zpipe(Rng *r)
 	pipeadd(&p, "itmgen", "-s %u 3 3 3 3 6 10", rngint(r));
 	pipeadd(&p, "itmgen", "-s %u 7 10", rngint(r));
 	pipeadd(&p, "envgen", "-s %u 1 1", rngint(r));
+	pipeadd(&p, "envgen", "-s %u 3 1", rngint(r));
+	pipeadd(&p, "envgen", "-s %u 4 1", rngint(r));
+	pipeadd(&p, "envgen", "-s %u 5 1", rngint(r));
 	pipeadd(&p, "enmgen", "-s %u 1 1 1 2 2 2 2 3 3 4 5 50", rngint(r));
 
 	char adc[256];

@@ -1,6 +1,7 @@
 // Copyright © 2011 Steve McCoy and Ethan Burns
 // Licensed under the MIT License. See LICENSE for details.
 #include "../../include/mid.h"
+#include "../../include/rng.h"
 #include <assert.h>
 
 typedef struct EnvOps EnvOps;
@@ -13,6 +14,13 @@ struct EnvOps{
 
 static void shremptyact(Env*,Player*,Zone*);
 static void shrusedact(Env*,Player*,Zone*);
+static void stonehpact(Env*,Player*,Zone*);
+static void stonedexact(Env*,Player*,Zone*);
+static void stonestract(Env*,Player*,Zone*);
+
+static void stonegenact(Env *e, Player *p, Zone *z, int stat, ItemID *drops, int dsz);
+
+static Rng rng;
 
 static EnvOps ops[] = {
 	[EnvShrempty] = {
@@ -27,6 +35,24 @@ static EnvOps ops[] = {
 		{ 32, 64 },
 		{ .row = 1, .len = 1, .delay = 1, .w = 32, .h = 64, .d = 1 }
 	},
+	[EnvSwdStoneHp] = {
+		"img/swstones.png",
+		stonehpact,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvSwdStoneDex] = {
+		"img/swstones.png",
+		stonedexact,
+		{ 32, 32 },
+		{ .row = 1, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvSwdStoneStr] = {
+		"img/swstones.png",
+		stonestract,
+		{ 32, 32 },
+		{ .row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
 };
 
 _Bool envinit(Env *e, EnvID id, Point p){
@@ -36,6 +62,8 @@ _Bool envinit(Env *e, EnvID id, Point p){
 	bodyinit(&e->body, p.x * Twidth, p.y * Theight, Twidth, Theight);
 	e->body.bbox.b.x = e->body.bbox.a.x + ops[id].wh.x;
 	e->body.bbox.b.y = e->body.bbox.a.y + ops[id].wh.y;
+
+	e->min = rngintincl(&rng, 5, 30);
 
 	return 1;
 }
@@ -50,15 +78,16 @@ _Bool envldresrc(void){
 			return 0;
 		ops[id].anim.sheet = i;
 	}
+	rnginit(&rng, 666);
 	return 1;
 }
 
 _Bool envprint(char *buf, size_t sz, Env *env){
-	return printgeom(buf, sz, "dyb", env->id, env->body, env->gotit);
+	return printgeom(buf, sz, "dybd", env->id, env->body, env->gotit, env->min);
 }
 
 _Bool envscan(char *buf, Env *env){
-	return scangeom(buf, "dyb", &env->id, &env->body, &env->gotit);
+	return scangeom(buf, "dybd", &env->id, &env->body, &env->gotit, &env->min);
 }
 
 Point envsize(EnvID id){
@@ -89,4 +118,43 @@ static void shremptyact(Env *e, Player *p, Zone *z){
 
 static void shrusedact(Env *e, Player *p, Zone *z){
 	// nothing
+}
+
+static void stonehpact(Env *e, Player *p, Zone *z){
+	static ItemID hpswds[] = {
+		ItemSilverSwd,
+	};
+
+	stonegenact(e, p, z, StatHp, hpswds, sizeof(hpswds)/sizeof(hpswds[0]));
+}
+
+static void stonedexact(Env *e, Player *p, Zone *z){
+	static ItemID dexswds[] = {
+		ItemWindSwd,
+	};
+
+	stonegenact(e, p, z, StatDex, dexswds, sizeof(dexswds)/sizeof(dexswds[0]));
+}
+
+static void stonestract(Env *e, Player *p, Zone *z){
+	static ItemID strswds[] = {
+		ItemSilverSwd,
+	};
+
+	stonegenact(e, p, z, StatStr, strswds, sizeof(strswds)/sizeof(strswds[0]));
+}
+
+static void stonegenact(Env *e, Player *p, Zone *z, int stat, ItemID *drops, int dsz){
+	if(p->stats[stat] >= e->min && isect(e->body.bbox, p->body.bbox)){
+		ItemID id = drops[rngintincl(&rng, 0, dsz - 1)];
+		Item drop = {};
+		Point gridcoord = { // BARF
+			e->body.bbox.a.x / Twidth,
+			e->body.bbox.a.y / Theight
+		};
+		iteminit(&drop, id, gridcoord);
+		drop.body.vel.y = -8;
+		if(zoneadditem(z, z->lvl->z, drop))
+			*e = (Env){};
+	}
 }

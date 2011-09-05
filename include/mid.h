@@ -406,6 +406,7 @@ enum ItemID{
 	ItemTopHat,
 	ItemSilverSwd,
 	ItemBroadSwd,
+	ItemWindSwd,
 	ItemMax
 };
 
@@ -523,6 +524,9 @@ enum EnvID{
 	EnvNone,
 	EnvShrempty,
 	EnvShrused,
+	EnvSwdStoneHp,
+	EnvSwdStoneDex,
+	EnvSwdStoneStr,
 	EnvMax
 };
 
@@ -531,6 +535,7 @@ struct Env{
 	EnvID id;
 	Body body;
 	_Bool gotit;
+	int min;
 };
 
 _Bool envldresrc(void);

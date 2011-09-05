@@ -174,7 +174,7 @@ Lvl *lvlread(FILE *f)
 {
 	int w, h, d, seenz;
 	if (fscanf(f, " %d %d %d %d",&d, &w, &h, &seenz) != 4) {
-		seterrstr("Invalid lvl header");
+		seterrstr("Invalid lvl header: w = %d, h = %d, d = %d, seenz = %d, feof = %d, ferror = %d", feof(f), ferror(f));
 		return NULL;
 	}
 	Lvl *l = lvlnew(d, w, h, seenz);

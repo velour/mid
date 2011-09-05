@@ -105,6 +105,15 @@ static ItemOps ops[] = {
 		.stats = { 0, 0, 3 },
 		.loc = EqpWep
 	},
+	[ItemWindSwd] = {
+		"Kaze",
+		"img/items.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 10, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+		.stats = { 0, 1, 2 },
+		.loc = EqpWep
+	},
 };
 
 _Bool iteminit(Item *i, ItemID id, Point p){
