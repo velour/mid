@@ -7,10 +7,10 @@
 
 static Point hboff = { 7, 2 };
 
-static Img *plsh;
+static Img *plsh[ArmorMax];
 static Sfx *ow;
 
-static void loadanim(Anim *a, int, int, int);
+static void loadanim(Anim *a, int, int, int, int);
 static void chngdir(Player *b);
 static void chngact(Player *b);
 static Point scroll(Player*, Point delta);
@@ -27,18 +27,28 @@ void playerinit(Player *p, int x, int y)
 	bodyinit(&p->body, x * Twidth + hboff.x, y * Theight + hboff.y, 21, 29);
 	p->hitback = 0;
 
-	plsh = resrcacq(imgs, "img/knight.png", NULL);
-	assert(plsh != NULL);
+	plsh[ArmorBackArm] = resrcacq(imgs, "img/iron-arm-back.png", NULL);
+	assert(plsh[ArmorBackArm] != NULL);
+	plsh[ArmorBody] = resrcacq(imgs, "img/iron-body.png", NULL);
+	assert(plsh[ArmorBody] != NULL);
+	plsh[ArmorHead] = resrcacq(imgs, "img/iron-helm.png", NULL);
+	assert(plsh[ArmorHead] != NULL);
+	plsh[ArmorFrontArm] = resrcacq(imgs, "img/iron-arm-front.png", NULL);
+	assert(plsh[ArmorFrontArm] != NULL);
+	plsh[ArmorLegs] = resrcacq(imgs, "img/iron-legs.png", NULL);
+	assert(plsh[ArmorLegs] != NULL);
 
 	ow = resrcacq(sfx, "sfx/ow.wav", NULL);
 	assert(ow != NULL);
 
-	loadanim(&p->leftas[Stand], 0, 1, 1);
-	loadanim(&p->leftas[Walk], 1, 4, 100);
-	loadanim(&p->leftas[Jump], 2, 1, 1);
-	loadanim(&p->rightas[Stand], 3, 1, 1);
-	loadanim(&p->rightas[Walk], 4, 4, 100);
-	loadanim(&p->rightas[Jump], 5, 1, 1);
+	for(int i = 0; i < ArmorMax; i++){
+		loadanim(&p->leftas[Stand][i], 0, 1, 1, i);
+		loadanim(&p->leftas[Walk][i], 1, 4, 100, i);
+		loadanim(&p->leftas[Jump][i], 2, 1, 1, i);
+		loadanim(&p->rightas[Stand][i], 3, 1, 1, i);
+		loadanim(&p->rightas[Walk][i], 4, 4, 100, i);
+		loadanim(&p->rightas[Jump][i], 5, 1, 1, i);
+	}
 
 	p->anim = p->rightas;
 	p->act = Stand;
@@ -124,13 +134,13 @@ void playerupdate(Player *p, Zone *zn, Point *tr)
 
 	mvsw(p);
 
-	Anim *prevanim = p->anim;
+	Anim (*prevanim)[ArmorMax] = p->anim;
 	chngdir(p);
 	chngact(p);
 	if(p->anim != prevanim)
-		animreset(&p->anim[p->act]);
+		for(int i = 0; i < ArmorMax; i++) animreset(&p->anim[p->act][i]);
 	else
-		animupdate(&p->anim[p->act]);
+		for(int i = 0; i < ArmorMax; i++) animupdate(&p->anim[p->act][i]);
 
 	Point del = { playerpos(p).x - ppos.x, playerpos(p).y - ppos.y };
 	*tr = scroll(p, del);
@@ -160,11 +170,11 @@ void playerdraw(Gfx *g, Player *p)
 
 	if(p->iframes % 4 == 0){
 		if(p->sframes > 8)
-			imgdrawreg(g, plsh, attackclip(p, 0), p->imgloc);
+			for(int i = 0; i < ArmorMax; i++) imgdrawreg(g, plsh[i], attackclip(p, 0), p->imgloc);
 		else if(p->sframes > 0)
-			imgdrawreg(g, plsh, attackclip(p, 1), p->imgloc);
+			for(int i = 0; i < ArmorMax; i++) imgdrawreg(g, plsh[i], attackclip(p, 1), p->imgloc);
 		else
-			animdraw(g, &p->anim[p->act], p->imgloc);
+			for(int i = 0; i < ArmorMax; i++) animdraw(g, &p->anim[p->act][i], p->imgloc);
 	}
 
 	if(p->sw.cur >= 0)
@@ -251,10 +261,10 @@ _Bool playertake(Player *p, Item *i){
 	return 0;
 }
 
-static void loadanim(Anim *a, int row, int len, int delay)
+static void loadanim(Anim *a, int row, int len, int delay, int shid)
 {
 	*a = (Anim){
-		.sheet = plsh,
+		.sheet = plsh[shid],
 		.row = row,
 		.len = len,
 		.delay = delay/Ticktm,

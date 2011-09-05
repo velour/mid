@@ -433,10 +433,19 @@ void invitinit(Invit*, ItemID);
 void invitdraw(Invit*, Gfx*, Point p);
 _Bool inviteat(Invit*, Player*, Zone*);
 
+enum{
+	ArmorBackArm,
+	ArmorBody,
+	ArmorHead,
+	ArmorFrontArm,
+	ArmorLegs,
+	ArmorMax
+};
+
 struct Player {
-	Anim leftas[Nacts];
-	Anim rightas[Nacts];
-	Anim *anim;
+	Anim leftas[Nacts][ArmorMax];
+	Anim rightas[Nacts][ArmorMax];
+	Anim (*anim)[ArmorMax];
 	Act act;
 	Point imgloc;
 
