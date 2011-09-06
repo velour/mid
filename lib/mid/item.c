@@ -87,6 +87,42 @@ static ItemOps ops[] = {
 		.stats = { 0, 5, 0 },
 		.loc = EqpHead
 	},
+	[ItemIronHelm] = {
+		"Iron Helm",
+		"img/iron.png",
+		tophatupdate,
+		NULL,
+		{.row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		.stats = { 3, -1, 0 },
+		.loc = EqpHead
+	},
+	[ItemIronGlove] = {
+		"Iron Gloves",
+		"img/iron.png",
+		tophatupdate,
+		NULL,
+		{.row = 1, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		.stats = { 3, -1, 0 },
+		.loc = EqpArms
+	},
+	[ItemIronBody] = {
+		"Iron Plate",
+		"img/iron.png",
+		tophatupdate,
+		NULL,
+		{.row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		.stats = { 3, -1, 0 },
+		.loc = EqpBody
+	},
+	[ItemIronBoot] = {
+		"Iron Boots",
+		"img/iron.png",
+		tophatupdate,
+		NULL,
+		{.row = 3, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		.stats = { 3, -1, 0 },
+		.loc = EqpHead
+	},
 	[ItemSilverSwd] = {
 		"Silver Sword",
 		"img/items.png",

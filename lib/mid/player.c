@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <string.h>
 
 static Point hboff = { 7, 2 };
 
@@ -58,12 +59,17 @@ void playerinit(Player *p, int x, int y)
 	p->stats[StatHp] = 10;
 	p->stats[StatDex] = 5;
 	p->stats[StatStr] = 5;
-	p->curhp = p->stats[StatHp];
 
 	p->sw.row = 0;
 	p->sw.dir = Mvright;
 	p->sw.cur = -1;
 	invitinit(&p->wear[EqpWep], ItemSilverSwd);
+	invitinit(&p->wear[EqpHead], ItemIronHelm);
+	invitinit(&p->wear[EqpBody], ItemIronBody);
+	invitinit(&p->wear[EqpArms], ItemIronGlove);
+	invitinit(&p->wear[EqpLegs], ItemIronBoot);
+	resetstats(p);
+	p->curhp = p->stats[StatHp] + p->eqp[StatHp];
 	mvsw(p);
 }
 
@@ -354,4 +360,17 @@ static Rect attackclip(Player *p, int col){
 		{ col * Twidth, row * Theight },
 		{ col * Twidth + Theight, row * Theight + Theight }
 	};
+}
+
+void resetstats(Player *p){
+	memset(p->eqp, 0, sizeof(p->eqp));
+	for(int i = EqpHead; i < EqpMax; i++)
+		if(p->wear[i].id > 0) for(int j = 0; j < StatMax; j++)
+			p->eqp[j] += p->wear[i].stats[j];
+
+	//TODO: swd fun for this
+	if(p->wear[EqpWep].id == 0)
+		p->sw.row = 0;
+	else
+		p->sw.row = p->wear[EqpWep].id - ItemSilverSwd;
 }

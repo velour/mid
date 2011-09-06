@@ -4,7 +4,6 @@
 #include "../../include/log.h"
 #include "game.h"
 #include <stdlib.h>
-#include <string.h>
 
 typedef struct Invscr Invscr;
 typedef struct Eloc Eloc;
@@ -65,7 +64,6 @@ static void moneydraw(Gfx *g, int m);
 static Txt *gettxt(void);
 static void invswap(Invit *, Invit *);
 static Eloc eqpat(Invscr *i, int x, int y);
-static void resetstats(Player*);
 
 static Scrnmt invmt = {
 	update,
@@ -186,6 +184,9 @@ static void draw(Scrn *s, Gfx *g){
 			.cextra = {0x1B, 0xAF, 0xE0},
 			.cborder = {}
 		};
+
+		if(meter.extra < 0)
+			meter.cextra = (Color){0xAF,0,0};
 
 		txtdraw(g, gettxt(), sloc, statname[j]);
 		meterdraw(g, &meter, (Point){ sloc.x + TxtSzMedium*2, sloc.y });
@@ -331,15 +332,3 @@ static void invfree(Scrn *s){
 	resetstats(inv->p);
 }
 
-static void resetstats(Player *p){
-	memset(p->eqp, 0, sizeof(p->eqp));
-	for(int i = EqpHead; i < EqpMax; i++)
-		if(p->wear[i].id > 0) for(int j = 0; j < StatMax; j++)
-			p->eqp[j] += p->wear[i].stats[j];
-
-	//TODO: swd fun for this
-	if(p->wear[EqpWep].id == 0)
-		p->sw.row = 0;
-	else
-		p->sw.row = p->wear[EqpWep].id - ItemSilverSwd;
-}

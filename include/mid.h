@@ -404,6 +404,10 @@ enum ItemID{
 	ItemCarrot,
 	ItemHamCan,
 	ItemTopHat,
+	ItemIronHelm,
+	ItemIronGlove,
+	ItemIronBody,
+	ItemIronBoot,
 	ItemSilverSwd,
 	ItemBroadSwd,
 	ItemWindSwd,
@@ -484,6 +488,7 @@ Rect playerbox(Player *);
 void playerdmg(Player *, int, int);
 void playerheal(Player *, int);
 _Bool playertake(Player *, Item *);
+void resetstats(Player*);
 
 typedef enum EnemyID EnemyID;
 enum EnemyID{
