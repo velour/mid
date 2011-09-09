@@ -101,7 +101,7 @@ static ItemOps ops[] = {
 		"img/iron.png",
 		tophatupdate,
 		NULL,
-		{.row = 1, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{.row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
 		.stats = { 3, -1, 0 },
 		.loc = EqpArms
 	},
@@ -110,7 +110,7 @@ static ItemOps ops[] = {
 		"img/iron.png",
 		tophatupdate,
 		NULL,
-		{.row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{.row = 1, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
 		.stats = { 3, -1, 0 },
 		.loc = EqpBody
 	},
