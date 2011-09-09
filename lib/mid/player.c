@@ -20,6 +20,7 @@ static double jmp(Player *);
 static void mvsw(Player *);
 static Rect attackclip(Player *p, int up);
 static ArmorSetID armset(Player*);
+static EqpLoc armtoeqp(ArmorLoc);
 
 void playerinit(Player *p, int x, int y)
 {
@@ -168,17 +169,20 @@ void playerdraw(Gfx *g, Player *p)
 	if(p->iframes % 4 == 0){
 		if(p->sframes > 8)
 			for(int i = 0; i < ArmorMax; i++){
-				ArmorSetID as = itemarmorset(p->wear[i].id);
+				int loc = armtoeqp(i);
+				ArmorSetID as = itemarmorset(p->wear[loc].id);
 				imgdrawreg(g, armorsetsheet(as, i), attackclip(p, 0), p->imgloc);
 			}
 		else if(p->sframes > 0)
 			for(int i = 0; i < ArmorMax; i++){
-				ArmorSetID as = itemarmorset(p->wear[i].id);
+				int loc = armtoeqp(i);
+				ArmorSetID as = itemarmorset(p->wear[loc].id);
 				imgdrawreg(g, armorsetsheet(as, i), attackclip(p, 1), p->imgloc);
 			}
 		else
 			for(int i = 0; i < ArmorMax; i++){
-				ArmorSetID as = itemarmorset(p->wear[i].id);
+				int loc = armtoeqp(i);
+				ArmorSetID as = itemarmorset(p->wear[loc].id);
 				p->anim[p->act][i].sheet = armorsetsheet(as, i);
 				animdraw(g, &p->anim[p->act][i], p->imgloc);
 			}
@@ -387,4 +391,20 @@ static ArmorSetID armset(Player *p){
 			return 0;
 
 	return as;
+}
+
+static EqpLoc armtoeqp(ArmorLoc loc){
+	switch(loc){
+	case ArmorBackArm:
+	case ArmorFrontArm:
+		return EqpArms;
+	case ArmorHead:
+		return EqpHead;
+	case ArmorBody:
+		return EqpBody;
+	case ArmorLegs:
+		return EqpLegs;
+	default:
+		return -1;
+	}
 }
