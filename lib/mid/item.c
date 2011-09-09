@@ -13,6 +13,7 @@ struct ItemOps{
 	Anim anim;
 	int stats[StatMax];
 	EqpLoc loc;
+	ArmorSetID set;
 };
 
 static void statupupdate(Item*,Player*,Zone*);
@@ -94,7 +95,8 @@ static ItemOps ops[] = {
 		NULL,
 		{.row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
 		.stats = { 3, -1, 0 },
-		.loc = EqpHead
+		.loc = EqpHead,
+		.set = ArmorSetIron
 	},
 	[ItemIronGlove] = {
 		"Iron Gloves",
@@ -103,7 +105,8 @@ static ItemOps ops[] = {
 		NULL,
 		{.row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
 		.stats = { 3, -1, 0 },
-		.loc = EqpArms
+		.loc = EqpArms,
+		.set = ArmorSetIron
 	},
 	[ItemIronBody] = {
 		"Iron Plate",
@@ -112,7 +115,8 @@ static ItemOps ops[] = {
 		NULL,
 		{.row = 1, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
 		.stats = { 3, -1, 0 },
-		.loc = EqpBody
+		.loc = EqpBody,
+		.set = ArmorSetIron
 	},
 	[ItemIronBoot] = {
 		"Iron Boots",
@@ -121,7 +125,8 @@ static ItemOps ops[] = {
 		NULL,
 		{.row = 3, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
 		.stats = { 3, -1, 0 },
-		.loc = EqpHead
+		.loc = EqpLegs,
+		.set = ArmorSetIron
 	},
 	[ItemSilverSwd] = {
 		"Silver Sword",
@@ -216,6 +221,10 @@ char *itemname(ItemID id){
 
 EqpLoc itemeqploc(ItemID id){
 	return ops[id].loc;
+}
+
+ArmorSetID itemarmorset(ItemID id){
+	return ops[id].set;
 }
 
 void invitinit(Invit *it, ItemID id){

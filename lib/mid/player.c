@@ -8,7 +8,6 @@
 
 static Point hboff = { 7, 2 };
 
-static Img *plsh[ArmorMax];
 static Sfx *ow;
 
 static void loadanim(Anim *a, int, int, int, int);
@@ -20,6 +19,7 @@ static double run(Player *);
 static double jmp(Player *);
 static void mvsw(Player *);
 static Rect attackclip(Player *p, int up);
+static ArmorSetID armset(Player*);
 
 void playerinit(Player *p, int x, int y)
 {
@@ -28,16 +28,7 @@ void playerinit(Player *p, int x, int y)
 	bodyinit(&p->body, x * Twidth + hboff.x, y * Theight + hboff.y, 21, 29);
 	p->hitback = 0;
 
-	plsh[ArmorBackArm] = resrcacq(imgs, "img/iron-arm-back.png", NULL);
-	assert(plsh[ArmorBackArm] != NULL);
-	plsh[ArmorBody] = resrcacq(imgs, "img/iron-body.png", NULL);
-	assert(plsh[ArmorBody] != NULL);
-	plsh[ArmorHead] = resrcacq(imgs, "img/iron-helm.png", NULL);
-	assert(plsh[ArmorHead] != NULL);
-	plsh[ArmorFrontArm] = resrcacq(imgs, "img/iron-arm-front.png", NULL);
-	assert(plsh[ArmorFrontArm] != NULL);
-	plsh[ArmorLegs] = resrcacq(imgs, "img/iron-legs.png", NULL);
-	assert(plsh[ArmorLegs] != NULL);
+	armorinit();
 
 	ow = resrcacq(sfx, "sfx/ow.wav", NULL);
 	assert(ow != NULL);
@@ -176,11 +167,21 @@ void playerdraw(Gfx *g, Player *p)
 
 	if(p->iframes % 4 == 0){
 		if(p->sframes > 8)
-			for(int i = 0; i < ArmorMax; i++) imgdrawreg(g, plsh[i], attackclip(p, 0), p->imgloc);
+			for(int i = 0; i < ArmorMax; i++){
+				ArmorSetID as = itemarmorset(p->wear[i].id);
+				imgdrawreg(g, armorsetsheet(as, i), attackclip(p, 0), p->imgloc);
+			}
 		else if(p->sframes > 0)
-			for(int i = 0; i < ArmorMax; i++) imgdrawreg(g, plsh[i], attackclip(p, 1), p->imgloc);
+			for(int i = 0; i < ArmorMax; i++){
+				ArmorSetID as = itemarmorset(p->wear[i].id);
+				imgdrawreg(g, armorsetsheet(as, i), attackclip(p, 1), p->imgloc);
+			}
 		else
-			for(int i = 0; i < ArmorMax; i++) animdraw(g, &p->anim[p->act][i], p->imgloc);
+			for(int i = 0; i < ArmorMax; i++){
+				ArmorSetID as = itemarmorset(p->wear[i].id);
+				p->anim[p->act][i].sheet = armorsetsheet(as, i);
+				animdraw(g, &p->anim[p->act][i], p->imgloc);
+			}
 	}
 
 	if(p->sw.cur >= 0)
@@ -270,7 +271,6 @@ _Bool playertake(Player *p, Item *i){
 static void loadanim(Anim *a, int row, int len, int delay, int shid)
 {
 	*a = (Anim){
-		.sheet = plsh[shid],
 		.row = row,
 		.len = len,
 		.delay = delay/Ticktm,
@@ -364,13 +364,27 @@ static Rect attackclip(Player *p, int col){
 
 void resetstats(Player *p){
 	memset(p->eqp, 0, sizeof(p->eqp));
+
 	for(int i = EqpHead; i < EqpMax; i++)
 		if(p->wear[i].id > 0) for(int j = 0; j < StatMax; j++)
 			p->eqp[j] += p->wear[i].stats[j];
+
+	ArmorSetID as = armset(p);
+	if(as > 0)
+		applyarmorbonus(p, as);
 
 	//TODO: swd fun for this
 	if(p->wear[EqpWep].id == 0)
 		p->sw.row = 0;
 	else
 		p->sw.row = p->wear[EqpWep].id - ItemSilverSwd;
+}
+
+static ArmorSetID armset(Player *p){
+	ArmorSetID as = itemarmorset(p->wear[EqpHead].id);
+	for(int i = EqpBody; i < EqpWep; i++)
+		if(itemarmorset(p->wear[i].id) != as)
+			return 0;
+
+	return as;
 }

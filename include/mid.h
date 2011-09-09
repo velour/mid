@@ -437,7 +437,8 @@ void invitinit(Invit*, ItemID);
 void invitdraw(Invit*, Gfx*, Point p);
 _Bool inviteat(Invit*, Player*, Zone*);
 
-enum{
+typedef enum ArmorLoc ArmorLoc;
+enum ArmorLoc{
 	ArmorBackArm,
 	ArmorBody,
 	ArmorHead,
@@ -445,6 +446,19 @@ enum{
 	ArmorLegs,
 	ArmorMax
 };
+
+typedef enum ArmorSetID ArmorSetID;
+enum ArmorSetID{
+	ArmorSetNone,
+	ArmorSetIron,
+	ArmorSetMax
+};
+
+void armorinit(void);
+ArmorSetID itemarmorset(ItemID);
+void applyarmorbonus(Player*, ArmorSetID);
+Img *armorsetsheet(ArmorSetID, ArmorLoc);
+Img *armorinvsheet(ArmorSetID);
 
 struct Player {
 	Anim leftas[Nacts][ArmorMax];
