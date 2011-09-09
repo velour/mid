@@ -209,7 +209,7 @@ static void moneydraw(Gfx *g, int m)
 static void curdraw(Gfx *g, Invit *inv)
 {
 	Txt *invtxt = gettxt();
-	Point p = { .x = Xmin, .y = Height + Ymin + Pad + TxtSzMedium + Pad };
+	Point p = { .x = Xmin, .y = Height + Ymin + Pad + TxtSzMedium*2 + Pad };
 	txtdraw(g, invtxt, p, itemname(inv->id));
 }
 
