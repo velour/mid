@@ -38,20 +38,18 @@ int main(int argc, char *argv[])
 
 	mvsinit();
 
-restart:
-	init(lvl);
-	water(lvl);
+	do{
+		init(lvl);
+		water(lvl);
 
-	Loc loc = (Loc) { Startx, Starty, 0 };
-	blk(lvl, loc.x, loc.y, 0)->tile = ' ';
-	Path *p = pathnew(lvl);
-	pathbuild(lvl, p, loc);
-	pathfree(p);
+		Loc loc = (Loc) { Startx, Starty, 0 };
+		Path *p = pathnew(lvl);
+		pathbuild(lvl, p, loc);
+		pathfree(p);
 
-	morereach(lvl);
-	closeunits(lvl);
-	if (closeunreach(lvl) < lvl->w * lvl->h * lvl->d * 0.40)
-		goto restart;
+		morereach(lvl);
+		closeunits(lvl);
+	}while(closeunreach(lvl) < lvl->w * lvl->h * lvl->d * 0.40);
 
 	stairs(&r, lvl);
 	lvlwrite(stdout, lvl);
