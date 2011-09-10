@@ -144,15 +144,32 @@ static FILE *zpipe(Rng *r)
 {
 	Pipe p = {};
 	pipeadd(&p, "lvlgen", "-s %u 25 25 3", rngint(r));
-	pipeadd(&p, "itmgen", "-s %u 1 1", rngint(r));
-	pipeadd(&p, "itmgen", "-s %u 2 2 2 2 2 4 4 5 50", rngint(r));
-	pipeadd(&p, "itmgen", "-s %u 3 3 3 3 6 10", rngint(r));
-	pipeadd(&p, "itmgen", "-s %u 7 10", rngint(r));
-	pipeadd(&p, "envgen", "-s %u 1 1", rngint(r));
-	pipeadd(&p, "envgen", "-s %u 3 1", rngint(r));
-	pipeadd(&p, "envgen", "-s %u 4 1", rngint(r));
-	pipeadd(&p, "envgen", "-s %u 5 1", rngint(r));
-	pipeadd(&p, "enmgen", "-s %u 1 1 1 2 2 2 2 3 3 4 5 50", rngint(r));
+
+	pipeadd(&p, "itmgen", "-s %u %d 1", rngint(r), ItemStatup);
+
+	pipeadd(&p, "itmgen", "-s %u %d %d %d %d %d %d %d %d 50", rngint(r),
+		ItemCopper, ItemCopper, ItemCopper, ItemCopper, ItemCopper, 
+		ItemSilver, ItemSilver,
+		ItemGold
+	);
+	pipeadd(&p, "itmgen", "-s %u %d %d %d %d %d 5", rngint(r),
+		ItemHealth, ItemHealth, ItemHealth, ItemHealth,
+		ItemCarrot
+	);
+	pipeadd(&p, "itmgen", "-s %u %d 1", rngint(r), ItemHamCan);
+
+	pipeadd(&p, "envgen", "-s %u %d 1", rngint(r), EnvShrempty);
+
+	pipeadd(&p, "envgen", "-s %u %d %d %d 2", rngint(r),
+		EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
+
+	pipeadd(&p, "enmgen", "-s %u %d %d %d %d %d %d %d 3 3 4 5 50", rngint(r),
+		EnemyUnti, EnemyUnti, EnemyUnti,
+		EnemyNous, EnemyNous, EnemyNous, EnemyNous,
+		EnemyDa, EnemyDa, EnemyDa,
+		EnemyThu,
+		EnemyGrendu
+	);
 
 	char adc[256];
 	if(snprintf(adc, sizeof(adc), "\"%s/cur.lvl\"", zonedir) == -1)
