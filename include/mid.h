@@ -272,6 +272,12 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale);
  * respect collisions. */
 Isect lvlisect(Lvl *l, Rect r, Point v);
 
+enum{
+	LvlMaxPallets = 2
+};
+
+void lvlsetpallet(int pallet);
+
 typedef struct Tileinfo Tileinfo;
 struct Tileinfo {
 	int x, y, z;

@@ -24,7 +24,7 @@ static bool edge(Lvl *l, int x, int y);
 static bool blkd(Lvl *l, int x, int y);
 
 static Img *shdimg;
-static Img *tisht;
+static Img *tisht[LvlMaxPallets];
 
 enum { Tlayers = 4 };
 
@@ -149,25 +149,32 @@ Lvl *lvlnew(int d, int w, int h, int z)
 
 bool lvlinit()
 {
-	tisht = resrcacq(imgs, "img/tiles.png", NULL);
-	assert(tisht != NULL);
+	tisht[0] = resrcacq(imgs, "img/tiles0.png", NULL);
+	assert(tisht[0] != NULL);
+	tisht[1] = resrcacq(imgs, "img/tiles.png", NULL);
+	assert(tisht[1] != NULL);
 
 	if (!shdimg)
 		shdimg = resrcacq(imgs, "img/alph128.png", NULL);
 	if (!shdimg)
 		return false;
 
+	lvlsetpallet(0);
+
+	return true;
+}
+
+void lvlsetpallet(int p)
+{
 	for (int i = 0; i < Ntiles; i++) {
 		if (!tiles[i].ok)
 			continue;
 		for (int l = 0; l < Tlayers; l++) {
 			if (tiles[i].anims[l].len == 0)
 				continue;
-			tiles[i].anims[l].sheet = tisht;
+			tiles[i].anims[l].sheet = tisht[p];
 		}
 	}
-
-	return true;
 }
 
 Lvl *lvlread(FILE *f)
@@ -291,7 +298,6 @@ void lvldraw(Gfx *g, Lvl *l, bool bkgrnd)
 static void tiledraw(Gfx *g, int t, Point pt, int l)
 {
 	assert(tiles[t].ok);
-	assert(tisht != NULL);
 	assert(tiles[t].anims[l].sheet != NULL);
 	camdrawanim(g, &tiles[t].anims[l], pt);
 }
