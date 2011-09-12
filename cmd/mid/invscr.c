@@ -44,6 +44,7 @@ static char *locname[] = {
 	[EqpArms] = "Arms",
 	[EqpLegs] = "Legs",
 	[EqpWep] = "Wep.",
+	[EqpMag] = "Mag.",
 	[EqpEat] = "Eat",
 	[EqpDrop] = "Drop",
 };
@@ -52,6 +53,9 @@ static char *statname[] = {
 	[StatHp] = "HP",
 	[StatDex] = "Dex",
 	[StatStr] = "Str",
+	[StatMag] = "Mag",
+	[StatGuts] = "Guts",
+	[StatLuck] = "Luck",
 };
 
 static void update(Scrn*,Scrnstk*);
@@ -209,7 +213,7 @@ static void moneydraw(Gfx *g, int m)
 static void curdraw(Gfx *g, Invit *inv)
 {
 	Txt *invtxt = gettxt();
-	Point p = { .x = Xmin, .y = Height + Ymin + Pad + TxtSzMedium*2 + Pad };
+	Point p = { .x = Xmin, .y = Height + Ymin + Pad + TxtSzMedium*3 + Pad };
 	txtdraw(g, invtxt, p, itemname(inv->id));
 }
 

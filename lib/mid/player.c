@@ -51,6 +51,9 @@ void playerinit(Player *p, int x, int y)
 	p->stats[StatHp] = 10;
 	p->stats[StatDex] = 5;
 	p->stats[StatStr] = 5;
+	p->stats[StatMag] = 5;
+	p->stats[StatGuts] = 5;
+	p->stats[StatLuck] = 5;
 
 	p->sw.row = 0;
 	p->sw.dir = Mvright;

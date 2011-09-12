@@ -385,10 +385,13 @@ enum Stat{
 	StatHp,
 	StatDex,
 	StatStr,
+	StatMag,
+	StatGuts,
+	StatLuck,
 	StatMax
 };
 
-enum { Maxinv = 15 };
+enum { Maxinv = 18 };
 
 enum EqpLoc{
 	EqpNone,
@@ -397,6 +400,7 @@ enum EqpLoc{
 	EqpArms,
 	EqpLegs,
 	EqpWep,
+	EqpMag,
 	EqpMax,
 };
 

@@ -56,6 +56,9 @@ static void draw(Scrn *s, Gfx *g){
 		[StatHp] = "HP",
 		[StatDex] = "Dex",
 		[StatStr] = "Str",
+		[StatMag] = "Mag",
+		[StatGuts] = "Guts",
+		[StatLuck] = "Luck",
 	};
 
 	Statup *sup = s->data;
