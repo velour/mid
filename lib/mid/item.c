@@ -155,6 +155,24 @@ static ItemOps ops[] = {
 		.stats = { 0, 1, 2 },
 		.loc = EqpWep
 	},
+	[ItemBubble] = {
+		"Bubble Magic",
+		"img/magic.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 },
+		.stats = { [StatMag] = 2 },
+		.loc = EqpMag
+	},
+	[ItemZap] = {
+		"Zap Magic",
+		"img/magic.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 },
+		.stats = { [StatMag] = 2 },
+		.loc = EqpMag
+	},
 };
 
 _Bool iteminit(Item *i, ItemID id, Point p){

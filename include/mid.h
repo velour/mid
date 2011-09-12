@@ -321,6 +321,7 @@ enum Action{
 	Mvjump,
 	Mvinv,
 	Mvsword,
+	Mvmagic,
 	Nactions,
 };
 
@@ -358,6 +359,7 @@ typedef enum ItemID ItemID;
 typedef enum EqpLoc EqpLoc;
 typedef struct Player Player;
 typedef struct Zone Zone;
+typedef struct Magic Magic;
 
 struct Sword{
 	Rect rightloc[2];
@@ -418,6 +420,8 @@ enum ItemID{
 	ItemIronGlove,
 	ItemIronBody,
 	ItemIronBoot,
+	ItemBubble,
+	ItemZap,
 	ItemSilverSwd,
 	ItemBroadSwd,
 	ItemWindSwd,
@@ -437,6 +441,7 @@ void itemupdate(Item*, Player*, Zone *z);
 void itemdraw(Item*, Gfx*);
 char *itemname(ItemID);
 EqpLoc itemeqploc(ItemID);
+void itemcast(Magic*, ItemID, Player*);
 
 struct Invit{
 	ItemID id;
@@ -470,6 +475,17 @@ void applyarmorbonus(Player*, ArmorSetID);
 Img *armorsetsheet(ArmorSetID, ArmorLoc);
 Img *armorinvsheet(ArmorSetID);
 
+struct Magic{
+	ItemID id;
+	Body body;
+	int row;
+};
+
+void magicldresrc(void);
+void magicdraw(Gfx*, Magic*);
+void magicupdate(Magic*, Zone*);
+int magicstr(Magic*, Player*);
+
 struct Player {
 	Anim leftas[Nacts][ArmorMax];
 	Anim rightas[Nacts][ArmorMax];
@@ -486,6 +502,7 @@ struct Player {
 	int iframes; // invulnerability after damage;
 	double hitback;
 	int sframes;
+	int mframes;
 	int lives;
 
 	/* if changed, update visibility. */
@@ -588,6 +605,7 @@ enum {
 	Maxenms = 32,
 	Maxitms = 32,
 	Maxenvs = 16,
+	Maxmagics = 32,
 	Maxz = 5,
 };
 
@@ -600,6 +618,7 @@ struct Zone {
 	Item itms[Maxz][Maxitms];
 	Env envs[Maxz][Maxenvs];
 	Enemy enms[Maxz][Maxenms];
+	Magic mags[Maxz][Maxmagics];
 };
 
 Zone *zoneread(FILE *);
@@ -608,6 +627,7 @@ void zonefree(Zone *);
 _Bool zoneadditem(Zone *zn, int z, Item it);
 _Bool zoneaddenv(Zone *zn, int z, Env env);
 _Bool zoneaddenemy(Zone *zn, int z, Enemy enm);
+_Bool zoneaddmagic(Zone *zn, int z, Magic);
 void zonedraw(Gfx *g, Zone *zn, Player *p);
 void zoneupdate(Zone *zn, Player *p, Point *tr);
 

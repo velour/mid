@@ -35,6 +35,7 @@ OFILES :=\
 	grendu.o\
 	meter.o\
 	armor.o\
+	magic.o\
 
 LIBDEPS :=\
 	rng
