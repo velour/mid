@@ -54,7 +54,8 @@ _Bool sndread(char *fname){
 		return 1;
 
 	int v = 0;
-	fscanf(f, "%d", &v);
+	if (fscanf(f, "%d", &v) != 1)
+		return false;
 	if(ferror(f))
 		return fclose(f);
 
