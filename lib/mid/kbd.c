@@ -54,15 +54,3 @@ char kmap[] = {
 	[Mvinv] = 'n',
 	[Mvsword] = 'j',
 };
-
-static Uint8 *keystate;
-static int nkeys;
-
-_Bool iskeydown(Action act){
-	if (!keystate)
-		keystate = SDL_GetKeyboardState(&nkeys);
-	int keysym = SDL_GetScancodeFromKey(kmap[act]);
-	assert (keysym >= 0);
-	assert (keysym < nkeys);
-	return keystate[keysym];
-}
