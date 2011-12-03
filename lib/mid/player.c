@@ -63,7 +63,6 @@ void playerinit(Player *p, int x, int y)
 	invitinit(&p->wear[EqpBody], ItemIronBody);
 	invitinit(&p->wear[EqpArms], ItemIronGlove);
 	invitinit(&p->wear[EqpLegs], ItemIronBoot);
-	invitinit(&p->wear[EqpMag], ItemBubble);
 	resetstats(p);
 	p->curhp = p->stats[StatHp] + p->eqp[StatHp];
 	mvsw(p);
@@ -163,14 +162,6 @@ void playerupdate(Player *p, Zone *zn, Point *tr)
 		p->sw.cur = 1;
 	}else
 		p->sw.cur = -1;
-
-	if(p->mframes > 7 && p->wear[EqpMag].id > 0){
-		Magic m = {};
-		itemcast(&m, p->wear[EqpMag].id, p);
-		zoneaddmagic(zn, zn->lvl->z, m);
-	}
-	if(p->mframes > 0)
-		p->mframes--;
 }
 
 void playerdraw(Gfx *g, Player *p)
@@ -236,8 +227,6 @@ void playerhandle(Player *p, Event *e)
 		p->acting = true;
 	}else if(k == kmap[Mvsword] && e->down && p->sw.cur < 0){
 		p->sframes = 16;
-	}else if(k == kmap[Mvmagic] && e->down && p->mframes == 0){
-		p->mframes = 8;
 	}
 }
 

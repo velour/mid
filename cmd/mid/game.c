@@ -48,8 +48,6 @@ Game *gamenew(void)
 	if(!swordldresrc())
 		fatal("Failed to load sword resrouces: %s", miderrstr());
 
-	magicldresrc();
-
 	gm.ui = resrcacq(imgs, "img/ui.png", 0);
 
 	return &gm;
