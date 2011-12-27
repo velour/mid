@@ -69,13 +69,9 @@ static Point velstep(Body *b, Point v)
 
 static double tillwhole(double loc, double vel)
 {
-	if (vel > 0) {
-		int l = loc + 0.5;
-		return l - loc;
-	} else {
-		int l = loc;
-		return l - loc;
-	}
+	if (vel > 0)
+		return ceil(loc) - loc;
+	return (int) loc - loc;
 }
 
 static void dofall(Body *b, Lvl *l, Isect is)
