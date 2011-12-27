@@ -71,7 +71,7 @@ static double tillwhole(double loc, double vel)
 {
 	if (vel > 0)
 		return ceil(loc) - loc;
-	return (int) loc - loc;
+	return floor(loc) - loc;
 }
 
 static void dofall(Body *b, Lvl *l, Isect is)
