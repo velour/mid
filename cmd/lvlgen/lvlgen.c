@@ -11,12 +11,15 @@
 #include "../../include/rng.h"
 #include "lvlgen.h"
 
-static int rng(Rng *, int, char *[]);
+static void parseargs(int, char *[]);
+static void rng(Rng *);
 static void init(Lvl *l);
 extern void lvlwrite(FILE *, Lvl *);
 static void stairs(Rng *, Lvl *);
 static int stairlocs(Lvl *, Loc []);
 
+static char *seedstr = NULL;
+static bool addwater = true;
 Rng r;
 enum { Startx = 2, Starty = 2 };
 
@@ -24,12 +27,11 @@ int main(int argc, char *argv[])
 {
 	loginit(NULL);
 
-	if (argc != 4 && argc != 6)
-		return 1;
+	if (argc < 4)
+		fatal("Expected 3 arguments");
 
-	int usdargs = rng(&r, argc, argv);
-	argc -= usdargs;
-	argv += usdargs;
+	parseargs(argc, argv);
+	rng(&r);
 
 	int w = strtol(argv[1], NULL, 10);
 	int h = strtol(argv[2], NULL, 10);
@@ -40,7 +42,8 @@ int main(int argc, char *argv[])
 
 	do{
 		init(lvl);
-		water(lvl);
+		if (addwater)
+			water(lvl);
 
 		Loc loc = (Loc) { Startx, Starty, 0 };
 		Path *p = pathnew(lvl);
@@ -58,21 +61,28 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-static int rng(Rng *r, int argc, char *argv[])
+static void parseargs(int argc, char *argv[])
 {
-	int args = 0;
+	for (unsigned int i = 4; i < argc; i++) {
+		if (i < argc - 1 && strcmp("-s", argv[i]) == 0) {
+			seedstr = argv[++i];
+		} else if (strcmp("-w", argv[i]) == 0) {
+			addwater = false;
+		}
+	}
+}
+
+static void rng(Rng *r)
+{
 	clock_t seed = 0;
 
-	if (argv[1][0] == '-' && argv[1][1] == 's') {
-		seed = strtol(argv[2], NULL, 10);
-		args = 2;
+	if (seedstr) {
+		seed = strtol(seedstr, NULL, 10);
 	} else {
 		seed = time(0) ^ getpid() ^ getpid() << 16;
 		pr("lvlgen seed = %lu", (unsigned long) seed);
 	}
 	rnginit(r, seed);
-
-	return args;
 }
 
 static void init(Lvl *l)
