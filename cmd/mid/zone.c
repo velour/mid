@@ -143,7 +143,7 @@ static void ensuredir()
 static FILE *zpipe(Rng *r)
 {
 	Pipe p = {};
-	pipeadd(&p, "lvlgen", "-s %u 25 25 3", rngint(r));
+	pipeadd(&p, "lvlgen", "25 25 3-s %u ", rngint(r));
 
 	pipeadd(&p, "itmgen", "-s %u %d 1", rngint(r), ItemStatup);
 
