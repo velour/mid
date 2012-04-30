@@ -15,13 +15,13 @@ static void parseargs(int, char *[]);
 static void rng(Rng *);
 static void init(Lvl *l);
 extern void lvlwrite(FILE *, Lvl *);
-static void stairs(Rng *, Lvl *);
+static void stairs(Rng *, Lvl *, unsigned int, unsigned int);
 static int stairlocs(Lvl *, Loc []);
 
 static char *seedstr = NULL;
 static bool addwater = true;
+static bool randstart;
 Rng r;
-enum { Startx = 2, Starty = 2 };
 
 int main(int argc, char *argv[])
 {
@@ -38,6 +38,12 @@ int main(int argc, char *argv[])
 	int d = strtol(argv[3], NULL, 10);
 	Lvl *lvl = lvlnew(d, w, h, 0);
 
+	unsigned int x0 = 2, y0 = 2;
+	if (randstart) {
+		x0 =rnd(1, w-2);
+		y0 = rnd(1, h-2);
+	}
+
 	mvsinit();
 
 	do{
@@ -45,7 +51,7 @@ int main(int argc, char *argv[])
 		if (addwater)
 			water(lvl);
 
-		Loc loc = (Loc) { Startx, Starty, 0 };
+		Loc loc = (Loc) { x0, y0, 0 };
 		Path *p = pathnew(lvl);
 		pathbuild(lvl, p, loc);
 		pathfree(p);
@@ -54,7 +60,7 @@ int main(int argc, char *argv[])
 		closeunits(lvl);
 	}while(closeunreach(lvl) < lvl->w * lvl->h * lvl->d * 0.40);
 
-	stairs(&r, lvl);
+	stairs(&r, lvl, x0, y0);
 	lvlwrite(stdout, lvl);
 	lvlfree(lvl);
 
@@ -68,6 +74,8 @@ static void parseargs(int argc, char *argv[])
 			seedstr = argv[++i];
 		} else if (strcmp("-w", argv[i]) == 0) {
 			addwater = false;
+		} else if (strcmp("-r", argv[i]) == 0) {
+			randstart = true;
 		}
 	}
 }
@@ -104,13 +112,13 @@ unsigned int rnd(int min, int max)
 	return rngintincl(&r, min, max);
 }
 
-static void stairs(Rng *r, Lvl *lvl)
+static void stairs(Rng *r, Lvl *lvl, unsigned int x0, unsigned int y0)
 {
-	if (tileinfo(lvl, Startx, Starty, 0).flags & Twater)
-		blk(lvl, Startx, Starty, 0)->tile = 'U';
+	if (tileinfo(lvl, x0, y0, 0).flags & Twater)
+		blk(lvl, x0, y0, 0)->tile = 'U';
 	else
-		blk(lvl, Startx, Starty, 0)->tile = 'u';
-	setreach(lvl, Startx, Starty, 0);
+		blk(lvl, x0, y0, 0)->tile = 'u';
+	setreach(lvl, x0, y0, 0);
 
 	Loc ls[lvl->w * lvl->h * lvl->d];
 	int nls = stairlocs(lvl, ls);
