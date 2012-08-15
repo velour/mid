@@ -262,7 +262,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 		}else{
 			Eloc el = eqpat(i, e->x, e->y);
 			s = el.it;
-			if(el.loc == EqpDrop){
+			if(el.loc == (int) EqpDrop){
 				int dpos = i->p->anim == i->p->leftas ? -1 : 1;
 				Item drop = {};
 				Point gridloc = { // BARF
@@ -274,7 +274,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 				*i->curitem = (Invit){};
 				return;
 			}
-			if(el.loc == EqpEat){
+			if(el.loc == (int) EqpEat){
 				if(inviteat(i->curitem, i->p, i->zone))
 					*i->curitem = (Invit){};
 				return;

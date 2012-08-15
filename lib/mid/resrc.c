@@ -113,8 +113,8 @@ static void rtabgrow(Rtab *t)
 static void cacherm(Rtab *t, int i)
 {
 	t->cache[i]->cind = -1;
-	t->cache[i] = t->cache[t->cfill];
 	t->cfill--;
+	t->cache[i] = t->cache[t->cfill];
 	if (t->cfill > 0)
 		t->cache[i]->cind = i;
 }
