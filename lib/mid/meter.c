@@ -9,6 +9,7 @@ Rect meterdraw(Gfx *g, Meter *m, Point p){
 		{ base.b.x, base.a.y },
 		{ base.b.x + m->xscale * m->extra, base.b.y }
 	};
+	extra = rectnorm(extra);
 	Rect both = {
 		base.a,
 		{ base.a.x + m->xscale * m->max, extra.b.y }
