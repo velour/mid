@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 
 	unsigned int x0 = 2, y0 = 2;
 	if (randstart) {
-		x0 =rnd(1, w-2);
+		x0 = rnd(1, w-2);
 		y0 = rnd(1, h-2);
 	}
 
@@ -61,6 +61,18 @@ int main(int argc, char *argv[])
 	}while(closeunreach(lvl) < lvl->w * lvl->h * lvl->d * 0.40);
 
 	stairs(&r, lvl, x0, y0);
+
+	bool foundstart = false;
+	for (int x = 0; x < w; x++) {
+	for (int y = 0; y < h; y++) {
+		if (blk(lvl, x, y, 0)->tile == 'u' || blk(lvl, x, y, 0)->tile == 'U') {
+			foundstart = true;
+			break;
+		}
+	}
+	}
+	assert(foundstart);
+
 	lvlwrite(stdout, lvl);
 	lvlfree(lvl);
 
