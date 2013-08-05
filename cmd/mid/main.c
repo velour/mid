@@ -9,6 +9,8 @@
 
 Gfx *gfx;
 
+static void usage(int);
+
 bool init()
 {
 	if(debugging)
@@ -63,11 +65,13 @@ int main(int argc, char *argv[])
 	for(int i = 1; i < argc; i++){
 	if(ARGIS('k')){
 		if(i + 1 == argc)
-			die("k requires a filename", miderrstr());
+			usage(1);
 		kmname = argv[i+1];
 		i++;
 	}else if(ARGIS('d')){
 		debugging++;
+	}else if (ARGIS('h')){
+		usage(0);
 	}else if (ARGIS('p')){
 		zonestdin();
 	}else if(ARGIS('m')){
@@ -97,4 +101,15 @@ int main(int argc, char *argv[])
 
 	deinit();
 	return 0;
+}
+
+static void usage(int s)
+{
+	puts("Usage: mid [-d] [-h] [-k <file>] [-m] [-p]");
+	puts("-d	enable debugging");
+	puts("-h	print usage information");
+	puts("-k <file>	specify the key map file");
+	puts("-m	mute the sound effects");
+	puts("-p	accept the pipeline from standard input");
+	exit(s);
 }
