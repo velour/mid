@@ -82,7 +82,6 @@ int main(int argc, char *argv[])
 	if (!init())
 		fatal("Failed to initialize: %s", miderrstr());
 
-
 	if(kmname && keymapread(kmap, kmname))
 		die("failed to read %s", kmname);
 	else{
