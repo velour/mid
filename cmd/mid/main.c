@@ -62,21 +62,21 @@ int main(int argc, char *argv[])
 
 #	define ARGIS(a) argv[i][0] == '-' && argv[i][1] == a && argv[i][2] == 0
 
-	for(int i = 1; i < argc; i++){
-	if(ARGIS('k')){
-		if(i + 1 == argc)
-			usage(1);
-		kmname = argv[i+1];
-		i++;
-	}else if(ARGIS('d')){
-		debugging++;
-	}else if (ARGIS('h')){
-		usage(0);
-	}else if (ARGIS('p')){
-		zonestdin();
-	}else if(ARGIS('m')){
-		mute = 1;
-	}
+	for(int i = 1; i < argc; i++){	
+		if(ARGIS('d')){
+			debugging++;
+		}else if (ARGIS('h')){
+			usage(0);
+		}else if(ARGIS('k')){
+			if(i + 1 == argc)
+				usage(1);
+			kmname = argv[i+1];
+			i++;
+		}else if(ARGIS('m')){
+			mute = 1;
+		}else if (ARGIS('p')){
+			zonestdin();
+		}
 	}
 
 	if (!init())
