@@ -1,5 +1,5 @@
-// Copyright © 2011 Steve McCoy and Ethan Burns
-// Licensed under the MIT License. See LICENSE for details.
+/* © 2013 the Mid Authors under the MIT license. See AUTHORS for the list of authors.*/
+
 #include "../../include/mid.h"
 
 static Img *swordsh;
