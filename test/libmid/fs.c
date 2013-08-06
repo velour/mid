@@ -1,3 +1,5 @@
+/* © 2013 the Mid Authors under the MIT license. See AUTHORS for the list of authors.*/
+
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <stdlib.h>

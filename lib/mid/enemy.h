@@ -1,3 +1,5 @@
+/* © 2013 the Mid Authors under the MIT license. See AUTHORS for the list of authors.*/
+
 
 _Bool defaultscan(char *, Enemy *);
 _Bool defaultprint(char *, size_t, Enemy *);

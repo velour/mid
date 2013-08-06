@@ -1,3 +1,5 @@
+/* © 2013 the Mid Authors under the MIT license. See AUTHORS for the list of authors.*/
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include <assert.h>

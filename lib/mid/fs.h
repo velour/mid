@@ -1,3 +1,5 @@
+/* © 2013 the Mid Authors under the MIT license. See AUTHORS for the list of authors.*/
+
 #if !defined(_FS_H_)
 #define _FS_H_
 
