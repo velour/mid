@@ -472,10 +472,15 @@ void applyarmorbonus(Player*, ArmorSetID);
 Img *armorsetsheet(ArmorSetID, ArmorLoc);
 Img *armorinvsheet(ArmorSetID);
 
+typedef enum Dir {
+	Left,
+	Right,
+	Ndirs,
+} Dir;
+
 struct Player {
-	Anim leftas[Nacts][ArmorMax];
-	Anim rightas[Nacts][ArmorMax];
-	Anim (*anim)[ArmorMax];
+	Anim as[Ndirs][Nacts][ArmorMax];
+	Dir dir;
 	Act act;
 	Point imgloc;
 

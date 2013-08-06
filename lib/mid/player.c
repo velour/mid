@@ -35,15 +35,15 @@ void playerinit(Player *p, int x, int y)
 	assert(ow != NULL);
 
 	for(int i = 0; i < ArmorMax; i++){
-		loadanim(&p->leftas[Stand][i], 0, 1, 1, i);
-		loadanim(&p->leftas[Walk][i], 1, 4, 100, i);
-		loadanim(&p->leftas[Jump][i], 2, 1, 1, i);
-		loadanim(&p->rightas[Stand][i], 3, 1, 1, i);
-		loadanim(&p->rightas[Walk][i], 4, 4, 100, i);
-		loadanim(&p->rightas[Jump][i], 5, 1, 1, i);
+		loadanim(&p->as[Left][Stand][i], 0, 1, 1, i);
+		loadanim(&p->as[Left][Walk][i], 1, 4, 100, i);
+		loadanim(&p->as[Left][Jump][i], 2, 1, 1, i);
+		loadanim(&p->as[Right][Stand][i], 3, 1, 1, i);
+		loadanim(&p->as[Right][Walk][i], 4, 4, 100, i);
+		loadanim(&p->as[Right][Jump][i], 5, 1, 1, i);
 	}
 
-	p->anim = p->rightas;
+	p->dir = Right;
 	p->act = Stand;
 	p->imgloc = (Point){ x * Twidth, y * Theight };
 
@@ -135,13 +135,13 @@ void playerupdate(Player *p, Zone *zn, Point *tr)
 
 	mvsw(p);
 
-	Anim (*prevanim)[ArmorMax] = p->anim;
+	Dir prevdir = p->dir;
 	chngdir(p);
 	chngact(p);
-	if(p->anim != prevanim)
-		for(int i = 0; i < ArmorMax; i++) animreset(&p->anim[p->act][i]);
+	if(p->dir != prevdir)
+		for(int i = 0; i < ArmorMax; i++) animreset(&p->as[p->dir][p->act][i]);
 	else
-		for(int i = 0; i < ArmorMax; i++) animupdate(&p->anim[p->act][i]);
+		for(int i = 0; i < ArmorMax; i++) animupdate(&p->as[p->dir][p->act][i]);
 
 	Point del = { playerpos(p).x - ppos.x, playerpos(p).y - ppos.y };
 	*tr = scroll(p, del);
@@ -186,8 +186,8 @@ void playerdraw(Gfx *g, Player *p)
 			for(int i = 0; i < ArmorMax; i++){
 				int loc = armtoeqp(i);
 				ArmorSetID as = itemarmorset(p->wear[loc].id);
-				p->anim[p->act][i].sheet = armorsetsheet(as, i);
-				animdraw(g, &p->anim[p->act][i], p->imgloc);
+				p->as[p->dir][p->act][i].sheet = armorsetsheet(as, i);
+				animdraw(g, &p->as[p->dir][p->act][i], p->imgloc);
 			}
 	}
 
@@ -290,10 +290,10 @@ static void loadanim(Anim *a, int row, int len, int delay, int shid)
 static void chngdir(Player *p)
 {
 	if (p->body.vel.x < 0){
-		p->anim = p->leftas;
+		p->dir = Left;
 		p->sw.dir = Mvleft;
 	}else if (p->body.vel.x > 0){
-		p->anim = p->rightas;
+		p->dir = Right;
 		p->sw.dir = Mvright;
 	}
 }
@@ -362,7 +362,7 @@ static void mvsw(Player *p){
 }
 
 static Rect attackclip(Player *p, int col){
-	int row = (p->anim == p->leftas) ? 6 : 7;
+	int row = (p->dir == Left) ? 6 : 7;
 	return (Rect){
 		{ col * Twidth, row * Theight },
 		{ col * Twidth + Theight, row * Theight + Theight }
