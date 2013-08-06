@@ -1,5 +1,3 @@
-// Copyright © 2011 Steve McCoy and Ethan Burns
-// Licensed under the MIT License. See LICENSE for details.
 
 _Bool defaultscan(char *, Enemy *);
 _Bool defaultprint(char *, size_t, Enemy *);

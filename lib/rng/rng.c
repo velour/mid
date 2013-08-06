@@ -1,5 +1,3 @@
-// Copyright © 2011 Steve McCoy and Ethan Burns
-// Licensed under the MIT License. See LICENSE for details.
 /* Ranq1, from "Numerical Recipes 3rd edition," Press, Tenkolsky,
    Vetterling and Flannery, 2007.  Technically, the algorithm is
    defined on *unsigned* 64-bit integers. */

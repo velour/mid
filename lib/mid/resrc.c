@@ -1,5 +1,3 @@
-// Copyright © 2011 Steve McCoy and Ethan Burns
-// Licensed under the MIT License. See LICENSE for details.
 /* A resource table finds and tracks resource usage (reference
  * counts).  A finite number of unreferenced resources are kept in a
  * simple cache with a FIFO-ish replacement policy. */

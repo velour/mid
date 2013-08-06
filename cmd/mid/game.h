@@ -1,5 +1,3 @@
-// Copyright © 2011 Steve McCoy and Ethan Burns
-// Licensed under the MIT License. See LICENSE for details.
 struct Rng;
 
 void zoneloc(const char*);
