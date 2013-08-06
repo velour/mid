@@ -634,7 +634,7 @@ _Bool zoneoverlap(Zone *zn, int z, Point loc, Point wh);
 _Bool scangeom(char *buf, char *fmt, ...);
 
 /* Prints a structure to a string buffer using the same type of format
- * specified as is used by scanbuf.  The return value is true if the
+ * specified as is used by scangeom.  The return value is true if the
  * output was not truncated and false if the output was truncated. */
 _Bool printgeom(char *buf, int sz, char *fmt, ...);
 
