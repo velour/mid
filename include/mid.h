@@ -114,6 +114,7 @@ typedef struct Anim Anim;
 
 void camreset(Gfx*);
 void cammove(Gfx *, double dx, double dy);
+Point camget(Gfx*);
 void camdrawrect(Gfx *, Rect, Color);
 void camfillrect(Gfx *, Rect, Color);
 void camdrawimg(Gfx *, Img *, Point);
@@ -180,6 +181,7 @@ typedef struct Scrnstk Scrnstk;
 
 struct Scrn{
 	Scrnmt *mt;
+	Point cam;
 	void *data;
 };
 
@@ -192,14 +194,14 @@ struct Scrnmt{
 	void (*free)(Scrn *);
 };
 
-Scrnstk *scrnstknew(void);
+Scrnstk *scrnstknew(Gfx*);
 void scrnstkfree(Scrnstk *);
 /* Stack now owns Scrn, will call scrn->mt->free(scrn) when popped. */
 void scrnstkpush(Scrnstk *, Scrn *);
 Scrn *scrnstktop(Scrnstk *);
 void scrnstkpop(Scrnstk *);
 
-void scrnrun(Scrnstk *, Gfx *);
+void scrnrun(Scrnstk *);
 
 typedef struct Rtab Rtab;
 

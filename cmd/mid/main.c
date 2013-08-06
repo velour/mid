@@ -91,10 +91,10 @@ int main(int argc, char *argv[])
 			pr("Keymap not loaded (%s), using defaults.", miderrstr());
 	}
 
-	Scrnstk *stk = scrnstknew();
+	Scrnstk *stk = scrnstknew(gfx);
 	scrnstkpush(stk, titlescrnnew(gfx));
 
-	scrnrun(stk, gfx);
+	scrnrun(stk);
 	pr("Mean frame time: %g ms", meanftime);
 	scrnstkfree(stk);
 
