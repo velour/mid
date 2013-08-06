@@ -202,6 +202,8 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 			envact(&ev[i], &gm->player, gm->zone);
 			if(gm->player.statup){
 				scrnstkpush(stk, statscrnnew(&gm->player, &ev[i]));
+				gm->player.statup = 0;
+				gamesave(gm);
 				return;
 			}
 		}
@@ -320,6 +322,14 @@ static FILE *opensavefile(const char *file, const char *mode)
 	if (!f)
 		die("Failed to open %s file with mode %s [%s]: %s", file, mode, p, miderrstr());
 	return f;
+}
+
+_Bool saveavailable(){
+	struct stat sb;
+	if (stat(savepath("game"), &sb) < 0) {
+		return false;
+	}
+	return true;
 }
 
 // Non-reentant

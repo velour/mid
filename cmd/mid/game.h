@@ -22,6 +22,7 @@ extern Scrnmt gamemt;
 void saveloc(const char *l);
 void gamesave(Game *gm);
 Game *gameload();
+_Bool saveavailable();
 
 enum { Invrows = 6, Invcols = 3 };
 
