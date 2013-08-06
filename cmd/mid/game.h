@@ -27,3 +27,5 @@ Scrn *titlescrnnew(Gfx *);
 Scrn *statscrnnew(Player *, Env *);
 Scrn *goverscrnnew(Player *, int);
 Scrn *optscrnnew(void);
+
+_Bool ensuredir(const char *d);

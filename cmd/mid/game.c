@@ -3,11 +3,15 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include "../../include/rng.h"
+#include "../../include/os.h"
+#include <errno.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include "game.h"
 
@@ -207,3 +211,17 @@ Scrnmt gamemt = {
 	gamefree,
 };
 
+_Bool ensuredir(const char *d)
+{
+	struct stat sb;
+	if (stat(d, &sb) < 0) {
+		if (makedir(d) < 0) {
+			seterrstr("Failed to make directory %s: %s", d, strerror(errno));
+			return false;
+		}
+	} else if (!S_ISDIR(sb.st_mode)) {
+		seterrstr("%s already exists and is not a directory", d);
+		return false;
+	}
+	return true;
+}
