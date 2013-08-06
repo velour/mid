@@ -489,11 +489,10 @@ struct Player {
 	_Bool acting;
 	_Bool statup;
 
+	double hitback;
 	int jframes;
 	int iframes; // invulnerability after damage;
-	double hitback;
 	int sframes;
-	int lives;
 
 	/* if changed, update visibility. */
 	Tileinfo bi;
@@ -501,6 +500,7 @@ struct Player {
 	int stats[StatMax];
 	int eqp[StatMax];
 	int curhp;
+	int lives;
 
 	int money;
 	Invit inv[Maxinv];
@@ -634,6 +634,8 @@ _Bool zoneoverlap(Zone *zn, int z, Point loc, Point wh);
  * p - Point
  * r - Rect
  * y - Body
+ * l - Player
+ * u - uint64_t
  *
  * The return value is true if all items in the format were scanned
  * and false if not.
