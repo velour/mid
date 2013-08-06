@@ -14,8 +14,8 @@
 
 extern int cmdpath(char *buf, int sz, char *cmd);
 
-static const char *zonedir = "_zones";
 enum { Bufsz = 1024 };
+static char zonedir[Bufsz] = "_zones";
 
 typedef struct Pipe {
 	int n;
@@ -30,7 +30,7 @@ static void pipeadd(struct Pipe *, char *, char *, ...);
 
 void zoneloc(const char *p)
 {
-	zonedir = p;
+	strncpy(zonedir, p, sizeof(zonedir)-1);
 }
 
 void zonestdin()

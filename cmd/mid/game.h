@@ -19,6 +19,9 @@ void gameupdate(Scrn *, Scrnstk *);
 void gamedraw(Scrn *, Gfx *);
 void gamehandle(Scrn *, Scrnstk *, Event *);
 extern Scrnmt gamemt;
+void saveloc(const char *l);
+void gamesave(Game *gm);
+Game *gameload();
 
 enum { Invrows = 6, Invcols = 3 };
 
