@@ -66,6 +66,7 @@ void prraw(const char *func, int err, const char *fmt, va_list ap)
 	fprintf(lfile, "%s" , strerror(err));
 done:
 	fprintf(lfile, "\n");
+	fflush(lfile);
 }
 
 void pr(const char *fmt, ...)
