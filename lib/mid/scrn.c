@@ -11,11 +11,13 @@ enum { Stkmax = 8 };
 struct Scrnstk{
 	Scrn *scrns[Stkmax];
 	Scrn **nxt;
+	Gfx *g;
 };
 
-Scrnstk *scrnstknew(void){
+Scrnstk *scrnstknew(Gfx *g){
 	Scrnstk *s = xalloc(1, sizeof(*s));
 	s->nxt = s->scrns;
+	s->g = g;
 	return s;
 }
 
@@ -31,6 +33,9 @@ void scrnstkfree(Scrnstk *stk){
 void scrnstkpush(Scrnstk *stk, Scrn *s){
 	assert(stk->nxt != &stk->scrns[Stkmax - 1]);
 
+	if (stk->nxt != &stk->scrns[0])
+		scrnstktop(stk)->cam = camget(stk->g);
+	camreset(stk->g);
 	*(stk->nxt) = s;
 	stk->nxt++;
 }
@@ -45,9 +50,13 @@ void scrnstkpop(Scrnstk *stk){
 	Scrn *s = stk->nxt[-1];
 	s->mt->free(s);
 	stk->nxt--;
+
+	camreset(stk->g);
+	Point p = scrnstktop(stk)->cam;
+	cammove(stk->g, p.x, p.y);
 }
 
-void scrnrun(Scrnstk *stk, Gfx *g){
+void scrnrun(Scrnstk *stk){
 	for(;;){
 		Scrn *s = scrnstktop(stk);
 		if(!s)
@@ -55,7 +64,7 @@ void scrnrun(Scrnstk *stk, Gfx *g){
 
 		framestart();
 		s->mt->update(s, stk);
-		s->mt->draw(s, g);
+		s->mt->draw(s, stk->g);
 
 		Event e;
 		while(pollevent(&e)){

@@ -11,6 +11,7 @@ struct Tit{
 	Img *copy;
 	Point titlepos;
 	Point startpos;
+	Point loadpos;
 	Point optspos;
 	Point copypos;
 };
@@ -54,16 +55,22 @@ Scrn *titlescrnnew(Gfx *g){
 		0
 	};
 
-	Point sd = txtdims(t.f, "Press 'x' to Start");
+	Point sd = txtdims(t.f, "Press 'x' to Start a new game");
 	t.startpos = (Point){
 		gfxdims(g).x / 2 - sd.x / 2,
 		t.titlepos.y + imgdims(t.title).y
 	};
 
+	Point ld = txtdims(t.f, "Press 'x' to Load the saved game");
+	t.loadpos = (Point){
+		gfxdims(g).x / 2 - ld.x / 2,
+		t.startpos.y + sd.y + 16
+	};
+
 	Point od = txtdims(t.f, "Press 'x' for Options");
 	t.optspos = (Point){
 		gfxdims(g).x / 2 - od.x / 2,
-		t.startpos.y + sd.y + 16
+		t.loadpos.y + ld.y + 16
 	};
 
 	t.copypos = (Point){
@@ -83,7 +90,9 @@ static void draw(Scrn *s, Gfx *g){
 	gfxclear(g, (Color){ 240, 240, 240 });
 	Tit *t = s->data;
 	imgdraw(g, t->title, t->titlepos);
-	txtdraw(g, t->f, t->startpos, "Press '%c' to Start", kmap[Mvinv]);
+	txtdraw(g, t->f, t->startpos, "Press '%c' to Start a new game", kmap[Mvinv]);
+	if (saveavailable())
+		txtdraw(g, t->f, t->loadpos, "Press '%c' to Load the saved game", kmap[Mvjump]);
 	txtdraw(g, t->f, t->optspos, "Press '%c' for Options", kmap[Mvact]);
 	imgdraw(g, t->copy, t->copypos);
 	gfxflip(g);
@@ -102,6 +111,11 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 		return;
 	}else if(e->down && e->key == kmap[Mvact]){
 		scrnstkpush(stk, optscrnnew());
+		return;
+	}else if(e->down && e->key == kmap[Mvjump]){
+		Game *g = gameload();
+		gms.data = g;
+		scrnstkpush(stk, &gms);
 		return;
 	}
 }

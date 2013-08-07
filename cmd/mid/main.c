@@ -23,10 +23,16 @@ bool init()
 			exit(1);
 		if(loginit(adm))
 			exit(2);
+
 		if(snprintf(adm, sizeof(adm), "%s/zones", ad) == -1)
 			die("Failed to make zoneloc path: %s", miderrstr());
 		makedir(adm);
 		zoneloc(adm);
+
+		if(snprintf(adm, sizeof(adm), "%s/save", ad) == -1)
+			die("Failed to make saveloc path: %s", miderrstr());
+		makedir(adm);
+		saveloc(adm);
 	}
 
 	pr("%s", "Let's rock.");
@@ -91,10 +97,10 @@ int main(int argc, char *argv[])
 			pr("Keymap not loaded (%s), using defaults.", miderrstr());
 	}
 
-	Scrnstk *stk = scrnstknew();
+	Scrnstk *stk = scrnstknew(gfx);
 	scrnstkpush(stk, titlescrnnew(gfx));
 
-	scrnrun(stk, gfx);
+	scrnrun(stk);
 	pr("Mean frame time: %g ms", meanftime);
 	scrnstkfree(stk);
 

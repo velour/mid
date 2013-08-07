@@ -4,7 +4,6 @@
 #include <stdarg.h>
 #include <string.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <unistd.h>
 #include "../../include/mid.h"
 #include "../../include/log.h"
@@ -15,8 +14,8 @@
 
 extern int cmdpath(char *buf, int sz, char *cmd);
 
-static const char *zonedir = "_zones";
 enum { Bufsz = 1024 };
+static char zonedir[Bufsz] = "_zones";
 
 typedef struct Pipe {
 	int n;
@@ -25,14 +24,13 @@ typedef struct Pipe {
 
 static FILE *inzone = NULL;
 
-static void ensuredir();
 static char *zonefile(int);
 static FILE *zpipe(Rng *r);
 static void pipeadd(struct Pipe *, char *, char *, ...);
 
 void zoneloc(const char *p)
 {
-	zonedir = p;
+	strncpy(zonedir, p, sizeof(zonedir)-1);
 }
 
 void zonestdin()
@@ -83,7 +81,8 @@ Zone *zoneget(int znum)
 void zoneput(Zone *zn, int znum)
 {
 	ignframetime();
-	ensuredir();
+	if (!ensuredir(zonedir))
+		die("Failed to make zone directory: %s", miderrstr());
 	
 	char *zfile = zonefile(znum);
 	FILE *f = fopen(zfile, "w");
@@ -127,17 +126,6 @@ static char *zonefile(int znum)
 	static char zfile[Bufsz];
 	snprintf(zfile, Bufsz, "%s/%d.zone", zonedir, znum);
 	return zfile;
-}
-
-static void ensuredir()
-{
-	struct stat sb;
-	if (stat(zonedir, &sb) < 0) {
-		if (makedir(zonedir) < 0)
-			die("Failed to make the zone directory [%s]: %s", zonedir, miderrstr());
-	} else if (!S_ISDIR(sb.st_mode)) {
-		die("Zone directory [%s] is not a directory", zonedir);
-	}
 }
 
 static FILE *zpipe(Rng *r)

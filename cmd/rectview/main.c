@@ -58,15 +58,15 @@ int main(int argc, const char *argv[]){
 		return 1;
 	}
 
-	Scrn s = { &mt, 0 };
-	Scrnstk *stk = scrnstknew();
+	Scrn s = { &mt };
+	Scrnstk *stk = scrnstknew(gfx);
 	if(!stk){
 		fprintf(stderr, "Failed to create stk: %s\n", miderrstr());
 		return 1;
 	}
 	scrnstkpush(stk, &s);
 
-	scrnrun(stk, gfx);
+	scrnrun(stk);
 
 	resrcrel(rc, argv[1], 0);
 	scrnstkfree(stk);
