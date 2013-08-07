@@ -1,7 +1,7 @@
 /* © 2013 the Mid Authors under the MIT license. See AUTHORS for the list of authors.*/
 
 #include "../../include/mid.h"
-#include <SDL/SDL_error.h>
+#include <SDL_error.h>
 #include <stdarg.h>
 #include <errno.h>
 #include <string.h>

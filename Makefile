@@ -43,16 +43,52 @@ SDLVER := 13
 endif
 
 MANDCFLAGS := -g -O2 -Wall -Werror -std=c99 -D_POSIX_SOURCE -D_POSIX_C_SOURCE=200112L
-MANDLDFLAGS := -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf -lm
+MANDLDFLAGS := 
 
 ifeq ($(OS),win)
 MANDCFLAGS += -Dmain=SDL_main
-MANDLDFLAGS += -L/mingw/bin $(shell sdl-config --static-libs)
+
+MANDLDFLAGS += \
+	-L/mingw/bin \
+	$(shell sdl-config --static-libs) \
+	-lSDL -lSDL_image -lSDL_mixer -lSDL_ttf \
+	-lm \
+
 else ifeq ($(OS),Darwin)
 OS := osx
-MANDLDFLAGS += -framework Foundation
+MANDCFLAGS += \
+	-I/Library/Frameworks/SDL2.framework/Headers \
+	-I/Library/Frameworks/SDL2_image.framework/Headers \
+	-I/Library/Frameworks/SDL2_mixer.framework/Headers \
+	-I/Library/Frameworks/SDL2_ttf.framework/Headers \
+
+MANDLDFLAGS += \
+	-framework Foundation \
+	-framework SDL2 \
+	-framework SDL2_image \
+	-framework SDL2_mixer \
+	-framework SDL2_ttf \
+
 else
 OS := posix
+
+ifeq ($(SDLVER),13)
+MANDCFLAGS += -I/usr/local/include/SDL2
+else
+MANDCFLAGS += -I/usr/include/SDL
+endif
+
+MANDLDFLAGS += \
+	-lm \
+
+ifeq ($(SDLVER),13)
+MANDLDFLAGS += \
+	-L/usr/local/lib \
+	-lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
+else
+MANDLDFLAGS += -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf
+endif
+
 endif
 
 .PHONY: all clean install
@@ -90,12 +126,7 @@ installer: all
 	cp osx/Info.plist Mid.app/Contents/
 	for c in mid lvlgen itmgen enmgen envgen; do cp cmd/$$c/$$c Mid.app/Contents/MacOS/; done
 	cp -r resrc/ Mid.app/Contents/Resources/
-	for lib in SDL-1.3.0 SDL_image-1.2.0 SDL_mixer-1.2.0 SDL_ttf-2.0.0; do \
-		cp /usr/local/lib/lib$$lib.dylib Mid.app/Contents/Frameworks; \
-		install_name_tool -id "@executable_path/../Frameworks/lib$$lib.dylib" Mid.app/Contents/Frameworks/lib$$lib.dylib; \
-		install_name_tool -change /usr/local/lib/libSDL-1.3.0.dylib "@executable_path/../Frameworks/libSDL-1.3.0.dylib" Mid.app/Contents/Frameworks/lib$$lib.dylib; \
-		for c in mid lvlgen itmgen enmgen envgen; do \
-			install_name_tool -change /usr/local/lib/lib$$lib.dylib "@executable_path/../Frameworks/lib$$lib.dylib" Mid.app/Contents/MacOS/$$c; \
-		done; \
+	for lib in SDL2 SDL2_image SDL2_mixer SDL2_ttf; do \
+		cp -r /Library/Frameworks/$$lib.framework Mid.app/Contents/Frameworks; \
 	done
 endif

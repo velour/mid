@@ -1,6 +1,6 @@
 /* © 2013 the Mid Authors under the MIT license. See AUTHORS for the list of authors.*/
 
-#include <SDL/SDL_events.h>
+#include <SDL_events.h>
 #include <assert.h>
 #include "../../include/mid.h"
 
@@ -8,7 +8,7 @@ _Bool keyrpt(SDL_Event *e){
 	return e->key.repeat != 0;
 }
 
-static Uint8 *keystate;
+static const Uint8 *keystate;
 static int nkeys;
 
 _Bool iskeydown(Action act){

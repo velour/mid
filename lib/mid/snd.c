@@ -1,8 +1,8 @@
 /* © 2013 the Mid Authors under the MIT license. See AUTHORS for the list of authors.*/
 
 #include "../../include/mid.h"
-#include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
+#include <SDL.h>
+#include <SDL_mixer.h>
 #include <stdbool.h>
 
 _Bool mute;
