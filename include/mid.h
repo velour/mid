@@ -114,6 +114,7 @@ typedef struct Anim Anim;
 
 void camreset(Gfx*);
 void cammove(Gfx *, double dx, double dy);
+Point camget(Gfx*);
 void camdrawrect(Gfx *, Rect, Color);
 void camfillrect(Gfx *, Rect, Color);
 void camdrawimg(Gfx *, Img *, Point);
@@ -180,6 +181,7 @@ typedef struct Scrnstk Scrnstk;
 
 struct Scrn{
 	Scrnmt *mt;
+	Point cam;
 	void *data;
 };
 
@@ -192,14 +194,14 @@ struct Scrnmt{
 	void (*free)(Scrn *);
 };
 
-Scrnstk *scrnstknew(void);
+Scrnstk *scrnstknew(Gfx*);
 void scrnstkfree(Scrnstk *);
 /* Stack now owns Scrn, will call scrn->mt->free(scrn) when popped. */
 void scrnstkpush(Scrnstk *, Scrn *);
 Scrn *scrnstktop(Scrnstk *);
 void scrnstkpop(Scrnstk *);
 
-void scrnrun(Scrnstk *, Gfx *);
+void scrnrun(Scrnstk *);
 
 typedef struct Rtab Rtab;
 
@@ -470,10 +472,15 @@ void applyarmorbonus(Player*, ArmorSetID);
 Img *armorsetsheet(ArmorSetID, ArmorLoc);
 Img *armorinvsheet(ArmorSetID);
 
+typedef enum Dir {
+	Left,
+	Right,
+	Ndirs,
+} Dir;
+
 struct Player {
-	Anim leftas[Nacts][ArmorMax];
-	Anim rightas[Nacts][ArmorMax];
-	Anim (*anim)[ArmorMax];
+	Anim as[Ndirs][Nacts][ArmorMax];
+	Dir dir;
 	Act act;
 	Point imgloc;
 
@@ -482,11 +489,10 @@ struct Player {
 	_Bool acting;
 	_Bool statup;
 
+	double hitback;
 	int jframes;
 	int iframes; // invulnerability after damage;
-	double hitback;
 	int sframes;
-	int lives;
 
 	/* if changed, update visibility. */
 	Tileinfo bi;
@@ -494,6 +500,7 @@ struct Player {
 	int stats[StatMax];
 	int eqp[StatMax];
 	int curhp;
+	int lives;
 
 	int money;
 	Invit inv[Maxinv];
@@ -627,6 +634,8 @@ _Bool zoneoverlap(Zone *zn, int z, Point loc, Point wh);
  * p - Point
  * r - Rect
  * y - Body
+ * l - Player
+ * u - uint64_t
  *
  * The return value is true if all items in the format were scanned
  * and false if not.

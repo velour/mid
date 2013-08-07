@@ -3,13 +3,24 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
 #include "../../include/rng.h"
+#include "../../include/os.h"
+#include <errno.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include "game.h"
+
+static char savedir[128] = "_save";
+
+static void ldresrc();
+static FILE *opensavefile(const char *file, const char *mode);
+static const char *savepath(const char *file);
+static _Bool readl(char *buf, int sz, FILE *f);
 
 struct Game {
 	Player player;
@@ -24,6 +35,7 @@ struct Game {
 Game *gamenew(void)
 {
 	static Game gm = {};
+	gm = (Game){};
 
 	lvlinit();
 
@@ -37,17 +49,7 @@ Game *gamenew(void)
 
 	playerinit(&gm.player, 2, 2);
 
-	_Bool ok = itemldresrc();
-	if (!ok)
-		fatal("Failed to load item resources: %s", miderrstr());
-	ok = envldresrc();
-	if (!ok)
-		fatal("Failed to load env resources: %s", miderrstr());
-	if(!enemyldresrc())
-		fatal("Failed to load enemy resrouces: %s", miderrstr());
-	if(!swordldresrc())
-		fatal("Failed to load sword resrouces: %s", miderrstr());
-
+	ldresrc();
 	gm.ui = resrcacq(imgs, "img/ui.png", 0);
 
 	return &gm;
@@ -111,7 +113,11 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 {
 	Game *gm = s->data;
 
-	zoneupdate(gm->zone, &gm->player, &gm->transl);
+	Point tr;
+	zoneupdate(gm->zone, &gm->player, &tr);
+	gm->transl.x += tr.x;
+	gm->transl.y += tr.y;
+
 	trystairs(stk, gm);
 	if(gm->player.curhp <= 0 && !debugging){
 		if(gm->player.lives == 0)
@@ -145,8 +151,10 @@ void gamedraw(Scrn *s, Gfx *g)
 	if(gm->died){
 		gm->died = 0;
 		camreset(g);
-	}else
+	}else{
 		cammove(g, gm->transl.x, gm->transl.y);
+		gm->transl = (Point){};
+	}
 
 	zonedraw(g, gm->zone, &gm->player);
 
@@ -194,6 +202,8 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 			envact(&ev[i], &gm->player, gm->zone);
 			if(gm->player.statup){
 				scrnstkpush(stk, statscrnnew(&gm->player, &ev[i]));
+				gm->player.statup = 0;
+				gamesave(gm);
 				return;
 			}
 		}
@@ -207,3 +217,161 @@ Scrnmt gamemt = {
 	gamefree,
 };
 
+void saveloc(const char *l)
+{
+	strncpy(savedir, l, sizeof(savedir)-1);
+}
+
+void gamesave(Game *gm)
+{
+	ignframetime();
+	if (!ensuredir(savedir))
+		die("Failed to make the save directory: %s", miderrstr());
+
+	for (int i = 0; i <= gm->zmax; i++) {
+		char zfile[128];
+		if (snprintf(zfile, sizeof(zfile), "%d.zone", i) > sizeof(zfile))
+			die("Buffer is too small for the save's zone file");
+
+		const char *p = savepath(zfile);
+		FILE *f = fopen(p, "w");
+		if (!f)
+			die("Failed to open zone file for writing [%s]: %s", p, miderrstr());
+		Zone *z = i == gm->znum ? gm->zone : zoneget(i);
+		zonewrite(f, z);
+		fclose(f);
+	}
+
+	Point ploc = gm->player.body.bbox.a;
+	Point c = (Point){ Scrnw/2 - Wide, Scrnh/2 - Tall };
+	Point tr = (Point){
+		gm->transl.x - ploc.x + c.x,
+		gm->transl.y - ploc.y + c.y,
+	};
+	Player player = gm->player;
+	player.imgloc = c;
+
+	FILE *f = opensavefile("game", "w");
+	static char buf[4096];
+	if (!printgeom(buf, sizeof(buf), "pbdddul", tr, gm->died, gm->znum, gm->zmax, gm->zone->lvl->z, gm->rng.v, player))
+		die("Failed to serialize the game information");
+	fputs(buf, f);
+	fputc('\n', f);
+	fclose(f);
+}
+
+Game *gameload()
+{
+	if (!ensuredir(savedir))
+		die("Failed to make the save directory: %s", miderrstr());
+
+	static Game gm = {};
+	gm = (Game){};
+	lvlinit();
+	ldresrc();
+	playerinit(&gm.player, 2, 2);
+	
+	static char buf[4096];
+
+	FILE *f = opensavefile("game", "r");
+	if (!readl(buf, sizeof(buf), f))
+		die("Failed to read the game save file: %s", miderrstr());
+	fclose(f);
+	int z = 0;
+	if (!scangeom(buf, "pbdddul", &gm.transl, &gm.died, &gm.znum, &gm.zmax, &z, &gm.rng.v, &gm.player))
+		die("Failed to deserialize the game information: %s", miderrstr());
+
+	for (int i = 0; i <= gm.zmax; i++) {
+		char zfile[128];
+		if (snprintf(zfile, sizeof(zfile), "%d.zone", i) > sizeof(zfile))
+			die("Buffer is too small for the save's zone file: %s", miderrstr());
+
+		const char *p = savepath(zfile);
+		FILE *f = fopen(p, "r");
+		if (!f)
+			die("Failed to open zone file for reading [%s]: %s", p, miderrstr());
+		Zone *z = zoneread(f);
+		zoneput(z, i);
+		fclose(f);
+		zonefree(z);
+	}
+
+	gm.zone = zoneget(gm.znum);
+	gm.zone->lvl->z = z;
+	gm.ui = resrcacq(imgs, "img/ui.png", 0);
+
+	return &gm;
+}
+
+static void ldresrc()
+{
+	if (!itemldresrc())
+		fatal("Failed to load item resources: %s", miderrstr());
+	if (!envldresrc())
+		fatal("Failed to load env resources: %s", miderrstr());
+	if(!enemyldresrc())
+		fatal("Failed to load enemy resrouces: %s", miderrstr());
+	if(!swordldresrc())
+		fatal("Failed to load sword resrouces: %s", miderrstr());
+}
+
+static FILE *opensavefile(const char *file, const char *mode)
+{
+	const char *p = savepath(file);
+	FILE *f = fopen(p, mode);
+	if (!f)
+		die("Failed to open %s file with mode %s [%s]: %s", file, mode, p, miderrstr());
+	return f;
+}
+
+_Bool saveavailable(){
+	struct stat sb;
+	if (stat(savepath("game"), &sb) < 0) {
+		return false;
+	}
+	return true;
+}
+
+// Non-reentant
+static const char *savepath(const char *file)
+{
+	static char path[1024];
+
+	if (snprintf(path, sizeof(path), "%s/%s", savedir, file) > sizeof(path))
+		die("Buffer is too small for the save's %s path", file);
+
+	return path;
+}
+
+// TODO(eaburns): de-duplicate this and the one in ../../lib/mid/zone.c.
+static _Bool readl(char *buf, int sz, FILE *f)
+{
+	extern int isspace(int);
+	char *r = fgets(buf, sz, f);
+	if (!r) {
+		pr("fgets returned NULL");
+		return 0;
+	}
+
+	int l = strlen(buf);
+
+	for(int i = l-1; i >= 0 && isspace(buf[i]); i--)
+		buf[i] = 0;
+
+	return 1;
+}
+
+_Bool ensuredir(const char *d)
+{
+	struct stat sb;
+	if (stat(d, &sb) < 0) {
+		if (makedir(d) < 0) {
+			seterrstr("Failed to make directory %s: %s", d, strerror(errno));
+			return false;
+		}
+	} else if (!S_ISDIR(sb.st_mode)) {
+		seterrstr("%s already exists and is not a directory", d);
+		return false;
+	}
+	return true;
+}

@@ -263,7 +263,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 			Eloc el = eqpat(i, e->x, e->y);
 			s = el.it;
 			if(el.loc == (EqpLoc) EqpDrop){
-				int dpos = i->p->anim == i->p->leftas ? -1 : 1;
+				int dpos = i->p->dir == Left ? -1 : 1;
 				Item drop = {};
 				Point gridloc = { // BARF
 					i->p->body.bbox.a.x / Twidth + dpos,

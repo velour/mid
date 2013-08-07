@@ -19,6 +19,10 @@ void gameupdate(Scrn *, Scrnstk *);
 void gamedraw(Scrn *, Gfx *);
 void gamehandle(Scrn *, Scrnstk *, Event *);
 extern Scrnmt gamemt;
+void saveloc(const char *l);
+void gamesave(Game *gm);
+Game *gameload();
+_Bool saveavailable();
 
 enum { Invrows = 6, Invcols = 3 };
 
@@ -27,3 +31,5 @@ Scrn *titlescrnnew(Gfx *);
 Scrn *statscrnnew(Player *, Env *);
 Scrn *goverscrnnew(Player *, int);
 Scrn *optscrnnew(void);
+
+_Bool ensuredir(const char *d);
