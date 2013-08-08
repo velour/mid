@@ -84,7 +84,11 @@ void enemyupdate(Enemy *e, Player *p, Zone *z){
 }
 
 void enemydraw(Enemy *e, Gfx *g){
-	if(e->id) mt[e->id].draw(e, g);
+	if(e->id) {
+		if(debugging)
+			camfillrect(g, e->body.bbox, (Color){255,0,0,255});
+		mt[e->id].draw(e, g);	
+	}
 }
 
 _Bool enemyscan(char *buf, Enemy *e){
