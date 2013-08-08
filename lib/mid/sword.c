@@ -30,6 +30,9 @@ void sworddraw(Gfx *g, Sword *s){
 		loc = s->leftloc;
 	}
 
+	if(debugging)
+		camfillrect(g, swordbbox(s), (Color){255,0,0,255});
+
 	double y = s->row * 32;
 	double x = pos * 32;
 	Rect clip = {
