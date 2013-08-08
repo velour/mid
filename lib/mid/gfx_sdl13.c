@@ -1,9 +1,9 @@
 /* © 2013 the Mid Authors under the MIT license. See AUTHORS for the list of authors.*/
 
 #include "../../include/mid.h"
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <assert.h>
 #include <stdarg.h>
 

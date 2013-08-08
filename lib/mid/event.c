@@ -1,8 +1,8 @@
 /* © 2013 the Mid Authors under the MIT license. See AUTHORS for the list of authors.*/
 
 #include "../../include/mid.h"
-#include <SDL/SDL_events.h>
-#include <SDL/SDL_timer.h>
+#include <SDL_events.h>
+#include <SDL_timer.h>
 #include <stdbool.h>
 
 // This will probably never change in SDL, but just in case...
