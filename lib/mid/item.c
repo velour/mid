@@ -212,6 +212,8 @@ void itemupdate(Item *i, Player *p, Zone *l){
 void itemdraw(Item *i, Gfx *g){
 	if(i->gotit)
 		return;
+	if(debugging)
+		camfillrect(g, i->body.bbox, (Color){255,0,0,255});
 	camdrawanim(g, &ops[i->id].anim, i->body.bbox.a);
 }
 

@@ -104,6 +104,8 @@ void envupdate(Env *e, Zone *z){
 }
 
 void envdraw(Env *e, Gfx *g){
+	if(e->id && debugging)
+		camfillrect(g, e->body.bbox, (Color){255,0,0,255});
 	camdrawanim(g, &ops[e->id].anim, e->body.bbox.a);
 }
 
