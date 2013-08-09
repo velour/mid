@@ -1,10 +1,45 @@
 Building
---------
+========
 
-Run the build command from the project root:
+Prerequisites
+-------------
 
-	./build
+You'll need the following tools:
+  * sh (or an sh-compatible shell)
+  * make (GNU or GNU-compatible)
+  * clang (or gcc if you must)
+  * ar
+  * sed
+  * awk
 
-If you get an error in SDL headers, you may not have SDL 2.0 on your system. Either install it or set the SDLVER environment variable:
+You'll need the following libraries:
+  * SDL 1.3 (or 1.2, see below)
+  * SDL_image
+    * libpng
+    * zlib
+  * SDL_mixer
+    * libogg
+    * libvorbis
+  * SDL_ttf
+    * libfreetype
 
-	export SDLVER=12 ./build
+On Windows you will almost certainly need mingw and SDL libraries compatible with it.
+When building SDL in mingw, be sure to configure each like so:
+
+	./configure --prefix=/mingw
+
+In order to get logging to the console (soon we will send it to a file instead of stderr, but until then),
+add the "--disable-stdio-redirect" flag to the above command line for libSDL.
+
+
+Do It
+-----
+
+If you're using clang, run "./build" from the source code directory's root.
+If it doesn't fail, you can run "cmd/mid/mid"!
+
+If you're using gcc, set the CC and LD environment variables to gcc and then run "./build".
+
+If you don't want to build SDL 1.3 (it's kind of a pain to build all of SDL on Windows,
+due to the various dependencies), you can use SDL 1.2 by setting the SDLVER environment
+variable to 12 before running "build".
