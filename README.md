@@ -23,6 +23,9 @@ You'll need the following libraries:
   * SDL_ttf
     * libfreetype
 
+On OSX, the SDL libraries should be in framework form, under /Library/Frameworks,
+and you won't have to worry about the other dependencies.
+
 On Windows you will almost certainly need mingw and SDL libraries compatible with it.
 When building SDL in mingw, be sure to configure each like so:
 
