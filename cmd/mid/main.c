@@ -88,12 +88,12 @@ int main(int argc, char *argv[])
 	if (!init())
 		fatal("Failed to initialize: %s", miderrstr());
 
-	if(kmname && keymapread(kmap, kmname))
+	if(kmname && !keymapread(kmap, kmname))
 		die("failed to read %s", kmname);
 	else{
 		char kloc[256];
 		snprintf(kloc, sizeof(kloc), "%s/keys.txt", appdata("mid"));
-		if(keymapread(kmap, kloc))
+		if(!keymapread(kmap, kloc))
 			pr("Keymap not loaded (%s), using defaults.", miderrstr());
 	}
 
