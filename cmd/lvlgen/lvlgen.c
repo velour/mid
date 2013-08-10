@@ -94,14 +94,11 @@ static void parseargs(int argc, char *argv[])
 
 static void rng(Rng *r)
 {
-	clock_t seed = 0;
+	clock_t seed = time(0) ^ getpid() ^ getpid() << 16;
 
-	if (seedstr) {
+	if (seedstr)
 		seed = strtol(seedstr, NULL, 10);
-	} else {
-		seed = time(0) ^ getpid() ^ getpid() << 16;
-		pr("lvlgen seed = %lu", (unsigned long) seed);
-	}
+
 	rnginit(r, seed);
 }
 
