@@ -39,7 +39,7 @@ AR := ar
 endif
 
 ifndef SDLVER
-SDLVER := 13
+SDLVER := 2
 endif
 
 MANDCFLAGS := -g -O2 -Wall -Werror -std=c99 -D_POSIX_SOURCE -D_POSIX_C_SOURCE=200112L
@@ -72,7 +72,7 @@ MANDLDFLAGS += \
 else
 OS := posix
 
-ifeq ($(SDLVER),13)
+ifeq ($(SDLVER),2)
 MANDCFLAGS += -I/usr/local/include/SDL2
 else
 MANDCFLAGS += -I/usr/include/SDL
@@ -81,7 +81,7 @@ endif
 MANDLDFLAGS += \
 	-lm \
 
-ifeq ($(SDLVER),13)
+ifeq ($(SDLVER),2)
 MANDLDFLAGS += \
 	-L/usr/local/lib \
 	-lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
