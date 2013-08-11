@@ -385,6 +385,10 @@ void resetstats(Player *p){
 		p->sw.row = 0;
 	else
 		p->sw.row = p->wear[EqpWep].id - ItemSilverSwd;
+
+	int maxhp = p->stats[StatHp] + p->eqp[StatHp];
+	if(p->curhp > maxhp)
+		p->curhp = maxhp;
 }
 
 static ArmorSetID armset(Player *p){
