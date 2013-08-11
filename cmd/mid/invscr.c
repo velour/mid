@@ -291,8 +291,11 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 				return;
 			}
 			if(el.loc == (int) EqpEat){
-				if(inviteat(i->curitem, i->p, i->zone))
-					*i->curitem = (Invit){};
+				if(!inviteat(i->curitem, i->p, i->zone)) {
+					i->msg = "I can't eat that!";
+					return;
+				}
+				*i->curitem = (Invit){};
 				return;
 			}
 			if(!s || s == i->curitem || el.loc != itemeqploc(i->curitem->id))
