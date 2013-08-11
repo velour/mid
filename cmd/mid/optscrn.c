@@ -210,7 +210,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	if(e->type != Keychng || !e->down)
 		return;
 
-	if(!isalpha(e->key))
+	if(!isprint(e->key))
 		return;
 
 	if(opt->volset){
