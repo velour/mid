@@ -131,7 +131,7 @@ static char *zonefile(int znum)
 static FILE *zpipe(Rng *r)
 {
 	Pipe p = {};
-	pipeadd(&p, "lvlgen", "25 25 3-s %u ", rngint(r));
+	pipeadd(&p, "lvlgen", "25 25 3 -s %u ", rngint(r));
 
 	pipeadd(&p, "itmgen", "-s %u %d 1", rngint(r), ItemStatup);
 
