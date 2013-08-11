@@ -162,7 +162,6 @@ _Bool iteminit(Item *i, ItemID id, Point p){
 
 	i->id = id;
 	bodyinit(&i->body, p.x * Twidth, p.y * Theight, Twidth, Theight);
-	i->gotit = 0;
 
 	return 1;
 }
@@ -191,11 +190,11 @@ _Bool itemldresrc()
 }
 
 _Bool itemscan(char *buf, Item *it){
-	return scangeom(buf, "dyb", &it->id, &it->body, &it->gotit);
+	return scangeom(buf, "dy", &it->id, &it->body);
 }
 
 _Bool itemprint(char *buf, size_t sz, Item *it){
-	return printgeom(buf, sz, "dyb", it->id, it->body, it->gotit);
+	return printgeom(buf, sz, "dy", it->id, it->body);
 }
 
 void itemupdateanims(void){
@@ -204,13 +203,12 @@ void itemupdateanims(void){
 }
 
 void itemupdate(Item *i, Player *p, Zone *l){
-	if(i->gotit)
-		return;
-	ops[i->id].update(i, p, l);
+	if(i->id)
+		ops[i->id].update(i, p, l);
 }
 
 void itemdraw(Item *i, Gfx *g){
-	if(i->gotit)
+	if(!i->id)
 		return;
 	if(debugging)
 		camfillrect(g, i->body.bbox, (Color){255,0,0,255});
@@ -252,7 +250,7 @@ static void statupupdate(Item *i, Player *p, Zone *z){
 
 	if(isect(i->body.bbox, playerbox(p)) && playertake(p, i)){
 		sfxplay(gengrab);
-		i->gotit = 1;
+		i->id = ItemNone;
 	}
 }
 
@@ -262,7 +260,7 @@ static void copperupdate(Item *i, Player *p, Zone *z){
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(goldgrab);
 		p->money++;
-		i->gotit = 1;
+		i->id = ItemNone;
 	}
 }
 
@@ -272,7 +270,7 @@ static void healthupdate(Item *i, Player *p, Zone *z){
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(gengrab);
 		playerheal(p, 1);
-		i->gotit = 1;
+		i->id = ItemNone;
 	}
 }
 
@@ -282,7 +280,7 @@ static void silverupdate(Item *i, Player *p, Zone *z){
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(goldgrab);
 		p->money += 5;
-		i->gotit = 1;
+		i->id = ItemNone;
 	}
 }
 
@@ -292,7 +290,7 @@ static void goldupdate(Item *i, Player *p, Zone *z){
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(goldgrab);
 		p->money += 25;
-		i->gotit = 1;
+		i->id = ItemNone;
 	}
 }
 
@@ -302,7 +300,7 @@ static void carrotupdate(Item *i, Player *p, Zone *z){
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(gengrab);
 		playerheal(p, 5);
-		i->gotit = 1;
+		i->id = ItemNone;
 	}
 }
 
@@ -311,7 +309,7 @@ static void tophatupdate(Item *i, Player *p, Zone *z){
 
 	if(isect(i->body.bbox, playerbox(p)) && playertake(p, i)){
 		sfxplay(gengrab);
-		i->gotit = 1;
+		i->id = ItemNone;
 	}
 }
 
@@ -320,7 +318,7 @@ static void silverswdupdate(Item *i, Player *p, Zone *z){
 
 	if(isect(i->body.bbox, playerbox(p)) && playertake(p, i)){
 		sfxplay(gengrab);
-		i->gotit = 1;
+		i->id = ItemNone;
 	}
 }
 
