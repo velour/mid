@@ -15,6 +15,7 @@ struct Invscr{
 	Invit *curitem;
 	_Bool drag;
 	Point mouse;
+	char *msg;
 	Rect invgrid[Maxinv];
 	Rect eqpgrid[EqpMax + 2];
 };
@@ -77,8 +78,11 @@ static Scrnmt invmt = {
 };
 
 Scrn *invscrnnew(Player *p, Zone *zone, int depth){
-	static Invscr inv = {0};
-	static Scrn s = {0};
+	static Invscr inv;
+	static Scrn s;
+
+	inv = (Invscr){};
+	s = (Scrn){};
 
 	inv.p = p;
 	inv.zone = zone;
@@ -198,6 +202,15 @@ static void draw(Scrn *s, Gfx *g){
 		sloc = vecadd(sloc, (Point){0, TxtSzMedium + Pad});
 	}
 
+	if (i->msg) {
+		Point sz = txtdims(txt, i->msg);
+		Point loc = (Point) {
+			Scrnw/2 - sz.x/2,
+			Scrnh - sz.y,
+		};
+		txtdraw(g, txt, loc, i->msg);
+	}
+
 	gfxflip(g);
 }
 
@@ -270,7 +283,10 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 					i->p->body.bbox.a.y / Theight
 				};
 				iteminit(&drop, i->curitem->id, gridloc);
-				zoneadditem(i->zone, i->zone->lvl->z, drop);
+				if (!zoneadditem(i->zone, i->zone->lvl->z, drop)) {
+					i->msg = "This place is too cluttered";
+					return;
+				}
 				*i->curitem = (Invit){};
 				return;
 			}
