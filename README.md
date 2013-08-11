@@ -13,7 +13,7 @@ You'll need the following tools:
   * awk
 
 You'll need the following libraries:
-  * SDL 1.3 (or 1.2, see below)
+  * SDL 2.0 (or 1.2, see below)
   * SDL_image
     * libpng
     * zlib
@@ -43,6 +43,6 @@ If it doesn't fail, you can run "cmd/mid/mid"!
 
 If you're using gcc, set the CC and LD environment variables to gcc and then run "./build".
 
-If you don't want to build SDL 1.3 (it's kind of a pain to build all of SDL on Windows,
+If you don't want to build SDL 2.0 (it's kind of a pain to build all of SDL on Windows,
 due to the various dependencies), you can use SDL 1.2 by setting the SDLVER environment
-variable to 12 before running "build".
+variable to 1 before running "build".
