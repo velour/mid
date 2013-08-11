@@ -17,7 +17,7 @@ static char *names[] = {
 _Bool keymapread(char km[], char *fname){
 	FILE *f = fopen(fname, "r");
 	if(!f)
-		return 1;
+		return 0;
 
 	char act[8];
 	char k;
@@ -29,21 +29,21 @@ _Bool keymapread(char km[], char *fname){
 
 	if(ferror(f)){
 		fclose(f);
-		return 1;
+		return 0;
 	}
 	fclose(f);
-	return 0;
+	return 1;
 }
 
 _Bool keymapwrite(char km[], char *fname){
 	FILE *f = fopen(fname, "w");
 	if(!f)
-		return 1;
+		return 0;
 
 	for(int i = Mvleft; i < Nactions; i++)
 		fprintf(f, "%s %c\n", names[i], km[i]);
 
-	return fclose(f);
+	return !fclose(f);
 }
 
 char kmap[] = {
