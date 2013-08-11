@@ -73,20 +73,18 @@ else
 OS := posix
 
 ifeq ($(SDLVER),2)
-MANDCFLAGS += -I/usr/local/include/SDL2
+MANDCFLAGS += $(shell pkg-config --cflags sdl2 SDL2_mixer SDL2_image SDL2_ttf)
 else
-MANDCFLAGS += -I/usr/include/SDL
+MANDCFLAGS += $(shell pkg-config --cflags sdl SDL_mixer SDL_image SDL_ttf)
 endif
 
 MANDLDFLAGS += \
 	-lm \
 
 ifeq ($(SDLVER),2)
-MANDLDFLAGS += \
-	-L/usr/local/lib \
-	-lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
+MANDLDFLAGS += $(shell pkg-config --libs sdl2 SDL2_mixer SDL2_image SDL2_ttf)
 else
-MANDLDFLAGS += -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf
+MANDLDFLAGS += $(shell pkg-config --libs sdl SDL_mixer SDL_image SDL_ttf)
 endif
 
 endif
