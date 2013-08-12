@@ -429,7 +429,6 @@ enum ItemID{
 struct Item{
 	ItemID id;
 	Body body;
-	_Bool gotit;
 };
 
 _Bool itemldresrc(void);
