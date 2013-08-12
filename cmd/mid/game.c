@@ -142,6 +142,21 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 	}
 }
 
+_Bool dropitem(Zone *z, Player *p, Invit *it)
+{
+	int dpos = p->dir == Left ? -1 : 1;
+	Item drop = {};
+	iteminit(&drop, it->id, (Point) {
+		p->body.bbox.a.x / Twidth + dpos,
+		p->body.bbox.a.y / Theight
+	});
+	if (zoneadditem(z, z->lvl->z, drop)) {
+		*it = (Invit){};
+		return 1;
+	}
+	return 0;
+}
+
 void gamedraw(Scrn *s, Gfx *g)
 {
 	Game *gm = s->data;

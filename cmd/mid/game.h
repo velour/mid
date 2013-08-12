@@ -23,6 +23,7 @@ void saveloc(const char *l);
 void gamesave(Game *gm);
 Game *gameload();
 _Bool saveavailable();
+_Bool dropitem(Zone*, Player*, Invit*);
 
 enum { Invrows = 6, Invcols = 3 };
 
