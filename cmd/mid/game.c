@@ -17,6 +17,7 @@
 
 static char savedir[128] = "_save";
 
+static void dropall(Zone*, Player*);
 static void ldresrc();
 static FILE *opensavefile(const char *file, const char *mode);
 static const char *savepath(const char *file);
@@ -125,6 +126,10 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 		else{
 			gm->died = 1;
 			gm->player.curhp = gm->player.eqp[StatHp] + gm->player.stats[StatHp];
+
+			dropall(gm->zone, &gm->player);
+			resetstats(&gm->player);
+
 			Player p = gm->player;
 			playerinit(&p, 2, 2);
 			gm->player.body = p.body;
@@ -140,6 +145,48 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 			gm->player.inv[lose] = (Invit){};
 		}
 	}
+}
+
+static void dropall(Zone *z, Player *p)
+{
+	for (int i = 0; i < Maxinv; i++) {
+		if (!p->inv[i].id)
+			continue;
+		dropitem(z, p, &p->inv[i]);
+		p->inv[i] = (Invit){};
+	}
+	for (int i = 0; i < EqpMax; i++) {
+		if (!p->wear[i].id)
+			continue;
+		dropitem(z, p, &p->wear[i]);
+		p->wear[i] = (Invit){};
+	}
+}
+
+_Bool dropitem(Zone *z, Player *p, Invit *it) {
+	int dpos = p->dir == Left ? -1 : 1;
+
+	Point pt = (Point) {
+		p->body.bbox.a.x / Twidth + dpos,
+		// Player's bbox is not Theight tall, but items are Theight tall, so we must compute
+		// the item drop location by subtracting Theight from the player's feet.  Otherwise
+		// the item is dropped into the ground.
+		(p->body.bbox.b.y - Theight) / Theight
+	};
+
+	Item drop = {};
+	iteminit(&drop, it->id, pt);
+	if (!zoneadditem(z, z->lvl->z, drop)) {
+		// Couldn't drop it next to the player, instead drop it directly on the player's square.
+		// Since the player was on their square, this must be a free place to drop something.
+		pt = (Point){ p->bi.x, p->bi.y };
+		iteminit(&drop, it->id, pt);
+		if (!zoneadditem(z, z->lvl->z, drop))
+			return 0;
+	}
+
+	*it = (Invit){};
+	return 1;
 }
 
 void gamedraw(Scrn *s, Gfx *g)
