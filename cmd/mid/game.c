@@ -128,6 +128,7 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 			gm->player.curhp = gm->player.eqp[StatHp] + gm->player.stats[StatHp];
 
 			dropall(gm->zone, &gm->player);
+			resetstats(&gm->player);
 
 			Player p = gm->player;
 			playerinit(&p, 2, 2);
