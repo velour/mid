@@ -277,7 +277,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 			s = el.it;
 			if(el.loc == (EqpLoc) EqpDrop){
 				if (!dropitem(i->zone, i->p, i->curitem))
-					i->msg = "This place is too cluttered";
+					i->msg = "There's no room for that here";
 				return;
 			}
 			if(el.loc == (int) EqpEat){

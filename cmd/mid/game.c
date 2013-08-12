@@ -164,16 +164,28 @@ static void dropall(Zone *z, Player *p)
 
 _Bool dropitem(Zone *z, Player *p, Invit *it) {
 	int dpos = p->dir == Left ? -1 : 1;
-	Item drop = {};
-	iteminit(&drop, it->id, (Point) {
+
+	Point pt = (Point) {
 		p->body.bbox.a.x / Twidth + dpos,
-		p->body.bbox.a.y / Theight
-	});
-	if (zoneadditem(z, z->lvl->z, drop)) {
-		*it = (Invit){};
-		return 1;
+		// Player's bbox is not Theight tall, but items are Theight tall, so we must compute
+		// the item drop location by subtracting Theight from the player's feet.  Otherwise
+		// the item is dropped into the ground.
+		(p->body.bbox.b.y - Theight) / Theight
+	};
+
+	Item drop = {};
+	iteminit(&drop, it->id, pt);
+	if (!zoneadditem(z, z->lvl->z, drop)) {
+		// Couldn't drop it next to the player, instead drop it directly on the player's square.
+		// Since the player was on their square, this must be a free place to drop something.
+		pt = (Point){ p->bi.x, p->bi.y };
+		iteminit(&drop, it->id, pt);
+		if (!zoneadditem(z, z->lvl->z, drop))
+			return 0;
 	}
-	return 0;
+
+	*it = (Invit){};
+	return 1;
 }
 
 void gamedraw(Scrn *s, Gfx *g)

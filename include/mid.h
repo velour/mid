@@ -611,6 +611,9 @@ struct Zone {
 Zone *zoneread(FILE *);
 void zonewrite(FILE *, Zone *z);
 void zonefree(Zone *);
+// Zoneadditem returns true if the item was successfully added to the zone.
+// It returns false if either there wasn't a spot for the item or if the item was
+// placed in a wall.
 _Bool zoneadditem(Zone *zn, int z, Item it);
 _Bool zoneaddenv(Zone *zn, int z, Env env);
 _Bool zoneaddenemy(Zone *zn, int z, Enemy enm);
