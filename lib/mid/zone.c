@@ -181,6 +181,15 @@ void zonewrite(FILE *f, Zone *zn)
 
 _Bool zoneadditem(Zone *zn, int z, Item it)
 {
+	int oldz = zn->lvl->z;
+
+	zn->lvl->z = z;
+	Isect is = lvlisect(zn->lvl, it.body.bbox, (Point){});
+	zn->lvl->z = oldz;
+
+	if (is.is)
+		return false;
+
 	int i;
 	Item *itms = zn->itms[z];
 

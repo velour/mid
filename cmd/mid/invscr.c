@@ -276,18 +276,8 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 			Eloc el = eqpat(i, e->x, e->y);
 			s = el.it;
 			if(el.loc == (EqpLoc) EqpDrop){
-				int dpos = i->p->dir == Left ? -1 : 1;
-				Item drop = {};
-				Point gridloc = { // BARF
-					i->p->body.bbox.a.x / Twidth + dpos,
-					i->p->body.bbox.a.y / Theight
-				};
-				iteminit(&drop, i->curitem->id, gridloc);
-				if (!zoneadditem(i->zone, i->zone->lvl->z, drop)) {
-					i->msg = "This place is too cluttered";
-					return;
-				}
-				*i->curitem = (Invit){};
+				if (!dropitem(i->zone, i->p, i->curitem))
+					i->msg = "There's no room for that here";
 				return;
 			}
 			if(el.loc == (int) EqpEat){
