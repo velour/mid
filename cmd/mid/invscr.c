@@ -16,7 +16,7 @@ struct Invscr{
 	Invit *curitem;
 	_Bool drag;
 	Point mouse;
-	char *msg;
+	Msg msg;
 	Rect invgrid[Maxinv];
 	Rect eqpgrid[EqpMax + 2];
 };
@@ -218,14 +218,7 @@ static void draw(Scrn *s, Gfx *g){
 		sloc = vecadd(sloc, (Point){0, TxtSzMedium + Pad});
 	}
 
-	if (i->msg) {
-		Point sz = txtdims(txt, i->msg);
-		Point loc = (Point) {
-			Scrnw/2 - sz.x/2,
-			Scrnh - sz.y,
-		};
-		txtdraw(g, txt, loc, i->msg);
-	}
+	msgdraw(&i->msg, g);
 
 	gfxflip(g);
 }
@@ -285,6 +278,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 		if(i->curitem == s)
 			return;
 		if(s){
+			msg(&i->msg, NULL);
 			invswap(i->curitem, s);
 			i->curitem = s;
 			resetstats(i->p);
@@ -293,12 +287,12 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 			s = el.it;
 			if(el.loc == (EqpLoc) EqpDrop){
 				if (!dropitem(i->zone, i->p, i->curitem))
-					i->msg = "There's no room for that here";
+					msg(&i->msg, "There's no room for that here");
 				return;
 			}
 			if(el.loc == (int) EqpEat){
 				if(!inviteat(i->curitem, i->p, i->zone)) {
-					i->msg = "I can't eat that!";
+					msg(&i->msg, "I can't eat that!");
 					return;
 				}
 				*i->curitem = (Invit){};
@@ -306,6 +300,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 			}
 			if(!s || s == i->curitem || el.loc != itemeqploc(i->curitem->id))
 				return;
+			msg(&i->msg, NULL);
 			invswap(i->curitem, s);
 			i->curitem = s;
 			resetstats(i->p);
@@ -360,4 +355,3 @@ static void invfree(Scrn *s){
 	Invscr *inv = s->data;
 	resetstats(inv->p);
 }
-

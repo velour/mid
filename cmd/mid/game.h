@@ -34,3 +34,11 @@ Scrn *goverscrnnew(Player *, int);
 Scrn *optscrnnew(void);
 
 _Bool ensuredir(const char *d);
+
+typedef struct Msg {
+	const char *txt;
+	int left;
+} Msg;
+
+void msgdraw(Msg*, Gfx*);
+void msg(Msg*, const char*);
