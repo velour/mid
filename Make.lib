@@ -18,6 +18,7 @@ HFILES := $(HFILES:%=lib/$(T)/%) $(LIBHFILES) include/$(T).h
 
 $(TARG): $(OFILES) $(LIBDEPS)
 	@rm -f $@
-	$(AR) rsc $@ $(shell echo $^ | sed 's/[a-z]+\.a//g')
+	@echo ar $@
+	@$(AR) rsc $@ $(shell echo $^ | sed 's/[a-z]+\.a//g')
 
 $(OFILES): $(HFILES) $(LIBHFILES)
