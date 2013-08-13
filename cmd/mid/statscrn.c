@@ -6,6 +6,7 @@
 
 typedef struct Statup Statup;
 struct Statup{
+	Game *g;
 	Player *p;
 	Env *shrine;
 	Txt *txt;
@@ -26,10 +27,11 @@ static Scrnmt statupmt = {
 	statupfree
 };
 
-Scrn *statscrnnew(Player *p, Env *sh){
+Scrn *statscrnnew(Game *g, Player *p, Env *sh){
 	static Statup sup  = {0};
 	static Scrn s  = {0};
 
+	sup.g = g;
 	sup.p = p;
 	sup.shrine = sh;
 
@@ -147,7 +149,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 				u++;
 			}
 		}
-
+		gamesave(sup->g);
 		scrnstkpop(stk);
 		return;
 	}
