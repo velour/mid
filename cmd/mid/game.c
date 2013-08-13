@@ -248,9 +248,8 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 				continue;
 			envact(&ev[i], &gm->player, gm->zone);
 			if(gm->player.statup){
-				scrnstkpush(stk, statscrnnew(&gm->player, &ev[i]));
+				scrnstkpush(stk, statscrnnew(gm, &gm->player, &ev[i]));
 				gm->player.statup = 0;
-				gamesave(gm);
 				return;
 			}
 		}
