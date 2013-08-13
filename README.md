@@ -11,6 +11,7 @@ You'll need the following tools:
   * ar
   * sed
   * awk
+  * pkg-config (on Linux only)
 
 You'll need the following libraries:
   * SDL 2.0 (or 1.2, see below)
