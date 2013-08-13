@@ -653,12 +653,14 @@ typedef struct Meter Meter;
 struct Meter{
 	int base;
 	int extra;
+	int preview;
 	int max;
 	int xscale;
 	int h;
 	Color cbg;
 	Color cbase;
 	Color cextra;
+	Color cpreview;
 	Color cborder;
 };
 

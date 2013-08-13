@@ -11,7 +11,12 @@ Rect meterdraw(Gfx *g, Meter *m, Point p){
 		{ base.b.x, base.a.y },
 		{ base.b.x + m->xscale * m->extra, base.b.y }
 	};
+	Rect preview = {
+		{ extra.b.x, extra.a.y },
+		{ extra.b.x + m->xscale * m->preview, base.b.y }
+	};
 	extra = rectnorm(extra);
+	preview = rectnorm(preview);
 	Rect both = {
 		base.a,
 		{ base.a.x + m->xscale * m->max, extra.b.y }
@@ -20,6 +25,7 @@ Rect meterdraw(Gfx *g, Meter *m, Point p){
 	gfxfillrect(g, both, m->cbg);
 	gfxfillrect(g, base, m->cbase);
 	gfxfillrect(g, extra, m->cextra);
+	gfxfillrect(g, preview, m->cpreview);
 	gfxdrawrect(g, both, m->cborder);
 
 	return both;
