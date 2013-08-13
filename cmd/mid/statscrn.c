@@ -113,9 +113,6 @@ static void draw(Scrn *s, Gfx *g){
 	Point o = txtdims(sup->txt, buf);
 	txtdraw(g, sup->txt, (Point){ Scrnw - o.x, 1 }, buf);
 
-	o = txtdims(sup->txt, "Game Saved");
-	txtdraw(g, sup->txt, (Point){ Scrnw/2 - o.x/2, Scrnh/2 - o.y/2 }, "Game Saved");
-
 	gfxflip(g);
 }
 

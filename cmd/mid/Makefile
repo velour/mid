@@ -13,6 +13,7 @@ OFILES :=\
 	death.o\
 	cmdpath_$(OS).o\
 	optscrn.o\
+	msg.o\
 
 HFILES :=\
 	game.h\
