@@ -4,6 +4,7 @@
 #include "../../include/log.h"
 #include "game.h"
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct Invscr Invscr;
 typedef struct Eloc Eloc;
@@ -152,8 +153,21 @@ static void draw(Scrn *s, Gfx *g){
 	gfxfillrect(g, r, (Color){ 255, 0, 0, 255 });
 
 	moneydraw(g, i->p->money);
-	if (i->curitem && i->curitem->id > 0 && !i->drag)
+	if (i->curitem && i->curitem->id > 0 && !i->drag){
 		curdraw(g, i->curitem);
+	}
+
+	Color cpreview = {0xEE, 0xEE, 0x9E};
+	int preview[StatMax] = {};
+	if(i->curitem && i->curitem->id > 0 && i->drag){
+		memcpy(preview, i->curitem->stats, sizeof(preview));
+		EqpLoc el = itemeqploc(i->curitem->id);
+		if(&i->p->wear[el] == i->curitem){
+			for(int j = 0; j < StatMax; j++)
+				preview[j] = -preview[j];
+			cpreview = (Color){0};
+		}
+	}
 
 	for(int j = 0; j < Maxinv; j++){
 		Rect r = i->invgrid[j];
@@ -184,12 +198,14 @@ static void draw(Scrn *s, Gfx *g){
 		Meter meter = {
 			.base = i->p->stats[j],
 			.extra = i->p->eqp[j],
+			.preview = preview[j],
 			.max = 30,
 			.xscale = 3,
 			.h = TxtSzMedium,
 			.cbg = {0x65, 0x65, 0x65},
 			.cbase = {0x1E, 0x94, 0x22},
 			.cextra = {0x1B, 0xAF, 0xE0},
+			.cpreview = cpreview,
 			.cborder = {}
 		};
 
