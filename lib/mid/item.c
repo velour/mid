@@ -94,7 +94,7 @@ static ItemOps ops[] = {
 		tophatupdate,
 		NULL,
 		{.row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
-		.stats = { 3, -1, 0 },
+		.stats = { [StatHp] = 1 },
 		.loc = EqpHead,
 		.set = ArmorSetIron
 	},
@@ -104,7 +104,7 @@ static ItemOps ops[] = {
 		tophatupdate,
 		NULL,
 		{.row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
-		.stats = { 3, -1, 0 },
+		.stats = { [StatHp] = 1 },
 		.loc = EqpArms,
 		.set = ArmorSetIron
 	},
@@ -114,7 +114,7 @@ static ItemOps ops[] = {
 		tophatupdate,
 		NULL,
 		{.row = 1, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
-		.stats = { 3, -1, 0 },
+		.stats = { [StatHp] = 3, [StatDex] = -1 },
 		.loc = EqpBody,
 		.set = ArmorSetIron
 	},
@@ -124,7 +124,7 @@ static ItemOps ops[] = {
 		tophatupdate,
 		NULL,
 		{.row = 3, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
-		.stats = { 3, -1, 0 },
+		.stats = { [StatHp] = 1, [StatDex] = -1 },
 		.loc = EqpLegs,
 		.set = ArmorSetIron
 	},
