@@ -109,7 +109,7 @@ static void init(Lvl *l)
 	for (int x = 0; x < l->w; x++) {
 		int c = ' ';
 		if (x == 0 || x == l->w - 1 || y == 0 || y == l->h - 1)
-				c = '#';
+			c = '#';
 		*blk(l, x, y, z) = (Blk) { .tile = c };
 	}
 	}
@@ -149,7 +149,7 @@ static int stairlocs(Lvl *lvl, Loc ls[])
 	for (int x = 1; x < lvl->w-1; x++)
 	for (int y = 1; y < lvl->h-2; y++) {
 		if (reachable(lvl, x, y, z) &&  tileinfo(lvl, x, y+1, z).flags & Tcollide
-			&& !(tileinfo(lvl, x, y, z).flags & (Tfdoor | Tbdoor))) {
+			&& !(tileinfo(lvl, x, y, z).flags & (Tfdoor | Tbdoor | Tup))) {
 			ls[nls] = (Loc){ x, y, z };
 			nls++;
 		}
