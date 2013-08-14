@@ -44,6 +44,8 @@ _Bool pollevent(Event *event){
 	if(!p)
 		return 0;
 
+	int x, y, dx, dy;
+
 	switch(e.type){
 	case SDL_QUIT:
 		event->type = Quit;
@@ -57,10 +59,12 @@ _Bool pollevent(Event *event){
 		return 1;
 	case SDL_MOUSEMOTION:
 		event->type = Mousemv;
-		event->x = e.motion.x;
-		event->y = e.motion.y;
-		event->dx = e.motion.xrel;
-		event->dy = e.motion.yrel;
+		SDL_GetMouseState(&x, &y);
+		SDL_GetRelativeMouseState(&dx, &dy);
+		event->x = x;
+		event->y = y;
+		event->dx = dx;
+		event->dy = dy;
 		return 1;
 	case SDL_MOUSEBUTTONDOWN:
 	case SDL_MOUSEBUTTONUP:
