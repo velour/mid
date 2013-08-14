@@ -466,10 +466,10 @@ enum ArmorSetID{
 	ArmorSetMax
 };
 
+extern Img *knightsheet;
 void armorinit(void);
 ArmorSetID itemarmorset(ItemID);
 void applyarmorbonus(Player*, ArmorSetID);
-Img *armorsetsheet(ArmorSetID, ArmorLoc);
 Img *armorinvsheet(ArmorSetID);
 
 typedef enum Dir {
@@ -479,7 +479,7 @@ typedef enum Dir {
 } Dir;
 
 struct Player {
-	Anim as[Ndirs][Nacts][ArmorMax];
+	Anim as[Ndirs][Nacts];
 	Dir dir;
 	Act act;
 	Point imgloc;

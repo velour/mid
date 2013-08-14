@@ -10,7 +10,7 @@ static Point hboff = { 7, 2 };
 
 static Sfx *ow;
 
-static void loadanim(Anim *a, int, int, int, int);
+static void loadanim(Anim *a, int, int, int);
 static void chngdir(Player *b);
 static void chngact(Player *b);
 static Point scroll(Player*, Point delta);
@@ -20,7 +20,6 @@ static double jmp(Player *);
 static void mvsw(Player *);
 static Rect attackclip(Player *p, int up);
 static ArmorSetID armset(Player*);
-static EqpLoc armtoeqp(ArmorLoc);
 
 void playerinit(Player *p, int x, int y)
 {
@@ -34,14 +33,12 @@ void playerinit(Player *p, int x, int y)
 	ow = resrcacq(sfx, "sfx/ow.wav", NULL);
 	assert(ow != NULL);
 
-	for(int i = 0; i < ArmorMax; i++){
-		loadanim(&p->as[Left][Stand][i], 0, 1, 1, i);
-		loadanim(&p->as[Left][Walk][i], 1, 4, 100, i);
-		loadanim(&p->as[Left][Jump][i], 2, 1, 1, i);
-		loadanim(&p->as[Right][Stand][i], 3, 1, 1, i);
-		loadanim(&p->as[Right][Walk][i], 4, 4, 100, i);
-		loadanim(&p->as[Right][Jump][i], 5, 1, 1, i);
-	}
+	loadanim(&p->as[Left][Stand], 0, 1, 1);
+	loadanim(&p->as[Left][Walk], 1, 4, 100);
+	loadanim(&p->as[Left][Jump], 2, 1, 1);
+	loadanim(&p->as[Right][Stand], 3, 1, 1);
+	loadanim(&p->as[Right][Walk], 4, 4, 100);
+	loadanim(&p->as[Right][Jump], 5, 1, 1);
 
 	p->dir = Right;
 	p->act = Stand;
@@ -138,9 +135,9 @@ void playerupdate(Player *p, Zone *zn, Point *tr)
 	chngdir(p);
 	chngact(p);
 	if(p->dir != prevdir)
-		for(int i = 0; i < ArmorMax; i++) animreset(&p->as[p->dir][p->act][i]);
+		animreset(&p->as[p->dir][p->act]);
 	else
-		for(int i = 0; i < ArmorMax; i++) animupdate(&p->as[p->dir][p->act][i]);
+		animupdate(&p->as[p->dir][p->act]);
 
 	Point del = { playerpos(p).x - ppos.x, playerpos(p).y - ppos.y };
 	*tr = scroll(p, del);
@@ -170,24 +167,11 @@ void playerdraw(Gfx *g, Player *p)
 
 	if(p->iframes % 4 == 0){
 		if(p->sframes > 8)
-			for(int i = 0; i < ArmorMax; i++){
-				int loc = armtoeqp(i);
-				ArmorSetID as = itemarmorset(p->wear[loc].id);
-				imgdrawreg(g, armorsetsheet(as, i), attackclip(p, 0), p->imgloc);
-			}
+			imgdrawreg(g, knightsheet, attackclip(p, 0), p->imgloc);
 		else if(p->sframes > 0)
-			for(int i = 0; i < ArmorMax; i++){
-				int loc = armtoeqp(i);
-				ArmorSetID as = itemarmorset(p->wear[loc].id);
-				imgdrawreg(g, armorsetsheet(as, i), attackclip(p, 1), p->imgloc);
-			}
+			imgdrawreg(g, knightsheet, attackclip(p, 1), p->imgloc);
 		else
-			for(int i = 0; i < ArmorMax; i++){
-				int loc = armtoeqp(i);
-				ArmorSetID as = itemarmorset(p->wear[loc].id);
-				p->as[p->dir][p->act][i].sheet = armorsetsheet(as, i);
-				animdraw(g, &p->as[p->dir][p->act][i], p->imgloc);
-			}
+			animdraw(g, &p->as[p->dir][p->act], p->imgloc);
 	}
 
 	if(p->sw.cur >= 0)
@@ -274,9 +258,10 @@ _Bool playertake(Player *p, Item *i){
 	return 0;
 }
 
-static void loadanim(Anim *a, int row, int len, int delay, int shid)
+static void loadanim(Anim *a, int row, int len, int delay)
 {
 	*a = (Anim){
+		.sheet = knightsheet,
 		.row = row,
 		.len = len,
 		.delay = delay/Ticktm,
@@ -397,20 +382,4 @@ static ArmorSetID armset(Player *p){
 			return 0;
 
 	return as;
-}
-
-static EqpLoc armtoeqp(ArmorLoc loc){
-	switch(loc){
-	case ArmorBackArm:
-	case ArmorFrontArm:
-		return EqpArms;
-	case ArmorHead:
-		return EqpHead;
-	case ArmorBody:
-		return EqpBody;
-	case ArmorLegs:
-		return EqpLegs;
-	default:
-		return -1;
-	}
 }

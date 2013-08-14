@@ -49,7 +49,7 @@ endif
 override CFLAGS += $(MANDCFLAGS)
 override LDFLAGS += $(MANDLDFLAGS)
 
-.PHONY: all clean install env prereqs
+.PHONY: all clean install
 .DEFAULT_GOAL := all
 ALL :=
 ALLO :=
