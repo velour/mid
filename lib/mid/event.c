@@ -70,8 +70,9 @@ _Bool pollevent(Event *event){
 	case SDL_MOUSEBUTTONUP:
 		event->type = Mousebt;
 		event->down = e.type == SDL_MOUSEBUTTONDOWN;
-		event->x = e.button.x;
-		event->y = e.button.y;
+		SDL_GetMouseState(&x, &y);
+		event->x = x;
+		event->y = y;
 		event->butt = e.button.button;
 		return 1;
 	default:
