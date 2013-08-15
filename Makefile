@@ -38,14 +38,15 @@ ifndef AR
 AR := ar
 endif
 
-ifndef SDLVER
-SDLVER := 2
-endif
-
 MANDCFLAGS := -g -O2 -Wall -Werror -std=c99 -D_POSIX_SOURCE -D_POSIX_C_SOURCE=200112L
 MANDLDFLAGS := 
 
 ifeq ($(OS),win)
+
+ifndef SDLVER
+SDLVER := 2
+endif
+
 MANDCFLAGS += -Dmain=SDL_main
 
 MANDLDFLAGS += \
@@ -56,6 +57,11 @@ MANDLDFLAGS += \
 
 else ifeq ($(OS),Darwin)
 OS := osx
+
+ifndef SDLVER
+SDLVER := 2
+endif
+
 MANDCFLAGS += \
 	-I/Library/Frameworks/SDL2.framework/Headers \
 	-I/Library/Frameworks/SDL2_image.framework/Headers \
@@ -71,6 +77,10 @@ MANDLDFLAGS += \
 
 else
 OS := posix
+
+ifndef SDLVER
+SDLVER := $(shell if pkg-config sdl2; then echo 2; else echo 1; fi)
+endif
 
 MANDLDFLAGS += \
 	-lm \
