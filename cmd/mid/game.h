@@ -24,6 +24,7 @@ void gamesave(Game *gm);
 Game *gameload();
 _Bool saveavailable();
 _Bool dropitem(Zone*, Player*, Invit*);
+int lvlpallet(Game*);
 
 enum { Invrows = 6, Invcols = 3 };
 
