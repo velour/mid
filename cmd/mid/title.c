@@ -105,6 +105,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 		return;
 
 	if(e->down && e->key == kmap[Mvinv]){
+		rmsave();
 		Game *g = gamenew();
 		gms.data = g;
 		scrnstkpush(stk, &gms);
