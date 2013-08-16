@@ -86,8 +86,7 @@ static void trystairs(Scrnstk *stk, Game *gm)
 		gm->zone->lvl->z = bi.z;
 		playersetloc(&gm->player, bi.x, bi.y);
 
-		int p = gm->znum / 3;
-		lvlsetpallet(p);
+		lvlsetpallet(lvlpallet(gm));
 	} else if (gm->zone->updown == Godown) {
 		gm->znum++;
 		if (gm->znum > gm->zmax) {
@@ -99,9 +98,7 @@ static void trystairs(Scrnstk *stk, Game *gm)
 
 		playersetloc(&gm->player, 2, 2);
 
-		int p = gm->znum / 3;
-		if(p >= LvlMaxPallets) p = LvlMaxPallets - 1;
-		lvlsetpallet(p);
+		lvlsetpallet(lvlpallet(gm));
 	}
 
 	Point loc1 = gm->player.body.bbox.a;
@@ -109,6 +106,14 @@ static void trystairs(Scrnstk *stk, Game *gm)
 		gm->transl.x + loc0.x - loc1.x,
 		gm->transl.y + loc0.y - loc1.y
 	};
+}
+
+int lvlpallet(Game *gm)
+{
+	int p = gm->znum / 3;
+	if (p >= LvlMaxPallets)
+		p = LvlMaxPallets - 1;
+	return p;
 }
 
 void gameupdate(Scrn *s, Scrnstk *stk)

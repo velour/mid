@@ -106,6 +106,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 
 	if(e->down && e->key == kmap[Mvinv]){
 		Game *g = gamenew();
+		lvlsetpallet(lvlpallet(g));
 		gms.data = g;
 		scrnstkpush(stk, &gms);
 		return;
@@ -114,6 +115,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 		return;
 	}else if(e->down && e->key == kmap[Mvjump]){
 		Game *g = gameload();
+		lvlsetpallet(lvlpallet(g));
 		gms.data = g;
 		scrnstkpush(stk, &gms);
 		return;
