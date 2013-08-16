@@ -24,6 +24,8 @@ You'll need the following libraries:
   * SDL_ttf
     * libfreetype
 
+On Linux, the linux/getsdl2.sh script can be used to easily download and install the SDL2 dependencies.
+
 On OSX, the SDL libraries should be in framework form, under /Library/Frameworks,
 and you won't have to worry about the other dependencies.
 
