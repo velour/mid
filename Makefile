@@ -73,8 +73,8 @@ ALLO :=
 
 CMDS := $(wildcard cmd/*)
 LIBS := $(wildcard lib/*)
-include $(CMDS:%=%/Makefile)
-include $(LIBS:%=%/Makefile)
+include $(CMDS:%=%/Make.me)
+include $(LIBS:%=%/Make.me)
 
 all: $(ALL)
 
