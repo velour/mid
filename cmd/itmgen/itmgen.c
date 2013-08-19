@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 		fatal("usage: itmgen [-s <seed>] <ID>+ <num>");
 
 	long num = strtol(argv[argc-1], NULL, 10);
-	if (num == LLONG_MIN || num == LLONG_MAX)
+	if (num == LONG_MIN || num == LONG_MAX)
 			fatal("Invalid number: %s", argv[argc-1]);
 
 	Zone *zn = zoneread(stdin);
@@ -99,7 +99,7 @@ static int idargs(int argc, char *argv[], int *ids[])
 	*ids = xalloc(argc, sizeof(*ids));
 	for (i = 1; i < argc - 1; i++) {
 		long l = strtol(argv[i], NULL, 10);
-		if (l == LLONG_MIN || l == LLONG_MAX)
+		if (l == LONG_MIN || l == LONG_MAX)
 			fatal("Invalid number: %s", argv[i]);
 		(*ids)[i-1] = l;
 	}
