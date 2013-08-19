@@ -3,21 +3,10 @@
 UNAME := $(shell uname)
 OS := $(shell echo $(UNAME) | sed 's/.*MINGW.*/win/')
 
-ifndef CC
 CC := clang
-endif
-
-ifndef LD
 LD := clang
-endif
-
-ifndef AR
 AR := ar
-endif
-
-ifndef SDLVER
 SDLVER := 2
-endif
 
 MANDCFLAGS := -g -O2 -Wall -Werror -std=c99 -D_POSIX_SOURCE -D_POSIX_C_SOURCE=200112L
 MANDLDFLAGS := 
@@ -66,6 +55,9 @@ endif
 
 endif
 
+override CFLAGS += $(MANDCFLAGS)
+override LDFLAGS += $(MANDLDFLAGS)
+
 .PHONY: all clean install env
 .DEFAULT_GOAL := all
 ALL :=
@@ -79,8 +71,8 @@ include $(LIBS:%=%/Make.me)
 all: $(ALL)
 
 %.o: %.c
-	@echo cc $< $(CFLAGS)
-	@$(CC) -c $(MANDCFLAGS) $(CFLAGS) -o $@ $<
+	@echo cc $<
+	@$(CC) -c $(CFLAGS) -o $@ $<
 
 clean:
 	rm -f $(ALL)
@@ -93,8 +85,8 @@ env:
 	@echo LD: $(LD)
 	@echo AR: $(AR)
 	@echo SDLVER: $(SDLVER)
-	@echo MANDCFLAGS: $(MANDCFLAGS)
-	@echo MANDLDFLAGS: $(MANDLDFLAGS)
+	@echo CFLAGS: $(CFLAGS)
+	@echo LDFLAGS: $(LDFLAGS)
 
 ifeq ($(OS),win)
 installer: all

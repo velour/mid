@@ -18,6 +18,6 @@ HFILES := $(HFILES:%=cmd/$(T)/%) $(LIBHFILES)
 
 $(TARG): $(OFILES) $(LIBDEPS)
 	@echo ld -o $@
-	@$(LD) -o $@ $^ $(MANDLDFLAGS) $(LDFLAGS)
+	@$(LD) -o $@ $^ $(LDFLAGS)
 
 $(OFILES): $(HFILES) $(LIBHFILES)

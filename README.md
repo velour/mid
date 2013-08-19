@@ -41,10 +41,12 @@ add the "--disable-stdio-redirect" flag to the above command line for libSDL.
 Do It
 -----
 
-If you're using clang, run "./build" from the source code directory's root.
+If you're using clang, run "make" from the source code directory's root.
 If it doesn't fail, you can run "cmd/mid/mid"!
 
-If you're using gcc, set the CC and LD environment variables to gcc and then run "./build".
+If want to use gcc, override the CC and LD variables:
+
+	make CC=gcc LD=gcc
 
 If you don't want to build SDL 2.0 (it's kind of a pain to build all of SDL on Windows,
 due to the various dependencies), you can use SDL 1.2 by setting the SDLVER environment
