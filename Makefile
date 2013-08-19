@@ -27,11 +27,11 @@ LIBS :=\
 	os\
 
 ifndef CC
-CC := clang -fno-color-diagnostics
+CC := clang
 endif
 
 ifndef LD
-LD := clang -fno-color-diagnostics
+LD := clang
 endif
 
 ifndef AR
