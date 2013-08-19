@@ -4,6 +4,7 @@
 #include "../../include/log.h"
 #include "../../include/rng.h"
 #include "../../include/os.h"
+#include <dirent.h>
 #include <errno.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -19,6 +20,7 @@ static char savedir[128] = "_save";
 
 static void dropall(Zone*, Player*);
 static void ldresrc();
+static void rmrecur(const char *);
 static FILE *opensavefile(const char *file, const char *mode);
 static const char *savepath(const char *file);
 static _Bool readl(char *buf, int sz, FILE *f);
@@ -77,6 +79,7 @@ static void trystairs(Scrnstk *stk, Game *gm)
 		gm->znum--;
 		if (gm->znum < 0) {
 			pr("You just left the dungeon");
+			rmsave();
 			scrnstkpush(stk, goverscrnnew(&gm->player, gm->znum));
 			return;
 		}
@@ -127,9 +130,10 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 
 	trystairs(stk, gm);
 	if(gm->player.curhp <= 0 && !debugging){
-		if(gm->player.lives == 0)
+		if(gm->player.lives == 0){
+			rmsave();
 			scrnstkpush(stk, goverscrnnew(&gm->player, gm->znum));
-		else{
+		}else{
 			gm->died = 1;
 			gm->player.curhp = gm->player.eqp[StatHp] + gm->player.stats[StatHp];
 
@@ -379,7 +383,70 @@ static FILE *opensavefile(const char *file, const char *mode)
 	return f;
 }
 
-_Bool saveavailable(){
+void rmsave()
+{
+	if (!saveavailable())
+		return;
+	rmrecur(savedir);
+}
+
+// TODO(eaburns): a candidate function for a more general os lib.
+static void rmrecur(const char *path)
+{
+	struct stat sb;
+
+	if (stat(path, &sb) < 0) {
+		pr("Unable to stat: %s: %s", path, strerror(errno));
+		return;
+	}
+
+	if (!S_ISDIR(sb.st_mode))
+		goto rm;
+
+	DIR *d = opendir(path);
+	if (!d) {
+		pr("Failed to open %s: %s", path, strerror(errno));
+		return;
+	}
+
+	struct dirent buf;
+	struct dirent *ent;
+	for (;;) {
+		int err = readdir_r(d, &buf, &ent);
+		if (err != 0) {
+			pr("Failed to read %s: %s", path, strerror(err));
+			break;
+		}
+		if (!ent)
+			break;
+		if (strcmp(ent->d_name, ".") == 0|| strcmp(ent->d_name, "..") == 0)
+			continue;
+
+		// TODO(eaburns): when lib/mid/fs.c is moved into a general os library, we
+		// can change this junk to use fscat, which could be renamed to pathjoin.
+		char *subpath = calloc(sizeof(path) + sizeof(ent->d_name) + 2, 1);
+		if (!subpath)
+			die("calloc failed");
+		strcpy(subpath, path);
+		int l = strlen(subpath);
+		subpath[l] = '/';
+		strcpy(subpath+l+1, ent->d_name);
+
+		rmrecur(subpath);
+
+		free(subpath);
+	}
+
+	closedir(d);
+
+rm:
+	pr("Removing %s", path);
+	if (remove(path) < 0)
+		pr("Failed to remove %s: %s", path, strerror(errno));
+}
+
+_Bool saveavailable()
+{
 	struct stat sb;
 	if (stat(savepath("game"), &sb) < 0) {
 		return false;

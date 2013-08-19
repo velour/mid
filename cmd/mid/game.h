@@ -22,6 +22,7 @@ extern Scrnmt gamemt;
 void saveloc(const char *l);
 void gamesave(Game *gm);
 Game *gameload();
+void rmsave();
 _Bool saveavailable();
 _Bool dropitem(Zone*, Player*, Invit*);
 int lvlpallet(Game*);
