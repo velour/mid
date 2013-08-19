@@ -3,29 +3,6 @@
 UNAME := $(shell uname)
 OS := $(shell echo $(UNAME) | sed 's/.*MINGW.*/win/')
 
-CMDS :=\
-	mid\
-	enmgen\
-	enmnear\
-	envgen\
-	envnear\
-	itmnear\
-	itmgen\
-	lvlgen\
-	rectview\
-
-ifeq ($(OS),win)
-CMDS +=\
-	tee\
-
-endif
-
-LIBS :=\
-	mid\
-	log\
-	rng\
-	os\
-
 ifndef CC
 CC := clang
 endif
@@ -94,8 +71,10 @@ endif
 ALL :=
 ALLO :=
 
-include $(CMDS:%=cmd/%/Makefile)
-include $(LIBS:%=lib/%/Makefile)
+CMDS := $(wildcard cmd/*)
+LIBS := $(wildcard lib/*)
+include $(CMDS:%=%/Makefile)
+include $(LIBS:%=%/Makefile)
 
 all: $(ALL)
 
