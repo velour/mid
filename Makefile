@@ -89,7 +89,7 @@ endif
 
 endif
 
-.PHONY: all clean install
+.PHONY: all clean install env
 .DEFAULT_GOAL := all
 ALL :=
 ALLO :=
@@ -107,6 +107,15 @@ clean:
 	rm -f $(ALL)
 	rm -f $(ALLO)
 	rm -f $(shell find . -name '*.exe')
+
+env:
+	@echo OS: $(OS)
+	@echo CC: $(CC)
+	@echo LD: $(LD)
+	@echo AR: $(AR)
+	@echo SDLVER: $(SDLVER)
+	@echo MANDCFLAGS: $(MANDCFLAGS)
+	@echo MANDLDFLAGS: $(MANDLDFLAGS)
 
 ifeq ($(OS),win)
 installer: all
