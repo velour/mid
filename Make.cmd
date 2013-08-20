@@ -17,7 +17,7 @@ LIBDEPS := $(shell echo $(LIBDEPS) | awk '{ for(i = 1; i <= NF; i++) printf("lib
 HFILES := $(HFILES:%=cmd/$(T)/%) $(LIBHFILES)
 
 $(TARG): $(OFILES) $(LIBDEPS)
-	@echo ld -o $@
+	@echo ld $@
 	@$(LD) -o $@ $^ $(LDFLAGS)
 
 $(OFILES): $(HFILES) $(LIBHFILES)
