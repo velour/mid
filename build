@@ -1,4 +1,0 @@
-#!/bin/sh
-
-export PATH=`pwd`:$PATH
-exec make -rR $@

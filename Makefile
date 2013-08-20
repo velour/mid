@@ -3,44 +3,9 @@
 UNAME := $(shell uname)
 OS := $(shell echo $(UNAME) | sed 's/.*MINGW.*/win/')
 
-CMDS :=\
-	mid\
-	enmgen\
-	enmnear\
-	envgen\
-	envnear\
-	itmnear\
-	itmgen\
-	lvlgen\
-	rectview\
-
-ifeq ($(OS),win)
-CMDS +=\
-	tee\
-
-endif
-
-LIBS :=\
-	mid\
-	log\
-	rng\
-	os\
-
-ifndef CC
-CC := clang -fno-color-diagnostics
-endif
-
-ifndef LD
-LD := clang -fno-color-diagnostics
-endif
-
-ifndef AR
+CC := clang
+LD := clang
 AR := ar
-endif
-
-ifndef SDLVER
-SDLVER := 2
-endif
 
 MANDCFLAGS := -g -O2 -Wall -Werror -std=c99 -D_POSIX_SOURCE -D_POSIX_C_SOURCE=200112L
 MANDLDFLAGS := 
@@ -51,7 +16,7 @@ MANDCFLAGS += -Dmain=SDL_main
 MANDLDFLAGS += \
 	-L/mingw/bin \
 	$(shell sdl-config --static-libs) \
-	-lSDL -lSDL_image -lSDL_mixer -lSDL_ttf \
+	-lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf \
 	-lm \
 
 else ifeq ($(OS),Darwin)
@@ -72,46 +37,53 @@ MANDLDFLAGS += \
 else
 OS := posix
 
-ifeq ($(SDLVER),2)
 MANDCFLAGS += $(shell pkg-config --cflags sdl2 SDL2_mixer SDL2_image SDL2_ttf)
-else
-MANDCFLAGS += $(shell pkg-config --cflags sdl SDL_mixer SDL_image SDL_ttf)
-endif
 
 MANDLDFLAGS += \
 	-lm \
-
-ifeq ($(SDLVER),2)
-MANDLDFLAGS += $(shell pkg-config --libs sdl2 SDL2_mixer SDL2_image SDL2_ttf)
-else
-MANDLDFLAGS += $(shell pkg-config --libs sdl SDL_mixer SDL_image SDL_ttf)
-endif
+	$(shell pkg-config --libs sdl2 SDL2_mixer SDL2_image SDL2_ttf) \
 
 endif
 
-.PHONY: all clean install
+override CFLAGS += $(MANDCFLAGS)
+override LDFLAGS += $(MANDLDFLAGS)
+
+.PHONY: all clean install env prereqs
 .DEFAULT_GOAL := all
 ALL :=
 ALLO :=
 
-include $(CMDS:%=cmd/%/Makefile)
-include $(LIBS:%=lib/%/Makefile)
+CMDS := $(wildcard cmd/*)
+LIBS := $(wildcard lib/*)
+include $(CMDS:%=%/Make.me)
+include $(LIBS:%=%/Make.me)
 
 all: $(ALL)
 
 %.o: %.c
-	@echo cc $< $(CFLAGS)
-	@$(CC) -c $(MANDCFLAGS) $(CFLAGS) -o $@ $<
+	@echo cc $<
+	@$(CC) -c $(CFLAGS) -o $@ $<
 
 clean:
 	rm -f $(ALL)
 	rm -f $(ALLO)
 	rm -f $(shell find . -name '*.exe')
 
+env:
+	@echo OS: $(OS)
+	@echo CC: $(CC)
+	@echo LD: $(LD)
+	@echo AR: $(AR)
+	@echo CFLAGS: $(CFLAGS)
+	@echo LDFLAGS: $(LDFLAGS)
+
+prereqs:
+	@./$(OS)/getprereqs.sh
+
 ifeq ($(OS),win)
 installer: all
 	mkdir -p Mid
-	cp /mingw/bin/SDL*.dll Mid
+	cp /mingw/bin/SDL2*.dll Mid
 	for c in mid lvlgen itmgen enmgen envgen tee; do cp cmd/$$c/$$c Mid/; done
 	cp -r resrc/ Mid/
 endif
