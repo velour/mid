@@ -11,7 +11,7 @@ OFILES :=\
 HFILES :=\
 
 lib/os/appdata_osx.o: lib/os/appdata_osx.m
-	@echo occ $< $(CFLAGS)
-	@$(CC) -c $(MANDCFLAGS) $(CFLAGS) -o $@ $<
+	@echo occ $<
+	@$(CC) -c $(CFLAGS) -o $@ $<
 
 include Make.lib
