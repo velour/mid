@@ -6,7 +6,6 @@ OS := $(shell echo $(UNAME) | sed 's/.*MINGW.*/win/')
 CC := clang
 LD := clang
 AR := ar
-SDLVER := 2
 
 MANDCFLAGS := -g -O2 -Wall -Werror -std=c99 -D_POSIX_SOURCE -D_POSIX_C_SOURCE=200112L
 MANDLDFLAGS := 
@@ -17,7 +16,7 @@ MANDCFLAGS += -Dmain=SDL_main
 MANDLDFLAGS += \
 	-L/mingw/bin \
 	$(shell sdl-config --static-libs) \
-	-lSDL -lSDL_image -lSDL_mixer -lSDL_ttf \
+	-lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf \
 	-lm \
 
 else ifeq ($(OS),Darwin)
@@ -38,20 +37,11 @@ MANDLDFLAGS += \
 else
 OS := posix
 
-ifeq ($(SDLVER),2)
 MANDCFLAGS += $(shell pkg-config --cflags sdl2 SDL2_mixer SDL2_image SDL2_ttf)
-else
-MANDCFLAGS += $(shell pkg-config --cflags sdl SDL_mixer SDL_image SDL_ttf)
-endif
 
 MANDLDFLAGS += \
 	-lm \
-
-ifeq ($(SDLVER),2)
-MANDLDFLAGS += $(shell pkg-config --libs sdl2 SDL2_mixer SDL2_image SDL2_ttf)
-else
-MANDLDFLAGS += $(shell pkg-config --libs sdl SDL_mixer SDL_image SDL_ttf)
-endif
+	$(shell pkg-config --libs sdl2 SDL2_mixer SDL2_image SDL2_ttf) \
 
 endif
 
@@ -94,7 +84,7 @@ prereqs:
 ifeq ($(OS),win)
 installer: all
 	mkdir -p Mid
-	cp /mingw/bin/SDL*.dll Mid
+	cp /mingw/bin/SDL2*.dll Mid
 	for c in mid lvlgen itmgen enmgen envgen tee; do cp cmd/$$c/$$c Mid/; done
 	cp -r resrc/ Mid/
 endif
