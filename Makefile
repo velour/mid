@@ -58,7 +58,7 @@ endif
 override CFLAGS += $(MANDCFLAGS)
 override LDFLAGS += $(MANDLDFLAGS)
 
-.PHONY: all clean install env
+.PHONY: all clean install env prereqs
 .DEFAULT_GOAL := all
 ALL :=
 ALLO :=
@@ -87,6 +87,9 @@ env:
 	@echo SDLVER: $(SDLVER)
 	@echo CFLAGS: $(CFLAGS)
 	@echo LDFLAGS: $(LDFLAGS)
+
+prereqs:
+	@./$(OS)/getprereqs.sh
 
 ifeq ($(OS),win)
 installer: all
