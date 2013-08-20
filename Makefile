@@ -74,7 +74,6 @@ env:
 	@echo CC: $(CC)
 	@echo LD: $(LD)
 	@echo AR: $(AR)
-	@echo SDLVER: $(SDLVER)
 	@echo CFLAGS: $(CFLAGS)
 	@echo LDFLAGS: $(LDFLAGS)
 
