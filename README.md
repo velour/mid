@@ -49,5 +49,7 @@ If want to use gcc, override the CC and LD variables:
 	make CC=gcc LD=gcc
 
 If you don't want to build SDL 2.0 (it's kind of a pain to build all of SDL on Windows,
-due to the various dependencies), you can use SDL 1.2 by setting the SDLVER environment
-variable to 1 before running "build".
+due to the various dependencies), you can use SDL 1.2 by setting the SDLVER
+variable to 1:
+
+	make SDLVER=1
