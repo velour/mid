@@ -6,11 +6,14 @@ get_it() {
 	lib=$1
 	url=$2
 
-	if [ -e $lib.dmg ]; then
+	if [ -e /Library/Frameworks/$lib.framework ]; then
 		return
 	fi
 
-	curl -s -S $url -o $lib.dmg || exit 1
+	if [ ! -e $lib.dmg ]; then
+		curl -s -S $url -o $lib.dmg || exit 1
+	fi
+
 	hdiutil attach $lib.dmg || exit 2
 	sudo cp -rf /Volumes/$lib/$lib.framework /Library/Frameworks/ || exit 3
 	hdiutil detach /Volumes/$lib || exit 4
