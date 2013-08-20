@@ -131,27 +131,28 @@ static char *zonefile(int znum)
 static FILE *zpipe(Rng *r)
 {
 	Pipe p = {};
-	pipeadd(&p, "lvlgen", "25 25 3 -s %u ", rngint(r));
+	pipeadd(&p, "lvlgen", "25 25 3 -s %lu ", (unsigned long) rngint(r));
 
-	pipeadd(&p, "itmgen", "-s %u %d 1", rngint(r), ItemStatup);
+	pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemStatup);
 
-	pipeadd(&p, "itmgen", "-s %u %d %d %d %d %d %d %d %d 50", rngint(r),
+	pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d %d %d %d 50", (unsigned long) rngint(r),
 		ItemCopper, ItemCopper, ItemCopper, ItemCopper, ItemCopper, 
 		ItemSilver, ItemSilver,
 		ItemGold
 	);
-	pipeadd(&p, "itmgen", "-s %u %d %d %d %d %d 5", rngint(r),
+	pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d 5", (unsigned long) rngint(r),
 		ItemHealth, ItemHealth, ItemHealth, ItemHealth,
 		ItemCarrot
 	);
-	pipeadd(&p, "itmgen", "-s %u %d 1", rngint(r), ItemHamCan);
+	pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
 
-	pipeadd(&p, "envgen", "-s %u %d 1", rngint(r), EnvShrempty);
+	pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
 
-	pipeadd(&p, "envgen", "-s %u %d %d %d 2", rngint(r),
+	pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
 		EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
 
-	pipeadd(&p, "enmgen", "-s %u %d %d %d %d %d %d %d 3 3 4 5 50", rngint(r),
+	pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d 3 3 4 5 50",
+		(unsigned long) rngint(r),
 		EnemyUnti, EnemyUnti, EnemyUnti,
 		EnemyNous, EnemyNous, EnemyNous, EnemyNous,
 		EnemyDa, EnemyDa, EnemyDa,
