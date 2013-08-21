@@ -51,12 +51,11 @@ static char *locname[] = {
 	[EqpDrop] = "Drop",
 };
 
-static char *statname[] = {
+char *statname[] = {
 	[StatHp] = "HP",
 	[StatDex] = "Dex",
 	[StatStr] = "Str",
 	[StatMag] = "Mag",
-	[StatGuts] = "Guts",
 	[StatLuck] = "Luck",
 };
 

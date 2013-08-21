@@ -54,14 +54,7 @@ static void update(Scrn *s, Scrnstk *stk){
 }
 
 static void draw(Scrn *s, Gfx *g){
-	static char *names[] = {
-		[StatHp] = "HP",
-		[StatDex] = "Dex",
-		[StatStr] = "Str",
-		[StatMag] = "Mag",
-		[StatGuts] = "Guts",
-		[StatLuck] = "Luck",
-	};
+	extern char *statname[];
 
 	Statup *sup = s->data;
 
@@ -91,7 +84,7 @@ static void draw(Scrn *s, Gfx *g){
 		if(rectcontains(ma, sup->mouse))
 			meter.cbg = (Color){ 255, 219, 0 };
 
-		txtdraw(g, sup->txt, sloc, names[i]);
+		txtdraw(g, sup->txt, sloc, statname[i]);
 		meterdraw(g, &meter, mloc);
 
 		if(rectcontains(ma, sup->mouse) && sup->inc){
