@@ -11,7 +11,9 @@ MANDCFLAGS := -g -O2 -Wall -Werror -std=c99 -D_POSIX_SOURCE -D_POSIX_C_SOURCE=20
 MANDLDFLAGS := 
 
 ifeq ($(OS),win)
-MANDCFLAGS += -Dmain=SDL_main
+MANDCFLAGS += \
+	-Dmain=SDL_main \
+	-I/mingw/include/SDL2
 
 MANDLDFLAGS += \
 	-L/mingw/bin \
