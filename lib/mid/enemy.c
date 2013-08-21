@@ -92,6 +92,7 @@ void enemydraw(Enemy *e, Gfx *g){
 }
 
 _Bool enemyscan(char *buf, Enemy *e){
+	*e = (Enemy){};
 	int id;
 	// need to take a peek at the ID to dispatch the correct scan method.
 	if (sscanf(buf, " %d", &id) != 1)
