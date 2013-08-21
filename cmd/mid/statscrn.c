@@ -59,7 +59,6 @@ static void draw(Scrn *s, Gfx *g){
 		[StatDex] = "Dex",
 		[StatStr] = "Str",
 		[StatMag] = "Mag",
-		[StatGuts] = "Guts",
 		[StatLuck] = "Luck",
 	};
 

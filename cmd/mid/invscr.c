@@ -56,7 +56,6 @@ static char *statname[] = {
 	[StatDex] = "Dex",
 	[StatStr] = "Str",
 	[StatMag] = "Mag",
-	[StatGuts] = "Guts",
 	[StatLuck] = "Luck",
 };
 

@@ -388,7 +388,6 @@ enum Stat{
 	StatDex,
 	StatStr,
 	StatMag,
-	StatGuts,
 	StatLuck,
 	StatMax
 };
