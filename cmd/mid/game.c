@@ -409,12 +409,12 @@ static void rmrecur(const char *path)
 		return;
 	}
 
-	struct dirent buf;
 	struct dirent *ent;
 	for (;;) {
-		int err = readdir_r(d, &buf, &ent);
-		if (err != 0) {
-			pr("Failed to read %s: %s", path, strerror(err));
+		errno = 0;
+		ent = readdir(d);
+		if (!ent && errno != 0) {
+			pr("Failed to read %s: %s", path, strerror(errno));
 			break;
 		}
 		if (!ent)
