@@ -198,7 +198,7 @@ static void draw(Scrn *s, Gfx *g){
 			.base = i->p->stats[j],
 			.extra = i->p->eqp[j],
 			.preview = preview[j],
-			.max = 30,
+			.max = statmax[j],
 			.xscale = 3,
 			.h = TxtSzMedium,
 			.cbg = {0x65, 0x65, 0x65},

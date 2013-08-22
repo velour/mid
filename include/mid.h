@@ -392,6 +392,8 @@ enum Stat{
 	StatMax
 };
 
+extern int statmax[StatMax];
+
 enum { Maxinv = 18 };
 
 enum EqpLoc{

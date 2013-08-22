@@ -69,7 +69,7 @@ static void draw(Scrn *s, Gfx *g){
 		Meter meter = {
 			.base = sup->p->stats[i],
 			.extra = sup->p->eqp[i],
-			.max = 30,
+			.max = statmax[i],
 			.xscale = 3,
 			.h = TxtSzMedium,
 			.cbg = {0x65, 0x65, 0x65},
@@ -87,7 +87,7 @@ static void draw(Scrn *s, Gfx *g){
 		txtdraw(g, sup->txt, sloc, statname[i]);
 		meterdraw(g, &meter, mloc);
 
-		if(rectcontains(ma, sup->mouse) && sup->inc){
+		if(rectcontains(ma, sup->mouse) && sup->inc && sup->p->stats[i] < statmax[i]){
 			if(i == StatHp){
 				sup->p->stats[i] += 5;
 				sup->p->curhp += 5;
