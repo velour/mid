@@ -1,7 +1,6 @@
 # © 2013 the Mid Authors under the MIT license. See AUTHORS for the list of authors.
 
-UNAME := $(shell uname)
-OS := $(shell echo $(UNAME) | sed 's/.*MINGW.*/win/')
+OS := $(shell uname | sed 's/.*MINGW.*/win/')
 
 CC := clang
 LD := clang
