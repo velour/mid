@@ -70,7 +70,7 @@ static void draw(Scrn *s, Gfx *g){
 			.base = sup->p->stats[i],
 			.extra = sup->p->eqp[i],
 			.max = statmax[i],
-			.xscale = 3,
+			.xscale = 2,
 			.h = TxtSzMedium,
 			.cbg = {0x65, 0x65, 0x65},
 			.cbase = {0x1E, 0x94, 0x22},
