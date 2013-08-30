@@ -30,7 +30,7 @@ to easily download and install the build dependencies.
 On OSX, the SDL libraries should be in framework form, under /Library/Frameworks,
 and you won't have to worry about the other dependencies.
 
-On Windows you will need mingw/msys and Powershell script execution priveledges.
+On Windows you will need mingw/msys and Powershell script execution privileges.
 You will at least need to set:
 
 	set-executionpolicy remotesigned
