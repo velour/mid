@@ -51,11 +51,14 @@ If want to use gcc, override the CC and LD variables:
 Installers
 --------
 
-On OSX and Windows, you can run `make installer` to create Mid.app (on OSX) and a Mid folder (on Windows). These can be distributed to other machines and should work without installing any prerequites.
+On OSX and Windows, you can run `make installer` to create Mid.app (on OSX) and a Mid folder (on Windows).
+These can be distributed to other machines and should work without installing any prerequites.
 
 Playing
 =======
 
 Run `cmd/mid/mid` from the dev area, or click on Mid.app on OSX, or mid.exe in the Windows Mid folder.
 
-The default controls are ESDF-style for movement, `j` to swing the sword, `u` to perform general actions like opening doors, and `n` to access the inventory. You can change the controls in the options menu, or by providing a keymap file to the `-k` flag of the mid executable. For an example, look at dvorak.km.
+The default controls are ESDF-style for movement, `j` to swing the sword, `u` to perform general actions
+like opening doors, and `n` to access the inventory. You can change the controls in the options menu, or
+by providing a keymap file to the `-k` flag of the mid executable. For an example, look at dvorak.km.
