@@ -113,7 +113,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	Statup *sup = s->data;
 
 	if(e->type == Mousemv){
-		sup->mouse = (Point){ e->x, e->y };
+		sup->mouse = projpt((Point){ e->x, e->y });
 		sup->inc = 0;
 		return;
 	}
@@ -121,7 +121,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	if(e->type == Mousebt && sup->uorbs == 0){
 		if(sup->norbs == 0)
 			return;
-		sup->mouse = (Point){ e->x, e->y };
+		sup->mouse = projpt((Point){ e->x, e->y });
 		sup->inc = 1;
 		return;
 	}
