@@ -39,10 +39,10 @@ static ItemOps ops[] = {
 	},
 	[ItemCopper] = {
 		"c",
-		"img/items.png",
+		"img/coins.png",
 		copperupdate,
 		NULL,
-		{ .row = 1, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
+		{ .row = 0, .len = 4, .delay = 150/Ticktm, .w = 16, .h = 16, .d = 150/Ticktm }
 	},
 	[ItemHealth] = {
 		"Broccoli",
@@ -53,17 +53,17 @@ static ItemOps ops[] = {
 	},
 	[ItemSilver] = {
 		"s",
-		"img/items.png",
+		"img/coins.png",
 		silverupdate,
 		NULL,
-		{ .row = 3, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
+		{ .row = 1, .len = 4, .delay = 150/Ticktm, .w = 16, .h = 16, .d = 150/Ticktm }
 	},
 	[ItemGold] = {
 		"g",
-		"img/items.png",
+		"img/coins.png",
 		goldupdate,
 		NULL,
-		{ .row = 4, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
+		{ .row = 2, .len = 4, .delay = 150/Ticktm, .w = 16, .h = 16, .d = 150/Ticktm }
 	},
 	[ItemCarrot] = {
 		"Carrot",
@@ -160,8 +160,10 @@ static ItemOps ops[] = {
 _Bool iteminit(Item *i, ItemID id, Point p){
 	assert(id >= 0 && id < ItemMax);
 
+	ItemOps *iop = &ops[id];
+
 	i->id = id;
-	bodyinit(&i->body, p.x * Twidth, p.y * Theight, Twidth, Theight);
+	bodyinit(&i->body, p.x * Twidth, p.y * Theight, iop->anim.w, iop->anim.h);
 
 	return 1;
 }
