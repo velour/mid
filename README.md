@@ -62,3 +62,10 @@ Run `cmd/mid/mid` from the dev area, or click on Mid.app on OSX, or mid.exe in t
 The default controls are ESDF-style for movement, `j` to swing the sword, `u` to perform general actions
 like opening doors, and `n` to access the inventory. You can change the controls in the options menu, or
 by providing a keymap file to the `-k` flag of the mid executable. For an example, look at dvorak.km.
+
+Debugging
+---------
+
+The `-p` flag to mid allows it to read a level description via standard input, rather than executing its
+own pipeline of the various -gen programs. This, combined with the "cur.lvl" and "debug.log" files that
+are saved on each run, can be used to easily reproduce issues.
