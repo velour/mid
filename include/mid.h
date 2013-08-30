@@ -83,6 +83,7 @@ void gfxclear(Gfx *, Color);
 void gfxdrawpoint(Gfx *, Point, Color);
 void gfxfillrect(Gfx *, Rect, Color);
 void gfxdrawrect(Gfx *, Rect, Color);
+Point projpt(Point);
 
 typedef struct Img Img;
 
@@ -331,10 +332,10 @@ _Bool keymapread(char km[Nactions], char *fname);
 _Bool keymapwrite(char km[Nactions], char *fname);
 _Bool iskeydown(Action);
 
-enum { Scrnw = 1024, Scrnh = 576 };
+enum { Scrnw = 512, Scrnh = 288 };
 
 /* Buffer from side of screen at which to begin scrolling. */
-enum { Scrlbuf = 384 };
+enum { Scrlbuf = 192 };
 
 enum { Tall = 32, Wide = 32 };
 

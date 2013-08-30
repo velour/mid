@@ -254,26 +254,29 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	Invscr *i = s->data;
 
 	if (e->type == Mousemv) {
+		Point m = projpt((Point){e->x, e->y});
 		if(!i->drag)
-			i->curitem = invat(i, e->x, e->y);
+			i->curitem = invat(i, m.x, m.y);
 		if(!i->curitem)
-			i->curitem = eqpat(i, e->x, e->y).it;
-		i->mouse.x = e->x;
-		i->mouse.y = e->y;
+			i->curitem = eqpat(i, m.x, m.y).it;
+		i->mouse.x = m.x;
+		i->mouse.y = m.y;
 		return;
 	}
 
 	if(e->type == Mousebt && e->down){
-		i->curitem = invat(i, e->x, e->y);
+		Point m = projpt((Point){e->x, e->y});
+		i->curitem = invat(i, m.x, m.y);
 		if(!i->curitem)
-			i->curitem = eqpat(i, e->x, e->y).it;
+			i->curitem = eqpat(i, m.x, m.y).it;
 		i->drag = i->curitem != NULL;
 		return;
 	}
 
 	if(e->type == Mousebt && !e->down && i->drag){
+		Point m = projpt((Point){e->x, e->y});
 		i->drag = 0;
-		Invit *s = invat(i, e->x, e->y);
+		Invit *s = invat(i, m.x, m.y);
 		if(i->curitem == s)
 			return;
 		if(s){
@@ -282,7 +285,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 			i->curitem = s;
 			resetstats(i->p);
 		}else{
-			Eloc el = eqpat(i, e->x, e->y);
+			Eloc el = eqpat(i, m.x, m.y);
 			s = el.it;
 			if(el.loc == (EqpLoc) EqpDrop){
 				if (!dropitem(i->zone, i->p, i->curitem))

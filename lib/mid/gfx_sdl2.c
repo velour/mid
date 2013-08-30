@@ -20,6 +20,12 @@ enum { Bufsize = 256 };
 static Img *vtxt2img(Gfx *g, Txt *t, const char *fmt, va_list ap);
 static Point vtxtdims(const Txt *t, const char *fmt, va_list ap);
 
+Point projpt(Point p){
+	p.x /= 2;
+	p.y /= 2;
+	return p;
+}
+
 Gfx *gfxinit(int w, int h, const char *title){
 	if(TTF_Init() < 0)
 		return NULL;
@@ -59,7 +65,7 @@ void gfxfree(Gfx *g){
 Point gfxdims(const Gfx *g){
 	int w, h;
 	SDL_GetWindowSize(g->win, &w, &h);
-	return (Point){ w, h };
+	return (Point){ w/2, h/2 };
 }
 
 void gfxflip(Gfx *g){
@@ -77,17 +83,17 @@ void gfxclear(Gfx *g, Color c){
 
 void gfxdrawpoint(Gfx *g, Point p, Color c){
 	rendcolor(g, c);
-	SDL_RenderDrawPoint(g->rend, p.x, p.y);
+	SDL_RenderDrawPoint(g->rend, p.x*2, p.y*2);
 }
 
 void gfxfillrect(Gfx *g, Rect r, Color c){
-	SDL_Rect sr = { r.a.x, r.a.y, r.b.x - r.a.x, r.b.y - r.a.y };
+	SDL_Rect sr = { r.a.x*2, r.a.y*2, (r.b.x - r.a.x)*2, (r.b.y - r.a.y)*2 };
 	rendcolor(g, c);
 	SDL_RenderFillRect(g->rend, &sr);
 }
 
 void gfxdrawrect(Gfx *g, Rect r, Color c){
-	SDL_Rect sr = { r.a.x, r.a.y, r.b.x - r.a.x, r.b.y - r.a.y };
+	SDL_Rect sr = { r.a.x*2, r.a.y*2, (r.b.x - r.a.x)*2, (r.b.y - r.a.y)*2 };
 	rendcolor(g, c);
 	SDL_RenderDrawRect(g->rend, &sr);
 }
@@ -126,7 +132,7 @@ Point imgdims(const Img *img){
 
 void imgdraw(Gfx *g, Img *img, Point p){
 	Point wh = imgdims(img);
-	SDL_Rect r = { p.x, p.y, wh.x, wh.y };
+	SDL_Rect r = { p.x*2, p.y*2, wh.x*2, wh.y*2 };
 	SDL_RenderCopy(g->rend, img->tex, 0, &r);
 }
 
@@ -134,7 +140,7 @@ void imgdrawreg(Gfx *g, Img *img, Rect clip, Point p){
 	double w = clip.b.x - clip.a.x;
 	double h = clip.b.y - clip.a.y;
 	SDL_Rect src = { clip.a.x, clip.a.y, w, h };
-	SDL_Rect dst = { p.x, p.y, w, h };
+	SDL_Rect dst = { p.x*2, p.y*2, w*2, h*2 };
 	SDL_RenderCopy(g->rend, img->tex, &src, &dst);
 }
 
