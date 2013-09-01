@@ -21,37 +21,48 @@ Info thuinfo = {
 
 _Bool thuinit(Enemy *e, int x, int y){
 	e->hp = 7;
-	e->data = 0;
+	Anim *a = xalloc(1, sizeof(*a));
+	a->sheet = thuimg;
+	a->row = 0;
+	a->len = 4;
+	a->delay = 100 / Ticktm;
+	a->w = 32;
+	a->h = 32;
+	a->f = 0;
+	a->d = a->delay;
+	e->data = a;
 	return 1;
 }
 
 void thufree(Enemy *e){
+	xfree(e->data);
 }
 
 void thuupdate(Enemy *e, Player *p, Zone *z){
 	enemygenupdate(e, p, z, &thuinfo);
+	Anim *a = e->data;
+	if(e->body.vel.x == 0)
+		a->f = 0;
+	else
+		animupdate(a);
 }
 
 void thudraw(Enemy *e, Gfx *g){
 	if(e->iframes % 4 != 0)
 		return;
 
-	Rect clip;
+	Anim *a = e->data;
 	if(e->body.vel.x < 0)
-		clip = (Rect){
-			{ 0, 0 },
-			{ 32, 32 }
-		};
+		a->row = 0;
 	else
-		clip = (Rect){
-			{ 32, 0 },
-			{ 64, 32 }
-		};
-	camdrawreg(g, thuimg, clip, e->body.bbox.a);
+		a->row = 1;
+	a->sheet = thuimg; // TODO: why is this necessary???
+	camdrawanim(g, a, e->body.bbox.a);
 }
 
 _Bool thuscan(char *buf, Enemy *e){
 	*e = (Enemy){};
+	thuinit(e, 0, 0);
 	if (!defaultscan(buf, e))
 		return 0;
 
