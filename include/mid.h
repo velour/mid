@@ -359,6 +359,7 @@ typedef enum Stat Stat;
 typedef struct Item Item;
 typedef struct Invit Invit;
 typedef enum ItemID ItemID;
+typedef enum ItemStatus ItemStatus;
 typedef enum EqpLoc EqpLoc;
 typedef struct Player Player;
 typedef struct Zone Zone;
@@ -435,10 +436,16 @@ struct Item{
 	Body body;
 };
 
+enum ItemStatus{
+	ItemStatusNormal,
+	ItemStatusPicked,
+	ItemStatusNoRoom
+};
+
 _Bool itemldresrc(void);
 _Bool iteminit(Item*, ItemID id, Point p);
 void itemupdateanims(void);
-void itemupdate(Item*, Player*, Zone *z);
+ItemStatus itemupdate(Item*, Player*, Zone *z);
 void itemdraw(Item*, Gfx*);
 char *itemname(ItemID);
 EqpLoc itemeqploc(ItemID);
@@ -675,10 +682,10 @@ Rect meterarea(Meter*, Point);
 enum{ MsgMax = 5 };
 
 struct Msg{
-	const char *txt[MsgMax];
+	char *txt[MsgMax];
 	int left[MsgMax];
 	int top;
 };
 
 void msgdraw(Msg*, Gfx*);
-void msg(Msg*, const char*);
+void msg(Msg*, const char*, ...);

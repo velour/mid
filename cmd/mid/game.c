@@ -262,7 +262,7 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 			if(gm->player.statup){
 				scrnstkpush(stk, statscrnnew(gm, &gm->player, &ev[i]));
 				gm->player.statup = 0;
-				msg(&gm->msg, "Game Saved");
+				msg(&gm->msg, "%s", "Game Saved");
 				return;
 			}
 		}

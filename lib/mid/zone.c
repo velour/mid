@@ -327,9 +327,11 @@ void zoneupdate(Zone *zn, Player *p, Point *tr, Msg *m)
 	for(size_t i = 0; i < Maxitms; i++){
 		ItemID id = itms[i].id;
 		if (id){
-			itemupdate(&itms[i], p, zn);
-			if(!itms[i].id)
-				msg(m, itemname(id));
+			ItemStatus st = itemupdate(&itms[i], p, zn);
+			if(st == ItemStatusPicked)
+				msg(m, "Got %s", itemname(id));
+			else if(st == ItemStatusNoRoom)
+				msg(m, "No room for %s", itemname(id));
 		}
 	}
 
