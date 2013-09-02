@@ -124,7 +124,7 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 	Game *gm = s->data;
 
 	Point tr;
-	zoneupdate(gm->zone, &gm->player, &tr);
+	zoneupdate(gm->zone, &gm->player, &tr, &gm->msg);
 	gm->transl.x += tr.x;
 	gm->transl.y += tr.y;
 

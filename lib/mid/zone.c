@@ -314,7 +314,7 @@ _Bool zoneoverlap(Zone *zn, int z, Point loc, Point wh)
 	return false;
 }
 
-void zoneupdate(Zone *zn, Player *p, Point *tr)
+void zoneupdate(Zone *zn, Player *p, Point *tr, Msg *m)
 {
 	lvlupdate(zn->lvl);
 	playerupdate(p, zn, tr);
@@ -324,8 +324,14 @@ void zoneupdate(Zone *zn, Player *p, Point *tr)
 	int z = zn->lvl->z;
 
 	Item *itms = zn->itms[z];
-	for(size_t i = 0; i < Maxitms; i++)
-		if (itms[i].id) itemupdate(&itms[i], p, zn);
+	for(size_t i = 0; i < Maxitms; i++){
+		ItemID id = itms[i].id;
+		if (id){
+			itemupdate(&itms[i], p, zn);
+			if(!itms[i].id)
+				msg(m, itemname(id));
+		}
+	}
 
 	envupdateanims();
 

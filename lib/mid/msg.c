@@ -1,6 +1,5 @@
 #include "../../include/mid.h"
 #include "../../include/log.h"
-#include "game.h"
 #include <string.h>
 
 enum {
@@ -40,7 +39,7 @@ void msg(Msg *m, const char *t)
 			j++;
 		}
 	}
-	m->top = j+1;
+	m->top = j;
 	if(m->top == MsgMax){
 		// trash oldest to make room
 		memmove(m->txt, &m->txt[1], MsgMax-1);

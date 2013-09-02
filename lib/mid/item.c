@@ -38,7 +38,7 @@ static ItemOps ops[] = {
 		{ .row = 0, .len = 2, .delay = 120/Ticktm, .w = 16, .h = 16, .d = 120/Ticktm }
 	},
 	[ItemCopper] = {
-		"c",
+		"Copper Coin",
 		"img/coins.png",
 		copperupdate,
 		NULL,
@@ -52,14 +52,14 @@ static ItemOps ops[] = {
 		{ .row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 }
 	},
 	[ItemSilver] = {
-		"s",
+		"Silver Coin",
 		"img/coins.png",
 		silverupdate,
 		NULL,
 		{ .row = 1, .len = 4, .delay = 150/Ticktm, .w = 16, .h = 16, .d = 150/Ticktm }
 	},
 	[ItemGold] = {
-		"g",
+		"Gold Coin",
 		"img/coins.png",
 		goldupdate,
 		NULL,
