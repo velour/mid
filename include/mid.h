@@ -472,7 +472,6 @@ extern Img *knightsheet;
 void armorinit(void);
 ArmorSetID itemarmorset(ItemID);
 void applyarmorbonus(Player*, ArmorSetID);
-Img *armorinvsheet(ArmorSetID);
 
 typedef enum Dir {
 	Left,

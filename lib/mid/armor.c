@@ -46,10 +46,6 @@ void applyarmorbonus(Player *p, ArmorSetID id){
 	ops[id].bonus(p);
 }
 
-Img *armorinvsheet(ArmorSetID id){
-	return ops[id].invsheet;
-}
-
 static void nobonus(Player *p){
 	// nada
 }
