@@ -36,14 +36,3 @@ Scrn *goverscrnnew(Player *, int);
 Scrn *optscrnnew(void);
 
 _Bool ensuredir(const char *d);
-
-enum{ MsgMax = 5 };
-typedef struct Msg Msg;
-struct Msg{
-	const char *txt[MsgMax];
-	int left[MsgMax];
-	int top;
-};
-
-void msgdraw(Msg*, Gfx*);
-void msg(Msg*, const char*);
