@@ -34,7 +34,7 @@ void armorinit(void){
 		assert(knightsheet != NULL);
 	}
 
-	for(int i = ArmorSetNone; i < ArmorSetMax; i++){
+	for(int i = ArmorSetIron; i < ArmorSetMax; i++){
 		ArmorOps *op = &ops[i];
 		snprintf(buf, sizeof(buf), "img/%s.png", op->sheetname);
 		op->invsheet = resrcacq(imgs, buf, NULL);
