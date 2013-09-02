@@ -32,59 +32,59 @@ static Sfx *gengrab;
 static ItemOps ops[] = {
 	[ItemStatup] = {
 		"Orb of Power",
-		"img/items.png",
+		"img/food.png",
 		statupupdate,
 		NULL,
-		{ .row = 0, .len = 2, .delay = 1200/Ticktm, .w = 32, .h = 32, .d = 1200/Ticktm }
+		{ .row = 0, .len = 2, .delay = 120/Ticktm, .w = 16, .h = 16, .d = 120/Ticktm }
 	},
 	[ItemCopper] = {
 		"c",
-		"img/items.png",
+		"img/coins.png",
 		copperupdate,
 		NULL,
-		{ .row = 1, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
+		{ .row = 0, .len = 4, .delay = 150/Ticktm, .w = 16, .h = 16, .d = 150/Ticktm }
 	},
 	[ItemHealth] = {
 		"Broccoli",
-		"img/items.png",
+		"img/food.png",
 		healthupdate,
 		NULL,
-		{ .row = 2, .len = 2, .delay = 600/Ticktm, .w = 32, .h = 32, .d = 600/Ticktm }
+		{ .row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 }
 	},
 	[ItemSilver] = {
 		"s",
-		"img/items.png",
+		"img/coins.png",
 		silverupdate,
 		NULL,
-		{ .row = 3, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
+		{ .row = 1, .len = 4, .delay = 150/Ticktm, .w = 16, .h = 16, .d = 150/Ticktm }
 	},
 	[ItemGold] = {
 		"g",
-		"img/items.png",
+		"img/coins.png",
 		goldupdate,
 		NULL,
-		{ .row = 4, .len = 8, .delay = 150/Ticktm, .w = 32, .h = 32, .d = 150/Ticktm }
+		{ .row = 2, .len = 4, .delay = 150/Ticktm, .w = 16, .h = 16, .d = 150/Ticktm }
 	},
 	[ItemCarrot] = {
 		"Carrot",
-		"img/items.png",
+		"img/food.png",
 		carrotupdate,
 		NULL,
-		{ .row = 5, .len = 2, .delay = 600/Ticktm, .w = 32, .h = 32, .d = 600/Ticktm }
+		{ .row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 }
 	},
 	[ItemHamCan] = {
 		"Ham Can",
-		"img/items.png",
+		"img/food.png",
 		statupupdate,
 		hamcaneat,
-		{ .row = 9, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+		{ .row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 }
 	},
 	[ItemTopHat] = {
 		"Top Hat",
-		"img/items.png",
+		"img/food.png",
 		tophatupdate,
 		NULL,
-		{.row = 6, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{.row = 4, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { 0, 5, 0 },
 		.loc = EqpHead
 	},
@@ -93,7 +93,7 @@ static ItemOps ops[] = {
 		"img/iron.png",
 		tophatupdate,
 		NULL,
-		{.row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatHp] = 1 },
 		.loc = EqpHead,
 		.set = ArmorSetIron
@@ -103,7 +103,7 @@ static ItemOps ops[] = {
 		"img/iron.png",
 		tophatupdate,
 		NULL,
-		{.row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatHp] = 1 },
 		.loc = EqpArms,
 		.set = ArmorSetIron
@@ -113,7 +113,7 @@ static ItemOps ops[] = {
 		"img/iron.png",
 		tophatupdate,
 		NULL,
-		{.row = 1, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatHp] = 3 },
 		.loc = EqpBody,
 		.set = ArmorSetIron
@@ -123,35 +123,35 @@ static ItemOps ops[] = {
 		"img/iron.png",
 		tophatupdate,
 		NULL,
-		{.row = 3, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatHp] = 1, [StatDex] = -1 },
 		.loc = EqpLegs,
 		.set = ArmorSetIron
 	},
 	[ItemSilverSwd] = {
 		"Silver Sword",
-		"img/items.png",
+		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 7, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { 0, 0, 1 },
 		.loc = EqpWep
 	},
 	[ItemBroadSwd] = {
 		"Lady Sword",
-		"img/items.png",
+		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 8, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{ .row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { 0, 0, 3 },
 		.loc = EqpWep
 	},
 	[ItemWindSwd] = {
 		"Kaze",
-		"img/items.png",
+		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 10, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+		{ .row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 },
 		.stats = { 0, 1, 2 },
 		.loc = EqpWep
 	},
@@ -160,8 +160,10 @@ static ItemOps ops[] = {
 _Bool iteminit(Item *i, ItemID id, Point p){
 	assert(id >= 0 && id < ItemMax);
 
+	ItemOps *iop = &ops[id];
+
 	i->id = id;
-	bodyinit(&i->body, p.x * Twidth, p.y * Theight, Twidth, Theight);
+	bodyinit(&i->body, p.x * Twidth, p.y * Theight, iop->anim.w, iop->anim.h);
 
 	return 1;
 }

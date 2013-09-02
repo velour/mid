@@ -37,7 +37,7 @@ bool init()
 
 	pr("%s", "Let's rock.");
 
-	gfx = gfxinit(Scrnw, Scrnh, "MID");
+	gfx = gfxinit(Scrnw*2, Scrnh*2, "MID");
 	if(!gfx)
 		return false;
 

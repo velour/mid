@@ -63,6 +63,7 @@ static void draw(Scrn *s, Gfx *g){
 	enum { Bufsz = 256 };
 	char buf[Bufsz];
 
+	int mh = TxtSzMedium/2;
 	int Pad = 4;
 	Point sloc = { Pad, Pad };
 	for(int i = StatHp; i < StatMax; i++){
@@ -70,15 +71,15 @@ static void draw(Scrn *s, Gfx *g){
 			.base = sup->p->stats[i],
 			.extra = sup->p->eqp[i],
 			.max = statmax[i],
-			.xscale = 3,
-			.h = TxtSzMedium,
+			.xscale = 2,
+			.h = mh,
 			.cbg = {0x65, 0x65, 0x65},
 			.cbase = {0x1E, 0x94, 0x22},
 			.cextra = {0x1B, 0xAF, 0xE0},
 			.cborder = {}
 		};
 
-		Point mloc = { sloc.x + TxtSzMedium*2, sloc.y };
+		Point mloc = { sloc.x + mh*2, sloc.y };
 		Rect ma = meterarea(&meter, mloc);
 
 		if(rectcontains(ma, sup->mouse))
@@ -99,7 +100,7 @@ static void draw(Scrn *s, Gfx *g){
 			sup->inc = 0;
 		}
 
-		sloc = vecadd(sloc, (Point){0, TxtSzMedium + Pad});
+		sloc = vecadd(sloc, (Point){0, mh + Pad});
 	}
 
 	snprintf(buf, Bufsz, "Orbs: %d", sup->norbs);
@@ -113,7 +114,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	Statup *sup = s->data;
 
 	if(e->type == Mousemv){
-		sup->mouse = (Point){ e->x, e->y };
+		sup->mouse = projpt((Point){ e->x, e->y });
 		sup->inc = 0;
 		return;
 	}
@@ -121,7 +122,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 	if(e->type == Mousebt && sup->uorbs == 0){
 		if(sup->norbs == 0)
 			return;
-		sup->mouse = (Point){ e->x, e->y };
+		sup->mouse = projpt((Point){ e->x, e->y });
 		sup->inc = 1;
 		return;
 	}
