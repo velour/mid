@@ -32,10 +32,10 @@ static Sfx *gengrab;
 static ItemOps ops[] = {
 	[ItemStatup] = {
 		"Orb of Power",
-		"img/items.png",
+		"img/food.png",
 		statupupdate,
 		NULL,
-		{ .row = 0, .len = 2, .delay = 1200/Ticktm, .w = 32, .h = 32, .d = 1200/Ticktm }
+		{ .row = 0, .len = 2, .delay = 120/Ticktm, .w = 16, .h = 16, .d = 120/Ticktm }
 	},
 	[ItemCopper] = {
 		"c",
@@ -46,10 +46,10 @@ static ItemOps ops[] = {
 	},
 	[ItemHealth] = {
 		"Broccoli",
-		"img/items.png",
+		"img/food.png",
 		healthupdate,
 		NULL,
-		{ .row = 2, .len = 2, .delay = 600/Ticktm, .w = 32, .h = 32, .d = 600/Ticktm }
+		{ .row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 }
 	},
 	[ItemSilver] = {
 		"s",
@@ -67,24 +67,24 @@ static ItemOps ops[] = {
 	},
 	[ItemCarrot] = {
 		"Carrot",
-		"img/items.png",
+		"img/food.png",
 		carrotupdate,
 		NULL,
-		{ .row = 5, .len = 2, .delay = 600/Ticktm, .w = 32, .h = 32, .d = 600/Ticktm }
+		{ .row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 }
 	},
 	[ItemHamCan] = {
 		"Ham Can",
-		"img/items.png",
+		"img/food.png",
 		statupupdate,
 		hamcaneat,
-		{ .row = 9, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+		{ .row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 }
 	},
 	[ItemTopHat] = {
 		"Top Hat",
-		"img/items.png",
+		"img/food.png",
 		tophatupdate,
 		NULL,
-		{.row = 6, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{.row = 4, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { 0, 5, 0 },
 		.loc = EqpHead
 	},
