@@ -27,8 +27,8 @@ struct Eloc{
 };
 
 enum {
-	Invitw = 32,
-	Invith = 32,
+	Invitw = 16,
+	Invith = 16,
 	Pad = 4,
 	Width = Invitw * Invcols + Pad * (Invcols - 1),
 	Height = Invith * Invrows + Pad * (Invrows - 1),
@@ -124,7 +124,7 @@ static void update(Scrn *s, Scrnstk *stk){
 
 }
 
-enum { Scale = 6 };
+enum { Scale = 3 };
 
 static void draw(Scrn *s, Gfx *g){
 	gfxclear(g, (Color){ 127, 127, 127 });
@@ -192,6 +192,7 @@ static void draw(Scrn *s, Gfx *g){
 		invitdraw(i->curitem, g, moff);
 	}
 
+	int mh = TxtSzMedium/2;
 	Point sloc = { Pad, Height + Ymin + Pad + TxtSzMedium };
 	for(int j = StatHp; j < StatMax; j++){
 		Meter meter = {
@@ -199,8 +200,8 @@ static void draw(Scrn *s, Gfx *g){
 			.extra = i->p->eqp[j],
 			.preview = preview[j],
 			.max = statmax[j],
-			.xscale = 3,
-			.h = TxtSzMedium,
+			.xscale = 2,
+			.h = mh,
 			.cbg = {0x65, 0x65, 0x65},
 			.cbase = {0x1E, 0x94, 0x22},
 			.cextra = {0x1B, 0xAF, 0xE0},
@@ -212,9 +213,9 @@ static void draw(Scrn *s, Gfx *g){
 			meter.cextra = (Color){0xAF,0,0};
 
 		txtdraw(g, gettxt(), sloc, statname[j]);
-		meterdraw(g, &meter, (Point){ sloc.x + TxtSzMedium*2, sloc.y });
+		meterdraw(g, &meter, (Point){ sloc.x + mh*2, sloc.y });
 
-		sloc = vecadd(sloc, (Point){0, TxtSzMedium + Pad});
+		sloc = vecadd(sloc, (Point){0, mh + Pad});
 	}
 
 	msgdraw(&i->msg, g);
