@@ -130,28 +130,28 @@ static ItemOps ops[] = {
 	},
 	[ItemSilverSwd] = {
 		"Silver Sword",
-		"img/items.png",
+		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 7, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { 0, 0, 1 },
 		.loc = EqpWep
 	},
 	[ItemBroadSwd] = {
 		"Lady Sword",
-		"img/items.png",
+		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 8, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{ .row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { 0, 0, 3 },
 		.loc = EqpWep
 	},
 	[ItemWindSwd] = {
 		"Kaze",
-		"img/items.png",
+		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 10, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
+		{ .row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 },
 		.stats = { 0, 1, 2 },
 		.loc = EqpWep
 	},
