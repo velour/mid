@@ -12,13 +12,13 @@ static Txt *gettxt(void);
 void msgdraw(Msg *m, Gfx *g)
 {
 	Txt *txt = gettxt();
+	Point em = txtdims(txt, "M");
 	int y = Scrnh;
 	for(int i = 0; i < m->top; i++){
 		if (!m->txt[i])
 			continue;
 
 		Point sz = txtdims(txt, m->txt[i]);
-		Point em = txtdims(txt, "M");
 		Point loc = (Point) { Scrnw - sz.x - em.x, y - sz.y };
 		txtdraw(g, txt, loc, m->txt[i]);
 		y -= sz.y + 2;
