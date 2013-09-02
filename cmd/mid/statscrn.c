@@ -63,6 +63,7 @@ static void draw(Scrn *s, Gfx *g){
 	enum { Bufsz = 256 };
 	char buf[Bufsz];
 
+	int mh = TxtSzMedium/2;
 	int Pad = 4;
 	Point sloc = { Pad, Pad };
 	for(int i = StatHp; i < StatMax; i++){
@@ -71,14 +72,14 @@ static void draw(Scrn *s, Gfx *g){
 			.extra = sup->p->eqp[i],
 			.max = statmax[i],
 			.xscale = 2,
-			.h = TxtSzMedium,
+			.h = mh,
 			.cbg = {0x65, 0x65, 0x65},
 			.cbase = {0x1E, 0x94, 0x22},
 			.cextra = {0x1B, 0xAF, 0xE0},
 			.cborder = {}
 		};
 
-		Point mloc = { sloc.x + TxtSzMedium*2, sloc.y };
+		Point mloc = { sloc.x + mh*2, sloc.y };
 		Rect ma = meterarea(&meter, mloc);
 
 		if(rectcontains(ma, sup->mouse))
@@ -99,7 +100,7 @@ static void draw(Scrn *s, Gfx *g){
 			sup->inc = 0;
 		}
 
-		sloc = vecadd(sloc, (Point){0, TxtSzMedium + Pad});
+		sloc = vecadd(sloc, (Point){0, mh + Pad});
 	}
 
 	snprintf(buf, Bufsz, "Orbs: %d", sup->norbs);
