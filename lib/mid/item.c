@@ -8,7 +8,7 @@ typedef struct ItemOps ItemOps;
 struct ItemOps{
 	char *name;
 	char *animname;
-	void (*update)(Item*,Player*,Zone*);
+	ItemStatus (*update)(Item*,Player*,Zone*);
 	void (*eat)(Invit*,Player*,Zone*);
 	Anim anim;
 	int stats[StatMax];
@@ -16,14 +16,14 @@ struct ItemOps{
 	ArmorSetID set;
 };
 
-static void statupupdate(Item*,Player*,Zone*);
-static void copperupdate(Item*,Player*,Zone*);
-static void healthupdate(Item *, Player *, Zone *);
-static void silverupdate(Item*,Player*,Zone*);
-static void goldupdate(Item*,Player*,Zone*);
-static void carrotupdate(Item*,Player*,Zone*);
-static void tophatupdate(Item*,Player*,Zone*);
-static void silverswdupdate(Item*,Player*,Zone*);
+static ItemStatus statupupdate(Item*,Player*,Zone*);
+static ItemStatus copperupdate(Item*,Player*,Zone*);
+static ItemStatus healthupdate(Item *, Player *, Zone *);
+static ItemStatus silverupdate(Item*,Player*,Zone*);
+static ItemStatus goldupdate(Item*,Player*,Zone*);
+static ItemStatus carrotupdate(Item*,Player*,Zone*);
+static ItemStatus tophatupdate(Item*,Player*,Zone*);
+static ItemStatus silverswdupdate(Item*,Player*,Zone*);
 static void hamcaneat(Invit*,Player*,Zone*);
 
 static Sfx *goldgrab;
@@ -38,7 +38,7 @@ static ItemOps ops[] = {
 		{ .row = 0, .len = 2, .delay = 120/Ticktm, .w = 16, .h = 16, .d = 120/Ticktm }
 	},
 	[ItemCopper] = {
-		"c",
+		"Copper Coin",
 		"img/coins.png",
 		copperupdate,
 		NULL,
@@ -52,14 +52,14 @@ static ItemOps ops[] = {
 		{ .row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 }
 	},
 	[ItemSilver] = {
-		"s",
+		"Silver Coin",
 		"img/coins.png",
 		silverupdate,
 		NULL,
 		{ .row = 1, .len = 4, .delay = 150/Ticktm, .w = 16, .h = 16, .d = 150/Ticktm }
 	},
 	[ItemGold] = {
-		"g",
+		"Gold Coin",
 		"img/coins.png",
 		goldupdate,
 		NULL,
@@ -204,9 +204,10 @@ void itemupdateanims(void){
 		animupdate(&ops[i].anim);
 }
 
-void itemupdate(Item *i, Player *p, Zone *l){
+ItemStatus itemupdate(Item *i, Player *p, Zone *l){
 	if(i->id)
-		ops[i->id].update(i, p, l);
+		return ops[i->id].update(i, p, l);
+	return ItemStatusNormal;
 }
 
 void itemdraw(Item *i, Gfx *g){
@@ -247,81 +248,103 @@ _Bool inviteat(Invit *it, Player *p, Zone *z){
 	return 1;
 }
 
-static void statupupdate(Item *i, Player *p, Zone *z){
+static ItemStatus statupupdate(Item *i, Player *p, Zone *z){
 	bodyupdate(&i->body, z->lvl);
 
-	if(isect(i->body.bbox, playerbox(p)) && playertake(p, i)){
+	if(isect(i->body.bbox, playerbox(p))){
+		if(!playertake(p, i))
+			return ItemStatusNoRoom;
 		sfxplay(gengrab);
 		i->id = ItemNone;
+		return ItemStatusPicked;
 	}
+	return ItemStatusNormal;
 }
 
-static void copperupdate(Item *i, Player *p, Zone *z){
+static ItemStatus copperupdate(Item *i, Player *p, Zone *z){
 	bodyupdate(&i->body, z->lvl);
 
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(goldgrab);
 		p->money++;
 		i->id = ItemNone;
+		return ItemStatusPicked;
 	}
+	return ItemStatusNormal;
 }
 
-static void healthupdate(Item *i, Player *p, Zone *z){
+static ItemStatus healthupdate(Item *i, Player *p, Zone *z){
 	bodyupdate(&i->body, z->lvl);
 
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(gengrab);
 		playerheal(p, 1);
 		i->id = ItemNone;
+		return ItemStatusPicked;
 	}
+	return ItemStatusNormal;
 }
 
-static void silverupdate(Item *i, Player *p, Zone *z){
+static ItemStatus silverupdate(Item *i, Player *p, Zone *z){
 	bodyupdate(&i->body, z->lvl);
 
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(goldgrab);
 		p->money += 5;
 		i->id = ItemNone;
+		return ItemStatusPicked;
 	}
+	return ItemStatusNormal;
 }
 
-static void goldupdate(Item *i, Player *p, Zone *z){
+static ItemStatus goldupdate(Item *i, Player *p, Zone *z){
 	bodyupdate(&i->body, z->lvl);
 
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(goldgrab);
 		p->money += 25;
 		i->id = ItemNone;
+		return ItemStatusPicked;
 	}
+	return ItemStatusNormal;
 }
 
-static void carrotupdate(Item *i, Player *p, Zone *z){
+static ItemStatus carrotupdate(Item *i, Player *p, Zone *z){
 	bodyupdate(&i->body, z->lvl);
 
 	if(isect(i->body.bbox, playerbox(p))){
 		sfxplay(gengrab);
 		playerheal(p, 5);
 		i->id = ItemNone;
+		return ItemStatusPicked;
 	}
+	return ItemStatusNormal;
 }
 
-static void tophatupdate(Item *i, Player *p, Zone *z){
+static ItemStatus tophatupdate(Item *i, Player *p, Zone *z){
 	bodyupdate(&i->body, z->lvl);
 
-	if(isect(i->body.bbox, playerbox(p)) && playertake(p, i)){
+	if(isect(i->body.bbox, playerbox(p))){
+		if(!playertake(p, i))
+			return ItemStatusNoRoom;
 		sfxplay(gengrab);
 		i->id = ItemNone;
+		return ItemStatusPicked;
 	}
+	return ItemStatusNormal;
 }
 
-static void silverswdupdate(Item *i, Player *p, Zone *z){
+static ItemStatus silverswdupdate(Item *i, Player *p, Zone *z){
 	bodyupdate(&i->body, z->lvl);
 
-	if(isect(i->body.bbox, playerbox(p)) && playertake(p, i)){
+	if(isect(i->body.bbox, playerbox(p))){
+		if(!playertake(p, i))
+			return ItemStatusNoRoom;
 		sfxplay(gengrab);
 		i->id = ItemNone;
+		return ItemStatusPicked;
 	}
+	return ItemStatusNormal;
 }
 
 static void hamcaneat(Invit *i, Player *p, Zone *z){
