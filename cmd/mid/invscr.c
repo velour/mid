@@ -281,7 +281,6 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 		if(i->curitem == s)
 			return;
 		if(s){
-			msg(&i->msg, NULL);
 			invswap(i->curitem, s);
 			i->curitem = s;
 			resetstats(i->p);
@@ -290,12 +289,12 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 			s = el.it;
 			if(el.loc == (EqpLoc) EqpDrop){
 				if (!dropitem(i->zone, i->p, i->curitem))
-					msg(&i->msg, "There's no room for that here");
+					msg(&i->msg, "There's no room for %s here", itemname(i->curitem->id));
 				return;
 			}
 			if(el.loc == (int) EqpEat){
 				if(!inviteat(i->curitem, i->p, i->zone)) {
-					msg(&i->msg, "I can't eat that!");
+					msg(&i->msg, "I can't eat the %s!", itemname(i->curitem->id));
 					return;
 				}
 				*i->curitem = (Invit){};
@@ -303,7 +302,6 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 			}
 			if(!s || s == i->curitem || el.loc != itemeqploc(i->curitem->id))
 				return;
-			msg(&i->msg, NULL);
 			invswap(i->curitem, s);
 			i->curitem = s;
 			resetstats(i->p);

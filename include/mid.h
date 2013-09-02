@@ -359,9 +359,11 @@ typedef enum Stat Stat;
 typedef struct Item Item;
 typedef struct Invit Invit;
 typedef enum ItemID ItemID;
+typedef enum ItemStatus ItemStatus;
 typedef enum EqpLoc EqpLoc;
 typedef struct Player Player;
 typedef struct Zone Zone;
+typedef struct Msg Msg;
 
 struct Sword{
 	Rect rightloc[2];
@@ -434,10 +436,16 @@ struct Item{
 	Body body;
 };
 
+enum ItemStatus{
+	ItemStatusNormal,
+	ItemStatusPicked,
+	ItemStatusNoRoom
+};
+
 _Bool itemldresrc(void);
 _Bool iteminit(Item*, ItemID id, Point p);
 void itemupdateanims(void);
-void itemupdate(Item*, Player*, Zone *z);
+ItemStatus itemupdate(Item*, Player*, Zone *z);
 void itemdraw(Item*, Gfx*);
 char *itemname(ItemID);
 EqpLoc itemeqploc(ItemID);
@@ -620,7 +628,7 @@ _Bool zoneadditem(Zone *zn, int z, Item it);
 _Bool zoneaddenv(Zone *zn, int z, Env env);
 _Bool zoneaddenemy(Zone *zn, int z, Enemy enm);
 void zonedraw(Gfx *g, Zone *zn, Player *p);
-void zoneupdate(Zone *zn, Player *p, Point *tr);
+void zoneupdate(Zone *zn, Player *p, Point *tr, Msg *);
 
 /* Fills the array with locations that pass the given predicate. */
 int zonelocs(Zone *, int z, _Bool (*)(Zone *, int, Point), Point [], int);
@@ -670,3 +678,14 @@ struct Meter{
 
 Rect meterdraw(Gfx*, Meter*, Point);
 Rect meterarea(Meter*, Point);
+
+enum{ MsgMax = 5 };
+
+struct Msg{
+	char *txt[MsgMax];
+	int left[MsgMax];
+	int top;
+};
+
+void msgdraw(Msg*, Gfx*);
+void msg(Msg*, const char*, ...);
