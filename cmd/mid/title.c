@@ -67,18 +67,21 @@ Scrn *titlescrnnew(Gfx *g){
 	Point ld = txtdims(t.f, "Press 'x' to Load the saved game");
 	t.loadpos = (Point){
 		gfxdims(g).x / 2 - ld.x / 2,
-		t.startpos.y + sd.y + 16
+		t.startpos.y + sd.y + ti.size/2
 	};
 
 	Point od = txtdims(t.f, "Press 'x' for Options");
 	t.optspos = (Point){
 		gfxdims(g).x / 2 - od.x / 2,
-		t.loadpos.y + ld.y + 16
+		t.loadpos.y + ld.y + ti.size/2
 	};
 
+	Point copydims = imgdims(t.copy);
+	copydims.x /= 2;
+	copydims.y /= 2;
 	t.copypos = (Point){
-		gfxdims(g).x / 2 - imgdims(t.copy).x / 2,
-		gfxdims(g).y - imgdims(t.copy).y - 8
+		gfxdims(g).x / 2 - copydims.x / 2,
+		gfxdims(g).y - copydims.y - 8
 	};
 
 	s.mt = &titmt;
