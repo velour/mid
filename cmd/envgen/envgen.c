@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 		if (!envinit(&env, id, l.p))
 			fatal("Failed to initialize env with ID: %d", id);
 		if (!zoneaddenv(zn, l.z, env)) {
-			nls = rmz(ls, nls, l.z);
+			rmz(ls, nls, l.z);
 			num--;
 		}
 	}
