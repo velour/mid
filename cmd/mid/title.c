@@ -50,15 +50,18 @@ Scrn *titlescrnnew(Gfx *g){
 	if(!t.copy)
 		return NULL;
 
+	Point titdims = imgdims(t.title);
+	titdims.x /= 2;
+	titdims.y /= 2;
 	t.titlepos = (Point){
-		gfxdims(g).x / 2 - imgdims(t.title).x / 2,
+		gfxdims(g).x / 2 - titdims.x / 2,
 		0
 	};
 
 	Point sd = txtdims(t.f, "Press 'x' to Start a new game");
 	t.startpos = (Point){
 		gfxdims(g).x / 2 - sd.x / 2,
-		t.titlepos.y + imgdims(t.title).y
+		t.titlepos.y + titdims.y
 	};
 
 	Point ld = txtdims(t.f, "Press 'x' to Load the saved game");
@@ -89,7 +92,7 @@ static void update(Scrn *s, Scrnstk *stk){
 static void draw(Scrn *s, Gfx *g){
 	gfxclear(g, (Color){ 240, 240, 240 });
 	Tit *t = s->data;
-	imgdraw(g, t->title, t->titlepos);
+	imgdrawscale(g, t->title, t->titlepos, 0.5);
 	txtdraw(g, t->f, t->startpos, "Press '%c' to Start a new game", kmap[Mvinv]);
 	if (saveavailable())
 		txtdraw(g, t->f, t->loadpos, "Press '%c' to Load the saved game", kmap[Mvjump]);

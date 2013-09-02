@@ -92,6 +92,7 @@ void imgfree(Img *);
 /* Returns negative dimensions on failure. */
 Point imgdims(const Img *);
 void imgdraw(Gfx *, Img *, Point);
+void imgdrawscale(Gfx *, Img *, Point, float);
 void imgdrawreg(Gfx *, Img *, Rect, Point);
 
 typedef struct Txt Txt;

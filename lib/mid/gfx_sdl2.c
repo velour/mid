@@ -136,6 +136,12 @@ void imgdraw(Gfx *g, Img *img, Point p){
 	SDL_RenderCopy(g->rend, img->tex, 0, &r);
 }
 
+void imgdrawscale(Gfx *g, Img *img, Point p, float s){
+	Point wh = imgdims(img);
+	SDL_Rect r = { p.x*2, p.y*2, wh.x*2*s, wh.y*2*s };
+	SDL_RenderCopy(g->rend, img->tex, 0, &r);
+}
+
 void imgdrawreg(Gfx *g, Img *img, Rect clip, Point p){
 	double w = clip.b.x - clip.a.x;
 	double h = clip.b.y - clip.a.y;
