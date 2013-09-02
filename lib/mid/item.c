@@ -93,7 +93,7 @@ static ItemOps ops[] = {
 		"img/iron.png",
 		tophatupdate,
 		NULL,
-		{.row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatHp] = 1 },
 		.loc = EqpHead,
 		.set = ArmorSetIron
@@ -103,7 +103,7 @@ static ItemOps ops[] = {
 		"img/iron.png",
 		tophatupdate,
 		NULL,
-		{.row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatHp] = 1 },
 		.loc = EqpArms,
 		.set = ArmorSetIron
@@ -113,7 +113,7 @@ static ItemOps ops[] = {
 		"img/iron.png",
 		tophatupdate,
 		NULL,
-		{.row = 1, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatHp] = 3 },
 		.loc = EqpBody,
 		.set = ArmorSetIron
@@ -123,7 +123,7 @@ static ItemOps ops[] = {
 		"img/iron.png",
 		tophatupdate,
 		NULL,
-		{.row = 3, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1},
+		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatHp] = 1, [StatDex] = -1 },
 		.loc = EqpLegs,
 		.set = ArmorSetIron
