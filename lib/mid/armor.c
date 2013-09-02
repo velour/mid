@@ -8,7 +8,6 @@ struct ArmorOps{
 	void (*bonus)(Player *);
 	char *sheetname;
 	Img *invsheet;
-	Img *parts[ArmorMax];
 };
 
 static void nobonus(Player*);
@@ -25,41 +24,26 @@ static ArmorOps ops[] = {
 	},
 };
 
-static char *partname[] = {
-	[ArmorBackArm] = "arm-back",
-	[ArmorBody] = "body",
-	[ArmorHead] = "helm",
-	[ArmorFrontArm] = "arm-front",
-	[ArmorLegs] = "legs"
-};
+Img *knightsheet;
 
 void armorinit(void){
 	char buf[128];
 
-	for(int i = ArmorSetNone; i < ArmorSetMax; i++){
+	if(!knightsheet){
+		knightsheet = resrcacq(imgs, "img/knight.png", NULL);
+		assert(knightsheet != NULL);
+	}
+
+	for(int i = ArmorSetIron; i < ArmorSetMax; i++){
 		ArmorOps *op = &ops[i];
 		snprintf(buf, sizeof(buf), "img/%s.png", op->sheetname);
 		op->invsheet = resrcacq(imgs, buf, NULL);
 		assert(op->invsheet != NULL);
-
-		for(int j = ArmorBackArm; j < ArmorMax; j++){
-			snprintf(buf, sizeof(buf), "img/%s-%s.png", op->sheetname, partname[j]);
-			op->parts[j] = resrcacq(imgs, buf, NULL);
-			assert(op->parts[j] != NULL);
-		}
 	}
 }
 
 void applyarmorbonus(Player *p, ArmorSetID id){
 	ops[id].bonus(p);
-}
-
-Img *armorsetsheet(ArmorSetID as, ArmorLoc loc){
-	return ops[as].parts[loc];
-}
-
-Img *armorinvsheet(ArmorSetID id){
-	return ops[id].invsheet;
 }
 
 static void nobonus(Player *p){

@@ -83,6 +83,7 @@ void gfxclear(Gfx *, Color);
 void gfxdrawpoint(Gfx *, Point, Color);
 void gfxfillrect(Gfx *, Rect, Color);
 void gfxdrawrect(Gfx *, Rect, Color);
+Point projpt(Point);
 
 typedef struct Img Img;
 
@@ -91,6 +92,7 @@ void imgfree(Img *);
 /* Returns negative dimensions on failure. */
 Point imgdims(const Img *);
 void imgdraw(Gfx *, Img *, Point);
+void imgdrawscale(Gfx *, Img *, Point, float);
 void imgdrawreg(Gfx *, Img *, Rect, Point);
 
 typedef struct Txt Txt;
@@ -331,10 +333,10 @@ _Bool keymapread(char km[Nactions], char *fname);
 _Bool keymapwrite(char km[Nactions], char *fname);
 _Bool iskeydown(Action);
 
-enum { Scrnw = 1024, Scrnh = 576 };
+enum { Scrnw = 512, Scrnh = 288 };
 
 /* Buffer from side of screen at which to begin scrolling. */
-enum { Scrlbuf = 384 };
+enum { Scrlbuf = 192 };
 
 enum { Tall = 32, Wide = 32 };
 
@@ -466,11 +468,10 @@ enum ArmorSetID{
 	ArmorSetMax
 };
 
+extern Img *knightsheet;
 void armorinit(void);
 ArmorSetID itemarmorset(ItemID);
 void applyarmorbonus(Player*, ArmorSetID);
-Img *armorsetsheet(ArmorSetID, ArmorLoc);
-Img *armorinvsheet(ArmorSetID);
 
 typedef enum Dir {
 	Left,
@@ -479,7 +480,7 @@ typedef enum Dir {
 } Dir;
 
 struct Player {
-	Anim as[Ndirs][Nacts][ArmorMax];
+	Anim as[Ndirs][Nacts];
 	Dir dir;
 	Act act;
 	Point imgloc;

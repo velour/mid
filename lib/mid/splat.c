@@ -17,16 +17,16 @@ struct Splat{
 };
 
 _Bool splatinit(Enemy *e, int x, int y){
-	e->hp = 600/Ticktm;
+	e->hp = 3*75/Ticktm;
 
 	Splat *sp = xalloc(1, sizeof(*sp));
 	sp->anim = (Anim){
 		.row = 0,
 		.len = 3,
-		.delay = 200/Ticktm,
+		.delay = 75/Ticktm,
 		.w = 32,
 		.h = 32,
-		.d = 200/Ticktm
+		.d = 75/Ticktm
 	};
 
 	e->data = sp;
@@ -66,10 +66,10 @@ _Bool splatscan(char *buf, Enemy *e){
 	sp->anim = (Anim){
 		.row = 0,
 		.len = 3,
-		.delay = 200/Ticktm,
+		.delay = 75/Ticktm,
 		.w = 32,
 		.h = 32,
-		.d = 200/Ticktm
+		.d = 75/Ticktm
 	};
 
 	e->data = sp;
