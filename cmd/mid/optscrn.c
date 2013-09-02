@@ -26,7 +26,8 @@ struct Opts{
 };
 
 enum{
-	Pad = TxtSzMedium/2,
+	TxtHeight = TxtSzMedium/2,
+	Pad = TxtHeight/2,
 };
 
 static Color hilit = { 255, 219, 0 };
@@ -62,7 +63,7 @@ Scrn *optscrnnew(void){
 	for(int i = Mvleft; i < Nactions; i++){
 		opts.hilit[i] = (Rect){
 			loc,
-			vecadd(loc, (Point){ TxtSzMedium*5, TxtSzMedium })
+			vecadd(loc, (Point){ TxtHeight*5, TxtHeight })
 		};
 		loc.y = opts.hilit[i].b.y + Pad;
 	}
@@ -73,7 +74,7 @@ Scrn *optscrnnew(void){
 		.base = opts.origvol,
 		.max = SndVolMax,
 		.xscale = 1,
-		.h = TxtSzMedium,
+		.h = TxtHeight,
 		.cbg = {0x65, 0x65, 0x65},
 		.cbase = {0x1E, 0x94, 0x22},
 		.cextra = {0x1B, 0xAF, 0xE0}
@@ -83,21 +84,21 @@ Scrn *optscrnnew(void){
 	loc.y += Pad*2;
 	opts.volhilit = (Rect){
 		loc,
-		vecadd(loc, (Point){ TxtSzMedium*5 + opts.volmetarea.b.x, TxtSzMedium })
+		vecadd(loc, (Point){ TxtHeight*5 + opts.volmetarea.b.x, TxtHeight })
 	};
-	opts.volmetarea.a = (Point){ TxtSzMedium*5, loc.y };
+	opts.volmetarea.a = (Point){ TxtHeight*5, loc.y };
 	opts.volmetarea.b = vecadd(opts.volmetarea.a, opts.volmetarea.b);
 
 	loc.y = opts.volhilit.b.y + Pad*3;
 	opts.okay = (Rect){
 		loc,
-		vecadd(loc, (Point){ TxtSzMedium*4, TxtSzMedium })
+		vecadd(loc, (Point){ TxtHeight*4, TxtHeight })
 	};
 
 	loc.x = opts.okay.b.x + Pad;
 	opts.cancel = (Rect){
 		loc,
-		vecadd(loc, (Point){ TxtSzMedium*4, TxtSzMedium })
+		vecadd(loc, (Point){ TxtHeight*4, TxtHeight })
 	};
 
 	s.mt = &optsmt;
@@ -176,6 +177,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 
 	if(e->type == Mousebt && e->down){
 		Point m = { e->x, e->y };
+		m = projpt(m);
 
 		for(int i = Mvleft; i < Nactions; i++)
 			if(rectcontains(opt->hilit[i], m)){
