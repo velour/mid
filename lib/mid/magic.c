@@ -6,6 +6,7 @@ static Img *sheet;
 
 typedef struct MagicOps MagicOps;
 struct MagicOps{
+	int cost;
 	void (*cast)(Magic*,Player*);
 	void (*affect)(Magic*,Player*,Enemy*);
 };
@@ -15,8 +16,8 @@ static void bubbleaffect(Magic*,Player*,Enemy*);
 static void zapcast(Magic*,Player*);
 
 static MagicOps ops[] = {
-	[ItemBubble] = { bubblecast, bubbleaffect },
-	[ItemZap] = { zapcast, bubbleaffect },
+	[ItemBubble] = { MaxMP/5, bubblecast, bubbleaffect },
+	[ItemZap] = { MaxMP/5, zapcast, bubbleaffect },
 };
 
 _Bool magicldresrc(void){
@@ -46,10 +47,11 @@ void magicaffect(Magic *m, Player *p, Enemy *e){
 }
 
 void itemcast(Magic *m, ItemID id, Player *p){
-	if(!id)
+	if(!id || p->curmp < ops[id].cost)
 		return;
 	ops[id].cast(m, p);
 	m->id = id;
+	p->curmp -= ops[id].cost;
 }
 
 static void bubblecast(Magic *m, Player *p){

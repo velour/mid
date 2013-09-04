@@ -495,6 +495,8 @@ struct Magic{
 	int hp;
 };
 
+enum{ MaxMP = 10000 };
+
 _Bool magicldresrc(void);
 void magicdraw(Gfx*, Magic*);
 void magicupdate(Magic*, Zone*);
@@ -529,6 +531,7 @@ struct Player {
 	int stats[StatMax];
 	int eqp[StatMax];
 	int curhp;
+	int curmp;
 	int lives;
 
 	int money;

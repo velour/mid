@@ -62,6 +62,7 @@ void playerinit(Player *p, int x, int y)
 	invitinit(&p->wear[EqpMag], ItemBubble);
 	resetstats(p);
 	p->curhp = p->stats[StatHp] + p->eqp[StatHp];
+	p->curmp = MaxMP;
 	mvsw(p);
 }
 
@@ -167,6 +168,9 @@ void playerupdate(Player *p, Zone *zn, Point *tr)
 	}
 	if(p->mframes > 0)
 		p->mframes--;
+
+	if(p->curmp < MaxMP)
+		p->curmp += 5;
 }
 
 void playerdraw(Gfx *g, Player *p)
