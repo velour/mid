@@ -366,6 +366,8 @@ typedef struct Player Player;
 typedef struct Zone Zone;
 typedef struct Magic Magic;
 typedef struct Msg Msg;
+typedef struct Enemy Enemy;
+typedef struct Ai Ai;
 
 struct Sword{
 	Rect rightloc[2];
@@ -496,6 +498,7 @@ struct Magic{
 _Bool magicldresrc(void);
 void magicdraw(Gfx*, Magic*);
 void magicupdate(Magic*, Zone*);
+void magicaffect(Magic*,Player*,Enemy*);
 
 typedef enum Dir {
 	Left,
@@ -559,8 +562,6 @@ enum EnemyID{
 	EnemyMax
 };
 
-typedef struct Enemy Enemy;
-typedef struct Ai Ai;
 struct Ai{
 	void (*update)(Enemy*,Player*,Zone*);
 	Point mv;

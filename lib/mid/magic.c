@@ -7,14 +7,16 @@ static Img *sheet;
 typedef struct MagicOps MagicOps;
 struct MagicOps{
 	void (*cast)(Magic*,Player*);
+	void (*affect)(Magic*,Player*,Enemy*);
 };
 
 static void bubblecast(Magic*,Player*);
+static void bubbleaffect(Magic*,Player*,Enemy*);
 static void zapcast(Magic*,Player*);
 
 static MagicOps ops[] = {
-	[ItemBubble] = { bubblecast },
-	[ItemZap] = { zapcast },
+	[ItemBubble] = { bubblecast, bubbleaffect },
+	[ItemZap] = { zapcast, bubbleaffect },
 };
 
 _Bool magicldresrc(void){
@@ -37,6 +39,10 @@ void magicupdate(Magic *m, Zone *z){
 	bodyupdate(&m->body, z->lvl);
 	animupdate(&m->anim);
 	//TODO: do something to enemies…
+}
+
+void magicaffect(Magic *m, Player *p, Enemy *e){
+	ops[m->id].affect(m, p, e);
 }
 
 void itemcast(Magic *m, ItemID id, Player *p){
@@ -72,6 +78,12 @@ static void bubblecast(Magic *m, Player *p){
 		m->body.vel.x = -m->body.vel.x;
 }
 
+static void bubbleaffect(Magic *m, Player *p, Enemy *e){
+	e->hp -= p->stats[StatMag];
+	m->id = 0;
+}
+
 static void zapcast(Magic *m, Player *p){
 	return bubblecast(m, p);
 }
+
