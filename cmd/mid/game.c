@@ -372,6 +372,8 @@ static void ldresrc()
 		fatal("Failed to load enemy resrouces: %s", miderrstr());
 	if(!swordldresrc())
 		fatal("Failed to load sword resrouces: %s", miderrstr());
+	if(!magicldresrc())
+		fatal("Failed to load magic resources: %s", miderrstr());
 }
 
 static FILE *opensavefile(const char *file, const char *mode)
