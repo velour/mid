@@ -170,7 +170,7 @@ void playerupdate(Player *p, Zone *zn, Point *tr)
 		p->mframes--;
 
 	if(p->curmp < MaxMP)
-		p->curmp += 5;
+		p->curmp += p->stats[StatMag] + p->eqp[StatMag];
 }
 
 void playerdraw(Gfx *g, Player *p)
