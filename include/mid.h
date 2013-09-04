@@ -490,6 +490,7 @@ struct Magic{
 	ItemID id;
 	Body body;
 	Anim anim;
+	int hp;
 };
 
 _Bool magicldresrc(void);

@@ -29,6 +29,11 @@ void magicdraw(Gfx *g, Magic *m){
 }
 
 void magicupdate(Magic *m, Zone *z){
+	m->hp--;
+	if(m->hp == 0){
+		m->id = 0;
+		return;
+	}
 	bodyupdate(&m->body, z->lvl);
 	animupdate(&m->anim);
 	//TODO: do something to enemies…
@@ -60,7 +65,8 @@ static void bubblecast(Magic *m, Player *p){
 			.h = 16,
 			.f = 0,
 			.d = 200/Ticktm,
-		}
+		},
+		.hp = 2 * 1000 / Ticktm, // 2s
 	};
 	if(p->dir == Left)
 		m->body.vel.x = -m->body.vel.x;
