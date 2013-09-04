@@ -140,7 +140,7 @@ static void stonedexact(Env *e, Player *p, Zone *z){
 
 static void stonestract(Env *e, Player *p, Zone *z){
 	static ItemID strswds[] = {
-		ItemSilverSwd,
+		ItemBroadSwd,
 	};
 
 	stonegenact(e, p, z, StatStr, strswds, sizeof(strswds)/sizeof(strswds[0]));
