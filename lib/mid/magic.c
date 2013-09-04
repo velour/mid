@@ -62,6 +62,8 @@ static void bubblecast(Magic *m, Player *p){
 			.d = 200/Ticktm,
 		}
 	};
+	if(p->dir == Left)
+		m->body.vel.x = -m->body.vel.x;
 }
 
 static void zapcast(Magic *m, Player *p){
