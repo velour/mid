@@ -171,6 +171,7 @@ void enemygenupdate(Enemy *e, Player *p, Zone *z, Info *i){
 		if(orighp <= e->hp)
 			continue;
 
+		sfxplay(i->hit);
 		int mstr = p->stats[StatMag];
 		int mhb = 3;
 		if(mstr > mhb * 2)
