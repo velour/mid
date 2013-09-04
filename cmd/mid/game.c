@@ -217,10 +217,10 @@ void gamedraw(Scrn *s, Gfx *g)
 
 	int maxhp = gm->player.stats[StatHp] + gm->player.eqp[StatHp];
 	Meter lm = {
-		.base = gm->player.curhp,
+		.base = (gm->player.curhp*100) / maxhp,
 		.extra = 0,
-		.max = maxhp,
-		.xscale = 5,
+		.max = 100,
+		.xscale = 1,
 		.h = TxtSzSmall,
 		.cbg = { 200 },
 		.cbase = { 0, 200, 200 },
