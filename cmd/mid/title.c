@@ -14,6 +14,8 @@ struct Tit{
 	Point loadpos;
 	Point optspos;
 	Point copypos;
+	_Bool havesave;
+	_Bool loaded;
 };
 
 static void update(Scrn*,Scrnstk*);
@@ -84,6 +86,8 @@ Scrn *titlescrnnew(Gfx *g){
 		gfxdims(g).y - copydims.y - 8
 	};
 
+	t.havesave = saveavailable();
+
 	s.mt = &titmt;
 	s.data = &t;
 	return &s;
@@ -97,7 +101,7 @@ static void draw(Scrn *s, Gfx *g){
 	Tit *t = s->data;
 	imgdrawscale(g, t->title, t->titlepos, 0.5);
 	txtdraw(g, t->f, t->startpos, "Press '%c' to Start a new game", kmap[Mvinv]);
-	if (saveavailable())
+	if (t->havesave)
 		txtdraw(g, t->f, t->loadpos, "Press '%c' to Load the saved game", kmap[Mvjump]);
 	txtdraw(g, t->f, t->optspos, "Press '%c' for Options", kmap[Mvact]);
 	imgdraw(g, t->copy, t->copypos);
@@ -107,11 +111,18 @@ static void draw(Scrn *s, Gfx *g){
 static Scrn gms = { &gamemt };
 
 static void handle(Scrn *s, Scrnstk *stk, Event *e){
+	Tit *t = s->data;
+	if(t->loaded){
+		t->havesave = saveavailable();
+		t->loaded = 0;
+	}
+
 	if(e->type != Keychng || e->repeat)
 		return;
 
 	if(e->down && e->key == kmap[Mvinv]){
-		rmsave();
+		rmsave(); 
+		t->havesave = 0;
 		Game *g = gamenew();
 		lvlsetpallet(lvlpallet(g));
 		gms.data = g;
@@ -124,6 +135,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 		Game *g = gameload();
 		lvlsetpallet(lvlpallet(g));
 		gms.data = g;
+		t->loaded = 1;
 		scrnstkpush(stk, &gms);
 		return;
 	}
