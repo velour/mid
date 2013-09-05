@@ -230,6 +230,21 @@ _Bool zoneaddenemy(Zone *zn, int z, Enemy enm)
 	return true;
 }
 
+_Bool zoneaddmagic(Zone *zn, int z, Magic mag)
+{
+	int i;
+	Magic *mags = zn->mags[z];
+
+	for (i = 0; i < Maxmagics && mags[i].id; i++)
+		;
+	if (i == Maxmagics)
+		return false;
+
+	mags[i] = mag;
+	return true;
+}
+
+
 void zonefree(Zone *z)
 {
 	lvlfree(z->lvl);
@@ -341,6 +356,10 @@ void zoneupdate(Zone *zn, Player *p, Point *tr, Msg *m)
 	for(size_t i = 0; i < Maxenvs; i++)
 		if (en[i].id) envupdate(&en[i], zn);
 
+	Magic *ma = zn->mags[z];
+	for(size_t i = 0; i < Maxmagics; i++)
+		if(ma[i].id > 0) magicupdate(&ma[i], zn);
+
 	Enemy *e = zn->enms[z];
 	for(size_t i = 0; i < Maxenms; i++) {
 		if (!e[i].id)
@@ -366,6 +385,10 @@ void zonedraw(Gfx *g, Zone *zn, Player *p)
 	Item *itms = zn->itms[z];
 	for(size_t i = 0; i < Maxitms; i++)
 		if (itms[i].id) itemdraw(&itms[i], g);
+
+	Magic *ma = zn->mags[z];
+	for(size_t i = 0; i < Maxmagics; i++)
+		if(ma[i].id > 0) magicdraw(g, &ma[i]);
 
 	Enemy *e = zn->enms[z];
 	for(size_t i = 0; i < Maxenms; i++)

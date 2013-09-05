@@ -325,6 +325,7 @@ enum Action{
 	Mvjump,
 	Mvinv,
 	Mvsword,
+	Mvmagic,
 	Nactions,
 };
 
@@ -363,7 +364,10 @@ typedef enum ItemStatus ItemStatus;
 typedef enum EqpLoc EqpLoc;
 typedef struct Player Player;
 typedef struct Zone Zone;
+typedef struct Magic Magic;
 typedef struct Msg Msg;
+typedef struct Enemy Enemy;
+typedef struct Ai Ai;
 
 struct Sword{
 	Rect rightloc[2];
@@ -428,6 +432,9 @@ enum ItemID{
 	ItemSilverSwd,
 	ItemBroadSwd,
 	ItemWindSwd,
+	ItemBubble,
+	ItemZap,
+	ItemLead,
 	ItemMax
 };
 
@@ -449,6 +456,7 @@ ItemStatus itemupdate(Item*, Player*, Zone *z);
 void itemdraw(Item*, Gfx*);
 char *itemname(ItemID);
 EqpLoc itemeqploc(ItemID);
+void itemcast(Magic*, ItemID, Player*);
 
 struct Invit{
 	ItemID id;
@@ -481,6 +489,20 @@ void armorinit(void);
 ArmorSetID itemarmorset(ItemID);
 void applyarmorbonus(Player*, ArmorSetID);
 
+struct Magic{
+	ItemID id;
+	Body body;
+	Anim anim;
+	int hp;
+};
+
+enum{ MaxMP = 10000 };
+
+_Bool magicldresrc(void);
+void magicdraw(Gfx*, Magic*);
+void magicupdate(Magic*, Zone*);
+void magicaffect(Magic*,Player*,Enemy*);
+
 typedef enum Dir {
 	Left,
 	Right,
@@ -502,6 +524,7 @@ struct Player {
 	int jframes;
 	int iframes; // invulnerability after damage;
 	int sframes;
+	int mframes;
 
 	/* if changed, update visibility. */
 	Tileinfo bi;
@@ -509,6 +532,7 @@ struct Player {
 	int stats[StatMax];
 	int eqp[StatMax];
 	int curhp;
+	int curmp;
 	int lives;
 
 	int money;
@@ -542,8 +566,6 @@ enum EnemyID{
 	EnemyMax
 };
 
-typedef struct Enemy Enemy;
-typedef struct Ai Ai;
 struct Ai{
 	void (*update)(Enemy*,Player*,Zone*);
 	Point mv;
@@ -604,6 +626,7 @@ enum {
 	Maxenms = 32,
 	Maxitms = 32,
 	Maxenvs = 16,
+	Maxmagics = 32,
 	Maxz = 5,
 };
 
@@ -616,6 +639,7 @@ struct Zone {
 	Item itms[Maxz][Maxitms];
 	Env envs[Maxz][Maxenvs];
 	Enemy enms[Maxz][Maxenms];
+	Magic mags[Maxz][Maxmagics];
 };
 
 Zone *zoneread(FILE *);
@@ -627,6 +651,7 @@ void zonefree(Zone *);
 _Bool zoneadditem(Zone *zn, int z, Item it);
 _Bool zoneaddenv(Zone *zn, int z, Env env);
 _Bool zoneaddenemy(Zone *zn, int z, Enemy enm);
+_Bool zoneaddmagic(Zone *zn, int z, Magic);
 void zonedraw(Gfx *g, Zone *zn, Player *p);
 void zoneupdate(Zone *zn, Player *p, Point *tr, Msg *);
 

@@ -12,6 +12,7 @@ static char *names[] = {
 	[Mvact] = "act",
 	[Mvinv] = "inv",
 	[Mvsword] = "sword",
+	[Mvmagic] = "magic",
 };
 
 _Bool keymapread(char km[], char *fname){
@@ -53,4 +54,5 @@ char kmap[] = {
 	[Mvjump] = 'e',
 	[Mvinv] = 'n',
 	[Mvsword] = 'j',
+	[Mvmagic] = 'k',
 };
