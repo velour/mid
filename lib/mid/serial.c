@@ -139,11 +139,13 @@ static void scanplayer(char **toks, Player *p)
 	scanint(toks, &p->jframes);
 	scanint(toks, &p->iframes);
 	scanint(toks, &p->sframes);
+	scanint(toks, &p->mframes);
 	for (int i = 0; i < StatMax; i++)
 		scanint(toks, &p->stats[i]);
 	for (int i = 0; i < StatMax; i++)
 		scanint(toks, &p->eqp[i]);
 	scanint(toks, &p->curhp);
+	scanint(toks, &p->curmp);
 	scanint(toks, &p->lives);
 	scanint(toks, &p->money);
 	for (int i = 0; i < Maxinv; i++)
@@ -256,11 +258,13 @@ static void printplayer(char **bufp, int *szp, Player p)
 	prfield(bufp, szp, " %d", p.jframes);
 	prfield(bufp, szp, " %d", p.iframes);
 	prfield(bufp, szp, " %d", p.sframes);
+	prfield(bufp, szp, " %d", p.mframes);
 	for (int i = 0; i < StatMax; i++)
 		prfield(bufp, szp, " %d", p.stats[i]);
 	for (int i = 0; i < StatMax; i++)
 		prfield(bufp, szp, " %d", p.eqp[i]);
 	prfield(bufp, szp, " %d", p.curhp);
+	prfield(bufp, szp, " %d", p.curmp);
 	prfield(bufp, szp, " %d", p.lives);
 	prfield(bufp, szp, " %d", p.money);
 	for (int i = 0; i < Maxinv; i++)

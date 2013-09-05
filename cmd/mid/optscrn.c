@@ -118,6 +118,7 @@ static void draw(Scrn *s, Gfx *g){
 		[Mvjump] = "Jump",
 		[Mvinv] = "Menu",
 		[Mvsword] = "Sword",
+		[Mvmagic] = "Magic",
 	};
 
 	Opts *opt = s->data;

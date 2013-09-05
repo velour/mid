@@ -7,6 +7,8 @@
 
 static Rng rng;
 
+static void die(Enemy*,Zone*,Info*);
+
 _Bool enemyldresrc(void){
 	untihit = resrcacq(sfx, "sfx/hit.wav", 0);
 	if(!untihit) return 0;
@@ -136,8 +138,11 @@ void enemygenupdate(Enemy *e, Player *p, Zone *z, Info *i){
 		playerdmg(p, i->stats[StatStr], dir);
 	}
 
+	if(e->iframes > 0)
+		return;
+
 	Rect swbb = swordbbox(&p->sw);
-	if(e->iframes == 0 && p->sframes > 0 && isect(e->body.bbox, swbb)){
+	if(p->sframes > 0 && isect(e->body.bbox, swbb)){
 		sfxplay(i->hit);
 		int pstr = swordstr(&p->sw, p);
 		e->hp -= pstr;
@@ -150,28 +155,55 @@ void enemygenupdate(Enemy *e, Player *p, Zone *z, Info *i){
 		e->hitback = pbbox.a.x < e->body.bbox.a.x ? mhb : -mhb;
 		e->iframes = 500.0 / Ticktm; // 0.5s
 
-		if(e->hp <= 0){
-			Enemy splat = {};
-			enemyinit(&splat, i->death, 0, 0);
-			splat.body = e->body;
-			enemyfree(e);
-			*e = splat;
-
-			int n = rngintincl(&rng, 0, 100);
-			Drops *d = &i->drops;
-			ItemID id = d->item[n > d->prob[DropCommon]];
-			if(id == ItemNone)
-				return;
-			Item drop = {};
-			Point gridcoord = { // BARF
-				e->body.bbox.a.x / Twidth,
-				e->body.bbox.a.y / Theight
-			};
-			iteminit(&drop, id, gridcoord);
-			drop.body.vel.y = - 8;
-			zoneadditem(z, z->lvl->z, drop);
-
-			return;
-		}
+		if(e->hp <= 0)
+			die(e, z, i);
 	}
+
+	for(int j = 0; j < Maxmagics; j++){
+		Magic *m = &z->mags[z->lvl->z][j];
+		Rect mbb = m->body.bbox;
+		if(m->id == 0 || !isect(e->body.bbox, mbb))
+			continue;
+
+		int orighp = e->hp;
+		magicaffect(m, p, e);
+
+		if(orighp <= e->hp)
+			continue;
+
+		sfxplay(i->hit);
+		int mstr = p->stats[StatMag];
+		int mhb = 3;
+		if(mstr > mhb * 2)
+			mhb = mstr/2;
+		if(mhb > 32)
+			mhb = 32;
+		e->hitback = mbb.a.x < e->body.bbox.a.x ? mhb : -mhb;
+		e->iframes = 500.0 / Ticktm; // 0.5s
+
+		if(e->hp <= 0)
+			die(e, z, i);
+	}
+}
+
+void die(Enemy *e, Zone *z, Info *i){
+	Enemy splat = {};
+	enemyinit(&splat, i->death, 0, 0);
+	splat.body = e->body;
+	enemyfree(e);
+	*e = splat;
+
+	int n = rngintincl(&rng, 0, 100);
+	Drops *d = &i->drops;
+	ItemID id = d->item[n > d->prob[DropCommon]];
+	if(id == ItemNone)
+		return;
+	Item drop = {};
+	Point gridcoord = { // BARF
+		e->body.bbox.a.x / Twidth,
+		e->body.bbox.a.y / Theight
+	};
+	iteminit(&drop, id, gridcoord);
+	drop.body.vel.y = - 8;
+	zoneadditem(z, z->lvl->z, drop);
 }

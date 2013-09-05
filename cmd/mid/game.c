@@ -217,18 +217,30 @@ void gamedraw(Scrn *s, Gfx *g)
 
 	int maxhp = gm->player.stats[StatHp] + gm->player.eqp[StatHp];
 	Meter lm = {
-		.base = gm->player.curhp,
+		.base = (gm->player.curhp*100) / maxhp,
 		.extra = 0,
-		.max = maxhp,
-		.xscale = 5,
+		.max = 100,
+		.xscale = 1,
 		.h = TxtSzSmall,
 		.cbg = { 200 },
 		.cbase = { 0, 200, 200 },
 	};
 	meterdraw(g, &lm, (Point){1,1});
 
+	
+	Meter mm = {
+		.base = (gm->player.curmp*100) / MaxMP,
+		.extra = 0,
+		.max = 100,
+		.xscale = 1,
+		.h = TxtSzSmall,
+		.cbg = { 200, 0 },
+		.cbase = { 0, 200, 200 },
+	};
+	meterdraw(g, &mm, (Point){1,2+lm.h});
+
 	for(int i = 0; i < gm->player.lives; i++){
-		Point life = { 1 + i*16, 16 + 2 };
+		Point life = { 1 + i*16, 2*(16 + 1) };
 		Rect clip = { { 0, 0 }, { 16, 16 } };
 		imgdrawreg(g, gm->ui, clip, life);
 	}
@@ -372,6 +384,8 @@ static void ldresrc()
 		fatal("Failed to load enemy resrouces: %s", miderrstr());
 	if(!swordldresrc())
 		fatal("Failed to load sword resrouces: %s", miderrstr());
+	if(!magicldresrc())
+		fatal("Failed to load magic resources: %s", miderrstr());
 }
 
 static FILE *opensavefile(const char *file, const char *mode)
