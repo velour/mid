@@ -9,15 +9,29 @@ struct MagicOps{
 	int cost;
 	void (*cast)(Magic*,Player*);
 	void (*affect)(Magic*,Player*,Enemy*);
+	void (*update)(Magic*,Zone*,Body*);
 };
 
 static void bubblecast(Magic*,Player*);
 static void bubbleaffect(Magic*,Player*,Enemy*);
+static void noupdate(Magic*,Zone*,Body*);
 static void zapcast(Magic*,Player*);
+static void zapaffect(Magic*,Player*,Enemy*);
+static void zapupdate(Magic*,Zone*,Body*);
 
 static MagicOps ops[] = {
-	[ItemBubble] = { MaxMP/5, bubblecast, bubbleaffect },
-	[ItemZap] = { MaxMP/5, zapcast, bubbleaffect },
+	[ItemBubble] = {
+		MaxMP/5,
+		bubblecast,
+		bubbleaffect,
+		noupdate,
+	},
+	[ItemZap] = {
+		MaxMP/10,
+		zapcast,
+		zapaffect,
+		zapupdate,
+	},
 };
 
 _Bool magicldresrc(void){
@@ -37,9 +51,10 @@ void magicupdate(Magic *m, Zone *z){
 		m->id = 0;
 		return;
 	}
+	Body old = m->body;
 	bodyupdate(&m->body, z->lvl);
 	animupdate(&m->anim);
-	//TODO: do something to enemies…
+	ops[m->id].update(m, z, &old);
 }
 
 void magicaffect(Magic *m, Player *p, Enemy *e){
@@ -86,6 +101,25 @@ static void bubbleaffect(Magic *m, Player *p, Enemy *e){
 }
 
 static void zapcast(Magic *m, Player *p){
-	return bubblecast(m, p);
+	bubblecast(m, p);
+	m->anim.row = 1;
+	m->body.vel.y = 0;
+	m->body.vel.x = 6;
+	m->hp /= 2;
+	if(p->dir == Left)
+		m->body.vel.x = -m->body.vel.x;
 }
 
+static void zapaffect(Magic *m, Player *p, Enemy *e){
+	e->hp -= p->stats[StatMag]/2;
+	m->id = 0;
+}
+
+static void noupdate(Magic *m, Zone *z, Body *b){
+	// nada
+}
+
+static void zapupdate(Magic *m, Zone *z, Body *b){
+	if(m->body.bbox.a.x == b->bbox.a.x)
+		m->id = 0;
+}
