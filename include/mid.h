@@ -434,6 +434,7 @@ enum ItemID{
 	ItemWindSwd,
 	ItemBubble,
 	ItemZap,
+	ItemLead,
 	ItemMax
 };
 

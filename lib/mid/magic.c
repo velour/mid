@@ -9,22 +9,25 @@ struct MagicOps{
 	int cost;
 	void (*cast)(Magic*,Player*);
 	void (*affect)(Magic*,Player*,Enemy*);
-	void (*update)(Magic*,Zone*,Body*);
+	void (*update)(Magic*,Zone*);
 };
 
 static void bubblecast(Magic*,Player*);
 static void bubbleaffect(Magic*,Player*,Enemy*);
-static void noupdate(Magic*,Zone*,Body*);
+static void bubbleupdate(Magic*,Zone*);
 static void zapcast(Magic*,Player*);
 static void zapaffect(Magic*,Player*,Enemy*);
-static void zapupdate(Magic*,Zone*,Body*);
+static void zapupdate(Magic*,Zone*);
+static void leadcast(Magic*,Player*);
+static void leadaffect(Magic*,Player*,Enemy*);
+static void leadupdate(Magic*,Zone*);
 
 static MagicOps ops[] = {
 	[ItemBubble] = {
 		MaxMP/5,
 		bubblecast,
 		bubbleaffect,
-		noupdate,
+		bubbleupdate,
 	},
 	[ItemZap] = {
 		MaxMP/10,
@@ -32,6 +35,12 @@ static MagicOps ops[] = {
 		zapaffect,
 		zapupdate,
 	},
+	[ItemLead] = {
+		MaxMP/5,
+		leadcast,
+		leadaffect,
+		leadupdate,
+	}
 };
 
 _Bool magicldresrc(void){
@@ -45,16 +54,18 @@ void magicdraw(Gfx *g, Magic *m){
 	camdrawanim(g, &m->anim, m->body.bbox.a);
 }
 
+static double gravity(Zone *z, Body *b){
+	return blkgrav(lvlmajorblk(z->lvl, b->bbox).flags);
+}
+
 void magicupdate(Magic *m, Zone *z){
 	m->hp--;
 	if(m->hp == 0){
 		m->id = 0;
 		return;
 	}
-	Body old = m->body;
-	bodyupdate(&m->body, z->lvl);
-	animupdate(&m->anim);
-	ops[m->id].update(m, z, &old);
+
+	ops[m->id].update(m, z);
 }
 
 void magicaffect(Magic *m, Player *p, Enemy *e){
@@ -115,11 +126,40 @@ static void zapaffect(Magic *m, Player *p, Enemy *e){
 	m->id = 0;
 }
 
-static void noupdate(Magic *m, Zone *z, Body *b){
-	// nada
+static void bubbleupdate(Magic *m, Zone *z){
+	bodyupdate(&m->body, z->lvl);
+	animupdate(&m->anim);
 }
 
-static void zapupdate(Magic *m, Zone *z, Body *b){
-	if(m->body.bbox.a.x == b->bbox.a.x)
+static void zapupdate(Magic *m, Zone *z){
+	Body old = m->body;
+	bodyupdate(&m->body, z->lvl);
+	animupdate(&m->anim);
+	if(m->body.bbox.a.x == old.bbox.a.x)
 		m->id = 0;
+}
+
+static void leadcast(Magic *m, Player *p){
+	bubblecast(m, p);
+	m->anim.row = 2;
+	m->anim.delay = 50/Ticktm,
+	m->anim.d = m->anim.delay;
+	m->body.vel.y = -2;
+	m->body.vel.x = 2;
+	m->hp /= 2;
+	if(p->dir == Left)
+		m->body.vel.x = -m->body.vel.x;
+}
+
+static void leadaffect(Magic *m, Player *p, Enemy *e){
+	e->hp -= p->stats[StatMag]/2;
+}
+
+static void leadupdate(Magic *m, Zone *z){
+	Body old = m->body;
+	m->body.acc.y = gravity(z, &old);
+	bodyupdate(&m->body, z->lvl);
+	animupdate(&m->anim);
+	if(m->body.vel.y == old.vel.y)
+		m->body.vel.x = 0;
 }

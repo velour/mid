@@ -59,7 +59,7 @@ void playerinit(Player *p, int x, int y)
 	invitinit(&p->wear[EqpBody], ItemIronBody);
 	invitinit(&p->wear[EqpArms], ItemIronGlove);
 	invitinit(&p->wear[EqpLegs], ItemIronBoot);
-	invitinit(&p->wear[EqpMag], ItemZap);
+	invitinit(&p->wear[EqpMag], ItemLead);
 	resetstats(p);
 	p->curhp = p->stats[StatHp] + p->eqp[StatHp];
 	p->curmp = MaxMP;

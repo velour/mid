@@ -173,6 +173,15 @@ static ItemOps ops[] = {
 		.stats = { [StatMag] = 2 },
 		.loc = EqpMag
 	},
+	[ItemLead] = {
+		"Lead Magic",
+		"img/spells.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 },
+		.stats = { [StatMag] = 3 },
+		.loc = EqpMag
+	},
 };
 
 _Bool iteminit(Item *i, ItemID id, Point p){
