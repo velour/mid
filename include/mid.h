@@ -624,7 +624,7 @@ Point envsize(EnvID);
 
 enum {
 	Maxenms = 32,
-	Maxitms = 32,
+	Maxitms = 64,
 	Maxenvs = 16,
 	Maxmagics = 32,
 	Maxz = 5,
