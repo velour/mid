@@ -178,7 +178,7 @@ static ItemOps ops[] = {
 		"img/spells.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 },
+		{ .row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 },
 		.stats = { [StatMag] = 3 },
 		.loc = EqpMag
 	},
