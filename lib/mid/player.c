@@ -13,7 +13,6 @@ static Sfx *ow;
 static void loadanim(Anim *a, int, int, int);
 static void chngdir(Player *b);
 static void chngact(Player *b);
-static Point scroll(Player*, Point delta);
 static void chkdirkeys(Player *);
 static double run(Player *);
 static double jmp(Player *);
@@ -42,7 +41,6 @@ void playerinit(Player *p, int x, int y)
 
 	p->dir = Right;
 	p->act = Stand;
-	p->imgloc = (Point){ x * Twidth, y * Theight };
 
 	p->bi.x = p->bi.y = p->bi.z = -1;
 	p->stats[StatHp] = 10;
@@ -102,13 +100,11 @@ void playersetloc(Player *p, int x, int y)
 	rectmv(&p->body.bbox, dx, dy);
 }
 
-void playerupdate(Player *p, Zone *zn, Point *tr)
+void playerupdate(Player *p, Zone *zn)
 {
 	chkdirkeys(p);
 
 	Lvl *l = zn->lvl;
-	Point ppos = playerpos(p);
-
 	Tileinfo bi = lvlmajorblk(l, p->body.bbox);
 
 	if (bi.x != p->bi.x || bi.y != p->bi.y || bi.z != p->bi.z)
@@ -140,9 +136,6 @@ void playerupdate(Player *p, Zone *zn, Point *tr)
 		animreset(&p->as[p->dir][p->act]);
 	else
 		animupdate(&p->as[p->dir][p->act]);
-
-	Point del = { playerpos(p).x - ppos.x, playerpos(p).y - ppos.y };
-	*tr = scroll(p, del);
 
 	if(p->jframes > 0)
 		p->jframes--;
@@ -180,11 +173,11 @@ void playerdraw(Gfx *g, Player *p)
 
 	if(p->iframes % 4 == 0){
 		if(p->sframes > 8)
-			imgdrawreg(g, knightsheet, attackclip(p, 0), p->imgloc);
+			camdrawreg(g, knightsheet, attackclip(p, 0), playerimgloc(p));
 		else if(p->sframes > 0)
-			imgdrawreg(g, knightsheet, attackclip(p, 1), p->imgloc);
+			camdrawreg(g, knightsheet, attackclip(p, 1), playerimgloc(p));
 		else
-			animdraw(g, &p->as[p->dir][p->act], p->imgloc);
+			camdrawanim(g, &p->as[p->dir][p->act], playerimgloc(p));
 	}
 
 	if(p->sw.cur >= 0)
@@ -231,6 +224,11 @@ void playerhandle(Player *p, Event *e)
 Point playerpos(Player *p)
 {
 	return p->body.bbox.a;
+}
+
+Point playerimgloc(Player *p)
+{
+	return vecadd(p->body.bbox.a, (Point){-hboff.x,-hboff.y});
 }
 
 Rect playerbox(Player *p)
@@ -305,30 +303,6 @@ static void chngact(Player *p)
 		p->act = Walk;
 	else
 		p->act = Stand;
-}
-
-static Point scroll(Player *p, Point delta){
-	Point ntr = {0};
-	double dx = delta.x;
-	double dy = delta.y;
-
-	p->imgloc.x += dx;
-	p->imgloc.y += dy;
-
-	double imgx = p->imgloc.x;
-	double imgy = p->imgloc.y;
-
-	if((dx < 0 && imgx < Scrlbuf) || (dx > 0 && imgx > Scrnw - Scrlbuf)) {
-		p->imgloc.x -= dx;
-		ntr.x = -dx;
-	}
-
-	if((dy > 0 && imgy > Scrnh - Scrlbuf) || (dy < 0 && imgy < Scrlbuf)) {
-		p->imgloc.y -= dy;
-		ntr.y = -dy;
-	}
-
-	return ntr;
 }
 
 static double run(Player *p){
