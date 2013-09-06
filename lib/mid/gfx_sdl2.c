@@ -290,3 +290,8 @@ void camdrawanim(Gfx *g, Anim *a, Point p){
 	animdraw(g, a, p);
 }
 
+void camcenter(Gfx *g, Point p){
+	Point dims = gfxdims(g);
+	g->tr.x = -p.x + dims.x/2;
+	g->tr.y = -p.y + dims.y/2;
+}

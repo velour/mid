@@ -131,7 +131,6 @@ static void scanplayer(char **toks, Player *p)
 {
 	scanint(toks, (int*) &p->dir);
 	scanint(toks, (int*) &p->act);
-	scanpt(toks, &p->imgloc);
 	scanbody(toks, &p->body);
 	scanbool(toks, &p->acting);
 	scanbool(toks, &p->statup);
@@ -250,7 +249,6 @@ static void printplayer(char **bufp, int *szp, Player p)
 {
 	prfield(bufp, szp, " %d", p.dir);
 	prfield(bufp, szp, " %d", p.act);
-	printpt(bufp, szp, p.imgloc);
 	printbody(bufp, szp, p.body);
 	prfield(bufp, szp, " %d", p.acting);
 	prfield(bufp, szp, " %d", p.statup);

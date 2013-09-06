@@ -329,10 +329,10 @@ _Bool zoneoverlap(Zone *zn, int z, Point loc, Point wh)
 	return false;
 }
 
-void zoneupdate(Zone *zn, Player *p, Point *tr, Msg *m)
+void zoneupdate(Zone *zn, Player *p, Msg *m)
 {
 	lvlupdate(zn->lvl);
-	playerupdate(p, zn, tr);
+	playerupdate(p, zn);
 
 	itemupdateanims();
 
