@@ -58,7 +58,7 @@ static void draw(Scrn *s, Gfx *g){
 
 	Statup *sup = s->data;
 
-	gfxclear(g, (Color){ 127, 200, 255 });
+	gfxclear(g, MenuPurple);
 
 	enum { Bufsz = 256 };
 	char buf[Bufsz];
@@ -73,9 +73,9 @@ static void draw(Scrn *s, Gfx *g){
 			.max = statmax[i],
 			.xscale = 2,
 			.h = mh,
-			.cbg = {0x65, 0x65, 0x65},
-			.cbase = {0x1E, 0x94, 0x22},
-			.cextra = {0x1B, 0xAF, 0xE0},
+			.cbg = {52, 52, 52},
+			.cbase = {52, 85, 52},
+			.cextra = {233, 216, 100},
 			.cborder = {}
 		};
 
@@ -83,7 +83,7 @@ static void draw(Scrn *s, Gfx *g){
 		Rect ma = meterarea(&meter, mloc);
 
 		if(rectcontains(ma, sup->mouse))
-			meter.cbg = (Color){ 255, 219, 0 };
+			meter.cbg = SelectYellow;
 
 		txtdraw(g, sup->txt, sloc, statname[i]);
 		meterdraw(g, &meter, mloc);

@@ -344,20 +344,20 @@ void lvlminidraw(Gfx *g, Lvl *l, Point offs, int scale)
 				continue;
 			int t = b->tile;
 
-			Color c = (Color){ 255, 255, 255, 255 };
+			Color c = White;
 			unsigned int flags = tiles[t].flags;
 			if(flags & Tcollide)
-				c = (Color){ 0, 0, 0 };
+				c = Black;
 			else if(flags & Tbdoor)
-				c = (Color){ 0, 255, 0 };
+				c = LightGrey;
 			else if(flags & Tfdoor)
-				c = (Color){ 64, 255, 0 };
+				c = MedGrey;
 			else if(flags & Tdown)
-				c = (Color){ 230, 255, 0 };
+				c = SelectYellow;
 			else if(flags & Tup)
-				c = (Color){ 255, 230, 0 };
+				c = MenuPurple;
 			else if(flags & Twater)
-				c = (Color){ 75, 75, 255 };
+				c = WaterBlue;
 
 			Rect r = {
 				(Point){ offs.x + x*scale, offs.y + y*scale },

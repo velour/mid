@@ -30,7 +30,7 @@ enum{
 	Pad = TxtHeight/2,
 };
 
-static Color hilit = { 255, 219, 0 };
+static Color hilit(){ return SelectYellow; }
 
 static void update(Scrn *s, Scrnstk *stk);
 static void draw(Scrn *s, Gfx *g);
@@ -50,7 +50,7 @@ Scrn *optscrnnew(void){
 
 	memcpy(opts.kmap, kmap, Nactions);
 	opts.curkey = Mvleft;
-	Txtinfo ti = { TxtSzMedium };
+	Txtinfo ti = { TxtSzMedium, Black };
 	opts.txt = resrcacq(txt, TxtStyleMenu, &ti);
 	if(!opts.txt)
 		return NULL;
@@ -75,9 +75,9 @@ Scrn *optscrnnew(void){
 		.max = SndVolMax,
 		.xscale = 1,
 		.h = TxtHeight,
-		.cbg = {0x65, 0x65, 0x65},
-		.cbase = {0x1E, 0x94, 0x22},
-		.cextra = {0x1B, 0xAF, 0xE0}
+		.cbg = LightGrey,
+		.cbase = StatGreen,
+		.cextra = LifeBlue,
 	};
 	opts.volmetarea = meterarea(&opts.volmeter, (Point){});
 
@@ -123,7 +123,7 @@ static void draw(Scrn *s, Gfx *g){
 
 	Opts *opt = s->data;
 
-	gfxclear(g, (Color){ 240, 240, 240 });
+	gfxclear(g, MenuPurple);
 
 	for(int i = Mvleft; i < Nactions; i++){
 		if(i == opt->curkey){
@@ -131,7 +131,7 @@ static void draw(Scrn *s, Gfx *g){
 				vecadd(opt->hilit[i].a, (Point){-4,-4}),
 				vecadd(opt->hilit[i].b, (Point){4,4})
 			};
-			gfxfillrect(g, h, hilit);
+			gfxfillrect(g, h, hilit());
 		}
 		txtdraw(g, opt->txt, opt->hilit[i].a, "%s", names[i]);
 		Point cd = txtdims(opt->txt, "%c", opt->kmap[i]);
@@ -148,7 +148,7 @@ static void draw(Scrn *s, Gfx *g){
 
 	meterdraw(g, &opt->volmeter, opt->volmetarea.a);
 
-	Color butt = { 200, 200, 200 };
+	Color butt = MedGrey;
 	Rect oh = {
 		vecadd(opt->okay.a, (Point){-4,-4}),
 		vecadd(opt->okay.b, (Point){4,4})
@@ -184,13 +184,13 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 			if(rectcontains(opt->hilit[i], m)){
 				opt->curkey = i;
 				opt->volset = 0;
-				opt->volmeter.cbg = (Color){0x65, 0x65, 0x65};
+				opt->volmeter.cbg = LightGrey;
 				return;
 			}
 
 		if(rectcontains(opt->volmetarea, m)){
 			opt->volset = 1;
-			opt->volmeter.cbg = hilit;
+			opt->volmeter.cbg = hilit();
 			opt->curkey = Nactions;
 			return;
 		}
