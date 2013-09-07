@@ -203,7 +203,7 @@ void gamedraw(Scrn *s, Gfx *g)
 {
 	Game *gm = s->data;
 
-	gfxclear(g, (Color){ 0, 0, 0, 0 });
+	gfxclear(g, PureBlack);
 
 	if(gm->died){
 		gm->died = 0;

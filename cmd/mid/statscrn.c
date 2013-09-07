@@ -58,7 +58,7 @@ static void draw(Scrn *s, Gfx *g){
 
 	Statup *sup = s->data;
 
-	gfxclear(g, (Color){ 127, 200, 255 });
+	gfxclear(g, MenuPurple);
 
 	enum { Bufsz = 256 };
 	char buf[Bufsz];
@@ -83,7 +83,7 @@ static void draw(Scrn *s, Gfx *g){
 		Rect ma = meterarea(&meter, mloc);
 
 		if(rectcontains(ma, sup->mouse))
-			meter.cbg = (Color){ 255, 219, 0 };
+			meter.cbg = SelectYellow;
 
 		txtdraw(g, sup->txt, sloc, statname[i]);
 		meterdraw(g, &meter, mloc);

@@ -38,7 +38,7 @@ Scrn *titlescrnnew(Gfx *g){
 	if(!t.title)
 		return NULL;
 
-	Txtinfo ti = { TxtSzMedium };
+	Txtinfo ti = { TxtSzMedium, Black };
 	t.f = resrcacq(txt, TxtStyleMenu, &ti);
 	if(!t.f)
 		return NULL;
@@ -97,7 +97,7 @@ static void update(Scrn *s, Scrnstk *stk){
 }
 
 static void draw(Scrn *s, Gfx *g){
-	gfxclear(g, (Color){ 240, 240, 240 });
+	gfxclear(g, MenuPurple);
 	Tit *t = s->data;
 	imgdrawscale(g, t->title, t->titlepos, 0.5);
 	txtdraw(g, t->f, t->startpos, "Press '%c' to Start a new game", kmap[Mvinv]);

@@ -68,7 +68,7 @@ static Txt *gettxt(void)
 {
 	static Txt *msgtxt;
 	static Txtinfo txtinfo = { TxtSzSmall };
-	txtinfo.color = (Color){255, 255, 255, 255};
+	txtinfo.color = PureWhite;
 	if (!msgtxt) {
 		msgtxt = resrcacq(txt, TxtStyleMenu, &txtinfo);
 		if (!msgtxt)
