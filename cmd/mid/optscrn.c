@@ -75,9 +75,9 @@ Scrn *optscrnnew(void){
 		.max = SndVolMax,
 		.xscale = 1,
 		.h = TxtHeight,
-		.cbg = {0x65, 0x65, 0x65},
-		.cbase = {0x1E, 0x94, 0x22},
-		.cextra = {0x1B, 0xAF, 0xE0}
+		.cbg = {52, 52, 52},
+		.cbase = {52, 85, 52},
+		.cextra = {233, 216, 100},
 	};
 	opts.volmetarea = meterarea(&opts.volmeter, (Point){});
 

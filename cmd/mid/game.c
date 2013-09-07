@@ -222,8 +222,8 @@ void gamedraw(Scrn *s, Gfx *g)
 		.max = 100,
 		.xscale = 1,
 		.h = TxtSzSmall,
-		.cbg = { 200 },
-		.cbase = { 0, 200, 200 },
+		.cbg = { 98, 36, 38 },
+		.cbase = { 119, 172, 213 },
 	};
 	meterdraw(g, &lm, (Point){1,1});
 
@@ -234,8 +234,8 @@ void gamedraw(Scrn *s, Gfx *g)
 		.max = 100,
 		.xscale = 1,
 		.h = TxtSzSmall,
-		.cbg = { 200, 0 },
-		.cbase = { 0, 200, 200 },
+		.cbg = { 98, 36, 38 },
+		.cbase = { 119, 172, 213 },
 	};
 	meterdraw(g, &mm, (Point){1,2+lm.h});
 
