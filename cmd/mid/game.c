@@ -27,7 +27,6 @@ static _Bool readl(char *buf, int sz, FILE *f);
 
 struct Game {
 	Player player;
-	Point transl;
 	_Bool died;
 	int znum, zmax;
 	Zone *zone;
@@ -72,7 +71,6 @@ static void trystairs(Scrnstk *stk, Game *gm)
 	if (gm->zone->updown == Gonone)
 		return;
 
-	Point loc0 = gm->player.body.bbox.a;
 	zoneput(gm->zone, gm->znum);
 
 	if (gm->zone->updown == Goup) {
@@ -103,12 +101,6 @@ static void trystairs(Scrnstk *stk, Game *gm)
 
 		lvlsetpallet(lvlpallet(gm));
 	}
-
-	Point loc1 = gm->player.body.bbox.a;
-	gm->transl = (Point) {
-		gm->transl.x + loc0.x - loc1.x,
-		gm->transl.y + loc0.y - loc1.y
-	};
 }
 
 int lvlpallet(Game *gm)
@@ -123,10 +115,7 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 {
 	Game *gm = s->data;
 
-	Point tr;
-	zoneupdate(gm->zone, &gm->player, &tr, &gm->msg);
-	gm->transl.x += tr.x;
-	gm->transl.y += tr.y;
+	zoneupdate(gm->zone, &gm->player, &gm->msg);
 
 	trystairs(stk, gm);
 	if(gm->player.curhp <= 0 && !debugging){
@@ -143,12 +132,9 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 			Player p = gm->player;
 			playerinit(&p, 2, 2);
 			gm->player.body = p.body;
-			gm->player.imgloc = p.imgloc;
 			gm->player.hitback = 0;
 			gm->player.sframes = 0;
 			gm->player.lives--;
-			gm->transl.x = 0;
-			gm->transl.y = 0;
 			gm->zone->lvl->z = 0;
 
 			int lose = rngintincl(&gm->rng, 0, Maxinv-1);
@@ -205,13 +191,7 @@ void gamedraw(Scrn *s, Gfx *g)
 
 	gfxclear(g, (Color){ 0, 0, 0, 0 });
 
-	if(gm->died){
-		gm->died = 0;
-		camreset(g);
-	}else{
-		cammove(g, gm->transl.x, gm->transl.y);
-		gm->transl = (Point){};
-	}
+	camcenter(g, playerimgloc(&gm->player));
 
 	zonedraw(g, gm->zone, &gm->player);
 
@@ -313,18 +293,9 @@ void gamesave(Game *gm)
 		fclose(f);
 	}
 
-	Point ploc = gm->player.body.bbox.a;
-	Point c = (Point){ Scrnw/2 - Wide, Scrnh/2 - Tall };
-	Point tr = (Point){
-		gm->transl.x - ploc.x + c.x,
-		gm->transl.y - ploc.y + c.y,
-	};
-	Player player = gm->player;
-	player.imgloc = c;
-
 	FILE *f = opensavefile("game", "w");
 	static char buf[4096];
-	if (!printgeom(buf, sizeof(buf), "pbdddul", tr, gm->died, gm->znum, gm->zmax, gm->zone->lvl->z, gm->rng.v, player))
+	if (!printgeom(buf, sizeof(buf), "bdddul", gm->died, gm->znum, gm->zmax, gm->zone->lvl->z, gm->rng.v, gm->player))
 		die("Failed to serialize the game information");
 	fputs(buf, f);
 	fputc('\n', f);
@@ -349,7 +320,7 @@ Game *gameload()
 		die("Failed to read the game save file: %s", miderrstr());
 	fclose(f);
 	int z = 0;
-	if (!scangeom(buf, "pbdddul", &gm.transl, &gm.died, &gm.znum, &gm.zmax, &z, &gm.rng.v, &gm.player))
+	if (!scangeom(buf, "bdddul", &gm.died, &gm.znum, &gm.zmax, &z, &gm.rng.v, &gm.player))
 		die("Failed to deserialize the game information: %s", miderrstr());
 
 	for (int i = 0; i <= gm.zmax; i++) {

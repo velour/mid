@@ -122,6 +122,7 @@ void camfillrect(Gfx *, Rect, Color);
 void camdrawimg(Gfx *, Img *, Point);
 void camdrawreg(Gfx *, Img *, Rect, Point);
 void camdrawanim(Gfx *, Anim *, Point);
+void camcenter(Gfx *, Point);
 
 _Bool sndinit(void);
 void sndfree(void);
@@ -513,7 +514,6 @@ struct Player {
 	Anim as[Ndirs][Nacts];
 	Dir dir;
 	Act act;
-	Point imgloc;
 
 	Body body;
 
@@ -544,7 +544,7 @@ struct Player {
 
 void playerinit(Player *p, int x, int y);
 void playersetloc(Player *p, int x, int y);	// tile coords
-void playerupdate(Player *, Zone *, Point *tr);
+void playerupdate(Player *, Zone *);
 void playerdraw(Gfx *, Player *);
 void playerhandle(Player *, Event *);
 Point playerpos(Player *);
@@ -553,6 +553,7 @@ void playerdmg(Player *, int, int);
 void playerheal(Player *, int);
 _Bool playertake(Player *, Item *);
 void resetstats(Player*);
+Point playerimgloc(Player*);
 
 typedef enum EnemyID EnemyID;
 enum EnemyID{
@@ -653,7 +654,7 @@ _Bool zoneaddenv(Zone *zn, int z, Env env);
 _Bool zoneaddenemy(Zone *zn, int z, Enemy enm);
 _Bool zoneaddmagic(Zone *zn, int z, Magic);
 void zonedraw(Gfx *g, Zone *zn, Player *p);
-void zoneupdate(Zone *zn, Player *p, Point *tr, Msg *);
+void zoneupdate(Zone *zn, Player *p, Msg *);
 
 /* Fills the array with locations that pass the given predicate. */
 int zonelocs(Zone *, int z, _Bool (*)(Zone *, int, Point), Point [], int);
