@@ -127,7 +127,7 @@ static void update(Scrn *s, Scrnstk *stk){
 enum { Scale = 3 };
 
 static void draw(Scrn *s, Gfx *g){
-	gfxclear(g, (Color){ 127, 127, 127 });
+	gfxclear(g, MenuPurple);
 
 	Invscr *i = s->data;
 	Txt *txt = gettxt();
@@ -149,14 +149,14 @@ static void draw(Scrn *s, Gfx *g){
 		(Point){ px*Scale, info.y+1 + py*Scale },
 		(Point){ px*Scale + Scale, info.y+1 + py*Scale + Scale }
 	};
-	gfxfillrect(g, r, (Color){ 255, 0, 0, 255 });
+	gfxfillrect(g, r, LifeBlue);
 
 	moneydraw(g, i->p->money);
 	if (i->curitem && i->curitem->id > 0 && !i->drag){
 		curdraw(g, i->curitem);
 	}
 
-	Color cpreview = {0xEE, 0xEE, 0x9E};
+	Color cpreview = White;
 	int preview[StatMax] = {};
 	if(i->curitem && i->curitem->id > 0 && i->drag){
 		memcpy(preview, i->curitem->stats, sizeof(preview));
@@ -164,13 +164,13 @@ static void draw(Scrn *s, Gfx *g){
 		if(&i->p->wear[el] == i->curitem){
 			for(int j = 0; j < StatMax; j++)
 				preview[j] = -preview[j];
-			cpreview = (Color){0};
+			cpreview = Black;
 		}
 	}
 
 	for(int j = 0; j < Maxinv; j++){
 		Rect r = i->invgrid[j];
-		gfxdrawrect(g, r, (Color){0});
+		gfxdrawrect(g, r, Black);
 		Invit *it = &i->p->inv[j];
 		if(it->id > 0 && (!i->drag || it != i->curitem))
 			invitdraw(it, g, (Point){r.a.x+1,r.a.y+1});
@@ -178,7 +178,7 @@ static void draw(Scrn *s, Gfx *g){
 
 	for (int j = EqpHead; j < EqpMax + 2; j++){
 		Rect er = i->eqpgrid[j];
-		gfxdrawrect(g, er, (Color){0});
+		gfxdrawrect(g, er, Black);
 		txtdraw(g, txt, (Point){ er.b.x + Pad, er.a.y }, locname[j]);
 		if(j >= EqpMax)
 			continue;
@@ -202,15 +202,15 @@ static void draw(Scrn *s, Gfx *g){
 			.max = statmax[j],
 			.xscale = 2,
 			.h = mh,
-			.cbg = {0x65, 0x65, 0x65},
-			.cbase = {0x1E, 0x94, 0x22},
-			.cextra = {0x1B, 0xAF, 0xE0},
+			.cbg = LightGrey,
+			.cbase = StatGreen,
+			.cextra = LifeBlue,
 			.cpreview = cpreview,
 			.cborder = {}
 		};
 
 		if(meter.extra < 0)
-			meter.cextra = (Color){0xAF,0,0};
+			meter.cextra = BloodRed;
 
 		txtdraw(g, gettxt(), sloc, statname[j]);
 		meterdraw(g, &meter, (Point){ sloc.x + mh*2, sloc.y });
@@ -242,7 +242,7 @@ static void curdraw(Gfx *g, Invit *inv)
 static Txt *gettxt(void)
 {
 	static Txt *invtxt;
-	static Txtinfo txtinfo = { TxtSzMedium, {0} };
+	Txtinfo txtinfo = { TxtSzMedium, Black };
 	if (!invtxt) {
 		invtxt = resrcacq(txt, TxtStyleMenu, &txtinfo);
 		if (!invtxt)

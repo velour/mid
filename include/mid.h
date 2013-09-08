@@ -73,6 +73,20 @@ struct Color{
 	unsigned char r, g, b, a;
 };
 
+extern Color PureBlack;
+extern Color PureWhite;
+extern Color Black;
+extern Color White;
+extern Color SelectYellow;
+extern Color StatGreen;
+extern Color LifeBlue;
+extern Color BloodRed;
+extern Color WaterBlue;
+extern Color MenuPurple;
+extern Color LightGrey;
+extern Color MedGrey;
+extern Color DarkGrey;
+
 typedef struct Gfx Gfx;
 
 Gfx *gfxinit(int w, int h, const char *title);

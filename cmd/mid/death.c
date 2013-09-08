@@ -49,7 +49,7 @@ static void draw(Scrn *s, Gfx *g){
 	Gover *go = s->data;
 
 	camreset(g);
-	gfxclear(g, (Color){ 200, 0, 0 });
+	gfxclear(g, BloodRed);
 
 	int m = go->p->money;
 	enum { Bufsz = 256 };
