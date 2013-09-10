@@ -46,7 +46,7 @@ Game *gamenew(void)
 	rnginit(&gm.rng, seed);
 	pr("game seed: %u", seed);
 
-	gm.zone = zonegen(&gm.rng);
+	gm.zone = zonegen(&gm.rng, 0);
 	if (!gm.zone)
 		fatal("Failed to load zone: %s", miderrstr());
 
@@ -92,7 +92,7 @@ static void trystairs(Scrnstk *stk, Game *gm)
 		gm->znum++;
 		if (gm->znum > gm->zmax) {
 			gm->zmax = gm->znum;
-			gm->zone = zonegen(&gm->rng);
+			gm->zone = zonegen(&gm->rng, gm->znum);
 		} else {
 			gm->zone = zoneget(gm->znum);
 		}
