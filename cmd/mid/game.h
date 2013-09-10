@@ -6,7 +6,7 @@ void zoneloc(const char*);
 /* Notify zone loader to use stdin for the next zone. */
 void zonestdin();
 Zone *zoneget(int);
-Zone *zonegen(struct Rng *r);
+Zone *zonegen(struct Rng *r, int depth);
 void zoneput(Zone *, int);
 void zonecleanup(int zmax);
 // Find the down stairs in this zone.

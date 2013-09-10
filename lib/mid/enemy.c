@@ -37,6 +37,10 @@ _Bool enemyldresrc(void){
 	if(!daimg) return 0;
 	dainfo.hit = untihit;
 
+	tihgtimg = resrcacq(imgs, "img/tihgt.png", 0);
+	if(!tihgtimg) return 0;
+	tihgtinfo.hit = untihit;
+
 	rnginit(&rng, 666); //TODO: use the game seed
 
 	return 1;
@@ -60,6 +64,7 @@ static Enemymt mt[] = {
 	[EnemyDa] = { ENEMYMT(da) },
 	[EnemyThu] = { ENEMYMT(thu) },
 	[EnemyGrendu] = { ENEMYMT(grendu) },
+	[EnemyTihgt] = { ENEMYMT(tihgt) },
 	[EnemySplat] = { ENEMYMT(splat) },
 };
 
