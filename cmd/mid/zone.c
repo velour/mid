@@ -25,7 +25,7 @@ typedef struct Pipe {
 static FILE *inzone = NULL;
 
 static char *zonefile(int);
-static FILE *zpipe(Rng *r);
+static FILE *zpipe(Rng *r, int);
 static void pipeadd(struct Pipe *, char *, char *, ...);
 
 void zoneloc(const char *p)
@@ -38,13 +38,13 @@ void zonestdin()
 	inzone = stdin;
 }
 
-Zone *zonegen(Rng *r)
+Zone *zonegen(Rng *r, int depth)
 {
 	ignframetime();
 	FILE *fin = inzone;
 
 	if (!fin)
-		fin = zpipe(r);
+		fin = zpipe(r, depth);
 	Zone *z = zoneread(fin);
 	if (!z)
 		die("Failed to read the zone: %s", miderrstr());
@@ -128,7 +128,7 @@ static char *zonefile(int znum)
 	return zfile;
 }
 
-static FILE *zpipe(Rng *r)
+static FILE *zpipe(Rng *r, int depth)
 {
 	Pipe p = {};
 	pipeadd(&p, "lvlgen", "25 25 3 -s %lu ", (unsigned long) rngint(r));
@@ -151,14 +151,25 @@ static FILE *zpipe(Rng *r)
 	pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
 		EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
 
-	pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d 3 3 4 5 50",
-		(unsigned long) rngint(r),
-		EnemyUnti, EnemyUnti, EnemyUnti,
-		EnemyNous, EnemyNous, EnemyNous, EnemyNous,
-		EnemyDa, EnemyDa, EnemyDa,
-		EnemyThu,
-		EnemyGrendu
-	);
+	if(depth < 3){
+		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
+			(unsigned long) rngint(r),
+			EnemyUnti, EnemyUnti, EnemyUnti,
+			EnemyNous, EnemyNous, EnemyNous, EnemyNous,
+			EnemyDa, EnemyDa, EnemyDa,
+			EnemyThu,
+			EnemyGrendu
+		);
+	}else{
+		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
+			(unsigned long) rngint(r),
+			EnemyUnti, EnemyUnti, EnemyUnti,
+			EnemyDa, EnemyDa, EnemyDa, EnemyDa,
+			EnemyThu, EnemyThu, EnemyThu,
+			EnemyGrendu,
+			EnemyTihgt
+		);
+	}
 
 	char adc[256];
 	if(snprintf(adc, sizeof(adc), "\"%s/cur.lvl\"", zonedir) == -1)

@@ -577,6 +577,7 @@ enum EnemyID{
 	EnemyDa,
 	EnemyThu,
 	EnemyGrendu,
+	EnemyTihgt,
 	EnemySplat,
 	EnemyMax
 };
