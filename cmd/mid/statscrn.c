@@ -90,8 +90,8 @@ static void draw(Scrn *s, Gfx *g){
 
 		if(rectcontains(ma, sup->mouse) && sup->inc && sup->p->stats[i] < statmax[i]){
 			if(i == StatHp){
-				sup->p->stats[i] += 5;
-				sup->p->curhp += 5;
+				sup->p->stats[i] += 2;
+				sup->p->curhp += 2;
 			}else
 				sup->p->stats[i]++;
 

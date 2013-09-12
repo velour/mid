@@ -43,7 +43,7 @@ void playerinit(Player *p, int x, int y)
 	p->act = Stand;
 
 	p->bi.x = p->bi.y = p->bi.z = -1;
-	p->stats[StatHp] = 10;
+	p->stats[StatHp] = 5;
 	p->stats[StatDex] = 5;
 	p->stats[StatStr] = 5;
 	p->stats[StatMag] = 5;
