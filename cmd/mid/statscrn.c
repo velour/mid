@@ -73,9 +73,9 @@ static void draw(Scrn *s, Gfx *g){
 			.max = statmax[i],
 			.xscale = 2,
 			.h = mh,
-			.cbg = {52, 52, 52},
-			.cbase = {52, 85, 52},
-			.cextra = {233, 216, 100},
+			.cbg = LightGrey,
+			.cbase = StatGreen,
+			.cextra = LifeBlue,
 			.cborder = {}
 		};
 
