@@ -17,6 +17,9 @@ get_it() {
 
 mkdir -p prereqs && pushd prereqs
 
+get_it zlib-1.2.8 http://zlib.net/zlib-1.2.8.tar.gz
+get_it libpng-1.6.3 http://download.sourceforge.net/libpng/libpng-1.6.3.tar.gz
+
 sdlproj=http://www.libsdl.org/projects
 
 get_it SDL2-2.0.0 http://www.libsdl.org/release/SDL2-2.0.0.tar.gz
