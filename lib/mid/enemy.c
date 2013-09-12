@@ -146,7 +146,7 @@ void enemygenupdate(Enemy *e, Player *p, Zone *z, Info *i){
 	if(e->iframes > 0)
 		return;
 
-	int luck = p->stats[StatLuck] + p->eqp[StatLuck];
+	int luck = playerstat(p, StatLuck);
 	Rect swbb = swordbbox(&p->sw);
 	if(p->sframes > 0 && isect(e->body.bbox, swbb)){
 		sfxplay(i->hit);
