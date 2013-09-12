@@ -195,7 +195,7 @@ void gamedraw(Scrn *s, Gfx *g)
 
 	zonedraw(g, gm->zone, &gm->player);
 
-	int maxhp = gm->player.stats[StatHp] + gm->player.eqp[StatHp];
+	int maxhp = playerstat(&gm->player, StatHp);
 	Meter lm = {
 		.base = (gm->player.curhp*100) / maxhp,
 		.extra = 0,

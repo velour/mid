@@ -51,7 +51,6 @@ static void nobonus(Player *p){
 }
 
 static void ironbonus(Player *p){
-	p->eqp[StatHp] += 5;
 	p->eqp[StatStr] += 1;
 	p->eqp[StatDex] += 1;
 }

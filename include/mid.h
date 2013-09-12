@@ -568,6 +568,7 @@ void playerheal(Player *, int);
 _Bool playertake(Player *, Item *);
 void resetstats(Player*);
 Point playerimgloc(Player*);
+int playerstat(Player*, Stat);
 
 typedef enum EnemyID EnemyID;
 enum EnemyID{
