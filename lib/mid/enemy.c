@@ -7,7 +7,7 @@
 
 static Rng rng;
 
-static void die(Enemy*,Zone*,Info*);
+static void die(Enemy*,Zone*,Info*,int);
 
 _Bool enemyldresrc(void){
 	untihit = resrcacq(sfx, "sfx/hit.wav", 0);
@@ -146,6 +146,7 @@ void enemygenupdate(Enemy *e, Player *p, Zone *z, Info *i){
 	if(e->iframes > 0)
 		return;
 
+	int luck = p->stats[StatLuck] + p->eqp[StatLuck];
 	Rect swbb = swordbbox(&p->sw);
 	if(p->sframes > 0 && isect(e->body.bbox, swbb)){
 		sfxplay(i->hit);
@@ -161,7 +162,7 @@ void enemygenupdate(Enemy *e, Player *p, Zone *z, Info *i){
 		e->iframes = 500.0 / Ticktm; // 0.5s
 
 		if(e->hp <= 0)
-			die(e, z, i);
+			die(e, z, i, luck);
 	}
 
 	for(int j = 0; j < Maxmagics; j++){
@@ -187,16 +188,19 @@ void enemygenupdate(Enemy *e, Player *p, Zone *z, Info *i){
 		e->iframes = 500.0 / Ticktm; // 0.5s
 
 		if(e->hp <= 0)
-			die(e, z, i);
+			die(e, z, i, luck);
 	}
 }
 
-void die(Enemy *e, Zone *z, Info *i){
+void die(Enemy *e, Zone *z, Info *i, int luck){
 	Enemy splat = {};
 	enemyinit(&splat, i->death, 0, 0);
 	splat.body = e->body;
 	enemyfree(e);
 	*e = splat;
+
+	if(rngintincl(&rng, 0, statmax[StatLuck]) > luck)
+		return;
 
 	int n = rngintincl(&rng, 0, 100);
 	Drops *d = &i->drops;
