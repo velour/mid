@@ -18,7 +18,6 @@
 
 static char savedir[128] = "_save";
 
-static void dropall(Zone*, Player*);
 static void ldresrc();
 static void rmrecur(const char *);
 static FILE *opensavefile(const char *file, const char *mode);
@@ -119,43 +118,8 @@ void gameupdate(Scrn *s, Scrnstk *stk)
 
 	trystairs(stk, gm);
 	if(gm->player.curhp <= 0 && !debugging){
-		if(gm->player.lives == 0){
-			rmsave();
-			scrnstkpush(stk, goverscrnnew(&gm->player, gm->znum));
-		}else{
-			gm->died = 1;
-			gm->player.curhp = gm->player.eqp[StatHp] + gm->player.stats[StatHp];
-
-			dropall(gm->zone, &gm->player);
-			resetstats(&gm->player);
-
-			Player p = gm->player;
-			playerinit(&p, 2, 2);
-			gm->player.body = p.body;
-			gm->player.hitback = 0;
-			gm->player.sframes = 0;
-			gm->player.lives--;
-			gm->zone->lvl->z = 0;
-
-			int lose = rngintincl(&gm->rng, 0, Maxinv-1);
-			gm->player.inv[lose] = (Invit){};
-		}
-	}
-}
-
-static void dropall(Zone *z, Player *p)
-{
-	for (int i = 0; i < Maxinv; i++) {
-		if (!p->inv[i].id)
-			continue;
-		dropitem(z, p, &p->inv[i]);
-		p->inv[i] = (Invit){};
-	}
-	for (int i = 0; i < EqpMax; i++) {
-		if (!p->wear[i].id)
-			continue;
-		dropitem(z, p, &p->wear[i]);
-		p->wear[i] = (Invit){};
+		rmsave();
+		scrnstkpush(stk, goverscrnnew(&gm->player, gm->znum));
 	}
 }
 
@@ -218,12 +182,6 @@ void gamedraw(Scrn *s, Gfx *g)
 		.cbase = { 119, 172, 213 },
 	};
 	meterdraw(g, &mm, (Point){1,2+lm.h});
-
-	for(int i = 0; i < gm->player.lives; i++){
-		Point life = { 1 + i*16, 2*(16 + 1) };
-		Rect clip = { { 0, 0 }, { 16, 16 } };
-		imgdrawreg(g, gm->ui, clip, life);
-	}
 
 	msgdraw(&gm->msg, g);
 

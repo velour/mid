@@ -547,7 +547,6 @@ struct Player {
 	int eqp[StatMax];
 	int curhp;
 	int curmp;
-	int lives;
 
 	int money;
 	Invit inv[Maxinv];
