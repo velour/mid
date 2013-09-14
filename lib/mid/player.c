@@ -22,8 +22,6 @@ static ArmorSetID armset(Player*);
 
 void playerinit(Player *p, int x, int y)
 {
-	p->lives = 3;
-
 	bodyinit(&p->body, x * Twidth + hboff.x, y * Theight + hboff.y, 21, 29);
 	p->hitback = 0;
 

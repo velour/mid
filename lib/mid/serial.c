@@ -145,7 +145,6 @@ static void scanplayer(char **toks, Player *p)
 		scanint(toks, &p->eqp[i]);
 	scanint(toks, &p->curhp);
 	scanint(toks, &p->curmp);
-	scanint(toks, &p->lives);
 	scanint(toks, &p->money);
 	for (int i = 0; i < Maxinv; i++)
 		scaninvit(toks, &p->inv[i]);
@@ -263,7 +262,6 @@ static void printplayer(char **bufp, int *szp, Player p)
 		prfield(bufp, szp, " %d", p.eqp[i]);
 	prfield(bufp, szp, " %d", p.curhp);
 	prfield(bufp, szp, " %d", p.curmp);
-	prfield(bufp, szp, " %d", p.lives);
 	prfield(bufp, szp, " %d", p.money);
 	for (int i = 0; i < Maxinv; i++)
 		printinvit(bufp, szp, p.inv[i]);
