@@ -114,7 +114,7 @@ static ItemOps ops[] = {
 		tophatupdate,
 		NULL,
 		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
-		.stats = { [StatHp] = 3 },
+		.stats = { [StatHp] = 1 },
 		.loc = EqpBody,
 		.set = ArmorSetIron
 	},
@@ -161,7 +161,7 @@ static ItemOps ops[] = {
 		silverswdupdate,
 		NULL,
 		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 },
-		.stats = { [StatMag] = 2 },
+		.stats = { [StatMag] = 0 },
 		.loc = EqpMag
 	},
 	[ItemZap] = {
@@ -170,7 +170,7 @@ static ItemOps ops[] = {
 		silverswdupdate,
 		NULL,
 		{ .row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 },
-		.stats = { [StatMag] = 2 },
+		.stats = { [StatMag] = 1 },
 		.loc = EqpMag
 	},
 	[ItemLead] = {
@@ -179,7 +179,7 @@ static ItemOps ops[] = {
 		silverswdupdate,
 		NULL,
 		{ .row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 },
-		.stats = { [StatMag] = 3 },
+		.stats = { [StatMag] = 0 },
 		.loc = EqpMag
 	},
 };

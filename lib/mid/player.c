@@ -43,7 +43,7 @@ void playerinit(Player *p, int x, int y)
 	p->act = Stand;
 
 	p->bi.x = p->bi.y = p->bi.z = -1;
-	p->stats[StatHp] = 10;
+	p->stats[StatHp] = 5;
 	p->stats[StatDex] = 5;
 	p->stats[StatStr] = 5;
 	p->stats[StatMag] = 5;
@@ -59,7 +59,7 @@ void playerinit(Player *p, int x, int y)
 	invitinit(&p->wear[EqpLegs], ItemIronBoot);
 	invitinit(&p->wear[EqpMag], ItemLead);
 	resetstats(p);
-	p->curhp = p->stats[StatHp] + p->eqp[StatHp];
+	p->curhp = playerstat(p, StatHp);
 	p->curmp = MaxMP;
 	mvsw(p);
 }
@@ -163,7 +163,7 @@ void playerupdate(Player *p, Zone *zn)
 		p->mframes--;
 
 	if(p->curmp < MaxMP)
-		p->curmp += p->stats[StatMag] + p->eqp[StatMag];
+		p->curmp += playerstat(p, StatMag);
 }
 
 void playerdraw(Gfx *g, Player *p)
@@ -231,6 +231,11 @@ Point playerimgloc(Player *p)
 	return vecadd(p->body.bbox.a, (Point){-hboff.x,-hboff.y});
 }
 
+int playerstat(Player *p, Stat s)
+{
+	return p->stats[s] + p->eqp[s];
+}
+
 Rect playerbox(Player *p)
 {
 	return p->body.bbox;
@@ -256,7 +261,7 @@ void playerdmg(Player *p, int x, int dir){
 void playerheal(Player *p, int x)
 {
 	p->curhp += x;
-	int max = p->stats[StatHp] + p->eqp[StatHp];
+	int max = playerstat(p, StatHp);
 	if (p->curhp > max)
 		p->curhp = max;
 }
@@ -306,11 +311,11 @@ static void chngact(Player *p)
 }
 
 static double run(Player *p){
-	return 2 + (p->stats[StatDex] + p->eqp[StatDex]) / 4;
+	return 2 + playerstat(p, StatDex) / 4;
 }
 
 static double jmp(Player *p){
-	return 7 + (p->stats[StatDex] + p->eqp[StatDex]) / 5;
+	return 7 + playerstat(p, StatDex) / 5;
 }
 
 static void mvsw(Player *p){
@@ -359,7 +364,7 @@ void resetstats(Player *p){
 	else
 		p->sw.row = p->wear[EqpWep].id - ItemSilverSwd;
 
-	int maxhp = p->stats[StatHp] + p->eqp[StatHp];
+	int maxhp = playerstat(p, StatHp);
 	if(p->curhp > maxhp)
 		p->curhp = maxhp;
 }
