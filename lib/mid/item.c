@@ -303,7 +303,8 @@ static ItemStatus copperupdate(Item *i, Player *p, Zone *z){
 static ItemStatus healthupdate(Item *i, Player *p, Zone *z){
 	bodyupdate(&i->body, z->lvl);
 
-	if(isect(i->body.bbox, playerbox(p))){
+	int maxhp = playerstat(p, StatHp);
+	if(isect(i->body.bbox, playerbox(p)) && p->curhp < maxhp){
 		sfxplay(gengrab);
 		playerheal(p, 1);
 		i->id = ItemNone;
@@ -339,7 +340,8 @@ static ItemStatus goldupdate(Item *i, Player *p, Zone *z){
 static ItemStatus carrotupdate(Item *i, Player *p, Zone *z){
 	bodyupdate(&i->body, z->lvl);
 
-	if(isect(i->body.bbox, playerbox(p))){
+	int maxhp = playerstat(p, StatHp);
+	if(isect(i->body.bbox, playerbox(p)) && p->curhp < maxhp){
 		sfxplay(gengrab);
 		playerheal(p, 5);
 		i->id = ItemNone;
