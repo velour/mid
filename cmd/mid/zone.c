@@ -131,27 +131,26 @@ static char *zonefile(int znum)
 static FILE *zpipe(Rng *r, int depth)
 {
 	Pipe p = {};
-	pipeadd(&p, "lvlgen", "25 25 3 -s %lu ", (unsigned long) rngint(r));
 
-	pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemStatup);
-
-	pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d %d %d %d 50", (unsigned long) rngint(r),
-		ItemCopper, ItemCopper, ItemCopper, ItemCopper, ItemCopper, 
-		ItemSilver, ItemSilver,
-		ItemGold
-	);
-	pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d 5", (unsigned long) rngint(r),
-		ItemHealth, ItemHealth, ItemHealth, ItemHealth,
-		ItemCarrot
-	);
-	pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
-
-	pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
-
-	pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
-		EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
-
-	if(depth < 3){
+	switch(depth){
+	case 0:
+	case 1:
+	case 2:
+		pipeadd(&p, "lvlgen", "25 25 3 -s %lu ", (unsigned long) rngint(r));
+		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemStatup);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d %d %d %d 50", (unsigned long) rngint(r),
+			ItemCopper, ItemCopper, ItemCopper, ItemCopper, ItemCopper, 
+			ItemSilver, ItemSilver,
+			ItemGold
+		);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d 5", (unsigned long) rngint(r),
+			ItemHealth, ItemHealth, ItemHealth, ItemHealth,
+			ItemCarrot
+		);
+		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
+		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
+		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
+			EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
@@ -160,7 +159,24 @@ static FILE *zpipe(Rng *r, int depth)
 			EnemyThu,
 			EnemyGrendu
 		);
-	}else{
+		break;
+	case 3:
+	case 4:
+		pipeadd(&p, "lvlgen", "30 30 4 -s %lu ", (unsigned long) rngint(r));
+		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemStatup);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d %d %d %d 50", (unsigned long) rngint(r),
+			ItemCopper, ItemCopper, ItemCopper, ItemCopper, ItemCopper, 
+			ItemSilver, ItemSilver,
+			ItemGold
+		);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d 5", (unsigned long) rngint(r),
+			ItemHealth, ItemHealth, ItemHealth, ItemHealth,
+			ItemCarrot
+		);
+		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
+		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
+		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
+			EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
@@ -169,6 +185,32 @@ static FILE *zpipe(Rng *r, int depth)
 			EnemyGrendu,
 			EnemyTihgt
 		);
+		break;
+	default:
+		pipeadd(&p, "lvlgen", "35 35 3 -x -s %lu ", (unsigned long) rngint(r));
+		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemStatup);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d %d %d %d 50", (unsigned long) rngint(r),
+			ItemCopper, ItemCopper, ItemCopper, ItemCopper, ItemCopper, 
+			ItemSilver, ItemSilver,
+			ItemGold
+		);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d 5", (unsigned long) rngint(r),
+			ItemHealth, ItemHealth, ItemHealth, ItemHealth,
+			ItemCarrot
+		);
+		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
+		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
+		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
+			EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
+		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
+			(unsigned long) rngint(r),
+			EnemyUnti, EnemyUnti, EnemyUnti,
+			EnemyDa, EnemyDa, EnemyDa, EnemyDa,
+			EnemyThu, EnemyThu, EnemyThu,
+			EnemyGrendu,
+			EnemyTihgt
+		);
+		break;
 	}
 
 	char adc[256];
