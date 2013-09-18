@@ -21,6 +21,7 @@ static int stairlocs(Lvl *, Loc []);
 static char *seedstr = NULL;
 static bool addwater = true;
 static bool randstart;
+static bool omitexit;
 Rng r;
 
 int main(int argc, char *argv[])
@@ -88,6 +89,8 @@ static void parseargs(int argc, char *argv[])
 			addwater = false;
 		} else if (strcmp("-r", argv[i]) == 0) {
 			randstart = true;
+		} else if (strcmp("-x", argv[i]) == 0) {
+			omitexit = true;
 		}
 	}
 }
@@ -128,6 +131,9 @@ static void stairs(Rng *r, Lvl *lvl, unsigned int x0, unsigned int y0)
 	else
 		blk(lvl, x0, y0, 0)->tile = 'u';
 	setreach(lvl, x0, y0, 0);
+
+	if (omitexit)
+		return;
 
 	Loc ls[lvl->w * lvl->h * lvl->d];
 	int nls = stairlocs(lvl, ls);
