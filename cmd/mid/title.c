@@ -16,6 +16,10 @@ struct Tit{
 	Point copypos;
 	_Bool havesave;
 	_Bool loaded;
+
+	int splashticks;
+	Img *jordan;
+	Point jordanpos;
 };
 
 static void update(Scrn*,Scrnstk*);
@@ -33,6 +37,13 @@ static Scrnmt titmt = {
 Scrn *titlescrnnew(Gfx *g){
 	static Tit t = {0};
 	static Scrn s = {0};
+
+	t.splashticks = 50;
+	t.jordan = resrcacq(imgs, "img/sb.png", 0);
+	if(!t.jordan)
+		return NULL;
+	t.jordanpos.x = 0;
+	t.jordanpos.y = gfxdims(g).y / 2 - imgdims(t.jordan).y;
 
 	t.title = resrcacq(imgs, "img/title.png", 0);
 	if(!t.title)
@@ -99,6 +110,21 @@ static void update(Scrn *s, Scrnstk *stk){
 static void draw(Scrn *s, Gfx *g){
 	gfxclear(g, MenuPurple);
 	Tit *t = s->data;
+
+	if(t->splashticks > 0){
+		imgdraw(g, t->jordan, t->jordanpos);
+		Point p = {
+			t->jordanpos.x + imgdims(t->jordan).x,
+			t->jordanpos.y
+		};
+		txtdraw(g, t->f, p, " #velour");
+		t->jordanpos.x += 10;
+		t->splashticks--;
+		gfxflip(g);
+		return;
+	}
+
+
 	imgdrawscale(g, t->title, t->titlepos, 0.5);
 	txtdraw(g, t->f, t->startpos, "Press '%c' to Start a new game", kmap[Mvinv]);
 	if (t->havesave)
