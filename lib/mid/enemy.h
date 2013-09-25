@@ -58,4 +58,7 @@ ENEMYDECL(grendu);
 extern Img *tihgtimg;
 ENEMYDECL(tihgt);
 
+extern Img *heartimg;
+ENEMYDECL(heart);
+
 #undef ENEMYDECL
