@@ -59,7 +59,7 @@ Scrn *titlescrnnew(Gfx *g){
 	if(!f)
 		return NULL;
 
-	t.copy = txt2img(g, f, "Copyright 2011 Steve McCoy and Ethan Burns");
+	t.copy = txt2img(g, f, "© 2013 Steve McCoy and Ethan Burns");
 	if(!t.copy)
 		return NULL;
 
