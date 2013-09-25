@@ -182,6 +182,13 @@ static ItemOps ops[] = {
 		.stats = { [StatMag] = 0 },
 		.loc = EqpMag
 	},
+	[ItemDjewel] = {
+		"Dragon Jewel",
+		"img/coins.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 },
+	},
 };
 
 _Bool iteminit(Item *i, ItemID id, Point p){
