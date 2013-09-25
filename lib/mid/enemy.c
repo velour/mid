@@ -41,6 +41,10 @@ _Bool enemyldresrc(void){
 	if(!tihgtimg) return 0;
 	tihgtinfo.hit = untihit;
 
+	heartimg = resrcacq(imgs, "img/placeholder.png", 0);
+	if(!heartimg) return 0;
+	heartinfo.hit = untihit;
+
 	rnginit(&rng, 666); //TODO: use the game seed
 
 	return 1;
@@ -66,6 +70,7 @@ static Enemymt mt[] = {
 	[EnemyGrendu] = { ENEMYMT(grendu) },
 	[EnemyTihgt] = { ENEMYMT(tihgt) },
 	[EnemySplat] = { ENEMYMT(splat) },
+	[EnemyHeart] = { ENEMYMT(heart) },
 };
 
 _Bool enemyinit(Enemy *e, EnemyID id, int x, int y){

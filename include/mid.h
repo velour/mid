@@ -450,6 +450,7 @@ enum ItemID{
 	ItemBubble,
 	ItemZap,
 	ItemLead,
+	ItemDjewel,
 	ItemMax
 };
 
@@ -579,6 +580,7 @@ enum EnemyID{
 	EnemyGrendu,
 	EnemyTihgt,
 	EnemySplat,
+	EnemyHeart,
 	EnemyMax
 };
 
