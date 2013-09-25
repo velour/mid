@@ -187,7 +187,7 @@ static FILE *zpipe(Rng *r, int depth)
 		);
 		break;
 	default:
-		pipeadd(&p, "lvlgen", "35 35 3 -x -s %lu ", (unsigned long) rngint(r));
+		pipeadd(&p, "lvlgen", "10 10 3 -x -s %lu ", (unsigned long) rngint(r));
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemStatup);
 		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d %d %d %d 50", (unsigned long) rngint(r),
 			ItemCopper, ItemCopper, ItemCopper, ItemCopper, ItemCopper, 
@@ -209,6 +209,10 @@ static FILE *zpipe(Rng *r, int depth)
 			EnemyThu, EnemyThu, EnemyThu,
 			EnemyGrendu,
 			EnemyTihgt
+		);
+		pipeadd(&p, "enmgen", "-s %lu %d 1",
+			(unsigned long) rngint(r),
+			EnemyHeart
 		);
 		break;
 	}

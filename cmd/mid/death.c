@@ -16,6 +16,7 @@ static void draw(Scrn *s, Gfx *g);
 static void handle(Scrn *s, Scrnstk *stk, Event *e);
 static void goverfree(Scrn *s);
 static char *praise(int);
+static int hasjewel(Player *p);
 
 static Scrnmt govermt = {
 	update,
@@ -56,7 +57,9 @@ static void draw(Scrn *s, Gfx *g){
 	char buf[Bufsz];
 
 	char *d;
-	if(go->maxd < 0)
+	if(hasjewel(go->p))
+		d = "YOU ARE A HERO.";
+	else if(go->maxd < 0)
 		d = "YOU ARE A COWARD.";
 	else if(go->maxd < 10)
 		d = "You are dead!";
@@ -95,4 +98,11 @@ static char *praise(int m){
 	if(m < 10000)
 		return "amazing";
 	return "glorious";
+}
+
+static int hasjewel(Player *p){
+	for(int i = 0; i <= Maxinv; i++)
+		if(p->inv[i].id == ItemDjewel)
+			return 1;
+	return 0;
 }
