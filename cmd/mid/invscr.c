@@ -39,7 +39,7 @@ enum {
 	EqpDrop = EqpEat + 1,
 };
 
-static const char *moneystr = "gold";
+static const char *moneystr = "¥";
 static char *locname[] = {
 	[EqpHead] = "Head",
 	[EqpBody] = "Body",

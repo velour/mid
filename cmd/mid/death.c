@@ -65,7 +65,7 @@ static void draw(Scrn *s, Gfx *g){
 		d = "You are dead!";
 	else
 		d = "You have died with HONOR!";
-	snprintf(buf, Bufsz, "With %d %s gold for your family.", m, praise(m));
+	snprintf(buf, Bufsz, "With %s %d¥ for your family.", praise(m), m);
 
 	Point dp = txtdims(go->big, d);
 	Point dl = { gfxdims(g).x/2 - dp.x/2, dp.y };
@@ -90,14 +90,14 @@ static void goverfree(Scrn *s){
 
 static char *praise(int m){
 	if(m < 10)
-		return "worthless";
+		return "a worthless";
 	if(m < 100)
-		return "pitiful";
+		return "a pitiful";
 	if(m < 1000)
-		return "acceptable";
+		return "an acceptable";
 	if(m < 10000)
-		return "amazing";
-	return "glorious";
+		return "an amazing";
+	return "a glorious";
 }
 
 static int hasjewel(Player *p){
