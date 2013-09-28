@@ -161,7 +161,7 @@ static ItemOps ops[] = {
 	},
 	[ItemSteelHelm] = {
 		"Steel Helm",
-		"img/iron.png",
+		"img/steel.png",
 		tophatupdate,
 		NULL,
 		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
@@ -171,7 +171,7 @@ static ItemOps ops[] = {
 	},
 	[ItemSteelGlove] = {
 		"Steel Gloves",
-		"img/iron.png",
+		"img/steel.png",
 		tophatupdate,
 		NULL,
 		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
@@ -181,7 +181,7 @@ static ItemOps ops[] = {
 	},
 	[ItemSteelBody] = {
 		"Steel Plate",
-		"img/iron.png",
+		"img/steel.png",
 		tophatupdate,
 		NULL,
 		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
@@ -191,13 +191,53 @@ static ItemOps ops[] = {
 	},
 	[ItemSteelBoot] = {
 		"Steel Boots",
-		"img/iron.png",
+		"img/steel.png",
 		tophatupdate,
 		NULL,
 		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatHp] = 2, [StatDex] = -1 },
 		.loc = EqpLegs,
 		.set = ArmorSetSteel
+	},
+	[ItemGoldHelm] = {
+		"Gold Helm",
+		"img/gold.png",
+		tophatupdate,
+		NULL,
+		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 1, [StatLuck] = 1 },
+		.loc = EqpHead,
+		.set = ArmorSetGold
+	},
+	[ItemGoldGlove] = {
+		"Gold Gloves",
+		"img/gold.png",
+		tophatupdate,
+		NULL,
+		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 1, [StatLuck] = 1 },
+		.loc = EqpArms,
+		.set = ArmorSetGold
+	},
+	[ItemGoldBody] = {
+		"Gold Plate",
+		"img/gold.png",
+		tophatupdate,
+		NULL,
+		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 1, [StatLuck] = 1 },
+		.loc = EqpBody,
+		.set = ArmorSetGold
+	},
+	[ItemGoldBoot] = {
+		"Gold Boots",
+		"img/gold.png",
+		tophatupdate,
+		NULL,
+		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 1, [StatLuck] = 1 },
+		.loc = EqpLegs,
+		.set = ArmorSetGold
 	},
 	[ItemSilverSwd] = {
 		"Silver Sword",
