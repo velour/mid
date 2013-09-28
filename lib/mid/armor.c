@@ -16,6 +16,7 @@ static void steelbonus(Player*);
 static void goldbonus(Player*);
 static void tuxbonus(Player*);
 static void rockbonus(Player*);
+static void lavabonus(Player*);
 
 static ArmorOps ops[] = {
 	[ArmorSetNone] = {
@@ -41,6 +42,10 @@ static ArmorOps ops[] = {
 	[ArmorSetRock] = {
 		.bonus = rockbonus,
 		.sheetname = "rock"
+	},
+	[ArmorSetLava] = {
+		.bonus = lavabonus,
+		.sheetname = "lava"
 	},
 };
 
@@ -92,4 +97,8 @@ static void tuxbonus(Player *p){
 static void rockbonus(Player *p){
 	p->eqp[StatHp] += 4;
 	p->eqp[StatStr] += 1;
+}
+
+static void lavabonus(Player *p){
+	p->eqp[StatStr] += 2;
 }

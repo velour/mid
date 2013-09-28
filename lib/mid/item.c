@@ -279,6 +279,46 @@ static ItemOps ops[] = {
 		.loc = EqpLegs,
 		.set = ArmorSetRock
 	},
+	[ItemLavaHelm] = {
+		"Lava Helm",
+		"img/lava.png",
+		tophatupdate,
+		NULL,
+		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 8, [StatDex] = -1 },
+		.loc = EqpHead,
+		.set = ArmorSetLava
+	},
+	[ItemLavaGlove] = {
+		"Lava Gloves",
+		"img/lava.png",
+		tophatupdate,
+		NULL,
+		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 8, [StatDex] = -1 },
+		.loc = EqpArms,
+		.set = ArmorSetLava
+	},
+	[ItemLavaBody] = {
+		"Lava Plate",
+		"img/lava.png",
+		tophatupdate,
+		NULL,
+		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 8, [StatDex] = -1 },
+		.loc = EqpBody,
+		.set = ArmorSetLava
+	},
+	[ItemLavaBoot] = {
+		"Lava Boots",
+		"img/lava.png",
+		tophatupdate,
+		NULL,
+		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 8, [StatDex] = -1 },
+		.loc = EqpLegs,
+		.set = ArmorSetLava
+	},
 	[ItemSilverSwd] = {
 		"Silver Sword",
 		"img/sword-icons.png",
