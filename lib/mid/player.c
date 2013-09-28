@@ -149,6 +149,8 @@ void playerupdate(Player *p, Zone *zn)
 	}else if(p->sframes > 0){
 		p->sframes--;
 		p->sw.cur = 1;
+		if(p->sframes == 1 && armset(p) == ArmorSetLava)
+			p->curhp--;
 	}else
 		p->sw.cur = -1;
 
@@ -156,6 +158,8 @@ void playerupdate(Player *p, Zone *zn)
 		Magic m = {};
 		itemcast(&m, p->wear[EqpMag].id, p);
 		zoneaddmagic(zn, zn->lvl->z, m);
+		if(armset(p) == ArmorSetLava)
+			p->curhp--;
 	}
 	if(p->mframes > 0)
 		p->mframes--;
