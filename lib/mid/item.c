@@ -81,12 +81,43 @@ static ItemOps ops[] = {
 	},
 	[ItemTopHat] = {
 		"Top Hat",
-		"img/food.png",
+		"img/tux.png",
 		tophatupdate,
 		NULL,
-		{.row = 4, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
-		.stats = { 0, 5, 0 },
-		.loc = EqpHead
+		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatDex] = 1 },
+		.loc = EqpHead,
+		.set = ArmorSetTux
+	},
+	[ItemSilkGlove] = {
+		"Silk Gloves",
+		"img/tux.png",
+		tophatupdate,
+		NULL,
+		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatDex] = 1 },
+		.loc = EqpArms,
+		.set = ArmorSetTux
+	},
+	[ItemNavyBlazer] = {
+		"Navy Blazer",
+		"img/tux.png",
+		tophatupdate,
+		NULL,
+		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatDex] = 1 },
+		.loc = EqpBody,
+		.set = ArmorSetTux
+	},
+	[ItemFineShoe] = {
+		"Fine Shoes",
+		"img/tux.png",
+		tophatupdate,
+		NULL,
+		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatDex] = 1 },
+		.loc = EqpLegs,
+		.set = ArmorSetTux
 	},
 	[ItemIronHelm] = {
 		"Iron Helm",
@@ -127,6 +158,206 @@ static ItemOps ops[] = {
 		.stats = { [StatHp] = 1, [StatDex] = -1 },
 		.loc = EqpLegs,
 		.set = ArmorSetIron
+	},
+	[ItemSteelHelm] = {
+		"Steel Helm",
+		"img/steel.png",
+		tophatupdate,
+		NULL,
+		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 2 },
+		.loc = EqpHead,
+		.set = ArmorSetSteel
+	},
+	[ItemSteelGlove] = {
+		"Steel Gloves",
+		"img/steel.png",
+		tophatupdate,
+		NULL,
+		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 2 },
+		.loc = EqpArms,
+		.set = ArmorSetSteel
+	},
+	[ItemSteelBody] = {
+		"Steel Plate",
+		"img/steel.png",
+		tophatupdate,
+		NULL,
+		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 2 },
+		.loc = EqpBody,
+		.set = ArmorSetSteel
+	},
+	[ItemSteelBoot] = {
+		"Steel Boots",
+		"img/steel.png",
+		tophatupdate,
+		NULL,
+		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 2, [StatDex] = -1 },
+		.loc = EqpLegs,
+		.set = ArmorSetSteel
+	},
+	[ItemGoldHelm] = {
+		"Gold Helm",
+		"img/gold.png",
+		tophatupdate,
+		NULL,
+		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 1, [StatLuck] = 1 },
+		.loc = EqpHead,
+		.set = ArmorSetGold
+	},
+	[ItemGoldGlove] = {
+		"Gold Gloves",
+		"img/gold.png",
+		tophatupdate,
+		NULL,
+		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 1, [StatLuck] = 1 },
+		.loc = EqpArms,
+		.set = ArmorSetGold
+	},
+	[ItemGoldBody] = {
+		"Gold Plate",
+		"img/gold.png",
+		tophatupdate,
+		NULL,
+		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 1, [StatLuck] = 1 },
+		.loc = EqpBody,
+		.set = ArmorSetGold
+	},
+	[ItemGoldBoot] = {
+		"Gold Boots",
+		"img/gold.png",
+		tophatupdate,
+		NULL,
+		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 1, [StatLuck] = 1 },
+		.loc = EqpLegs,
+		.set = ArmorSetGold
+	},
+	[ItemRockHelm] = {
+		"Rock Helm",
+		"img/rock.png",
+		tophatupdate,
+		NULL,
+		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 4, [StatDex] = -1 },
+		.loc = EqpHead,
+		.set = ArmorSetRock
+	},
+	[ItemRockGlove] = {
+		"Rock Gloves",
+		"img/rock.png",
+		tophatupdate,
+		NULL,
+		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 4, [StatDex] = -1 },
+		.loc = EqpArms,
+		.set = ArmorSetRock
+	},
+	[ItemRockBody] = {
+		"Rock Plate",
+		"img/rock.png",
+		tophatupdate,
+		NULL,
+		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 4, [StatDex] = -1 },
+		.loc = EqpBody,
+		.set = ArmorSetRock
+	},
+	[ItemRockBoot] = {
+		"Rock Boots",
+		"img/rock.png",
+		tophatupdate,
+		NULL,
+		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 4, [StatDex] = -1 },
+		.loc = EqpLegs,
+		.set = ArmorSetRock
+	},
+	[ItemLavaHelm] = {
+		"Lava Helm",
+		"img/lava.png",
+		tophatupdate,
+		NULL,
+		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 8, [StatDex] = -1 },
+		.loc = EqpHead,
+		.set = ArmorSetLava
+	},
+	[ItemLavaGlove] = {
+		"Lava Gloves",
+		"img/lava.png",
+		tophatupdate,
+		NULL,
+		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 8, [StatDex] = -1 },
+		.loc = EqpArms,
+		.set = ArmorSetLava
+	},
+	[ItemLavaBody] = {
+		"Lava Plate",
+		"img/lava.png",
+		tophatupdate,
+		NULL,
+		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 8, [StatDex] = -1 },
+		.loc = EqpBody,
+		.set = ArmorSetLava
+	},
+	[ItemLavaBoot] = {
+		"Lava Boots",
+		"img/lava.png",
+		tophatupdate,
+		NULL,
+		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 8, [StatDex] = -1 },
+		.loc = EqpLegs,
+		.set = ArmorSetLava
+	},
+	[ItemPlotHelm] = {
+		"Plot Helm",
+		"img/plot.png",
+		tophatupdate,
+		NULL,
+		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatMag] = 0 },
+		.loc = EqpHead,
+		.set = ArmorSetPlot
+	},
+	[ItemPlotGlove] = {
+		"Plot Gloves",
+		"img/plot.png",
+		tophatupdate,
+		NULL,
+		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatStr] = 0 },
+		.loc = EqpArms,
+		.set = ArmorSetPlot
+	},
+	[ItemPlotBody] = {
+		"Plot Plate",
+		"img/plot.png",
+		tophatupdate,
+		NULL,
+		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 0 },
+		.loc = EqpBody,
+		.set = ArmorSetPlot
+	},
+	[ItemPlotBoot] = {
+		"Plot Boots",
+		"img/plot.png",
+		tophatupdate,
+		NULL,
+		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatDex] = 0 },
+		.loc = EqpLegs,
+		.set = ArmorSetPlot
 	},
 	[ItemSilverSwd] = {
 		"Silver Sword",
@@ -222,6 +453,11 @@ _Bool itemldresrc()
 
 		ops[id].anim.sheet = a;
 	}
+
+	ops[ItemPlotHelm].stats[StatMag] = statmax[StatMag];
+	ops[ItemPlotGlove].stats[StatStr] = statmax[StatStr];
+	ops[ItemPlotBody].stats[StatHp] = statmax[StatHp];
+	ops[ItemPlotBoot].stats[StatDex] = statmax[StatDex];
 	return 1;
 }
 
