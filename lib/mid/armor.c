@@ -12,6 +12,7 @@ struct ArmorOps{
 
 static void nobonus(Player*);
 static void ironbonus(Player*);
+static void steelbonus(Player*);
 static void tuxbonus(Player*);
 
 static ArmorOps ops[] = {
@@ -26,7 +27,11 @@ static ArmorOps ops[] = {
 	[ArmorSetTux] = {
 		.bonus = tuxbonus,
 		.sheetname = "tux"
-	}
+	},
+	[ArmorSetSteel] = {
+		.bonus = steelbonus,
+		.sheetname = "steel"
+	},
 };
 
 Img *knightsheet;
@@ -57,6 +62,11 @@ static void nobonus(Player *p){
 
 static void ironbonus(Player *p){
 	p->eqp[StatStr] += 1;
+	p->eqp[StatDex] += 1;
+}
+
+static void steelbonus(Player *p){
+	p->eqp[StatStr] += 2;
 	p->eqp[StatDex] += 1;
 }
 

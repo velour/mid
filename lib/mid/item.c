@@ -159,6 +159,46 @@ static ItemOps ops[] = {
 		.loc = EqpLegs,
 		.set = ArmorSetIron
 	},
+	[ItemSteelHelm] = {
+		"Steel Helm",
+		"img/iron.png",
+		tophatupdate,
+		NULL,
+		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 2 },
+		.loc = EqpHead,
+		.set = ArmorSetSteel
+	},
+	[ItemSteelGlove] = {
+		"Steel Gloves",
+		"img/iron.png",
+		tophatupdate,
+		NULL,
+		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 2 },
+		.loc = EqpArms,
+		.set = ArmorSetSteel
+	},
+	[ItemSteelBody] = {
+		"Steel Plate",
+		"img/iron.png",
+		tophatupdate,
+		NULL,
+		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 2 },
+		.loc = EqpBody,
+		.set = ArmorSetSteel
+	},
+	[ItemSteelBoot] = {
+		"Steel Boots",
+		"img/iron.png",
+		tophatupdate,
+		NULL,
+		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 2, [StatDex] = -1 },
+		.loc = EqpLegs,
+		.set = ArmorSetSteel
+	},
 	[ItemSilverSwd] = {
 		"Silver Sword",
 		"img/sword-icons.png",
