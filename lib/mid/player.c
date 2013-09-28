@@ -235,7 +235,10 @@ Point playerimgloc(Player *p)
 
 int playerstat(Player *p, Stat s)
 {
-	return p->stats[s] + p->eqp[s];
+	int n = p->stats[s] + p->eqp[s];
+	if(n > statmax[s])
+		return statmax[s];
+	return n;
 }
 
 Rect playerbox(Player *p)
