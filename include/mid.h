@@ -440,6 +440,9 @@ enum ItemID{
 	ItemCarrot,
 	ItemHamCan,
 	ItemTopHat,
+	ItemSilkGlove,
+	ItemNavyBlazer,
+	ItemFineShoe,
 	ItemIronHelm,
 	ItemIronGlove,
 	ItemIronBody,
@@ -497,6 +500,12 @@ typedef enum ArmorSetID ArmorSetID;
 enum ArmorSetID{
 	ArmorSetNone,
 	ArmorSetIron,
+	ArmorSetSteel,
+	ArmorSetGold,
+	ArmorSetRock,
+	ArmorSetLava,
+	ArmorSetTux,
+	ArmorSetPlot,
 	ArmorSetMax
 };
 

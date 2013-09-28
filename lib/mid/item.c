@@ -81,12 +81,43 @@ static ItemOps ops[] = {
 	},
 	[ItemTopHat] = {
 		"Top Hat",
-		"img/food.png",
+		"img/tux.png",
 		tophatupdate,
 		NULL,
-		{.row = 4, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
-		.stats = { 0, 5, 0 },
-		.loc = EqpHead
+		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatDex] = 1 },
+		.loc = EqpHead,
+		.set = ArmorSetTux
+	},
+	[ItemSilkGlove] = {
+		"Silk Gloves",
+		"img/tux.png",
+		tophatupdate,
+		NULL,
+		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatDex] = 1 },
+		.loc = EqpArms,
+		.set = ArmorSetTux
+	},
+	[ItemNavyBlazer] = {
+		"Navy Blazer",
+		"img/tux.png",
+		tophatupdate,
+		NULL,
+		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatDex] = 1 },
+		.loc = EqpBody,
+		.set = ArmorSetTux
+	},
+	[ItemFineShoe] = {
+		"Fine Shoes",
+		"img/tux.png",
+		tophatupdate,
+		NULL,
+		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatDex] = 1 },
+		.loc = EqpLegs,
+		.set = ArmorSetTux
 	},
 	[ItemIronHelm] = {
 		"Iron Helm",
