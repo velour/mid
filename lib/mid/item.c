@@ -239,6 +239,46 @@ static ItemOps ops[] = {
 		.loc = EqpLegs,
 		.set = ArmorSetGold
 	},
+	[ItemRockHelm] = {
+		"Rock Helm",
+		"img/rock.png",
+		tophatupdate,
+		NULL,
+		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 4, [StatDex] = -1 },
+		.loc = EqpHead,
+		.set = ArmorSetRock
+	},
+	[ItemRockGlove] = {
+		"Rock Gloves",
+		"img/rock.png",
+		tophatupdate,
+		NULL,
+		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 4, [StatDex] = -1 },
+		.loc = EqpArms,
+		.set = ArmorSetRock
+	},
+	[ItemRockBody] = {
+		"Rock Plate",
+		"img/rock.png",
+		tophatupdate,
+		NULL,
+		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 4, [StatDex] = -1 },
+		.loc = EqpBody,
+		.set = ArmorSetRock
+	},
+	[ItemRockBoot] = {
+		"Rock Boots",
+		"img/rock.png",
+		tophatupdate,
+		NULL,
+		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 4, [StatDex] = -1 },
+		.loc = EqpLegs,
+		.set = ArmorSetRock
+	},
 	[ItemSilverSwd] = {
 		"Silver Sword",
 		"img/sword-icons.png",
