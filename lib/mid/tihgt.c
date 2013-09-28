@@ -13,7 +13,7 @@ Info tihgtinfo = {
 		[StatStr] = 4,
 	},
 	.drops = {
-		.item = { ItemNone, ItemWindSwd },
+		.item = { ItemNone, ItemPlotBody },
 		.prob = { 95, 5 }
 	},
 	.death = EnemySplat
