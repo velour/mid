@@ -319,6 +319,46 @@ static ItemOps ops[] = {
 		.loc = EqpLegs,
 		.set = ArmorSetLava
 	},
+	[ItemPlotHelm] = {
+		"Plot Helm",
+		"img/plot.png",
+		tophatupdate,
+		NULL,
+		{.row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatMag] = 0 },
+		.loc = EqpHead,
+		.set = ArmorSetPlot
+	},
+	[ItemPlotGlove] = {
+		"Plot Gloves",
+		"img/plot.png",
+		tophatupdate,
+		NULL,
+		{.row = 2, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatStr] = 0 },
+		.loc = EqpArms,
+		.set = ArmorSetPlot
+	},
+	[ItemPlotBody] = {
+		"Plot Plate",
+		"img/plot.png",
+		tophatupdate,
+		NULL,
+		{.row = 1, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 0 },
+		.loc = EqpBody,
+		.set = ArmorSetPlot
+	},
+	[ItemPlotBoot] = {
+		"Plot Boots",
+		"img/plot.png",
+		tophatupdate,
+		NULL,
+		{.row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatDex] = 0 },
+		.loc = EqpLegs,
+		.set = ArmorSetPlot
+	},
 	[ItemSilverSwd] = {
 		"Silver Sword",
 		"img/sword-icons.png",
@@ -413,6 +453,11 @@ _Bool itemldresrc()
 
 		ops[id].anim.sheet = a;
 	}
+
+	ops[ItemPlotHelm].stats[StatMag] = statmax[StatMag];
+	ops[ItemPlotGlove].stats[StatStr] = statmax[StatStr];
+	ops[ItemPlotBody].stats[StatHp] = statmax[StatHp];
+	ops[ItemPlotBoot].stats[StatDex] = statmax[StatDex];
 	return 1;
 }
 
