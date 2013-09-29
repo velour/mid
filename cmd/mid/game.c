@@ -196,7 +196,8 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 	Game *gm = s->data;
 
 	if(e->down && e->key == kmap[Mvinv]){
-		scrnstkpush(stk, invscrnnew(&gm->player, gm->zone, gm->znum));
+		scrnstkpush(stk, invscrnnew(gm, &gm->player, gm->zone, gm->znum));
+		msg(&gm->msg, "%s", "Game Saved");
 		return;
 	}
 

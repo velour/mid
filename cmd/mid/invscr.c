@@ -10,6 +10,7 @@ typedef struct Invscr Invscr;
 typedef struct Eloc Eloc;
 
 struct Invscr{
+	Game *gm;
 	Player *p;
 	Zone *zone;
 	int depth, zvis;
@@ -77,13 +78,14 @@ static Scrnmt invmt = {
 	invfree,
 };
 
-Scrn *invscrnnew(Player *p, Zone *zone, int depth){
+Scrn *invscrnnew(Game *gm, Player *p, Zone *zone, int depth){
 	static Invscr inv;
 	static Scrn s;
 
 	inv = (Invscr){};
 	s = (Scrn){};
 
+	inv.gm = gm;
 	inv.p = p;
 	inv.zone = zone;
 	inv.depth = depth;
@@ -355,4 +357,5 @@ static Eloc eqpat(Invscr *i, int x, int y){
 static void invfree(Scrn *s){
 	Invscr *inv = s->data;
 	resetstats(inv->p);
+	gamesave(inv->gm);
 }
