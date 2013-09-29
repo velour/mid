@@ -197,7 +197,6 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 
 	if(e->down && e->key == kmap[Mvinv]){
 		scrnstkpush(stk, invscrnnew(gm, &gm->player, gm->zone, gm->znum));
-		msg(&gm->msg, "%s", "Game Saved");
 		return;
 	}
 
@@ -213,7 +212,6 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 			if(gm->player.statup){
 				scrnstkpush(stk, statscrnnew(gm, &gm->player, &ev[i]));
 				gm->player.statup = 0;
-				msg(&gm->msg, "%s", "Game Saved");
 				return;
 			}
 		}
@@ -259,6 +257,8 @@ void gamesave(Game *gm)
 	fputs(buf, f);
 	fputc('\n', f);
 	fclose(f);
+
+	msg(&gm->msg, "%s", "Game Saved");
 }
 
 Game *gameload()
