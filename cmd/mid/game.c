@@ -87,6 +87,7 @@ static void trystairs(Scrnstk *stk, Game *gm)
 		playersetloc(&gm->player, bi.x, bi.y);
 
 		lvlsetpallet(lvlpallet(gm));
+		gamesave(gm);
 	} else if (gm->zone->updown == Godown) {
 		gm->znum++;
 		if (gm->znum > gm->zmax) {
@@ -99,6 +100,7 @@ static void trystairs(Scrnstk *stk, Game *gm)
 		playersetloc(&gm->player, 2, 2);
 
 		lvlsetpallet(lvlpallet(gm));
+		gamesave(gm);
 	}
 }
 
