@@ -29,7 +29,7 @@ int lvlpallet(Game*);
 
 enum { Invrows = 6, Invcols = 3 };
 
-Scrn *invscrnnew(Player *, Zone *, int);
+Scrn *invscrnnew(Game *, Player *p, Zone *zone, int depth);
 Scrn *titlescrnnew(Gfx *);
 Scrn *statscrnnew(Game *, Player *, Env *);
 Scrn *goverscrnnew(Player *, int);
