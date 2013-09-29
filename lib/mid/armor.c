@@ -12,6 +12,12 @@ struct ArmorOps{
 
 static void nobonus(Player*);
 static void ironbonus(Player*);
+static void steelbonus(Player*);
+static void goldbonus(Player*);
+static void tuxbonus(Player*);
+static void rockbonus(Player*);
+static void lavabonus(Player*);
+static void plotbonus(Player *p);
 
 static ArmorOps ops[] = {
 	[ArmorSetNone] = {
@@ -21,6 +27,30 @@ static ArmorOps ops[] = {
 	[ArmorSetIron] = {
 		.bonus = ironbonus,
 		.sheetname = "iron"
+	},
+	[ArmorSetTux] = {
+		.bonus = tuxbonus,
+		.sheetname = "tux"
+	},
+	[ArmorSetSteel] = {
+		.bonus = steelbonus,
+		.sheetname = "steel"
+	},
+	[ArmorSetGold] = {
+		.bonus = goldbonus,
+		.sheetname = "gold"
+	},
+	[ArmorSetRock] = {
+		.bonus = rockbonus,
+		.sheetname = "rock"
+	},
+	[ArmorSetLava] = {
+		.bonus = lavabonus,
+		.sheetname = "lava"
+	},
+	[ArmorSetPlot] = {
+		.bonus = plotbonus,
+		.sheetname = "plot"
 	},
 };
 
@@ -53,4 +83,31 @@ static void nobonus(Player *p){
 static void ironbonus(Player *p){
 	p->eqp[StatStr] += 1;
 	p->eqp[StatDex] += 1;
+}
+
+static void steelbonus(Player *p){
+	p->eqp[StatStr] += 2;
+	p->eqp[StatDex] += 1;
+}
+
+static void goldbonus(Player *p){
+	p->eqp[StatLuck] += 2;
+}
+
+static void tuxbonus(Player *p){
+	p->eqp[StatDex] += 1;
+	p->eqp[StatLuck] += 1;
+}
+
+static void rockbonus(Player *p){
+	p->eqp[StatHp] += 4;
+	p->eqp[StatStr] += 1;
+}
+
+static void lavabonus(Player *p){
+	p->eqp[StatStr] += 2;
+}
+
+static void plotbonus(Player *p){
+	p->eqp[StatLuck] = statmax[StatLuck];
 }

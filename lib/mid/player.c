@@ -149,6 +149,8 @@ void playerupdate(Player *p, Zone *zn)
 	}else if(p->sframes > 0){
 		p->sframes--;
 		p->sw.cur = 1;
+		if(p->sframes == 1 && armset(p) == ArmorSetLava)
+			p->curhp--;
 	}else
 		p->sw.cur = -1;
 
@@ -156,6 +158,8 @@ void playerupdate(Player *p, Zone *zn)
 		Magic m = {};
 		itemcast(&m, p->wear[EqpMag].id, p);
 		zoneaddmagic(zn, zn->lvl->z, m);
+		if(armset(p) == ArmorSetLava)
+			p->curhp--;
 	}
 	if(p->mframes > 0)
 		p->mframes--;
@@ -231,7 +235,10 @@ Point playerimgloc(Player *p)
 
 int playerstat(Player *p, Stat s)
 {
-	return p->stats[s] + p->eqp[s];
+	int n = p->stats[s] + p->eqp[s];
+	if(n > statmax[s])
+		return statmax[s];
+	return n;
 }
 
 Rect playerbox(Player *p)
