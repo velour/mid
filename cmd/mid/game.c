@@ -87,6 +87,7 @@ static void trystairs(Scrnstk *stk, Game *gm)
 		playersetloc(&gm->player, bi.x, bi.y);
 
 		lvlsetpallet(lvlpallet(gm));
+		gamesave(gm);
 	} else if (gm->zone->updown == Godown) {
 		gm->znum++;
 		if (gm->znum > gm->zmax) {
@@ -99,6 +100,7 @@ static void trystairs(Scrnstk *stk, Game *gm)
 		playersetloc(&gm->player, 2, 2);
 
 		lvlsetpallet(lvlpallet(gm));
+		gamesave(gm);
 	}
 }
 
@@ -196,7 +198,7 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 	Game *gm = s->data;
 
 	if(e->down && e->key == kmap[Mvinv]){
-		scrnstkpush(stk, invscrnnew(&gm->player, gm->zone, gm->znum));
+		scrnstkpush(stk, invscrnnew(gm, &gm->player, gm->zone, gm->znum));
 		return;
 	}
 
@@ -212,7 +214,6 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 			if(gm->player.statup){
 				scrnstkpush(stk, statscrnnew(gm, &gm->player, &ev[i]));
 				gm->player.statup = 0;
-				msg(&gm->msg, "%s", "Game Saved");
 				return;
 			}
 		}
@@ -258,6 +259,8 @@ void gamesave(Game *gm)
 	fputs(buf, f);
 	fputc('\n', f);
 	fclose(f);
+
+	msg(&gm->msg, "%s", "Game Saved");
 }
 
 Game *gameload()
