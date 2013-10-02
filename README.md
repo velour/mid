@@ -70,3 +70,7 @@ Debugging
 The `-p` flag to mid allows it to read a level description via standard input, rather than executing its
 own pipeline of the various -gen programs. This, combined with the "cur.lvl" and "debug.log" files that
 are saved on each run, can be used to easily reproduce issues.
+
+On OSX, these files can be found under `~/Library/Application Support/mid`.
+On Windows, `%APPDATA%/mid`.
+On "posix", `~/.mid`.
