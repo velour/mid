@@ -425,7 +425,7 @@ static ItemOps ops[] = {
 		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		{ .row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatMag] = 5 },
 		.loc = EqpWep
 	},
@@ -434,7 +434,7 @@ static ItemOps ops[] = {
 		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		{ .row = 4, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatHp] = 5 }, // TODO: really I want the power to scale with HP
 		.loc = EqpWep
 	},
@@ -443,7 +443,7 @@ static ItemOps ops[] = {
 		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		{ .row = 5, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatStr] = -1, [StatLuck] = 5 },
 		.loc = EqpWep
 	},
@@ -452,7 +452,7 @@ static ItemOps ops[] = {
 		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		{ .row = 6, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatStr] = 4, [StatLuck] = 2 },
 		.loc = EqpWep
 	},
@@ -461,7 +461,7 @@ static ItemOps ops[] = {
 		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		{ .row = 7, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatStr] = 6, [StatHp] = 1 },
 		.loc = EqpWep
 	},
@@ -470,7 +470,7 @@ static ItemOps ops[] = {
 		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		{ .row = 8, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatStr] = 4, [StatDex] = 3 },
 		.loc = EqpWep
 	},
@@ -479,7 +479,7 @@ static ItemOps ops[] = {
 		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		{ .row = 9, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatMag] = 10 },
 		.loc = EqpWep
 	},
@@ -488,7 +488,7 @@ static ItemOps ops[] = {
 		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		{ .row = 10, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = { [StatHp] = 10 }, // TODO: really I want the power to scale with HP
 		.loc = EqpWep
 	},
@@ -497,7 +497,7 @@ static ItemOps ops[] = {
 		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		{ .row = 11, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = {
 			[StatStr] = 2,
 			[StatDex] = 2,
@@ -510,7 +510,7 @@ static ItemOps ops[] = {
 		"img/sword-icons.png",
 		silverswdupdate,
 		NULL,
-		{ .row = 0, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		{ .row = 12, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
 		.stats = {
 			[StatHp] = 5,
 			[StatStr] = 5,
