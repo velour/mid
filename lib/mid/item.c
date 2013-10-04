@@ -420,6 +420,106 @@ static ItemOps ops[] = {
 		NULL,
 		{ .row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1 },
 	},
+	[ItemWandSwd] = {
+		"Magic Wand",
+		"img/sword-icons.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 3, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatMag] = 5 },
+		.loc = EqpWep
+	},
+	[ItemSoulSwd] = {
+		"Soul Sword",
+		"img/sword-icons.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 4, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 5 }, // TODO: really I want the power to scale with HP
+		.loc = EqpWep
+	},
+	[ItemGoldSwd] = {
+		"Gold Sword",
+		"img/sword-icons.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 5, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatStr] = -1, [StatLuck] = 5 },
+		.loc = EqpWep
+	},
+	[ItemShiningSwd] = {
+		"Shining Sword",
+		"img/sword-icons.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 6, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatStr] = 4, [StatLuck] = 2 },
+		.loc = EqpWep
+	},
+	[ItemThickSwd] = {
+		"Thick Sword",
+		"img/sword-icons.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 7, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatStr] = 6, [StatHp] = 1 },
+		.loc = EqpWep
+	},
+	[ItemDarkSwd] = {
+		"Dark Sword",
+		"img/sword-icons.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 8, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatStr] = 4, [StatDex] = 3 },
+		.loc = EqpWep
+	},
+	[ItemYgSwd] = {
+		"Ygdrasil Wand",
+		"img/sword-icons.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 9, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatMag] = 10 },
+		.loc = EqpWep
+	},
+	[ItemUtmaSwd] = {
+		"Utma Sword",
+		"img/sword-icons.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 10, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = { [StatHp] = 10 }, // TODO: really I want the power to scale with HP
+		.loc = EqpWep
+	},
+	[ItemSproutSwd] = {
+		"Sprout Sword",
+		"img/sword-icons.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 11, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = {
+			[StatStr] = 2,
+			[StatDex] = 2,
+			[StatMag] = 2,
+		},
+		.loc = EqpWep
+	},
+	[ItemRedwoodSwd] = {
+		"Redwood Sword",
+		"img/sword-icons.png",
+		silverswdupdate,
+		NULL,
+		{ .row = 12, .len = 1, .delay = 1, .w = 16, .h = 16, .d = 1},
+		.stats = {
+			[StatHp] = 5,
+			[StatStr] = 5,
+			[StatDex] = 5,
+			[StatMag] = 5,
+			[StatLuck] = 5,
+		},
+		.loc = EqpWep
+	},
 };
 
 _Bool iteminit(Item *i, ItemID id, Point p){
