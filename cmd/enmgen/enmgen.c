@@ -78,10 +78,10 @@ int main(int argc, char *argv[])
 static int rng(Rng *r, int argc, char *argv[])
 {
 	int args = 0;
-	clock_t seed = 0;
+	uint64_t seed = 0;
 
 	if (argv[1][0] == '-' && argv[1][1] == 's') {
-		seed = strtol(argv[2], NULL, 10);
+		seed = strtoul(argv[2], NULL, 10);
 		args = 2;
 	} else {
 		seed = time(0);
