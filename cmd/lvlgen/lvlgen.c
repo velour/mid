@@ -97,10 +97,10 @@ static void parseargs(int argc, char *argv[])
 
 static void rng(Rng *r)
 {
-	clock_t seed = time(0) ^ getpid() ^ getpid() << 16;
+	uint64_t seed = time(0) ^ getpid() ^ getpid() << 16;
 
 	if (seedstr)
-		seed = strtol(seedstr, NULL, 10);
+		seed = strtoul(seedstr, NULL, 10);
 
 	rnginit(r, seed);
 }
