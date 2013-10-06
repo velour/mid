@@ -283,6 +283,8 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 		if(i->curitem == s)
 			return;
 		if(s){
+			if(s->id > 0 && itemeqploc(s->id) != itemeqploc(i->curitem->id))
+				return;
 			invswap(i->curitem, s);
 			i->curitem = s;
 			resetstats(i->p);
