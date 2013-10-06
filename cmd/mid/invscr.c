@@ -294,7 +294,7 @@ static void handle(Scrn *s, Scrnstk *stk, Event *e){
 					msg(&i->msg, "There's no room for %s here", itemname(i->curitem->id));
 				return;
 			}
-			if(el.loc == (int) EqpEat){
+			if(el.loc == (EqpLoc) EqpEat){
 				if(!inviteat(i->curitem, i->p, i->zone)) {
 					msg(&i->msg, "I can't eat the %s!", itemname(i->curitem->id));
 					return;
