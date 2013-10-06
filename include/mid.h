@@ -593,6 +593,8 @@ struct Player {
 	Invit wear[EqpMax];
 
 	Sword sw;
+
+	Anim canact;
 };
 
 void playerinit(Player *p, int x, int y);
