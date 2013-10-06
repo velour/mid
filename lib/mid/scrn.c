@@ -23,7 +23,7 @@ Scrnstk *scrnstknew(Gfx *g){
 
 void scrnstkfree(Scrnstk *stk){
 	int n = stk->nxt - stk->scrns;
-	for(int i = 0; i < n; ++i){
+	for(int i = n-1; i >= 0; i--){
 		Scrn *s = stk->scrns[i];
 		s->mt->free(s);
 	}
