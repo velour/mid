@@ -49,7 +49,7 @@ static Tinfo tiles[] = {
 		.ok = true,
 		.anims = {
 			[0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm  },
-			[2] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
+			[2] = { .row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 		},
 		.flags = Twater
 	},
@@ -66,7 +66,7 @@ static Tinfo tiles[] = {
 		.anims = {
 			[0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 			[1] = { .row = 3, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
-			[2] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
+			[2] = { .row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 		},
 		.flags = Tbdoor | Twater
 	},
@@ -83,7 +83,7 @@ static Tinfo tiles[] = {
 		.anims = {
 			[0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 			[2] = { .row = 4, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
-			[3] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
+			[3] = { .row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 		},
 		.flags = Tfdoor | Twater
 	},
@@ -100,7 +100,7 @@ static Tinfo tiles[] = {
 		.anims = {
 			[0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 			[1] = { .row = 5, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
-			[3] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
+			[3] = { .row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 		},
 		.flags = Tdown | Twater
 	},
@@ -117,7 +117,7 @@ static Tinfo tiles[] = {
 		.anims = {
 			[0] = { .row = 0, .len = 4, .delay = 400/Ticktm, .w = 32, .h = 32, .d = 400/Ticktm },
 			[1] = { .row = 6, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
-			[3] = { .row = 2, .len = 11, .delay = 300/Ticktm, .w = 32, .h = 32, .d = 300/Ticktm },
+			[3] = { .row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 },
 		},
 		.flags = Tup | Twater
 	},
