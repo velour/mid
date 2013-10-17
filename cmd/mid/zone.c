@@ -148,7 +148,9 @@ static FILE *zpipe(Rng *r, int depth)
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
 		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
 		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
-			EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
+			EnvSwdStoneHp,
+			EnvSwdStoneDex,
+			EnvSwdStoneStr);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
@@ -173,7 +175,9 @@ static FILE *zpipe(Rng *r, int depth)
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
 		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
 		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
-			EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
+			EnvSwdStoneHp,
+			EnvSwdStoneDex,
+			EnvSwdStoneStr);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
@@ -198,7 +202,9 @@ static FILE *zpipe(Rng *r, int depth)
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
 		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
 		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
-			EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
+			EnvSwdStoneHp2,
+			EnvSwdStoneDex2,
+			EnvSwdStoneStr2);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
@@ -223,7 +229,9 @@ static FILE *zpipe(Rng *r, int depth)
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
 		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
 		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
-			EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
+			EnvSwdStoneHp2,
+			EnvSwdStoneDex2,
+			EnvSwdStoneStr2);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 25",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
@@ -253,7 +261,9 @@ static FILE *zpipe(Rng *r, int depth)
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
 		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
 		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
-			EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
+			EnvSwdStoneHp3,
+			EnvSwdStoneDex3,
+			EnvSwdStoneStr3);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 20",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
@@ -279,7 +289,9 @@ static FILE *zpipe(Rng *r, int depth)
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
 		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
 		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
-			EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
+			EnvSwdStoneHp3,
+			EnvSwdStoneDex3,
+			EnvSwdStoneStr3);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 20",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
