@@ -663,6 +663,12 @@ enum EnvID{
 	EnvSwdStoneHp,
 	EnvSwdStoneDex,
 	EnvSwdStoneStr,
+	EnvSwdStoneHp2,
+	EnvSwdStoneDex2,
+	EnvSwdStoneStr2,
+	EnvSwdStoneHp3,
+	EnvSwdStoneDex3,
+	EnvSwdStoneStr3,
 	EnvMax
 };
 
