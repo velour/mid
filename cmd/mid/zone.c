@@ -134,8 +134,6 @@ static FILE *zpipe(Rng *r, int depth)
 
 	switch(depth){
 	case 0:
-	case 1:
-	case 2:
 		pipeadd(&p, "lvlgen", "25 25 3 -s %lu ", (unsigned long) rngint(r));
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemStatup);
 		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d %d %d %d 50", (unsigned long) rngint(r),
@@ -147,10 +145,15 @@ static FILE *zpipe(Rng *r, int depth)
 			ItemHealth, ItemHealth, ItemHealth, ItemHealth,
 			ItemCarrot
 		);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d 1", (unsigned long) rngint(r),
+			ItemBubble, ItemZap, ItemLead
+		);
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
 		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
 		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
-			EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
+			EnvSwdStoneHp,
+			EnvSwdStoneDex,
+			EnvSwdStoneStr);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
@@ -160,54 +163,154 @@ static FILE *zpipe(Rng *r, int depth)
 			EnemyGrendu
 		);
 		break;
+	case 1:
+		pipeadd(&p, "lvlgen", "25 25 3 -s %lu ", (unsigned long) rngint(r));
+		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemStatup);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d %d %d %d 50", (unsigned long) rngint(r),
+			ItemCopper, ItemCopper, ItemCopper, ItemCopper, 
+			ItemSilver, ItemSilver, ItemSilver,
+			ItemGold
+		);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d 5", (unsigned long) rngint(r),
+			ItemHealth, ItemHealth, ItemHealth,
+			ItemCarrot, ItemCarrot
+		);
+		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
+		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
+		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
+			EnvSwdStoneHp,
+			EnvSwdStoneDex,
+			EnvSwdStoneStr);
+		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
+			(unsigned long) rngint(r),
+			EnemyUnti, EnemyUnti, EnemyUnti,
+			EnemyNous, EnemyNous, EnemyNous,
+			EnemyDa, EnemyDa, EnemyDa,
+			EnemyThu, EnemyThu,
+			EnemyGrendu
+		);
+		break;
+	case 2:
+		pipeadd(&p, "lvlgen", "25 25 3 -s %lu ", (unsigned long) rngint(r));
+		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemStatup);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d %d %d %d 50", (unsigned long) rngint(r),
+			ItemCopper, ItemCopper, ItemCopper, 
+			ItemSilver, ItemSilver, ItemSilver, ItemSilver,
+			ItemGold
+		);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d 5", (unsigned long) rngint(r),
+			ItemHealth, ItemHealth,
+			ItemCarrot, ItemCarrot, ItemCarrot
+		);
+		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d 1", (unsigned long) rngint(r),
+			ItemBubble, ItemZap, ItemLead
+		);
+		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
+		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
+			EnvSwdStoneHp2,
+			EnvSwdStoneDex2,
+			EnvSwdStoneStr2);
+		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
+			(unsigned long) rngint(r),
+			EnemyUnti, EnemyUnti, EnemyUnti,
+			EnemyNous, EnemyNous,
+			EnemyDa, EnemyDa, EnemyDa,
+			EnemyThu, EnemyThu,
+			EnemyGrendu, EnemyGrendu
+		);
+		break;
 	case 3:
+		pipeadd(&p, "lvlgen", "30 30 3 -s %lu ", (unsigned long) rngint(r));
+		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemStatup);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d %d %d %d 50", (unsigned long) rngint(r),
+			ItemCopper, 
+			ItemSilver, ItemSilver, ItemSilver,
+			ItemGold, ItemGold, ItemGold, ItemGold
+		);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d 4", (unsigned long) rngint(r),
+			ItemHealth, ItemHealth,
+			ItemCarrot, ItemCarrot
+		);
+		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
+		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
+		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
+			EnvSwdStoneHp2,
+			EnvSwdStoneDex2,
+			EnvSwdStoneStr2);
+		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 25",
+			(unsigned long) rngint(r),
+			EnemyUnti, EnemyUnti, EnemyUnti,
+			EnemyNous, EnemyNous,
+			EnemyDa, EnemyDa, EnemyDa,
+			EnemyThu, EnemyThu,
+			EnemyGrendu, EnemyGrendu
+		);
+		pipeadd(&p, "enmgen", "-s %lu %d %d %d 25",
+			(unsigned long) rngint(r),
+			EnemyThu, EnemyThu,
+			EnemyGrendu
+		);
+		break;
 	case 4:
 		pipeadd(&p, "lvlgen", "30 30 4 -s %lu ", (unsigned long) rngint(r));
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemStatup);
 		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d %d %d %d 50", (unsigned long) rngint(r),
-			ItemCopper, ItemCopper, ItemCopper, ItemCopper, ItemCopper, 
-			ItemSilver, ItemSilver,
-			ItemGold
+			ItemCopper, 
+			ItemSilver, ItemSilver, ItemSilver,
+			ItemGold, ItemGold, ItemGold, ItemGold
 		);
-		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d 5", (unsigned long) rngint(r),
-			ItemHealth, ItemHealth, ItemHealth, ItemHealth,
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d 2", (unsigned long) rngint(r),
+			ItemHealth,
 			ItemCarrot
 		);
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d 1", (unsigned long) rngint(r),
+			ItemBubble, ItemZap, ItemLead
+		);
 		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
 		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
-			EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
-		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
+			EnvSwdStoneHp3,
+			EnvSwdStoneDex3,
+			EnvSwdStoneStr3);
+		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 20",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
-			EnemyDa, EnemyDa, EnemyDa, EnemyDa,
-			EnemyThu, EnemyThu, EnemyThu,
-			EnemyGrendu,
+			EnemyNous, EnemyNous,
+			EnemyDa, EnemyDa, EnemyDa,
+			EnemyThu, EnemyThu,
+			EnemyGrendu, EnemyGrendu
+		);
+		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d 30",
+			(unsigned long) rngint(r),
+			EnemyThu, EnemyThu,
+			EnemyGrendu, EnemyGrendu,
 			EnemyTihgt
 		);
 		break;
 	default:
-		pipeadd(&p, "lvlgen", "10 10 3 -x -s %lu ", (unsigned long) rngint(r));
+		pipeadd(&p, "lvlgen", "30 30 4 -x -s %lu ", (unsigned long) rngint(r));
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemStatup);
 		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d %d %d %d 50", (unsigned long) rngint(r),
-			ItemCopper, ItemCopper, ItemCopper, ItemCopper, ItemCopper, 
-			ItemSilver, ItemSilver,
+			ItemSilver,
 			ItemGold
-		);
-		pipeadd(&p, "itmgen", "-s %lu %d %d %d %d %d 5", (unsigned long) rngint(r),
-			ItemHealth, ItemHealth, ItemHealth, ItemHealth,
-			ItemCarrot
 		);
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
 		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
 		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
-			EnvSwdStoneHp, EnvSwdStoneDex, EnvSwdStoneStr);
-		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
+			EnvSwdStoneHp3,
+			EnvSwdStoneDex3,
+			EnvSwdStoneStr3);
+		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 20",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
-			EnemyDa, EnemyDa, EnemyDa, EnemyDa,
-			EnemyThu, EnemyThu, EnemyThu,
-			EnemyGrendu,
+			EnemyNous, EnemyNous,
+			EnemyDa, EnemyDa, EnemyDa,
+			EnemyThu, EnemyThu,
+			EnemyGrendu, EnemyGrendu
+		);
+		pipeadd(&p, "enmgen", "-s %lu %d 15",
+			(unsigned long) rngint(r),
 			EnemyTihgt
 		);
 		pipeadd(&p, "enmgen", "-s %lu %d 1",

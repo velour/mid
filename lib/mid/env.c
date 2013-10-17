@@ -17,6 +17,12 @@ static void shrusedact(Env*,Player*,Zone*);
 static void stonehpact(Env*,Player*,Zone*);
 static void stonedexact(Env*,Player*,Zone*);
 static void stonestract(Env*,Player*,Zone*);
+static void stonehpact2(Env*,Player*,Zone*);
+static void stonedexact2(Env*,Player*,Zone*);
+static void stonestract2(Env*,Player*,Zone*);
+static void stonehpact3(Env*,Player*,Zone*);
+static void stonedexact3(Env*,Player*,Zone*);
+static void stonestract3(Env*,Player*,Zone*);
 
 static void stonegenact(Env *e, Player *p, Zone *z, int stat, ItemID *drops, int dsz);
 
@@ -50,6 +56,42 @@ static EnvOps ops[] = {
 	[EnvSwdStoneStr] = {
 		"img/swstones.png",
 		stonestract,
+		{ 32, 32 },
+		{ .row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvSwdStoneHp2] = {
+		"img/swstones.png",
+		stonehpact2,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvSwdStoneDex2] = {
+		"img/swstones.png",
+		stonedexact2,
+		{ 32, 32 },
+		{ .row = 1, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvSwdStoneStr2] = {
+		"img/swstones.png",
+		stonestract2,
+		{ 32, 32 },
+		{ .row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvSwdStoneHp3] = {
+		"img/swstones.png",
+		stonehpact3,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvSwdStoneDex3] = {
+		"img/swstones.png",
+		stonedexact3,
+		{ 32, 32 },
+		{ .row = 1, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvSwdStoneStr3] = {
+		"img/swstones.png",
+		stonestract3,
 		{ 32, 32 },
 		{ .row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
 	},
@@ -125,6 +167,7 @@ static void shrusedact(Env *e, Player *p, Zone *z){
 static void stonehpact(Env *e, Player *p, Zone *z){
 	static ItemID hpswds[] = {
 		ItemSilverSwd,
+		ItemWandSwd,
 	};
 
 	stonegenact(e, p, z, StatHp, hpswds, sizeof(hpswds)/sizeof(hpswds[0]));
@@ -133,6 +176,7 @@ static void stonehpact(Env *e, Player *p, Zone *z){
 static void stonedexact(Env *e, Player *p, Zone *z){
 	static ItemID dexswds[] = {
 		ItemWindSwd,
+		ItemGoldSwd,
 	};
 
 	stonegenact(e, p, z, StatDex, dexswds, sizeof(dexswds)/sizeof(dexswds[0]));
@@ -141,6 +185,66 @@ static void stonedexact(Env *e, Player *p, Zone *z){
 static void stonestract(Env *e, Player *p, Zone *z){
 	static ItemID strswds[] = {
 		ItemBroadSwd,
+		ItemSoulSwd,
+	};
+
+	stonegenact(e, p, z, StatStr, strswds, sizeof(strswds)/sizeof(strswds[0]));
+}
+
+static void stonehpact2(Env *e, Player *p, Zone *z){
+	static ItemID hpswds[] = {
+		ItemWandSwd,
+		ItemShiningSwd,
+	};
+
+	stonegenact(e, p, z, StatHp, hpswds, sizeof(hpswds)/sizeof(hpswds[0]));
+}
+
+static void stonedexact2(Env *e, Player *p, Zone *z){
+	static ItemID dexswds[] = {
+		ItemWindSwd,
+		ItemGoldSwd,
+		ItemSproutSwd,
+	};
+
+	stonegenact(e, p, z, StatDex, dexswds, sizeof(dexswds)/sizeof(dexswds[0]));
+}
+
+static void stonestract2(Env *e, Player *p, Zone *z){
+	static ItemID strswds[] = {
+		ItemBroadSwd,
+		ItemSoulSwd,
+		ItemThickSwd,
+	};
+
+	stonegenact(e, p, z, StatStr, strswds, sizeof(strswds)/sizeof(strswds[0]));
+}
+
+static void stonehpact3(Env *e, Player *p, Zone *z){
+	static ItemID hpswds[] = {
+		ItemYgSwd,
+		ItemShiningSwd,
+		ItemRedwoodSwd,
+	};
+
+	stonegenact(e, p, z, StatHp, hpswds, sizeof(hpswds)/sizeof(hpswds[0]));
+}
+
+static void stonedexact3(Env *e, Player *p, Zone *z){
+	static ItemID dexswds[] = {
+		ItemWindSwd,
+		ItemGoldSwd,
+		ItemDarkSwd,
+	};
+
+	stonegenact(e, p, z, StatDex, dexswds, sizeof(dexswds)/sizeof(dexswds[0]));
+}
+
+static void stonestract3(Env *e, Player *p, Zone *z){
+	static ItemID strswds[] = {
+		ItemBroadSwd,
+		ItemUtmaSwd,
+		ItemThickSwd,
 	};
 
 	stonegenact(e, p, z, StatStr, strswds, sizeof(strswds)/sizeof(strswds[0]));

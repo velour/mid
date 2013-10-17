@@ -63,12 +63,11 @@ void playerinit(Player *p, int x, int y)
 	p->sw.row = 0;
 	p->sw.dir = Mvright;
 	p->sw.cur = -1;
-	invitinit(&p->wear[EqpWep], ItemRedwoodSwd);
+	invitinit(&p->wear[EqpWep], ItemSilverSwd);
 	invitinit(&p->wear[EqpHead], ItemIronHelm);
 	invitinit(&p->wear[EqpBody], ItemIronBody);
 	invitinit(&p->wear[EqpArms], ItemIronGlove);
 	invitinit(&p->wear[EqpLegs], ItemIronBoot);
-	invitinit(&p->wear[EqpMag], ItemLead);
 	resetstats(p);
 	p->curhp = playerstat(p, StatHp);
 	p->curmp = MaxMP;
