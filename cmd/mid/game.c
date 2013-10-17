@@ -204,14 +204,12 @@ void gamehandle(Scrn *s, Scrnstk *stk, Event *e)
 
 	playerhandle(&gm->player, e);
 
-	_Bool touchedenv = 0;
-	int z = gm->zone->lvl->z;
-	Env *ev = gm->zone->envs[z];
-	for(int i = 0; i < Maxenvs; i++) {
-		if (!ev[i].id)
-			continue;
-		gm->player.onenv = touchedenv || isect(ev[i].body.bbox, gm->player.body.bbox);
-		if(gm->player.acting){
+	if(gm->player.acting){
+		int z = gm->zone->lvl->z;
+		Env *ev = gm->zone->envs[z];
+		for(int i = 0; i < Maxenvs; i++) {
+			if (!ev[i].id)
+				continue;
 			envact(&ev[i], &gm->player, gm->zone);
 			if(gm->player.statup){
 				scrnstkpush(stk, statscrnnew(gm, &gm->player, &ev[i]));

@@ -352,9 +352,14 @@ void zoneupdate(Zone *zn, Player *p, Msg *m)
 
 	envupdateanims();
 
+	p->onenv = 0;
 	Env *en = zn->envs[z];
-	for(size_t i = 0; i < Maxenvs; i++)
-		if (en[i].id) envupdate(&en[i], zn);
+	for(size_t i = 0; i < Maxenvs; i++) {
+		if(en[i].id)
+			envupdate(&en[i], zn);
+		if(isect(en[i].body.bbox, p->body.bbox))
+			p->onenv = 1;
+	}
 
 	Magic *ma = zn->mags[z];
 	for(size_t i = 0; i < Maxmagics; i++)
