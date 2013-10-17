@@ -9,6 +9,7 @@
 static Point hboff = { 7, 2 };
 
 static Sfx *ow;
+static Img *actsheet;
 
 static void loadanim(Anim *a, int, int, int);
 static void chngdir(Player *b);
@@ -30,12 +31,24 @@ void playerinit(Player *p, int x, int y)
 	ow = resrcacq(sfx, "sfx/ow.wav", NULL);
 	assert(ow != NULL);
 
+	actsheet = resrcacq(imgs, "img/act.png", NULL);
+	assert(actsheet != NULL);
+
 	loadanim(&p->as[Left][Stand], 0, 1, 1);
 	loadanim(&p->as[Left][Walk], 1, 4, 100);
 	loadanim(&p->as[Left][Jump], 2, 1, 1);
 	loadanim(&p->as[Right][Stand], 3, 1, 1);
 	loadanim(&p->as[Right][Walk], 4, 4, 100);
 	loadanim(&p->as[Right][Jump], 5, 1, 1);
+
+	p->canact.sheet = actsheet;
+	p->canact.row = 0;
+	p->canact.len = 2;
+	p->canact.delay = 100/Ticktm;
+	p->canact.w = 16;
+	p->canact.h = 16;
+	p->canact.f = 0;
+	p->canact.d = 100/Ticktm;
 
 	p->dir = Right;
 	p->act = Stand;
@@ -166,6 +179,8 @@ void playerupdate(Player *p, Zone *zn)
 
 	if(p->curmp < MaxMP)
 		p->curmp += playerstat(p, StatMag);
+
+	animupdate(&p->canact);
 }
 
 void playerdraw(Gfx *g, Player *p)
@@ -184,6 +199,12 @@ void playerdraw(Gfx *g, Player *p)
 
 	if(p->sw.cur >= 0)
 		sworddraw(g, &p->sw);
+
+	if((p->bi.flags & Tfdoor) || (p->bi.flags & Tbdoor) ||
+		(p->bi.flags & Tdown) || (p->bi.flags & Tup) ||
+		p->onenv){
+		camdrawanim(g, &p->canact, vecadd(playerimgloc(p), (Point){8, -16}));
+	}
 }
 
 static void chkdirkeys(Player *p)
