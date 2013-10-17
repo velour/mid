@@ -145,6 +145,9 @@ static FILE *zpipe(Rng *r, int depth)
 			ItemHealth, ItemHealth, ItemHealth, ItemHealth,
 			ItemCarrot
 		);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d 1", (unsigned long) rngint(r),
+			ItemBubble, ItemZap, ItemLead
+		);
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
 		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
 		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
@@ -200,6 +203,9 @@ static FILE *zpipe(Rng *r, int depth)
 			ItemCarrot, ItemCarrot, ItemCarrot
 		);
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d 1", (unsigned long) rngint(r),
+			ItemBubble, ItemZap, ItemLead
+		);
 		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
 		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
 			EnvSwdStoneHp2,
@@ -259,6 +265,9 @@ static FILE *zpipe(Rng *r, int depth)
 			ItemCarrot
 		);
 		pipeadd(&p, "itmgen", "-s %lu %d 1", (unsigned long) rngint(r), ItemHamCan);
+		pipeadd(&p, "itmgen", "-s %lu %d %d %d 1", (unsigned long) rngint(r),
+			ItemBubble, ItemZap, ItemLead
+		);
 		pipeadd(&p, "envgen", "-s %lu %d 1", (unsigned long) rngint(r), EnvShrempty);
 		pipeadd(&p, "envgen", "-s %lu %d %d %d 2", (unsigned long) rngint(r),
 			EnvSwdStoneHp3,
