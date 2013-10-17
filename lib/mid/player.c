@@ -201,7 +201,8 @@ void playerdraw(Gfx *g, Player *p)
 		sworddraw(g, &p->sw);
 
 	if((p->bi.flags & Tfdoor) || (p->bi.flags & Tbdoor) ||
-		(p->bi.flags & Tdown) || (p->bi.flags & Tup)){
+		(p->bi.flags & Tdown) || (p->bi.flags & Tup) ||
+		p->onenv){
 		camdrawanim(g, &p->canact, vecadd(playerimgloc(p), (Point){8, -16}));
 	}
 }
