@@ -643,7 +643,7 @@ struct Enemy{
 	Ai ai;
 };
 
-_Bool enemyldresrc(void);
+_Bool enemyldresrc(unsigned seed);
 _Bool enemyinit(Enemy *e, EnemyID id, int x, int y);
 void enemyfree(Enemy*);
 void enemyupdate(Enemy*, Player*, Zone*);
@@ -692,7 +692,7 @@ struct Env{
 	int min;
 };
 
-_Bool envldresrc(void);
+_Bool envldresrc(unsigned seed);
 _Bool envinit(Env*, EnvID, Point);
 void envupdateanims(void);
 void envupdate(Env*, Zone*);

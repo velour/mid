@@ -9,7 +9,7 @@ static Rng rng;
 
 static void die(Enemy*,Zone*,Info*,int);
 
-_Bool enemyldresrc(void){
+_Bool enemyldresrc(unsigned seed){
 	untihit = resrcacq(sfx, "sfx/hit.wav", 0);
 	if(!untihit) return 0;
 	untiinfo.hit = untihit;
@@ -45,7 +45,7 @@ _Bool enemyldresrc(void){
 	if(!heartimg) return 0;
 	heartinfo.hit = untihit;
 
-	rnginit(&rng, 666); //TODO: use the game seed
+	rnginit(&rng, seed);
 
 	return 1;
 }

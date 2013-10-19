@@ -194,7 +194,7 @@ _Bool envinit(Env *e, EnvID id, Point p){
 	return 1;
 }
 
-_Bool envldresrc(void){
+_Bool envldresrc(unsigned seed){
 	for (int id = 1; id < sizeof(ops)/sizeof(ops[0]); id++) {
 		char *n = ops[id].animname;
 		assert(n != NULL);
@@ -204,7 +204,7 @@ _Bool envldresrc(void){
 			return 0;
 		ops[id].anim.sheet = i;
 	}
-	rnginit(&rng, 666);
+	rnginit(&rng, seed);
 	return 1;
 }
 
