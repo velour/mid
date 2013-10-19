@@ -336,7 +336,7 @@ static void stonestract3(Env *e, Player *p, Zone *z){
 
 static void stonegenact(Env *e, Player *p, Zone *z, int stat, ItemID *drops, int dsz){
 	if(p->stats[stat] >= e->min && isect(e->body.bbox, p->body.bbox)){
-		ItemID id = drops[rngintincl(&rng, 0, dsz - 1)];
+		ItemID id = drops[rngintincl(&rng, 0, dsz)];
 		Item drop = {};
 		Point gridcoord = { // BARF
 			e->body.bbox.a.x / Twidth,
