@@ -669,6 +669,18 @@ enum EnvID{
 	EnvSwdStoneHp3,
 	EnvSwdStoneDex3,
 	EnvSwdStoneStr3,
+	EnvHelm0,
+	EnvBody0,
+	EnvGlove0,
+	EnvBoot0,
+	EnvHelm2,
+	EnvBody2,
+	EnvGlove2,
+	EnvBoot2,
+	EnvHelm4,
+	EnvBody4,
+	EnvGlove4,
+	EnvBoot4,
 	EnvMax
 };
 
