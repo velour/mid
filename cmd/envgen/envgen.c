@@ -105,7 +105,7 @@ static int idargs(int argc, char *argv[], int *ids[])
 {
 	int i;
 
-	*ids = xalloc(argc, sizeof(*ids));
+	*ids = xalloc(argc, sizeof(**ids));
 	for (i = 1; i < argc - 1; i++) {
 		long l = strtol(argv[i], NULL, 10);
 		if (l == LONG_MIN || l == LONG_MAX)

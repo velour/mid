@@ -154,6 +154,11 @@ static FILE *zpipe(Rng *r, int depth)
 			EnvSwdStoneHp,
 			EnvSwdStoneDex,
 			EnvSwdStoneStr);
+		pipeadd(&p, "envgen", "-s %lu %d %d %d %d 2", (unsigned long)rngint(r),
+			EnvHelm0,
+			EnvBody0,
+			EnvGlove0,
+			EnvBoot0);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
@@ -181,6 +186,11 @@ static FILE *zpipe(Rng *r, int depth)
 			EnvSwdStoneHp,
 			EnvSwdStoneDex,
 			EnvSwdStoneStr);
+		pipeadd(&p, "envgen", "-s %lu %d %d %d %d 2", (unsigned long)rngint(r),
+			EnvHelm0,
+			EnvBody0,
+			EnvGlove0,
+			EnvBoot0);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
@@ -211,6 +221,11 @@ static FILE *zpipe(Rng *r, int depth)
 			EnvSwdStoneHp2,
 			EnvSwdStoneDex2,
 			EnvSwdStoneStr2);
+		pipeadd(&p, "envgen", "-s %lu %d %d %d %d 2", (unsigned long)rngint(r),
+			EnvHelm2,
+			EnvBody2,
+			EnvGlove2,
+			EnvBoot2);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 50",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
@@ -238,6 +253,11 @@ static FILE *zpipe(Rng *r, int depth)
 			EnvSwdStoneHp2,
 			EnvSwdStoneDex2,
 			EnvSwdStoneStr2);
+		pipeadd(&p, "envgen", "-s %lu %d %d %d %d 2", (unsigned long)rngint(r),
+			EnvHelm2,
+			EnvBody2,
+			EnvGlove2,
+			EnvBoot2);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 25",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
@@ -273,6 +293,11 @@ static FILE *zpipe(Rng *r, int depth)
 			EnvSwdStoneHp3,
 			EnvSwdStoneDex3,
 			EnvSwdStoneStr3);
+		pipeadd(&p, "envgen", "-s %lu %d %d %d %d 2", (unsigned long)rngint(r),
+			EnvHelm4,
+			EnvBody4,
+			EnvGlove4,
+			EnvBoot4);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 20",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,
@@ -301,6 +326,11 @@ static FILE *zpipe(Rng *r, int depth)
 			EnvSwdStoneHp3,
 			EnvSwdStoneDex3,
 			EnvSwdStoneStr3);
+		pipeadd(&p, "envgen", "-s %lu %d %d %d %d 2", (unsigned long)rngint(r),
+			EnvHelm4,
+			EnvBody4,
+			EnvGlove4,
+			EnvBoot4);
 		pipeadd(&p, "enmgen", "-s %lu %d %d %d %d %d %d %d %d %d %d %d %d 20",
 			(unsigned long) rngint(r),
 			EnemyUnti, EnemyUnti, EnemyUnti,

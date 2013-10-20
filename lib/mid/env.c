@@ -23,6 +23,18 @@ static void stonestract2(Env*,Player*,Zone*);
 static void stonehpact3(Env*,Player*,Zone*);
 static void stonedexact3(Env*,Player*,Zone*);
 static void stonestract3(Env*,Player*,Zone*);
+static void helmextract0(Env*,Player*,Zone*);
+static void bodyextract0(Env*,Player*,Zone*);
+static void gloveextract0(Env*,Player*,Zone*);
+static void bootextract0(Env*,Player*,Zone*);
+static void helmextract2(Env*,Player*,Zone*);
+static void bodyextract2(Env*,Player*,Zone*);
+static void gloveextract2(Env*,Player*,Zone*);
+static void bootextract2(Env*,Player*,Zone*);
+static void helmextract4(Env*,Player*,Zone*);
+static void bodyextract4(Env*,Player*,Zone*);
+static void gloveextract4(Env*,Player*,Zone*);
+static void bootextract4(Env*,Player*,Zone*);
 
 static void stonegenact(Env *e, Player *p, Zone *z, int stat, ItemID *drops, int dsz);
 
@@ -95,6 +107,78 @@ static EnvOps ops[] = {
 		{ 32, 32 },
 		{ .row = 2, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
 	},
+	[EnvHelm0] = {
+		"img/chest.png",
+		helmextract0,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvBody0] = {
+		"img/chest.png",
+		bodyextract0,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvGlove0] = {
+		"img/chest.png",
+		gloveextract0,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvBoot0] = {
+		"img/chest.png",
+		bootextract0,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvHelm2] = {
+		"img/chest.png",
+		helmextract2,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvBody2] = {
+		"img/chest.png",
+		bodyextract2,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvGlove2] = {
+		"img/chest.png",
+		gloveextract2,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvBoot2] = {
+		"img/chest.png",
+		bootextract2,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvHelm4] = {
+		"img/chest.png",
+		helmextract4,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvBody4] = {
+		"img/chest.png",
+		bodyextract4,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvGlove4] = {
+		"img/chest.png",
+		gloveextract4,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
+	[EnvBoot4] = {
+		"img/chest.png",
+		bootextract4,
+		{ 32, 32 },
+		{ .row = 0, .len = 1, .delay = 1, .w = 32, .h = 32, .d = 1 }
+	},
 };
 
 _Bool envinit(Env *e, EnvID id, Point p){
@@ -110,7 +194,7 @@ _Bool envinit(Env *e, EnvID id, Point p){
 	return 1;
 }
 
-_Bool envldresrc(void){
+_Bool envldresrc(unsigned seed){
 	for (int id = 1; id < sizeof(ops)/sizeof(ops[0]); id++) {
 		char *n = ops[id].animname;
 		assert(n != NULL);
@@ -120,7 +204,7 @@ _Bool envldresrc(void){
 			return 0;
 		ops[id].anim.sheet = i;
 	}
-	rnginit(&rng, 666);
+	rnginit(&rng, seed);
 	return 1;
 }
 
@@ -252,7 +336,7 @@ static void stonestract3(Env *e, Player *p, Zone *z){
 
 static void stonegenact(Env *e, Player *p, Zone *z, int stat, ItemID *drops, int dsz){
 	if(p->stats[stat] >= e->min && isect(e->body.bbox, p->body.bbox)){
-		ItemID id = drops[rngintincl(&rng, 0, dsz - 1)];
+		ItemID id = drops[rngintincl(&rng, 0, dsz)];
 		Item drop = {};
 		Point gridcoord = { // BARF
 			e->body.bbox.a.x / Twidth,
@@ -263,4 +347,119 @@ static void stonegenact(Env *e, Player *p, Zone *z, int stat, ItemID *drops, int
 		if(zoneadditem(z, z->lvl->z, drop))
 			*e = (Env){};
 	}
+}
+
+static void helmextract0(Env *e, Player *p, Zone *z){
+	static ItemID spoils[] = {
+		ItemIronHelm,
+		ItemSteelHelm,
+	};
+
+	stonegenact(e, p, z, StatStr, spoils, sizeof(spoils)/sizeof(spoils[0]));
+}
+
+static void bodyextract0(Env *e, Player *p, Zone *z){
+	static ItemID spoils[] = {
+		ItemIronBody,
+		ItemSteelBody,
+	};
+
+	stonegenact(e, p, z, StatStr, spoils, sizeof(spoils)/sizeof(spoils[0]));
+}
+
+static void gloveextract0(Env *e, Player *p, Zone *z){
+	static ItemID spoils[] = {
+		ItemIronGlove,
+		ItemSteelGlove,
+	};
+
+	stonegenact(e, p, z, StatStr, spoils, sizeof(spoils)/sizeof(spoils[0]));
+}
+
+static void bootextract0(Env *e, Player *p, Zone *z){
+	static ItemID spoils[] = {
+		ItemIronBoot,
+		ItemSteelBoot,
+	};
+
+	stonegenact(e, p, z, StatStr, spoils, sizeof(spoils)/sizeof(spoils[0]));
+}
+
+static void helmextract2(Env *e, Player *p, Zone *z){
+	static ItemID spoils[] = {
+		ItemGoldHelm,
+		ItemSteelHelm,
+	};
+
+	stonegenact(e, p, z, StatStr, spoils, sizeof(spoils)/sizeof(spoils[0]));
+}
+
+static void bodyextract2(Env *e, Player *p, Zone *z){
+	static ItemID spoils[] = {
+		ItemNavyBlazer,
+		ItemGoldBody,
+		ItemSteelBody,
+	};
+
+	stonegenact(e, p, z, StatStr, spoils, sizeof(spoils)/sizeof(spoils[0]));
+}
+
+static void gloveextract2(Env *e, Player *p, Zone *z){
+	static ItemID spoils[] = {
+		ItemSilkGlove,
+		ItemGoldGlove,
+		ItemSteelGlove,
+	};
+
+	stonegenact(e, p, z, StatStr, spoils, sizeof(spoils)/sizeof(spoils[0]));
+}
+
+static void bootextract2(Env *e, Player *p, Zone *z){
+	static ItemID spoils[] = {
+		ItemFineShoe,
+		ItemGoldBoot,
+		ItemSteelBoot,
+	};
+
+	stonegenact(e, p, z, StatStr, spoils, sizeof(spoils)/sizeof(spoils[0]));
+}
+
+static void helmextract4(Env *e, Player *p, Zone *z){
+	static ItemID spoils[] = {
+		ItemGoldHelm,
+		ItemSteelHelm,
+		ItemRockHelm,
+	};
+
+	stonegenact(e, p, z, StatStr, spoils, sizeof(spoils)/sizeof(spoils[0]));
+}
+
+static void bodyextract4(Env *e, Player *p, Zone *z){
+	static ItemID spoils[] = {
+		ItemIronBody,
+		ItemSteelBody,
+		ItemRockBody,
+	};
+
+	stonegenact(e, p, z, StatStr, spoils, sizeof(spoils)/sizeof(spoils[0]));
+}
+
+static void gloveextract4(Env *e, Player *p, Zone *z){
+	static ItemID spoils[] = {
+		ItemIronGlove,
+		ItemSteelGlove,
+		ItemRockGlove,
+	};
+
+	stonegenact(e, p, z, StatStr, spoils, sizeof(spoils)/sizeof(spoils[0]));
+}
+
+static void bootextract4(Env *e, Player *p, Zone *z){
+	static ItemID spoils[] = {
+		ItemIronBoot,
+		ItemSteelBoot,
+		ItemRockBoot,
+	};
+
+	stonegenact(e, p, z, StatStr, spoils, sizeof(spoils)/sizeof(spoils[0]));
 }

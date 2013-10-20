@@ -18,7 +18,7 @@
 
 static char savedir[128] = "_save";
 
-static void ldresrc();
+static void ldresrc(unsigned);
 static void rmrecur(const char *);
 static FILE *opensavefile(const char *file, const char *mode);
 static const char *savepath(const char *file);
@@ -51,7 +51,7 @@ Game *gamenew(void)
 
 	playerinit(&gm.player, 2, 2);
 
-	ldresrc();
+	ldresrc(seed);
 	gm.ui = resrcacq(imgs, "img/ui.png", 0);
 
 	return &gm;
@@ -271,7 +271,7 @@ Game *gameload()
 	static Game gm = {};
 	gm = (Game){};
 	lvlinit();
-	ldresrc();
+
 	playerinit(&gm.player, 2, 2);
 	
 	static char buf[4096];
@@ -303,16 +303,18 @@ Game *gameload()
 	gm.zone->lvl->z = z;
 	gm.ui = resrcacq(imgs, "img/ui.png", 0);
 
+	ldresrc((unsigned)gm.rng.v);
+
 	return &gm;
 }
 
-static void ldresrc()
+static void ldresrc(unsigned seed)
 {
 	if (!itemldresrc())
 		fatal("Failed to load item resources: %s", miderrstr());
-	if (!envldresrc())
+	if (!envldresrc(seed))
 		fatal("Failed to load env resources: %s", miderrstr());
-	if(!enemyldresrc())
+	if(!enemyldresrc(seed))
 		fatal("Failed to load enemy resrouces: %s", miderrstr());
 	if(!swordldresrc())
 		fatal("Failed to load sword resrouces: %s", miderrstr());
