@@ -51,7 +51,7 @@ _Bool startonblk(Mv *mv);
 
 typedef struct Seg Seg;
 struct Seg {
-	Loc l0, l1;;
+	Loc l0, l1;
 	Mv *mv;
 };
 
