@@ -46,7 +46,7 @@ Gfx *gfxinit(int w, int h, const char *title){
 	if (gfx.win == 0)
 		return NULL;
 
-	gfx.rend = SDL_CreateRenderer(gfx.win, -1, 0);
+	gfx.rend = SDL_CreateRenderer(gfx.win, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
 	if (!gfx.rend){
 		SDL_DestroyWindow(gfx.win);
 		return NULL;
