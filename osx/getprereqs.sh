@@ -21,9 +21,9 @@ get_it() {
 
 sdlproj=http://www.libsdl.org/projects
 
-get_it SDL2 http://www.libsdl.org/release/SDL2-2.0.0.dmg
-get_it SDL2_image $sdlproj/SDL_image/release/SDL2_image-2.0.0.dmg
-get_it SDL2_mixer $sdlproj/SDL_mixer/release/SDL2_mixer-2.0.0.dmg
-get_it SDL2_ttf $sdlproj/SDL_ttf/release/SDL2_ttf-2.0.12.dmg
+get_it SDL2 http://www.libsdl.org/release/SDL2-2.0.5.dmg
+get_it SDL2_image $sdlproj/SDL_image/release/SDL2_image-2.0.1.dmg
+get_it SDL2_mixer $sdlproj/SDL_mixer/release/SDL2_mixer-2.0.1.dmg
+get_it SDL2_ttf $sdlproj/SDL_ttf/release/SDL2_ttf-2.0.14.dmg
 
 popd
